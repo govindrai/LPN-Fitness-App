@@ -11,6 +11,10 @@ var userSchema = new mongoose.Schema({
 		last: {
 			type: String, 
 			required: true
+		}, 
+		nickname: {
+			type: String, 
+			minLength: 3
 		}
 	},
 	email: {
@@ -20,5 +24,27 @@ var userSchema = new mongoose.Schema({
 	},
 	family: {
 		type: [{Schema.Types.ObjectId, ref: 'Family'}]
-	}
-})
+	},
+	allTimePoints: {
+		type: Number,
+		default: 0
+	},
+	admin: {
+		type: Boolean,
+		default: false
+	},
+	tokens:[{
+		access: {
+			type: String,
+			required: true
+		},
+		token: {
+			type: String,
+			required: true
+		}
+	}]
+}); 
+
+var User = mongoose.model('User', userSchema);
+
+module.exports = {User}; 
