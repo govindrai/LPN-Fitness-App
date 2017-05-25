@@ -8,8 +8,7 @@ var familySchema = new mongoose.Schema({
 		required: true
 	}, 
 	motto: {
-		type: String, 
-		required: true 
+		type: String
 	}, 
 	challengesWon: {
 		type: Number,
