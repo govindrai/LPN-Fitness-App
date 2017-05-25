@@ -1,8 +1,7 @@
 const mongoose = require('mongoose'); 
-// might need to change to 'db/mongoose'
-const validator = require('validator'); 
+const Schema = mongoose.Schema;
 
-var unitSchema = new mongoose.Schema({
+var unitSchema = new Schema({
 	name: {
 		type: String,
 		required: true
