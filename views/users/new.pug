@@ -1,0 +1,22 @@
+include ../layout.pug
+
+h1 Add a User
+
+form(action='/users' method='POST')
+	| First Name
+	input(name='name.first' type='text' required)
+	| Last Name
+	input(name='name.last' type='text' required)
+	| Nickname
+	input(name='name.nickname' type='text')
+	| Email
+	input(name='email' type='email' required)
+	| Family
+	select(name="family")
+		each family in families 
+			option(value=family._id)= family.name
+	| Password
+	input(name='password' type='password' required)
+	| Confirm Password 
+	input(name='passwordConfirmation' type='password' required)
+	input(type='submit' value='Add User')

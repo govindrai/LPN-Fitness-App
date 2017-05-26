@@ -1,0 +1,10 @@
+include ../layout.pug
+
+h1 Add a family
+
+form(action='/families' method='POST')
+	| Name
+	input(name='name' type='text' required)
+	| Motto
+	input(name='motto' type='text')
+	input(type='submit' value='Add family')

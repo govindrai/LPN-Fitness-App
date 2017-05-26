@@ -1,0 +1,16 @@
+include ../layout.pug
+
+h1 Add a Unit
+
+form(action='/units' method='POST')
+	| Name
+	input(name='name' type='text' required)
+	| Abbreviation
+	input(name='abbreviation' type='text' required)
+	
+	input(type='submit' value='Add Unit')
+
+h2 Current Units
+
+each unit in units
+	p= unit.name + ", " + unit.abbreviation

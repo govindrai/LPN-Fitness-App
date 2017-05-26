@@ -1,0 +1,6 @@
+include ../layout.pug
+
+h2 Current Users
+
+each user in users
+	p= user.name.first + " " + user.name.last
