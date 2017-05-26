@@ -5,10 +5,19 @@ const {User} = require('./../models/user');
 const {Family} = require('./../models/family');
 
 /* GET users listing. */
+
+router.get('/', function(req, res, next) {
+	Family.find({}).then((families) => {
+		User.find({}).populate('family').then((users) => {
+			res.render('users/index', {families, users});
+		})
+	}); 
+})
+
 router.get('/new', function(req, res, next) {
 Family.find({}).then((families) => {
 		User.find({}).populate('family').then((users) => {
-			res.render('users/new', {families, users});
+			res.render('users/new', {families});
 		})
 	}); 
 });
