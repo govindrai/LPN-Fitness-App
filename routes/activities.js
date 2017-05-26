@@ -7,7 +7,8 @@ const {Unit} = require('./../models/unit');
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
 	Unit.find({}).then((units) => {
-		Activity.find({}).then((activities) => {
+		Activity.find({}).populate('unit_id').then((activities) => {
+			console.log(activities);
 			res.render('activities/new', {units, activities});
 		})
 	}); 

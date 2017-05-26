@@ -22,15 +22,6 @@ var activitySchema = new Schema({
 	}
 });
 
-activitySchema.methods.getUnitName = function() {
-	Unit.findById(this.unit_id).then((unit) => {
-		return unit
-	}).catch((e) => {
-		console.log("THERE WAS AN ERROR")
-		console.log(e)
-	});
-}
-
 var Activity = mongoose.model('Activity', activitySchema); 
 
 module.exports = {Activity};
