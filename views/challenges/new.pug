@@ -1,0 +1,25 @@
+include ../layout.pug
+
+h1 Create a challenge 
+
+form(action='/challenges' method='POST')
+	| Name
+	input(name='name' type='text' required)
+	| Start Date
+	input(name='date.start' type='Date' required)
+	| End Date
+	input(name='date.end' type='Date' required)
+	| Unit
+	select(name="unit_id")
+		each unit in units 
+			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
+
+	input(type='submit' value='Create challenge')
+
+h2 All Activities
+
+each activity in activities
+	p= "Name: " + activity.name
+	p= "Description: " + activity.description
+	p= "Points Per Unit of Excersise: " + activity.pointsPerUnit
+	p= "Unit: " + activity.unit_id.name
