@@ -14,9 +14,9 @@ form(action='/users' method='POST')
 	| Admin
 	input(name='admin' type='text' required)
 	| Family
-		select(name="family")
+	select(name="family")
 		each family in families 
-			option(value=family)= family.name
+			option(value=family._id)= family.name
 	input(type='submit' value='Add User')
 
 h2 Current Users
