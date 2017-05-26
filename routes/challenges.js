@@ -5,12 +5,16 @@ const {Challenge} = require('./../models/challenge');
 const {Family} = require('./../models/family');
 
 /* GET users listing. */
-router.get('/new', function(req, res, next) {
-Family.find({}).then((families) => {
+router.get('/', function(req, res, next) {
+	Family.find({}).then((families) => {
 		Challenge.find({}).populate('winner').then((challenges) => {
-			res.render('challenges/new', {families, challenges});
+			res.render('challenges/index', {families, challenges});
 		})
-	}); 
+	})
+});
+
+router.get('/new', function(req, res, next) {
+	res.render('challenges/new');
 });
 
 router.post('/', (req, res, next) => {

@@ -10,12 +10,3 @@ form(action='/challenges' method='POST')
 	| End Date
 	input(name='date.end' type='Date' required)
 	input(type='submit' value='Create challenge')
-
-h2 All Challenges
-
-each challenge in challenges
-	p= "Name: " + challenge.name
-	p= "Start Date: " + challenge.date.start
-	p= "End Date: " + challenge.date.end
-		if challenge.winner != null
-			p= "Winner: " + challenge.winner

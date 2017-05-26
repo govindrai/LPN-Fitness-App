@@ -1,0 +1,10 @@
+include ../layout.pug
+
+h2 All Challenges
+
+each challenge in challenges
+	p= "Name: " + challenge.name
+	p= "Start Date: " + challenge.date.start
+	p= "End Date: " + challenge.date.end
+		if challenge.winner != null
+			p= "Winner: " + challenge.winner
