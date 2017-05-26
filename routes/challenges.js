@@ -2,18 +2,25 @@ var express = require('express');
 var router = express.Router();
 const mongoose = require('./../db/mongoose'); 
 const {Challenge} = require('./../models/challenge'); 
+const {Family} = require('./../models/family');
 
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
-  res.render('challenges/new');
+Family.find({}).then((families) => {
+		Challenge.find({}).populate('winner').then((challenges) => {
+			res.render('challenges/new', {families, challenges});
+		})
+	}); 
 });
 
 router.post('/', (req, res, next) => {
 	console.log("made it here"); 
 	var challenge = new Challenge(req.body)
+	console.log(challenge)
+	console.log(challenge.date.end)
 
-	challenge.save().then(() => {
-		res.render('challenges/show', {challenge})
+	challenge.save().then((challenge) => {
+		res.redirect('/challenges/new')
 	}).catch((e) => console.log(e))
 })
 

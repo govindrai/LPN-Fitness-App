@@ -1,8 +1,7 @@
-const mongoose = require('mongoose'); 
-// might need to change to 'db/mongoose'
-const validator = require('validator'); 
+const mongoose = require('mongoose');  
+var Schema = mongoose.Schema;  
 
-var challengeSchema = new mongoose.Schema({
+var challengeSchema = new Schema({
 	name: {
 		type: String,
 		required: true
@@ -18,7 +17,8 @@ var challengeSchema = new mongoose.Schema({
 		}
 	},
 	winner: {
-		type: [{Schema.Types.ObjectId, ref: 'Family'}],
+		type: Schema.Types.ObjectId, 
+		ref: 'Family',
 		default: null
 	}
 });

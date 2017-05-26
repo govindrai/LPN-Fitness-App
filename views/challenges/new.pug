@@ -9,17 +9,13 @@ form(action='/challenges' method='POST')
 	input(name='date.start' type='Date' required)
 	| End Date
 	input(name='date.end' type='Date' required)
-	| Unit
-	select(name="unit_id")
-		each unit in units 
-			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
-
 	input(type='submit' value='Create challenge')
 
-h2 All Activities
+h2 All Challenges
 
-each activity in activities
-	p= "Name: " + activity.name
-	p= "Description: " + activity.description
-	p= "Points Per Unit of Excersise: " + activity.pointsPerUnit
-	p= "Unit: " + activity.unit_id.name
+each challenge in challenges
+	p= "Name: " + challenge.name
+	p= "Start Date: " + challenge.date.start
+	p= "End Date: " + challenge.date.end
+		if challenge.winner != null
+			p= "Winner: " + challenge.winner

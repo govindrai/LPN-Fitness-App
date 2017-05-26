@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var families = require('./routes/families'); 
 var units = require('./routes/units');
 var activities = require('./routes/activities');
+var challenges = require('./routes/challenges');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use('/users', users);
 app.use('/families', families); 
 app.use('/units', units);
 app.use('/activities', activities);
+app.use('/challenges', challenges); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
