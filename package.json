@@ -16,6 +16,7 @@
     "express-compile-sass": "^3.0.4",
     "graceful-fs": "^4.1.11",
     "jsonwebtoken": "^7.4.1",
+    "method-override": "^2.3.9",
     "mongoose": "^4.10.2",
     "morgan": "~1.8.1",
     "node-sass-middleware": "0.9.8",

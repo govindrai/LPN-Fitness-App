@@ -8,22 +8,30 @@ var userSchema = new Schema({
 	name: {
 		first: {
 			type: String,
-			required: true
+			required: true,
+			trim: true
 		},
 		last: {
 			type: String, 
-			required: true
+			required: true,
+			trim: true
 		}, 
 		nickname: {
 			type: String, 
-			minLength: 3
+			minLength: 3,
+			trim: true
 		}
 	},
 	email: {
 		type: String,
 		required: true,
+		trim: true,
 		validate: validator.isEmail
 	},
+	password: {
+		type: String,
+		minLength: 6
+	}
 	family: {
 		type: Schema.Types.ObjectId,
 		ref: 'Family'
