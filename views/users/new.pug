@@ -17,4 +17,6 @@ form(action='/users' method='POST')
 			option(value=family._id)= family.name
 	| Password
 	input(name='password' type='password' required)
+	| Confirm Password 
+	input(name='passwordConfirmation' type='password' required)
 	input(type='submit' value='Add User')

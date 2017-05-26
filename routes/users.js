@@ -23,11 +23,10 @@ Family.find({}).then((families) => {
 });
 
 router.post('/', (req, res, next) => {
-	console.log("made it here"); 
 	var user = new User(req.body)
-	console.log(user)
 
 	user.save().then((user) => {
+		console.log(user);
 		res.redirect('/users/new')
 	}).catch((e) => console.log(e))
 })

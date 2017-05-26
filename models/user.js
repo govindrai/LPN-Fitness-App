@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'); 
-// might need to change to 'db/mongoose'
 const validator = require('validator'); 
 const jwt = require('jsonwebtoken'); 
 var Schema = mongoose.Schema; 
+const bcrypt = require('bcryptjs'); 
 
 var userSchema = new Schema({
 	name: {
@@ -30,8 +30,8 @@ var userSchema = new Schema({
 	},
 	password: {
 		type: String,
-		minLength: 6
-	}
+		required: true
+	},
 	family: {
 		type: Schema.Types.ObjectId,
 		ref: 'Family'
@@ -55,6 +55,27 @@ var userSchema = new Schema({
 		}
 	}]
 }); 
+
+userSchema.pre('save', function(next) {
+	var user = this;
+	if (user.isModified('password')) {
+		bcrypt.genSalt(10, (err, salt) => {
+			if (err) {
+				console.log(err);
+			}
+			bcrypt.hash(user.password, salt, (error, hash) => {
+				if (error) {
+					console.log(err);
+				}
+				user.password = hash; 
+				next();
+			});
+		});
+	} else {
+		console.log("MADE IT HERE");
+		next();
+	}
+});
 
 userSchema.statics.getAdmins = function () {
 	return User.find({admin: true}).populate('family'); 
