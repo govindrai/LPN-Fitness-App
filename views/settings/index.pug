@@ -1,0 +1,47 @@
+h2 All Admins
+
+table
+		thead
+			tr
+				td First Name
+				td Last Name
+				td Nickname
+				td Family
+				td Email
+				td Admin?
+				td Remove Admin Access
+		tbody
+		each admin in admins
+			tr
+				td= admin.name.first
+				td= admin.name.last
+				td= admin.name.nickname
+				td= admin.family.name
+				td= admin.email
+				td= admin.admin
+				td
+					input(type="checkbox" name="admin")
+
+h2 All Users
+
+table
+		thead
+			tr
+				td First Name
+				td Last Name
+				td Nickname
+				td Family
+				td Email
+				td Admin?
+				td Add Admin Access
+		tbody
+		each nonAdmin in nonAdmins
+			tr
+				td= nonAdmin.name.first
+				td= nonAdmin.name.last
+				td= nonAdmin.name.nickname
+				td= nonAdmin.family.name
+				td= nonAdmin.email
+				td= nonAdmin.admin
+				td
+					input(type="checkbox" name="admin")

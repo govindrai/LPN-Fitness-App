@@ -48,6 +48,14 @@ var userSchema = new Schema({
 	}]
 }); 
 
+userSchema.statics.getAdmins = function () {
+	return User.find({admin: true}).populate('family'); 
+}; 
+
+userSchema.statics.getNonAdmins = function () {
+	return User.find({admin: false}).populate('family');
+};
+
 var User = mongoose.model('User', userSchema);
 
 module.exports = {User}; 

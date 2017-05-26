@@ -12,6 +12,7 @@ var families = require('./routes/families');
 var units = require('./routes/units');
 var activities = require('./routes/activities');
 var challenges = require('./routes/challenges');
+var settings = require('./routes/settings');
 
 var app = express();
 
@@ -39,6 +40,7 @@ app.use('/families', families);
 app.use('/units', units);
 app.use('/activities', activities);
 app.use('/challenges', challenges); 
+app.use('/settings', settings); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
