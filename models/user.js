@@ -1,8 +1,8 @@
-const mongoose = require('mongoose'); 
-const validator = require('validator'); 
-const jwt = require('jsonwebtoken'); 
-var Schema = mongoose.Schema; 
-const bcrypt = require('bcryptjs'); 
+const mongoose = require('mongoose');
+const validator = require('validator');
+const jwt = require('jsonwebtoken');
+var Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
 var userSchema = new Schema({
 	name: {
@@ -12,12 +12,12 @@ var userSchema = new Schema({
 			trim: true
 		},
 		last: {
-			type: String, 
+			type: String,
 			required: true,
 			trim: true
-		}, 
+		},
 		nickname: {
-			type: String, 
+			type: String,
 			minLength: 3,
 			trim: true
 		}
@@ -26,6 +26,7 @@ var userSchema = new Schema({
 		type: String,
 		required: true,
 		trim: true,
+		unique: true,
 		validate: validator.isEmail
 	},
 	password: {
@@ -44,7 +45,7 @@ var userSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
-	tokens:[{
+	tokens: [{
 		access: {
 			type: String,
 			required: true
@@ -54,7 +55,7 @@ var userSchema = new Schema({
 			required: true
 		}
 	}]
-}); 
+});
 
 userSchema.pre('save', function(next) {
 	var user = this;
@@ -67,19 +68,50 @@ userSchema.pre('save', function(next) {
 				if (error) {
 					console.log(err);
 				}
-				user.password = hash; 
+				user.password = hash;
 				next();
 			});
 		});
 	} else {
-		console.log("MADE IT HERE");
 		next();
 	}
 });
 
+userSchema.methods.generateAuthToken = function() {
+	var user = this;
+	var payload = {
+		_id: this._id,
+		_email: this.email,
+		access: "auth"
+	};
+
+	return new Promise((resolve, reject) => {
+		jwt.sign(payload, 'secret', {expiresIn: '1hr'}, (err, token) => {
+			if (err) {
+				reject(err);
+			}
+				resolve(token);
+		});
+	}).then((token) => {
+		user.tokens.push({access: "auth", token});
+		return user.save();
+	});
+}
+
+userSchema.statics.authenticate = function(email, password) {
+  var user = this;
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, user.hash, (err, res) => {
+      resolve();
+    }).then(() => {
+      return User.findOne({email, password});
+    });
+  })
+}
+
 userSchema.statics.getAdmins = function () {
-	return User.find({admin: true}).populate('family'); 
-}; 
+	return User.find({admin: true}).populate('family');
+};
 
 userSchema.statics.getNonAdmins = function () {
 	return User.find({admin: false}).populate('family');
@@ -87,4 +119,4 @@ userSchema.statics.getNonAdmins = function () {
 
 var User = mongoose.model('User', userSchema);
 
-module.exports = {User}; 
+module.exports = {User};
