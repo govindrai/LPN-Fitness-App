@@ -5,14 +5,7 @@ var express = require('express');
 var Family = require('./../models/family'),
   User = require('./../models/user');
 
-// Middleware
-var verifyAuthorization = require('./../middleware/verifyAuthorization'),
-  getChallengesCount = require('./../middleware/getChallengesCount');
-
 var router = express.Router();
-
-router.use(verifyAuthorization);
-router.use(getChallengesCount);
 
 /* View all families */
 router.get('/', function(req, res, next) {

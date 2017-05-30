@@ -1,4 +1,7 @@
-const mongoose = require('mongoose'); 
+var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost:27017/lpn');
-mongoose.Promise = global.Promise;  
+mongoose.Promise = global.Promise;
+
+module.exports = mongoose;
+
