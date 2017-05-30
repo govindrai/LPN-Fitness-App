@@ -17,6 +17,10 @@ var pointSchema = new Schema({
 	}
 });
 
+pointSchema.methods.getUnitName = function(){
+	return this.activityId.unitId.name ;
+}; 
+
 var Point = mongoose.model('Point', pointSchema);
 
 module.exports = Point;
