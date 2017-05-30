@@ -1,17 +1,20 @@
 var express = require('express');
-var router = express.Router();
-const mongoose = require('./../db/mongoose'); 
-const {Activity} = require('./../models/activity'); 
-const {Unit} = require('./../models/unit');
+
+var mongoose = require('./../db/mongoose'),
+	Activity = require('./../models/activity'),
+	Unit = require('./../models/unit');
+
+var router = express.Router(),
+	verifyAuthorization = require('./../middleware/verifyAuthorization');
 
 /* GET users listing. */
-router.get('/new', function(req, res, next) {
+router.get('/new', verifyAuthorization, (req, res) => {
 	Unit.find({}).then((units) => {
 		Activity.find({}).populate('unit_id').then((activities) => {
 			console.log(activities);
 			res.render('activities/new', {units, activities});
 		})
-	}); 
+	});
 });
 
 router.post('/', (req, res, next) => {

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var unitSchema = new Schema({
@@ -7,11 +7,11 @@ var unitSchema = new Schema({
 		required: true
 	},
 	abbreviation: {
-		type: String, 
+		type: String,
 		required: true
 	}
 });
 
 var Unit = mongoose.model('Unit', unitSchema);
 
-module.exports = {Unit}; 
+module.exports = Unit;

@@ -4,4 +4,18 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    nav
+      div LPN Fitness Challenge
+      div
+        li
+          a(href="/") Home
+        if !loggedIn
+          li
+            a(href="/login") Login
+        else
+          li
+            a(href="/points/new") Add Points
+          li
+            a(href="/logout") Logout
+
     block content
