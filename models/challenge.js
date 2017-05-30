@@ -14,6 +14,15 @@ var challengeSchema = new Schema({
 		end: {
 			type: Date,
 			required: true
+		},
+		registration_start: {
+			type: Date,
+			required: true,
+			default: new Date()
+		},
+		registration_end: {
+			type: Date,
+			required: true
 		}
 	},
 	winner: {
@@ -21,6 +30,10 @@ var challengeSchema = new Schema({
 		ref: 'Family',
 		default: null
 	}
+});
+
+challengeSchema.pre('save', function(next) {
+
 });
 
 var Challenge = mongoose.model('Challenge', challengeSchema);

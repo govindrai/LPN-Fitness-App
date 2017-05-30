@@ -1,31 +1,41 @@
-var express = require('express');
-var router = express.Router();
-const mongoose = require('./../db/mongoose'); 
-const {Challenge} = require('./../models/challenge'); 
-const {Family} = require('./../models/family');
+// Modules
+var express = require('express'),
+	_ = require('lodash');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-	Family.find({}).then((families) => {
-		Challenge.find({}).populate('winner').then((challenges) => {
-			res.render('challenges/index', {families, challenges});
-		})
+// Models
+var Challenge = require('./../models/challenge'),
+	Family = require('./../models/family');
+
+// Middleware
+var verifyAuthorization = require('./../middleware/verifyAuthorization'),
+  getChallengesCount = require('./../middleware/getChallengesCount');
+
+var router = express.Router();
+
+router.use(verifyAuthorization);
+router.use(getChallengesCount);
+
+// Get all challenges
+router.get('/', (req, res) => {
+	Challenge.find({}).populate('winner').then((challenges) => {
+		res.render('challenges/index', {families, challenges});
 	})
+	.catch(e => console.log(e));
 });
 
+// Create Challenge Form
 router.get('/new', function(req, res, next) {
 	res.render('challenges/new');
 });
 
+// Create Challenge
 router.post('/', (req, res, next) => {
-	console.log("made it here"); 
-	var challenge = new Challenge(req.body)
-	console.log(challenge)
-	console.log(challenge.date.end)
+	var body = _.pick(req.body, ["name", "date.start", "date.end"]);
+	var challenge = new Challenge(body);
 
-	challenge.save().then((challenge) => {
-		res.redirect('/challenges/new')
-	}).catch((e) => console.log(e))
+	challenge.save().then(() => {
+		res.redirect('/challenges');
+	}).catch(e => console.log(e));
 })
 
 module.exports = router;
