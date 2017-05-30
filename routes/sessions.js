@@ -7,10 +7,8 @@ var User = require('./../models/user'),
 var router = express.Router();
 
 // Landing & Registration Page
-router.get('/', (req, res) => {
-  Family.find().then((families)=> {
-    res.render('index', {families});
-  })
+router.get('/new', (req, res) => {
+    res.render('sessions/new');
 });
 
 module.exports = router;
