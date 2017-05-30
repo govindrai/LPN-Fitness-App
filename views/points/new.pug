@@ -3,14 +3,14 @@ extends ../layout
 block content
   h1 Add Points
 
-form(action="/points", method="POST")
-	| Units Exercised
-	input(name='unitsExercised' type='Number' required)
-	| Scale
-	input(name='scale' type='Number' required)
-  | Activity
-	select(name="activityId")
-		each activity in activities
-			option(value=activity._id)= activity.name
+  form(action="/points", method="POST")
+    | Units Exercised
+    input(name='unitsExercised' type='Number' required)
+    | Scale
+    input(name='scale' type='Number' required)
+    | Activity
+    select(name="activityId")
+      each activity in activities
+        option(value=activity._id)= activity.name
 
-	input(type='submit' value='Add Activity')
+    input(type='submit' value='Add Points')
