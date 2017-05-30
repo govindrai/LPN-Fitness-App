@@ -8,13 +8,13 @@ var activitySchema = new Schema({
 		type: String,
 		required: true
 	},
-	NumberOfPoints: {
+	numberOfPoints: {
 		type: Number,
 		required: true
 	},
 	scale: {
 		type: Number, 
-		required
+		required: true
 	}, 
 	unitId: {
 		type: Schema.Types.ObjectId,
