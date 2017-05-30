@@ -46,6 +46,11 @@ router.post('/register', (req, res) => {
   .catch(e => console.log(e));
 })
 
+router.get('/login', (req, res) => {
+    res.render('sessions/new');
+});
+
+
 // Logout
 router.get('/logout', (req, res) => {
   var token = req.session["x-auth"];

@@ -17,8 +17,7 @@ var index = require('./routes/index'),
   activities = require('./routes/activities'),
   challenges = require('./routes/challenges'),
   settings = require('./routes/settings'),
-  points = require('./routes/points'),
-  sessions = require('./routes/sessions');
+  points = require('./routes/points');
 
 // Create Express App
 var app = express();
@@ -57,7 +56,6 @@ app.use('/activities', activities);
 app.use('/challenges', challenges);
 app.use('/settings', settings);
 app.use('/points', points);
-app.use('/sessions', sessions); 
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
