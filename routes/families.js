@@ -1,10 +1,18 @@
+// Modules
 var express = require('express');
 
+// Models
 var Family = require('./../models/family'),
   User = require('./../models/user');
 
-var router = express.Router(),
-  verifyAuthorization = require('./../middleware/verifyAuthorization');
+// Middleware
+var verifyAuthorization = require('./../middleware/verifyAuthorization'),
+  getChallengesCount = require('./../middleware/getChallengesCount');
+
+var router = express.Router()
+
+router.use(verifyAuthorization);
+router.use(getChallengesCount);
 
 /* View all families */
 router.get('/', function(req, res, next) {
@@ -29,7 +37,7 @@ router.post('/', (req, res, next) => {
 });
 
 // Family Show Page/ Authorized User Landing Page
-router.get('/:family_name', verifyAuthorization, (req, res) => {
+router.get('/:family_name', (req, res) => {
   Family.findOne({name: req.params["family_name"]})
   .then((family) => {
     res.render('families/show', {family, user: req.params.user});

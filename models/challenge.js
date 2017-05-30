@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');  
-var Schema = mongoose.Schema;  
+const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var challengeSchema = new Schema({
 	name: {
@@ -17,7 +17,7 @@ var challengeSchema = new Schema({
 		}
 	},
 	winner: {
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Family',
 		default: null
 	}
