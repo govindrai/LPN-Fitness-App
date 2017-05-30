@@ -1,5 +1,4 @@
 var mongoose = require('mongoose'),
-	Participation = require('./../models/participation'),
 	Schema = mongoose.Schema;
 
 var pointSchema = new Schema({

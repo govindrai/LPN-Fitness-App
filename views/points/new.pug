@@ -3,5 +3,14 @@ extends ../layout
 block content
   h1 Add Points
 
-  form(action="/points", method="POST")
-
+form(action="/points", method="POST")
+  | Activity
+  select(name="activityId")
+	 each activity in activities
+	  option(value=activity._id)= activity.name
+	| Units Exercised
+	input(name='unitsExercised' type='Number' required)
+	| Scale
+	input(name='scale' type='Number' required)
+  | Points
+	input(type='submit' value='Input Points')

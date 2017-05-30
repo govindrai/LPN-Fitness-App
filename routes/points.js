@@ -7,7 +7,8 @@ var router = express.Router(),
   verifyAuthorization = require('./../middleware/verifyAuthorization');
 
 router.get('/new', verifyAuthorization, (req, res) => {
-  res.render('points/new');
+  Activity.find({}).then((activities) => {
+  res.render('points/new'), {activities}});
 })
 
 module.exports = router;
