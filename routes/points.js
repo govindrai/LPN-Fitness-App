@@ -9,9 +9,9 @@ var router = express.Router(),
 router.get('/new', verifyAuthorization, (req, res) => {
   Activity.find({}).then((activities) => {
     Point.find({}).populate('activityId').then((points) => {
-      res.render('points/new'), {points, activities}
+      res.render('points/new', {points, activities});
     });
-})
+  });
 });
 
 module.exports = router;
