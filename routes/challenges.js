@@ -18,24 +18,30 @@ router.use(getChallengesCount);
 // Get all challenges
 router.get('/', (req, res) => {
 	Challenge.find({}).populate('winner').then((challenges) => {
-		res.render('challenges/index', {families, challenges});
+		res.render('challenges/index', {challenges});
 	})
 	.catch(e => console.log(e));
 });
 
 // Create Challenge Form
-router.get('/new', function(req, res, next) {
+router.get('/new', (req, res) => {
 	res.render('challenges/new');
 });
 
 // Create Challenge
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
+	console.log("I made it here")
 	var body = _.pick(req.body, ["name", "date.start", "date.end"]);
+	body["date.registration_end"] = body["date.start"];
 	var challenge = new Challenge(body);
+	console.log(body);
+	console.log(challenge);
 
-	challenge.save().then(() => {
+	challenge.save()
+	.then(() => {
 		res.redirect('/challenges');
-	}).catch(e => console.log(e));
+	})
+	.catch(e => console.log(e));
 })
 
 module.exports = router;

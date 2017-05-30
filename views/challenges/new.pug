@@ -1,16 +1,18 @@
-include ../layout.pug
+extends ../layout
 
-h1 Create a challenge
+block content
 
-form(action='/challenges' method='POST')
-	| Name
-	input(name='name' type='text' required)
-	| Start Date
-	input(name='date.start' type='Date' required)
-	| End Date
-	input(name='date.end' type='Date' required)
-	input(type='submit' value='Create challenge')
+  h1 Create a challenge
 
-p
-  b Please note:
-  | registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
+  form(action='/challenges' method='POST')
+    | Name
+    input(name='name' type='text' required)
+    | Start Date
+    input(name='date.start' type='Date' required)
+    | End Date
+    input(name='date.end' type='Date' required)
+    input(type='submit' value='Create challenge')
+
+  p
+    b Please note:
+    |  registration will open as soon as challenge is created, and registration will close at midnight before the challenge.

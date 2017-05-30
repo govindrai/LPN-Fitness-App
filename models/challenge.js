@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema;
 
 var challengeSchema = new Schema({
 	name: {
@@ -30,10 +30,6 @@ var challengeSchema = new Schema({
 		ref: 'Family',
 		default: null
 	}
-});
-
-challengeSchema.pre('save', function(next) {
-
 });
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
