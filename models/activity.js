@@ -1,18 +1,22 @@
 const mongoose = require('mongoose').set('debug', true);
 const Unit = require('./../models/unit');
 var Schema = mongoose.Schema;
-var {ObjectId} = mongoose.Types
+var {ObjectId} = mongoose.Types; 
 
 var activitySchema = new Schema({
 	name: {
 		type: String,
 		required: true
 	},
-	pointsPerUnit: {
+	NumberOfPoints: {
 		type: Number,
 		required: true
 	},
-	unit_id: {
+	scale: {
+		type: Number, 
+		required
+	}, 
+	unitId: {
 		type: Schema.Types.ObjectId,
 		ref: 'Unit'
 	}
