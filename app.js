@@ -1,3 +1,4 @@
+// Export Modules
 var express = require('express'),
   methodOverride = require('method-override'),
   session = require('express-session'),
@@ -8,22 +9,30 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   sassMiddleware = require('node-sass-middleware');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var families = require('./routes/families');
-var units = require('./routes/units');
-var activities = require('./routes/activities');
-var challenges = require('./routes/challenges');
-var settings = require('./routes/settings');
+// Export Routers
+var index = require('./routes/index'),
+  users = require('./routes/users'),
+  families = require('./routes/families'),
+  units = require('./routes/units'),
+  activities = require('./routes/activities'),
+  challenges = require('./routes/challenges'),
+  settings = require('./routes/settings');
 
+// Create Express App
 var app = express();
 
-// view engine setup
+// Setup View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Configure Middleware
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+}));
 app.use(methodOverride('_method'));
 app.use(logger('dev'));
 app.use(bodyParser.json());

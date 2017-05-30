@@ -81,21 +81,17 @@ userSchema.methods.generateAuthToken = function() {
 	var user = this;
 	var payload = {
 		_id: this._id,
-		_email: this.email,
 		access: "auth"
 	};
 
 	return new Promise((resolve, reject) => {
-		jwt.sign(payload, 'secret', {expiresIn: '1hr'}, (err, token) => {
+		jwt.sign(payload, 'secret', (err, token) => {
 			if (err) {
 				reject(err);
 			}
 				resolve(token);
 		});
-	}).then((token) => {
-		user.tokens.push({access: "auth", token});
-		return user.save();
-	});
+	})
 }
 
 userSchema.statics.authenticate = function(email, password) {
