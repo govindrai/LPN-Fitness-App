@@ -19,7 +19,8 @@ var userSchema = new Schema({
 		nickname: {
 			type: String,
 			minLength: 3,
-			trim: true
+			trim: true,
+			default: null
 		}
 	},
 	email: {
@@ -127,7 +128,6 @@ userSchema.statics.extractUser = function(token) {
 	return userSchema.statics.verifyAuthorizationToken(token);
 }
 
-
 userSchema.statics.getAdmins = function() {
 	return User.find({admin: true}).populate('family');
 };
@@ -135,6 +135,10 @@ userSchema.statics.getAdmins = function() {
 userSchema.statics.getNonAdmins = function() {
 	return User.find({admin: false}).populate('family');
 };
+
+userSchema.virtual('fullName').get(function() {
+  return this.name.first + ' ' + this.name.last;
+});
 
 var User = mongoose.model('User', userSchema);
 

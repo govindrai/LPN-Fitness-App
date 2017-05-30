@@ -17,6 +17,7 @@
     "express-session": "^1.15.3",
     "graceful-fs": "^4.1.11",
     "jsonwebtoken": "^7.4.1",
+    "lodash": "^4.17.4",
     "method-override": "^2.3.9",
     "mongoose": "^4.10.2",
     "morgan": "~1.8.1",

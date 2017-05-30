@@ -60,8 +60,12 @@ router.get('/logout', (req, res) => {
     return user.save()
   })
   .then((user) => {
-    res.session["x-auth"] = undefined;
-    res.redirect('/');
+    req.session.destroy((err) => {
+      if (err) {
+        console.log(err, "Session could not be destroyed")
+      }
+      res.redirect('/');
+    })
   })
   .catch((e) => console.log(e));
 })

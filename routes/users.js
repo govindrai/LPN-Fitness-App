@@ -26,12 +26,7 @@ router.post('/', (req, res, next) => {
 	var user = new User(req.body)
 	user.save().then((user) => {
 		user.generateAuthToken().then((token) => {
-			// user.tokens.push({access: "auth", token});
-			// user.save().then(() => {
-				res.cookie('x-auth', token);
-				// res.header('x-auth', token);
 				res.redirect('/families');
-			// });
 		});
 	}).catch(e => console.log(err));
 })
@@ -43,7 +38,6 @@ router.post('/', (req, res, next) => {
 
 	user.save().then((user) => {
 		user.generateAuthToken().then((token) => {
-				res.cookie('x-auth', token);
 				res.redirect('/families/');
 		});
 	}).catch(e => console.log(err));

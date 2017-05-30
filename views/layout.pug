@@ -9,9 +9,13 @@ html
       div
         li
           a(href="/") Home
-        li
-          a(href="login") Login
-        li
-          a(href="logout") Logout
+        if !loggedIn
+          li
+            a(href="/login") Login
+        else
+          li
+            a(href="/points/new") Add Points
+          li
+            a(href="/logout") Logout
 
     block content

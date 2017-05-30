@@ -1,8 +1,7 @@
-const mongoose = require('mongoose'); 
-// might need to change to 'db/mongoose'
-const validator = require('validator'); 
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema;
 
-var scoreSchema = new mongoose.Schema({
+var pointSchema = new Schema({
 	userId: {
 		type: [{Schema.Types.ObjectId, ref: 'User'}],
 		required: true
@@ -21,10 +20,10 @@ var scoreSchema = new mongoose.Schema({
 	},
 	points: {
 		type: Number,
-		required: true 
+		required: true
 	}
 });
 
-var Score = mongoose.model('Score', scoreSchema);
+var Point = mongoose.model('Point', pointSchema);
 
-module.exports = {Score}; 
+module.exports = Point;

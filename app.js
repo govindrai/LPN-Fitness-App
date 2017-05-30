@@ -16,7 +16,8 @@ var index = require('./routes/index'),
   units = require('./routes/units'),
   activities = require('./routes/activities'),
   challenges = require('./routes/challenges'),
-  settings = require('./routes/settings');
+  settings = require('./routes/settings'),
+  points = require('./routes/points');
 
 // Create Express App
 var app = express();
@@ -31,7 +32,8 @@ app.set('view engine', 'pug');
 app.use(session({
   secret: 'secret',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {maxAge: 610080}
 }));
 app.use(methodOverride('_method'));
 app.use(logger('dev'));
@@ -53,6 +55,7 @@ app.use('/units', units);
 app.use('/activities', activities);
 app.use('/challenges', challenges);
 app.use('/settings', settings);
+app.use('/points', points);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
