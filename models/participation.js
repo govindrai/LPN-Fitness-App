@@ -6,13 +6,13 @@ var Schema = mongoose.Schema;
 
 var participationSchema = new Schema({
   challengeId: {
-    type: [{Schema.Types.ObjectId, ref: 'Challenge'}],
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: 'Challenge'
   },
-    userId: {
-      type: [{Schema.Types.ObjectId, ref 'User'}],
-      required: true
-    }
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref 'User'
+  }
 });
 
 var Participation = mongoose.model('Participation', participationSchema);
