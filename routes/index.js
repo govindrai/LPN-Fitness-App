@@ -30,21 +30,61 @@ router.post('/register', (req, res) => {
   user.save().then(() => {
     return user.generateAuthorizationToken();
   })
-  .then((auth_token) => {
-    token = auth_token;
+  .then((authToken) => {
+    token = authToken;
     user.tokens.push({access: "auth", token});
     return user.save();
   })
   .then(() => {
     return User.populate(user, 'family');
   })
-  .then((new_user) => {
-    user = new_user;
+  .then((newUser) => {
+    user = newUser;
     req.session["x-auth"] = token;
     res.redirect('/families/' + user.family.name);
   })
   .catch(e => console.log(e));
 })
+
+router.get('/login', (req, res) => {
+    res.render('sessions/login');
+});
+
+router.post('/login', (req, res) => {
+  var body = _.pick(req.body, [
+    'email',
+    'password'
+  ]);
+
+  var user;
+  User.findOne({email: body.email})
+  .then(foundUser => {
+    user = foundUser;
+    return user.authenticate(body.password)
+  })
+  .then(res => {
+    console.log(res)
+    if (!res) {
+      return Promise.reject("Username/Password Incorrect");
+    }
+    return user.generateAuthorizationToken();
+  })
+  .then((authToken) => {
+    token = authToken;
+    user.tokens.push({access: "auth", token});
+    return user.save();
+  })
+  .then(() => {
+    return User.populate(user, 'family');
+  })
+  .then((newUser) => {
+    user = newUser;
+    req.session["x-auth"] = token;
+    res.redirect('/families/' + user.family.name);
+  })
+  .catch(e => console.log(e));
+})
+
 
 // Logout
 router.get('/logout', (req, res) => {

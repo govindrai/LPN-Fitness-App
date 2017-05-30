@@ -112,11 +112,13 @@ userSchema.statics.destroyAuthorizationToken = function(token) {
 	return userSchema.statics.verifyAuthorizationToken(token);
 }
 
-userSchema.statics.authenticate = function(email, password) {
+userSchema.methods.authenticate = function(password) {
   var user = this;
   return new Promise((resolve, reject) => {
-    bcrypt.compare(password, user.hash, (err, res) => {
+    bcrypt.compare(password, user.password, (err, res) => {
     	if (err) {
+				console.log(err);
+				console.log("THeRE IS AN ERROR")
     		reject(err);
     	}
       resolve(res);
