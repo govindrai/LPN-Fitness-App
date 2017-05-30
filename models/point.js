@@ -1,13 +1,10 @@
 var mongoose = require('mongoose'),
+	Participation = require('./../models/participation'),
 	Schema = mongoose.Schema;
 
 var pointSchema = new Schema({
-	userId: {
-		type: [{Schema.Types.ObjectId, ref: 'User'}],
-		required: true
-	},
-	challengeId: {
-		type: [{Schema.Types.ObjectId, ref: 'Challenge'}],
+	participationId: {
+		type: [{Schema.Types.ObjectId, ref: 'Participation'}],
 		required: true
 	},
 	activityId: {
@@ -15,6 +12,10 @@ var pointSchema = new Schema({
 		required: true
 	},
 	unitsExercised: {
+		type: Number,
+		required: true
+	},
+	scale: {
 		type: Number,
 		required: true
 	},
