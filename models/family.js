@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 var familySchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	motto: {
 		type: String
@@ -11,8 +12,24 @@ var familySchema = new mongoose.Schema({
 	challengesWon: {
 		type: Number,
 		default: 0
+	},
+	playoffsReached: {
+		type: Number,
+		default: 0
 	}
 });
+
+familySchema.methods.increaseChallengesWon = function() {
+	var challenge = this;
+	challenge.challengesWon += 1;
+	return challenge.save();
+}
+
+familySchema.methods.increasePlayoffsReached = function() {
+	var challenge = this;
+	challenge.playoffsReached += 1;
+	return challenge.save();
+}
 
 var Family = mongoose.model('Family', familySchema);
 
