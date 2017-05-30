@@ -77,7 +77,7 @@ userSchema.pre('save', function(next) {
 	}
 });
 
-userSchema.methods.generateAuthToken = function() {
+userSchema.methods.generateAuthorizationToken = function() {
 	var user = this;
 	var payload = {
 		_id: this._id,
@@ -92,27 +92,50 @@ userSchema.methods.generateAuthToken = function() {
 				resolve(token);
 		});
 	})
+};
+
+userSchema.statics.verifyAuthorizationToken = function(token) {
+	return new Promise((resolve, reject) => {
+		jwt.verify(token, 'secret', (err, decoded) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(decoded);
+		});
+	}).then((decoded) => {
+		return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access})
+	}).catch((e) => console.log(e));
+}
+
+userSchema.statics.destroyAuthorizationToken = function(token) {
+	return userSchema.statics.verifyAuthorizationToken(token);
 }
 
 userSchema.statics.authenticate = function(email, password) {
   var user = this;
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, user.hash, (err, res) => {
-      resolve();
-    }).then(() => {
-      return User.findOne({email, password});
+    	if (err) {
+    		reject(err);
+    	}
+      resolve(res);
     });
-  })
+  });
+};
+
+userSchema.statics.extractUser = function(token) {
+	return userSchema.statics.verifyAuthorizationToken(token);
 }
 
-userSchema.statics.getAdmins = function () {
+
+userSchema.statics.getAdmins = function() {
 	return User.find({admin: true}).populate('family');
 };
 
-userSchema.statics.getNonAdmins = function () {
+userSchema.statics.getNonAdmins = function() {
 	return User.find({admin: false}).populate('family');
 };
 
 var User = mongoose.model('User', userSchema);
 
-module.exports = {User};
+module.exports = User;

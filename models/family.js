@@ -1,15 +1,13 @@
-const mongoose = require('mongoose'); 
-// might need to change to 'db/mongoose'
-const validator = require('validator'); 
+const mongoose = require('mongoose');
 
 var familySchema = new mongoose.Schema({
 	name: {
-		type: String, 
+		type: String,
 		required: true
-	}, 
+	},
 	motto: {
 		type: String
-	}, 
+	},
 	challengesWon: {
 		type: Number,
 		default: 0
@@ -18,4 +16,4 @@ var familySchema = new mongoose.Schema({
 
 var Family = mongoose.model('Family', familySchema);
 
-module.exports = {Family}; 
+module.exports = Family;
