@@ -1,5 +1,5 @@
 const mongoose = require('mongoose').set('debug', true);
-const {Unit} = require('./../models/unit');
+const Unit = require('./../models/unit');
 var Schema = mongoose.Schema;
 var {ObjectId} = mongoose.Types
 

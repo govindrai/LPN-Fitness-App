@@ -1,6 +1,6 @@
 include ../layout.pug
 
-h1 Add an activity 
+h1 Add an activity
 
 form(action='/activities' method='POST')
 	| Name
@@ -11,7 +11,7 @@ form(action='/activities' method='POST')
 	input(name='pointsPerUnit' type='text' required)
 	| Unit
 	select(name="unit_id")
-		each unit in units 
+		each unit in units
 			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
 
 	input(type='submit' value='Add Activity')
@@ -21,5 +21,5 @@ h2 All Activities
 each activity in activities
 	p= "Name: " + activity.name
 	p= "Description: " + activity.description
-	p= "Points Per Unit of Excersise: " + activity.pointsPerUnit
+	p= "Points Per Unit of Exercise: " + activity.pointsPerUnit
 	p= "Unit: " + activity.unit_id.name
