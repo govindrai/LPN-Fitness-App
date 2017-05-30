@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');  
-var Schema = mongoose.Schema;  
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema;
 
 var challengeSchema = new Schema({
 	name: {
@@ -14,10 +14,19 @@ var challengeSchema = new Schema({
 		end: {
 			type: Date,
 			required: true
+		},
+		registration_start: {
+			type: Date,
+			required: true,
+			default: new Date()
+		},
+		registration_end: {
+			type: Date,
+			required: true
 		}
 	},
 	winner: {
-		type: Schema.Types.ObjectId, 
+		type: Schema.Types.ObjectId,
 		ref: 'Family',
 		default: null
 	}
@@ -25,5 +34,5 @@ var challengeSchema = new Schema({
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
-module.exports = {Challenge};
+module.exports = Challenge;
 

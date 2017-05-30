@@ -8,7 +8,7 @@ function verifyAuthorization(req, res, next) {
       res.send("YOU DONT Belong here brah");
     }
     res.locals.loggedIn = true;
-    req.params.user = user;
+    res.locals.user = user;
     next();
   })
   .catch((e) => console.log(e));

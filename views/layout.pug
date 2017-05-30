@@ -14,7 +14,13 @@ html
             a(href="/login") Login
         else
           li
+            a(href="/families") Families
+          li
+            a(href="/challenges")= 'Challenges (' + challengesCount + ')'
+          li
             a(href="/points/new") Add Points
+          li
+            a(href="/settings") Settings
           li
             a(href="/logout") Logout
 

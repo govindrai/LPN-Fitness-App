@@ -1,19 +1,22 @@
+// Modules
 var express = require('express'),
   _ = require('lodash');
 
+// Models
 var User = require('./../models/user'),
   Family = require('./../models/family');
 
 var router = express.Router();
 
-// Landing & Registration Page
+// Landing Page & Registration Form
 router.get('/', (req, res) => {
+  // need families for signup form
   Family.find().then((families)=> {
     res.render('index', {families});
   })
 });
 
-// Complete Registration
+// Register
 router.post('/register', (req, res) => {
   var body = _.pick(req.body, [
     'name.first',
@@ -46,10 +49,12 @@ router.post('/register', (req, res) => {
   .catch(e => console.log(e));
 })
 
+// Login Form
 router.get('/login', (req, res) => {
     res.render('sessions/login');
 });
 
+// Login
 router.post('/login', (req, res) => {
   var body = _.pick(req.body, [
     'email',
@@ -84,7 +89,6 @@ router.post('/login', (req, res) => {
   })
   .catch(e => console.log(e));
 })
-
 
 // Logout
 router.get('/logout', (req, res) => {
