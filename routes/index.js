@@ -6,14 +6,24 @@ var express = require('express'),
 var User = require('./../models/user'),
   Family = require('./../models/family');
 
-var router = express.Router();
+var router = express.Router(),
+verifyAuthorization = require('./../middleware/verifyAuthorization');
 
-// Landing Page & Registration Form
+router.use(verifyAuthorization);
+
 router.get('/', (req, res) => {
-  // need families for signup form
-  Family.find().then((families)=> {
-    res.render('index', {families});
-  })
+  if (!res.locals.loggedIn) {
+    Family.find()
+    .then(families => {
+      res.render('index', {families});
+    })
+  } else {
+    User.populate(res.locals.user, 'family')
+    .then(user => {
+      res.redirect(`families/${user.family.name}`);
+    })
+    .catch(e => console.log(e))
+  }
 });
 
 // Register
