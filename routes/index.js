@@ -47,7 +47,7 @@ router.post('/register', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-    res.render('sessions/new');
+    res.render('sessions/login');
 });
 
 router.post('/login', (req, res) => {
