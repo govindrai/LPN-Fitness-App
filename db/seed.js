@@ -16,6 +16,41 @@ var iolite,
   alexandrite,
   users;
 
+var units = [
+  new Unit({
+    name: 'Mile',
+    abbreviation: 'mi' 
+  }),
+  new Units({
+    name: 'Game',
+    abbreviation: 'game' 
+  }),
+  new Units({
+    name: 'Feet',
+    abbreviation: 'ft' 
+  }),
+  new Units({
+    name: 'Meter',
+    abbreviation: 'mm' 
+  }),
+  new Units({
+    name: 'Minute',
+    abbreviation: 'min' 
+  }),
+  new Units({
+    name: 'Hour',
+    abbreviation: 'hr' 
+  }),
+  new Units({
+    name: 'Hole',
+    abbreviation: 'hole' 
+  }),
+  new Units({
+    name: 'Day',
+    abbreviation: 'day' 
+  })
+];
+
 var families = [
   new Family({
     name: 'Iolite',
