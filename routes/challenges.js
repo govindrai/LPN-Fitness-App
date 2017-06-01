@@ -16,17 +16,16 @@ var router = express.Router();
 router.get('/', (req, res) => {
 	var currentChallenge, futureChallenges, getPastChallenges;
 	Challenge.getCurrentChallenge()
-	.then((currentChallenge) => {
-		console.log("CURRENT CHALLENGE", currentChallenge)
-		currentChallenge = currentChallenge;
+	.then((challenge) => {
+		currentChallenge = challenge;
 		return Challenge.getFutureChallenges();
 	})
-	.then((futureChallenges) => {
-		futureChallenges = futureChallenges
+	.then((challenges) => {
+		futureChallenges = challenges;
 		return Challenge.getPastChallenges();
 	})
-	.then((pastChallenges) => {
-		pastChallenges = pastChallenges
+	.then((challenges) => {
+		pastChallenges = challenges;
 		res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
 	})
 	.catch(e => console.log(e));

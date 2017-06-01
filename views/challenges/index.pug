@@ -10,8 +10,8 @@ unless currentChallenge.length === 0
   if currentChallenge.winner != null
     p= "Winner: " + currentChallenge.winner.name
 
-h2 Upcoming Challenges
-each challenge in upcomingChallenges
+h2 Future Challenges
+each challenge in futureChallenges
   p= "Name: " + challenge.name
   p= "Start Date: " + challenge.date.start
   p= "End Date: " + challenge.date.end
