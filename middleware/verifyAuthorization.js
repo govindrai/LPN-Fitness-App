@@ -16,7 +16,6 @@ function verifyAuthorization(req, res, next) {
       return Challenge.getAllExceptPastChallenges();
     })
     .then((challengeCount) => {
-      console.log(challengeCount);
       res.locals.challengeCount = challengeCount;
       next();
     })
