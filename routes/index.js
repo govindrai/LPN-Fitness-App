@@ -58,14 +58,17 @@ router.get('/', (req, res) => {
     // Need families for registration form
     Family.find()
     .then(families => {
-      res.render('index', {families});
+      res.render('index', {families, user: new User({})});
     })
+    .catch(e => console.log(e));
   } else {
     User.populate(res.locals.user, 'family')
     .then(user => {
       res.redirect(`families/${user.family.name}`);
     })
-    .catch(e => console.log(e))
+    .catch(e => {
+      console.log(e);
+    })
   }
 });
 
@@ -80,10 +83,11 @@ router.post('/register', (req, res) => {
     'password'
   ]);
 
-  var user = new User(body);
-  var token;
+  var user = new User(body),
+    token;
 
-  user.save().then(() => {
+  user.save()
+  .then(() => {
     return user.generateAuthorizationToken();
   })
   .then((authToken) => {
@@ -99,7 +103,18 @@ router.post('/register', (req, res) => {
     req.session["x-auth"] = token;
     res.redirect('/families/' + user.family.name);
   })
-  .catch(e => console.log(e));
+  .catch(e => {
+    if (body.family === 'Please Select') {
+      e.errors.family.message = "Please select a family"
+    }
+    console.log(e)
+    Family.find()
+    .then(families => {
+      res.render('index', {families, errors: e.errors, user});
+    })
+    e.errors
+    console.log(e.errors);
+  });
 })
 
 

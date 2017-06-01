@@ -1,16 +1,21 @@
-h1 Sign Up
+h1 Register
 
 form(action='/register' method='POST')
   | First Name
-  input(name='name.first' type='text' required)
+  input(name='name.first' type='text' value=user.name.first required)
   | Last Name
-  input(name='name.last' type='text' required)
+  input(name='name.last' type='text' value=user.name.last required)
   | Nickname
-  input(name='name.nickname' type='text')
+  input(name='name.nickname' type='text' value=user.name.nickname)
+  if errors && errors.email
+    p= errors.email.message
   | Email
-  input(name='email' type='email' required)
+  input(name='email' type='email' value=user.email required)
+  if errors && errors.family
+    p= errors.family.message
   | Family
   select(name="family")
+    option Please Select
     each family in families
       option(value=family._id)= family.name
   | Password

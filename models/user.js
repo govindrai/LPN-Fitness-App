@@ -26,10 +26,13 @@ var userSchema = new Schema({
 	},
 	email: {
 		type: String,
-		required: true,
+		required: [true, "Email is Required"],
 		trim: true,
 		unique: true,
-		validate: validator.isEmail
+		validate: {
+			validator: validator.isEmail,
+			message: 'Please provide a valid email!'
+		}
 	},
 	password: {
 		type: String,
