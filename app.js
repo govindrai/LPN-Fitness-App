@@ -25,8 +25,7 @@ var Family = require('./models/family'),
   User = require('./models/user');
 
 // Middleware
-var verifyAuthorization = require('./middleware/verifyAuthorization'),
-  getChallengesCount = require('./middleware/getChallengesCount');
+var verifyAuthorization = require('./middleware/verifyAuthorization')
 
 // Create Express App
 var app = express();
@@ -59,7 +58,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/libs', express.static(__dirname + '/node_modules/typeahead.js/dist/'));
 app.use(verifyAuthorization);
-app.use(getChallengesCount);
 
 app.use('/', index);
 app.use('/users', users);

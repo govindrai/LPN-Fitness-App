@@ -44,6 +44,10 @@ challengeSchema.statics.getFutureChallenges = function() {
 	return Challenge.find().where('date.start').gt(new Date());
 }
 
+challengeSchema.statics.getAllExceptPastChallenges = function() {
+	return Challenge.find().where('date.end').lt(new Date()).count();
+}
+
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
 module.exports = Challenge;
