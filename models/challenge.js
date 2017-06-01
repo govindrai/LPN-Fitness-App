@@ -15,12 +15,12 @@ var challengeSchema = new Schema({
 			type: Date,
 			required: true
 		},
-		registration_start: {
+		registrationStart: {
 			type: Date,
 			required: true,
 			default: new Date()
 		},
-		registration_end: {
+		registrationEnd: {
 			type: Date,
 			required: true
 		}

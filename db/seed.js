@@ -129,6 +129,18 @@ var families = [
   })
 ];
 
+var challenges = [
+  new Challenge({
+    name:,
+    date: {
+      start:,
+      end:,
+      registrationStart:,
+      registrationEnd
+    }
+  })
+];
+
 function removeModelObjs(model) {
   var promise = new Promise((resolve, reject) => {
     model.remove({}, err => {

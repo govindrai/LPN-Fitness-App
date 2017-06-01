@@ -32,7 +32,7 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => {
 	console.log("I made it here")
 	var body = _.pick(req.body, ["name", "date.start", "date.end"]);
-	body["date.registration_end"] = body["date.start"];
+	body["date.registrationEnd"] = body["date.start"];
 	var challenge = new Challenge(body);
 	console.log(body);
 	console.log(challenge);
