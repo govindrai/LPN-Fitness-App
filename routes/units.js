@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
-const mongoose = require('./../db/mongoose'); 
-const {Unit} = require('./../models/unit'); 
+const Unit = require('./../models/unit');
 
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
-	Unit.find({}).then((units) => {
+	Unit.find({})
+  .then(units => {
 		res.render('units/new', {units});
 	})
+  .catch(e => console.log(e));
 });
 
 router.post('/', (req, res, next) => {

@@ -1,16 +1,46 @@
 extends ../layout
 
 block content
-  h1 Add Points
+  input(id="typeahead" type="text")
+  //- h1 Add Points
 
-  form(action="/points", method="POST")
-    | Units Exercised
-    input(name='unitsExercised' type='Number' required)
-    | Scale
-    input(name='scale' type='Number' required)
-    | Activity
-    select(name="activityId")
-      each activity in activities
-        option(value=activity._id)= activity.name
+  //- form(action="/points", method="POST")
+  //-   | Units Exercised
+  //-   input(name='unitsExercised' type='Number' required)
+  //-   | Scale
+  //-   input(name='scale' type='Number' required)
+  //-   | Activity
+  //-   select(name="activityId")
+  //-     each activity in activities
+  //-       option(value=activity._id)= activity.name
 
-    input(type='submit' value='Add Points')
+  //-   input(type='submit' value='Add Points')
+
+
+  script.
+    function getActivities() {
+      $.ajax({
+        url: "/activities"
+      })
+      .done(function(res) {
+        var activitiesFn = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: res
+        });
+
+        $('#typeahead').typeahead({
+          minLength: 1,
+          highlight: true
+        },
+        {
+          name: 'my-dataset',
+          source: activitiesFn
+        });
+      });
+    }
+
+      $(document).ready(function() {
+        getActivities();
+      })
+

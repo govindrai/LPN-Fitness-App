@@ -56,6 +56,8 @@ app.use(sassMiddleware({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/libs', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/libs', express.static(__dirname + '/node_modules/typeahead.js/dist/'));
 app.use(verifyAuthorization);
 app.use(getChallengesCount);
 

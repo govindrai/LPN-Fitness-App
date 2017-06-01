@@ -14,7 +14,8 @@ var activitySchema = new Schema({
 	},
 	unit_id: {
 		type: Schema.Types.ObjectId,
-		ref: 'Unit'
+		ref: 'Unit',
+		required: true
 	}
 });
 

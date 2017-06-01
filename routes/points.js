@@ -9,13 +9,18 @@ var router = express.Router(),
 router.get('/new', verifyAuthorization, (req, res) => {
   Activity.find({}).then((activities) => {
     Point.find({}).populate('activityId').then((points) => {
-      res.render('points/new', {points, activities});
+      var activitiesArray = [];
+      activities.forEach((activity) => {
+        activitiesArray.push(activity.name);
+      });
+      res.render('points/new', {points, activitiesArray});
     });
-  });
+  })
+  .catch(e => console.log(e));
 });
 
 router.post('/', (req, res) => {
   res.send('hello')
-}); 
+});
 
 module.exports = router;
