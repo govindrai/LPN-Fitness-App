@@ -485,134 +485,135 @@ removeModelObjs(Family)
   return assignUnits();
 })
 .then(() => { 
-var activities = [
-  new Activity({
-    name: 'jump roping',
-    numberOfPoints: 1,
-    scale: 150,
-    unitId: jump 
-  }),
-  new Activity({
-    name: 'biking(<5 min pace)',
-    numberOfPoints: 2,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'biking(>5 min pace)',
-    numberOfPoints: 1,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'biking(elevation)',
-    numberOfPoints: 2,
-    scale: 100,
-    unitId: feet
-  }),
-  new Activity({
-    name: 'elliptical',
-    numberOfPoints: 2,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'bowling',
-    numberOfPoints: 2,
-    scale: 1,
-    unitId: game
-  }),
-  new Activity({
-    name: 'hiking',
-    description: 'outdoors on trail',
-    numberOfPoints: 4,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'run/walk(10-15 min pace)',
-    numberOfPoints: 3,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'hiking(elevation)',
-    description: 'after initial 1000ft.',
-    numberOfPoints: 1.5,
-    scale: 100,
-    unitId: feet
-  }),
-  new Activity({
-    name: 'rowing',
-    numberOfPoints: 4,
-    scale: 1500,
-    unitId: meter
-  }),
-  new Activity({
-    name: 'weightlifting',
-    description: 'body weight exercises like pushups, pullups etc. included',
-    numberOfPoints: 4,
-    scale: 15,
-    unitId: minute
-  }),
-  new Activity({
-    name: 'swimming',
-    numberOfPoints: 4,
-    scale: 15,
-    unitId: minute
-  }),
-  new Activity({
-    name: 'abs',
-    description: 'not in class',
-    numberOfPoints: 4,
-    scale: 15,
-    unitId: minute
-  }),
-  new Activity({
-    name: 'running(<10 min pace)',
-    numberOfPoints: 4,
-    scale: 1,
-    unitId: mile
-  }),
-  new Activity({
-    name: 'sports game',
-    description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
-    numberOfPoints: 6,
-    scale: 30,
-    unitId: minute
-  }),
-  new Activity({
-    name: 'fitness class',
-    description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
-    numberOfPoints: 8,
-    scale: 1,
-    unitId: hour
-  }),
-  new Activity({
-    name: 'golf',
-    numberOfPoints: 12,
-    scale: 9,
-    unitId: hole
-  }),
-  new Activity({
-    name: 'intense workout',
-    description: 'p90x, parkour, cycling class, crossfit',
-    numberOfPoints: 12,
-    scale: 30,
-    unitId: minute
-  }),
-  new Activity({
-    name: 'surfing',
-    numberOfPoints: 12,
-    scale: 1,
-    unitId: hour
-  }),
-  new Activity({
-    name: 'snowboarding',
-    numberOfPoints: 15,
-    scale: 0.5,
-    unitId: day
-  })];
+  var activities = [
+    new Activity({
+      name: 'jump roping',
+      numberOfPoints: 1,
+      scale: 150,
+      unit: jump 
+    }),
+    new Activity({
+      name: 'biking(<5 min pace)',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'biking(>5 min pace)',
+      numberOfPoints: 1,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'biking(elevation)',
+      numberOfPoints: 2,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: 'elliptical',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'bowling',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: game
+    }),
+    new Activity({
+      name: 'hiking',
+      description: 'outdoors on trail',
+      numberOfPoints: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'run/walk(10-15 min pace)',
+      numberOfPoints: 3,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'hiking(elevation)',
+      description: 'after initial 1000ft.',
+      numberOfPoints: 1.5,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: 'rowing',
+      numberOfPoints: 4,
+      scale: 1500,
+      unit: meter
+    }),
+    new Activity({
+      name: 'weightlifting',
+      description: 'body weight exercises like pushups, pullups etc. included',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'swimming',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'abs',
+      description: 'not in class',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'running(<10 min pace)',
+      numberOfPoints: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'sports game',
+      description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
+      numberOfPoints: 6,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: 'fitness class',
+      description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
+      numberOfPoints: 8,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: 'golf',
+      numberOfPoints: 12,
+      scale: 9,
+      unit: hole
+    }),
+    new Activity({
+      name: 'intense workout',
+      description: 'p90x, parkour, cycling class, crossfit',
+      numberOfPoints: 12,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: 'surfing',
+      numberOfPoints: 12,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: 'snowboarding',
+      numberOfPoints: 15,
+      scale: 0.5,
+      unit: day
+    })
+  ];
   return createObjs(activities);
 })
 .then(() => {

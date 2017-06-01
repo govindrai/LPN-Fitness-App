@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 /* GET users listing. */
 router.get('/new', verifyAuthorization, (req, res) => {
 	Unit.find({}).then((units) => {
-		Activity.find({}).populate('unitId').then((activities) => {
+		Activity.find({}).populate('unit').then((activities) => {
 			console.log(activities);
 			res.render('activities/new', {units, activities});
 		})
