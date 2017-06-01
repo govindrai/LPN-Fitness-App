@@ -14,7 +14,15 @@ var iolite,
   sapphire,
   topaz,
   alexandrite,
-  users;
+  users,
+  mile,
+  game, 
+  feet,
+  meter,
+  minute,
+  hour,
+  hole,
+  day;
 
 var units = [
   new Unit({
@@ -159,6 +167,46 @@ function assignFamilies() {
   return promise;
 }
 
+function assignUnits() {
+  var promise = new Promise((resolve, reject) => {
+    Unit.find()
+    .then(units => {
+      units.forEach(unit => {
+        switch (unit.name) {
+          case 'Mile':
+            mile = unit;
+            break;
+          case 'Game':
+            game = unit;
+            break;
+          case 'Feet':
+            feet = unit;
+            break;
+          case 'Meter':
+            meter = unit;
+            break;
+          case 'Minute':
+            minute = unit;
+            break;
+          case 'Hour':
+            hour = unit;
+            break;
+          case 'Hole':
+            hole = unit;
+            break;
+          case 'Day':
+            day = unit;
+            break;
+          default:
+            console.log("i don't know that unit");
+        }
+      })
+      resolve();
+    })
+    .catch(e => reject(e));
+  })
+  return promise;
+}
 removeModelObjs(Family)
 .then(() => {
   return removeModelObjs(User);
