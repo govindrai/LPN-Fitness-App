@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const jwt = require('jsonwebtoken');
+var mongoose = require('mongoose'),
+	validator = require('validator'),
+	jwt = require('jsonwebtoken'),
+	bcrypt = require('bcryptjs');
+
 var Schema = mongoose.Schema;
-const bcrypt = require('bcryptjs');
 
 var userSchema = new Schema({
 	name: {
@@ -25,10 +26,13 @@ var userSchema = new Schema({
 	},
 	email: {
 		type: String,
-		required: true,
+		required: [true, "Email is Required"],
 		trim: true,
 		unique: true,
-		validate: validator.isEmail
+		validate: {
+			validator: validator.isEmail,
+			message: 'Please provide a valid email!'
+		}
 	},
 	password: {
 		type: String,
@@ -137,6 +141,10 @@ userSchema.statics.getAdmins = function() {
 userSchema.statics.getNonAdmins = function() {
 	return User.find({admin: false}).populate('family');
 };
+
+userSchema.statics.getFamilyMembers = function(family_id) {
+	return User.find({family_id})
+}
 
 userSchema.virtual('fullName').get(function() {
   return this.name.first + ' ' + this.name.last;

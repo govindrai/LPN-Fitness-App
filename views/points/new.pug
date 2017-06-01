@@ -1,18 +1,52 @@
 extends ../layout
 
+append scripts
+  script(src="/libs/typeahead.bundle.min.js")
+
 block content
   h1 Add Points
 
-  form(action="/points", method="POST")
-    | How many
-    input(name='points' type='Number' required)
-    | Unit
-    select(name="unitId")
-      each unit in units 
-        option(value=unit._id)= unit.name 
-    | Activity
-    select(name="activityId")
-      each activity in activities
-        option(value=activity._id)= activity.name
+  label Activity Name
+  input(id="typeahead" type="text")
 
-    input(type='submit' value='Add Points')
+
+  //- form(action="/points", method="POST")
+  //-   | How many
+  //-   input(name='points' type='Number' required)
+  //-   | Unit
+  //-   select(name="unitId")
+  //-     each unit in units
+  //-       option(value=unit._id)= unit.name
+  //-   | Activity
+  //-   select(name="activityId")
+  //-     each activity in activities
+  //-       option(value=activity._id)= activity.name
+
+  //-   input(type='submit' value='Add Points')
+
+  script.
+    function getActivities() {
+      $.ajax({
+        url: "/activities"
+      })
+      .done(function(res) {
+        var activitiesFn = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: res
+        });
+
+        $('#typeahead').typeahead({
+          minLength: 1,
+          highlight: true
+        },
+        {
+          name: 'my-dataset',
+          source: activitiesFn
+        });
+      });
+    }
+
+    $(document).ready(function() {
+      getActivities();
+    })

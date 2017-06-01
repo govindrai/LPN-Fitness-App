@@ -1,11 +1,13 @@
+// Modules
 var express = require('express');
+
+// Models
+var User = require('./../models/user'),
+	Family = require('./../models/family');
+
 var router = express.Router();
-const mongoose = require('./../db/mongoose');
-const User = require('./../models/user');
-const Family = require('./../models/family');
 
 /* GET users listing. */
-
 router.get('/', function(req, res, next) {
 	Family.find({}).then((families) => {
 		User.find({}).populate('family').then((users) => {

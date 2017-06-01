@@ -1,9 +1,27 @@
-if (added)
-  h2 Family Added!
+extends ../layout
 
-a(href="new") Add New Family
+block content
+  if (added)
+    h2 Family Added!
 
-each family in families
-  p= family.name
-  p= family.challengesWon
+  a(href="new") Add New Family
+
+  table
+      thead
+        tr
+          td Family Name
+          td Challenges Won
+          td Playoffs Reached
+          td Top Contributor
+          td Link to Page
+      tbody
+      each family in families
+        tr
+          td= family.name
+          td= family.challengesWon
+          td= family.playoffsReached
+          td= family.topContributor
+          td
+            a(href=family.name)= `${family.name} Page`
+
 

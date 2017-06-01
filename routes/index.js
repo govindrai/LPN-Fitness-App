@@ -6,65 +6,14 @@ var express = require('express'),
 var User = require('./../models/user'),
   Family = require('./../models/family');
 
-var router = express.Router(),
-verifyAuthorization = require('./../middleware/verifyAuthorization');
+var router = express.Router()
 
-router.use(verifyAuthorization);
-
-router.get('/', (req, res) => {
-  if (!res.locals.loggedIn) {
-    Family.find()
-    .then(families => {
-      res.render('index', {families});
-    })
-  } else {
-    User.populate(res.locals.user, 'family')
-    .then(user => {
-      res.redirect(`families/${user.family.name}`);
-    })
-    .catch(e => console.log(e))
-  }
-});
-
-// Register
-router.post('/register', (req, res) => {
-  var body = _.pick(req.body, [
-    'name.first',
-    'name.last',
-    'name.nickname',
-    'email',
-    'family',
-    'password'
-  ]);
-
-  var user = new User(body);
-  var token;
-
-  user.save().then(() => {
-    return user.generateAuthorizationToken();
-  })
-  .then((authToken) => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
-  })
-  .then(() => {
-    return User.populate(user, 'family');
-  })
-  .then((newUser) => {
-    user = newUser;
-    req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
-  })
-  .catch(e => console.log(e));
-})
-
-// Login Form
+// GET login form
 router.get('/login', (req, res) => {
     res.render('sessions/login');
 });
 
-// Login
+// POST login form data
 router.post('/login', (req, res) => {
   var body = _.pick(req.body, [
     'email',
@@ -97,8 +46,81 @@ router.post('/login', (req, res) => {
     req.session["x-auth"] = token;
     res.redirect('/families/' + user.family.name);
   })
-  .catch(e => console.log(e));
+  .catch(e => {
+    console.log(e)
+    res.render('sessions/login', {error: e})
+  });
 })
+
+// GET to Root (registration form or homepage depending on authorization)
+router.get('/', (req, res) => {
+  if (!res.locals.loggedIn) {
+    // Need families for registration form
+    Family.find()
+    .then(families => {
+      res.render('index', {families, user: new User({})});
+    })
+    .catch(e => console.log(e));
+  } else {
+    User.populate(res.locals.user, 'family')
+    .then(user => {
+      res.redirect(`families/${user.family.name}`);
+    })
+    .catch(e => {
+      console.log(e);
+    })
+  }
+});
+
+// Register
+router.post('/register', (req, res) => {
+  var body = _.pick(req.body, [
+    'name.first',
+    'name.last',
+    'name.nickname',
+    'email',
+    'family',
+    'password'
+  ]);
+
+  var user = new User(body),
+    token;
+
+  user.save()
+  .then(() => {
+    return user.generateAuthorizationToken();
+  })
+  .then((authToken) => {
+    token = authToken;
+    user.tokens.push({access: "auth", token});
+    return user.save();
+  })
+  .then(() => {
+    return User.populate(user, 'family');
+  })
+  .then((newUser) => {
+    user = newUser;
+    req.session["x-auth"] = token;
+    res.redirect('/families/' + user.family.name);
+  })
+  .catch(e => {
+    if (body.family === 'Please Select') {
+      e.errors.family.message = "Please select a family"
+    }
+    console.log(e)
+    Family.find()
+    .then(families => {
+      res.render('index', {families, errors: e.errors, user});
+    })
+    e.errors
+    console.log(e.errors);
+  });
+})
+
+
+
+
+
 
 // Logout
 router.get('/logout', (req, res) => {

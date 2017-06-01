@@ -13,7 +13,6 @@ form(action='/activities' method='POST')
 	select(name="unitId")
 		each unit in units
 			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
-
 	input(type='submit' value='Add Activity')
 
 h2 All Activities

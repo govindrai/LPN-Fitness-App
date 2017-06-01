@@ -2,7 +2,7 @@ var express = require('express');
 
 var Activity = require('./../models/activity'),
   Point = require('./../models/point'),
-  Unit = require('./../models/unit'); 
+  Unit = require('./../models/unit');
 
 var router = express.Router(),
   verifyAuthorization = require('./../middleware/verifyAuthorization');
@@ -10,11 +10,11 @@ var router = express.Router(),
 router.get('/new', verifyAuthorization, (req, res) => {
   Activity.find({}).then((activities) => {
     Point.find({}).populate('activityId').then((points) => {
-    	Unit.find({}).then((units) => {
-      res.render('points/new', {units, points, activities});
+      var activitiesArray = [];
+      res.render('points/new', {points, activities});
     });
-    });
-  });
+  })
+  .catch(e => console.log(e));
 });
 
 router.post('/', (req, res) => {
@@ -22,6 +22,6 @@ router.post('/', (req, res) => {
   point.save().then((point) => {
 		res.redirect('/');
 	}).catch((e) => console.log(e))
-}); 
+});
 
 module.exports = router;

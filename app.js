@@ -1,4 +1,4 @@
-// Export Modules
+// Modules
 var express = require('express'),
   methodOverride = require('method-override'),
   session = require('express-session'),
@@ -7,9 +7,10 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  sassMiddleware = require('node-sass-middleware');
+  sassMiddleware = require('node-sass-middleware'),
+  mongoose = require('./db/mongoose');
 
-// Export Routers
+// Routers
 var index = require('./routes/index'),
   users = require('./routes/users'),
   families = require('./routes/families'),
@@ -18,6 +19,14 @@ var index = require('./routes/index'),
   challenges = require('./routes/challenges'),
   settings = require('./routes/settings'),
   points = require('./routes/points');
+
+// Models
+var Family = require('./models/family'),
+  User = require('./models/user');
+
+// Middleware
+var verifyAuthorization = require('./middleware/verifyAuthorization'),
+  getChallengesCount = require('./middleware/getChallengesCount');
 
 // Create Express App
 var app = express();
@@ -47,6 +56,10 @@ app.use(sassMiddleware({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/libs', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/libs', express.static(__dirname + '/node_modules/typeahead.js/dist/'));
+app.use(verifyAuthorization);
+app.use(getChallengesCount);
 
 app.use('/', index);
 app.use('/users', users);
