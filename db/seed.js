@@ -537,7 +537,7 @@ var activities = [
   }),
   new Activity({
     name: 'hiking(elevation)',
-    description: 'after initial 1000ft.'
+    description: 'after initial 1000ft.',
     numberOfPoints: 1.5,
     scale: 100,
     unitId: feet
@@ -576,7 +576,7 @@ var activities = [
   }),
   new Activity({
     name: 'sports game',
-    description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)'
+    description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
     numberOfPoints: 6,
     scale: 30,
     unitId: minute
