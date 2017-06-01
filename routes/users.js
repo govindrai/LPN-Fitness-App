@@ -16,14 +16,6 @@ router.get('/', function(req, res, next) {
 	});
 })
 
-router.get('/new', function(req, res, next) {
-Family.find({}).then((families) => {
-		User.find({}).populate('family').then((users) => {
-			res.render('users/new', {families});
-		})
-	});
-});
-
 router.post('/', (req, res, next) => {
 	var user = new User(req.body)
 	user.save().then((user) => {
