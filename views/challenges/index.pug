@@ -1,6 +1,7 @@
 include ../layout.pug
 
-a(href="new") Create New Challenge
+if user.admin
+  a(href="new") Create New Challenge
 
 h2 Current Challenge
 unless currentChallenge.length === 0
