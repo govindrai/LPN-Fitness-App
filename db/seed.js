@@ -29,31 +29,31 @@ var units = [
     name: 'Mile',
     abbreviation: 'mi' 
   }),
-  new Units({
+  new Unit({
     name: 'Game',
     abbreviation: 'game' 
   }),
-  new Units({
+  new Unit({
     name: 'Feet',
     abbreviation: 'ft' 
   }),
-  new Units({
+  new Unit({
     name: 'Meter',
     abbreviation: 'mm' 
   }),
-  new Units({
+  new Unit({
     name: 'Minute',
     abbreviation: 'min' 
   }),
-  new Units({
+  new Unit({
     name: 'Hour',
     abbreviation: 'hr' 
   }),
-  new Units({
+  new Unit({
     name: 'Hole',
     abbreviation: 'hole' 
   }),
-  new Units({
+  new Unit({
     name: 'Day',
     abbreviation: 'day' 
   })
