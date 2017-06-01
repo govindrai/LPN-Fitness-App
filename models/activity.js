@@ -16,10 +16,13 @@ var activitySchema = new Schema({
 		type: Number, 
 		required: true
 	}, 
-	unitId: {
+	unit: {
 		type: Schema.Types.ObjectId,
 		ref: 'Unit',
 		required: true
+	},
+	description: {
+		type: String
 	}
 });
 
