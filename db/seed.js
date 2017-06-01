@@ -212,6 +212,9 @@ removeModelObjs(Family)
   return removeModelObjs(User);
 })
 .then(() => {
+ return removeModelObjs(Unit);
+})
+.then(() => {
   return createObjs(families);
 })
 .then(() => {
@@ -365,6 +368,12 @@ removeModelObjs(Family)
       admin: true
     })];
   return createObjs(users);
+})
+.then(() => {
+  return createObjs(units);
+})
+.then(() => {
+  return assignUnits();
 })
 .catch(e => console.log(e))
 
