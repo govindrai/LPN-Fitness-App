@@ -2,11 +2,11 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 var pointSchema = new Schema({
-	participationId: {
+	participation: {
 		type: Schema.Types.ObjectId,
 		ref: 'Participation'
 	},
-	activityId: {
+	activity: {
 		type: Schema.Types.ObjectId,
 		ref: 'Activity',
 		required: true
@@ -18,7 +18,7 @@ var pointSchema = new Schema({
 });
 
 pointSchema.methods.getUnitName = function(){
-	return this.activityId.unitId.name ;
+	return this.activity.unit.name ;
 }; 
 
 var Point = mongoose.model('Point', pointSchema);

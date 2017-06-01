@@ -10,7 +10,7 @@ form(action='/activities' method='POST')
 	| Scale
 	input(name='scale' type='number' required)
 	| Unit
-	select(name="unitId")
+	select(name="unit")
 		each unit in units
 			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
 	input(type='submit' value='Add Activity')
@@ -21,4 +21,4 @@ each activity in activities
 	p= "Name: " + activity.name
 	p= "Number of Points: " + activity.numberOfPoints
 	p= "Scale: " + activity.scale
-	p= "Unit: " + activity.unitId.name
+	p= "Unit: " + activity.unit.name

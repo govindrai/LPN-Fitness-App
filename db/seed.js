@@ -14,7 +14,75 @@ var iolite,
   sapphire,
   topaz,
   alexandrite,
-  users;
+  users,
+  mile,
+  game, 
+  feet,
+  meter,
+  minute,
+  hour,
+  hole,
+  day,
+  jump,
+  jumpRoping,
+  bikingLess5,
+  bikingMore5,
+  bikingElevation,
+  elliptical,
+  bowling,
+  hiking,
+  runAndWalk,
+  hikingElevation,
+  rowing,
+  weightlifting,
+  swimming,
+  abs,
+  runningLess10,
+  sportsGame,
+  fitnessClass,
+  golf,
+  intenseWorkout,
+  surfing,
+  snowboarding;
+
+var units = [
+  new Unit({
+    name: 'Mile',
+    abbreviation: 'mi' 
+  }),
+  new Unit({
+    name: 'Game',
+    abbreviation: 'game' 
+  }),
+  new Unit({
+    name: 'Feet',
+    abbreviation: 'ft' 
+  }),
+  new Unit({
+    name: 'Meter',
+    abbreviation: 'mm' 
+  }),
+  new Unit({
+    name: 'Minute',
+    abbreviation: 'min' 
+  }),
+  new Unit({
+    name: 'Hour',
+    abbreviation: 'hr' 
+  }),
+  new Unit({
+    name: 'Hole',
+    abbreviation: 'hole' 
+  }),
+  new Unit({
+    name: 'Day',
+    abbreviation: 'day' 
+  }),
+  new Unit({
+    name: 'Jump',
+    abbreviation: 'jump' 
+  })
+];
 
 var families = [
   new Family({
@@ -124,9 +192,136 @@ function assignFamilies() {
   return promise;
 }
 
+function assignUnits() {
+  var promise = new Promise((resolve, reject) => {
+    Unit.find()
+    .then(units => {
+      units.forEach(unit => {
+        switch (unit.name) {
+          case 'Mile':
+            mile = unit;
+            break;
+          case 'Game':
+            game = unit;
+            break;
+          case 'Feet':
+            feet = unit;
+            break;
+          case 'Meter':
+            meter = unit;
+            break;
+          case 'Minute':
+            minute = unit;
+            break;
+          case 'Hour':
+            hour = unit;
+            break;
+          case 'Hole':
+            hole = unit;
+            break;
+          case 'Day':
+            day = unit;
+            break;
+          case 'Jump':
+            jump = unit;
+            break;
+          default:
+            console.log("i don't know that unit");
+        }
+      })
+      resolve();
+    })
+    .catch(e => reject(e));
+  })
+  return promise;
+}
+
+function assignActivities() {
+  var promise = new Promise((resolve, reject) => {
+    Activity.find()
+    .then(activities => {
+      activities.forEach(activity => {
+        switch (activity.name) {
+          case 'jump roping':
+            jumpRoping = activity;
+            break;
+          case 'biking(<5 min pace)':
+            bikingLess5 = activity;
+            break;
+          case 'biking(>5 min pace)':
+            bikingMore5 = activity;
+            break;
+          case 'biking(elevation)':
+            bikingElevation = activity;
+            break;
+          case 'elliptical':
+            elliptical = activity;
+            break;
+          case 'bowling':
+            bowling = activity;
+            break;
+          case 'hiking':
+            hiking = activity;
+            break;
+          case 'run/walk(10-15 min pace)':
+            runAndWalk = activity;
+            break;
+          case 'hiking(elevation)':
+            hikingElevation = activity;
+            break;
+          case 'rowing':
+            rowing = activity;
+            break;
+          case 'weightlifting':
+            weightlifting = activity;
+            break;
+          case 'swimming':
+            swimming = activity;
+            break;
+          case 'abs':
+            abs = activity;
+            break;
+          case 'running(<10 min pace)':
+            runningLess10 = activity;
+            break;
+          case 'sports game':
+            sportsGame = activity;
+            break;
+          case 'fitness class':
+            fitnessClass = activity;
+            break;
+          case 'golf':
+            golf = activity;
+            break;
+          case 'intense workout':
+            intenseWorkout = activity;
+            break;
+          case 'surfing':
+            surfing = activity;
+            break;
+          case 'snowboarding':
+            snowboarding = activity;
+            break;
+          default:
+            console.log("i don't know that unit");
+        }
+      })
+      resolve();
+    })
+    .catch(e => reject(e));
+  })
+  return promise;
+}
+
 removeModelObjs(Family)
 .then(() => {
   return removeModelObjs(User);
+})
+.then(() => {
+ return removeModelObjs(Unit);
+})
+.then(() => {
+  return removeModelObjs(Activity);
 })
 .then(() => {
   return createObjs(families);
@@ -282,6 +477,147 @@ removeModelObjs(Family)
       admin: true
     })];
   return createObjs(users);
+})
+.then(() => {
+  return createObjs(units);
+})
+.then(() => {
+  return assignUnits();
+})
+.then(() => { 
+  var activities = [
+    new Activity({
+      name: 'jump roping',
+      numberOfPoints: 1,
+      scale: 150,
+      unit: jump 
+    }),
+    new Activity({
+      name: 'biking(<5 min pace)',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'biking(>5 min pace)',
+      numberOfPoints: 1,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'biking(elevation)',
+      numberOfPoints: 2,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: 'elliptical',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'bowling',
+      numberOfPoints: 2,
+      scale: 1,
+      unit: game
+    }),
+    new Activity({
+      name: 'hiking',
+      description: 'outdoors on trail',
+      numberOfPoints: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'run/walk(10-15 min pace)',
+      numberOfPoints: 3,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'hiking(elevation)',
+      description: 'after initial 1000ft.',
+      numberOfPoints: 1.5,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: 'rowing',
+      numberOfPoints: 4,
+      scale: 1500,
+      unit: meter
+    }),
+    new Activity({
+      name: 'weightlifting',
+      description: 'body weight exercises like pushups, pullups etc. included',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'swimming',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'abs',
+      description: 'not in class',
+      numberOfPoints: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: 'running(<10 min pace)',
+      numberOfPoints: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: 'sports game',
+      description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
+      numberOfPoints: 6,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: 'fitness class',
+      description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
+      numberOfPoints: 8,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: 'golf',
+      numberOfPoints: 12,
+      scale: 9,
+      unit: hole
+    }),
+    new Activity({
+      name: 'intense workout',
+      description: 'p90x, parkour, cycling class, crossfit',
+      numberOfPoints: 12,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: 'surfing',
+      numberOfPoints: 12,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: 'snowboarding',
+      numberOfPoints: 15,
+      scale: 0.5,
+      unit: day
+    })
+  ];
+  return createObjs(activities);
+})
+.then(() => {
+  return assignActivities();
 })
 .catch(e => console.log(e))
 
