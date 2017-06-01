@@ -5,12 +5,12 @@ h1 Add an activity
 form(action='/activities' method='POST')
 	| Name
 	input(name='name' type='text' required)
-	| Description
-	input(name='description' type='text' required)
-	| Points Per Unit
-	input(name='pointsPerUnit' type='text' required)
+	| Number of Points
+	input(name='numberOfPoints' type='number' required)
+	| Scale
+	input(name='scale' type='number' required)
 	| Unit
-	select(name="unit_id")
+	select(name="unitId")
 		each unit in units
 			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
 
@@ -20,6 +20,6 @@ h2 All Activities
 
 each activity in activities
 	p= "Name: " + activity.name
-	p= "Description: " + activity.description
-	p= "Points Per Unit of Exercise: " + activity.pointsPerUnit
-	p= "Unit: " + activity.unit_id.name
+	p= "Number of Points: " + activity.numberOfPoints
+	p= "Scale: " + activity.scale
+	p= "Unit: " + activity.unitId.name

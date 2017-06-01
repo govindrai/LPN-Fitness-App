@@ -10,7 +10,7 @@ var router = express.Router(),
 /* GET users listing. */
 router.get('/new', verifyAuthorization, (req, res) => {
 	Unit.find({}).then((units) => {
-		Activity.find({}).populate('unit_id').then((activities) => {
+		Activity.find({}).populate('unitId').then((activities) => {
 			console.log(activities);
 			res.render('activities/new', {units, activities});
 		})

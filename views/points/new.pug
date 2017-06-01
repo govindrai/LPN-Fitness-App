@@ -4,10 +4,12 @@ block content
   h1 Add Points
 
   form(action="/points", method="POST")
-    | Units Exercised
-    input(name='unitsExercised' type='Number' required)
-    | Scale
-    input(name='scale' type='Number' required)
+    | How many
+    input(name='points' type='Number' required)
+    | Unit
+    select(name="unitId")
+      each unit in units 
+        option(value=unit._id)= unit.name 
     | Activity
     select(name="activityId")
       each activity in activities
