@@ -131,12 +131,56 @@ var families = [
 
 var challenges = [
   new Challenge({
-    name:,
+    name: 'Summer 2017',
     date: {
-      start:,
-      end:,
-      registrationStart:,
-      registrationEnd
+      start: new Date(),
+      end:
+       var nextMonth = new Date();
+       nextMonth.setDate(nextMonth.getDate() + 30)
+    }
+  }),
+  new Challenge({
+    name: 'Winter 2017',
+    date: {
+      start: 
+        var sixMonths = new Date();
+        sixMonths.setDate(sixMonths.getDate() + 180),
+      end:
+       var sevenMonth = new Date();
+       sevenMonth.setDate(sevenMonth.getDate() + 240)
+    }
+  }),
+  new Challenge({
+    name: 'Summer 2018',
+    date: {
+      start: 
+        var nextYear = new Date();
+        nextYear.setDate(nextYear.getDate() + 365),
+      end:
+       var nextYearMonth = new Date();
+       nextYearMonth.setDate(nextYearMonth.getDate() + 415)
+    }
+  }),
+  new Challenge({
+    name: 'Summer 2016',
+    date: {
+      start: 
+        var lastYear = new Date();
+        lastYear.setDate(lastYear.getDate() - 365),
+      end:
+       var lastYearMonth = new Date();
+       lastYearMonth.setDate(lastYearMonth.getDate() - 300)
+    }
+  }),
+  new Challenge({
+    name: 'Winter 2016',
+    date: {
+      start: 
+        var lastYear = new Date();
+        lastYear.setDate(lastYear.getDate() - 500),
+      end:
+       var lastYearMonth = new Date();
+       lastYearMonth.setDate(lastYearMonth.getDate() - 400)
     }
   })
 ];
