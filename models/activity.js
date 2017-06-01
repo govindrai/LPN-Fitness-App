@@ -20,6 +20,9 @@ var activitySchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Unit',
 		required: true
+	},
+	description: {
+		type: String
 	}
 });
 
