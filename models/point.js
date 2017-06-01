@@ -11,19 +11,15 @@ var pointSchema = new Schema({
 		ref: 'Activity',
 		required: true
 	},
-	unitsExercised: {
-		type: Number,
-		required: true
-	},
-	scale: {
-		type: Number,
-		required: true
-	},
 	points: {
 		type: Number,
 		required: true
 	}
 });
+
+pointSchema.methods.getUnitName = function(){
+	return this.activityId.unitId.name ;
+}; 
 
 var Point = mongoose.model('Point', pointSchema);
 

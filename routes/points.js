@@ -1,7 +1,8 @@
 var express = require('express');
 
 var Activity = require('./../models/activity'),
-  Point = require('./../models/point');
+  Point = require('./../models/point'),
+  Unit = require('./../models/unit');
 
 var router = express.Router(),
   verifyAuthorization = require('./../middleware/verifyAuthorization');
@@ -20,7 +21,10 @@ router.get('/new', verifyAuthorization, (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  res.send('hello')
+  var point = new Point(req.body)
+  point.save().then((point) => {
+		res.redirect('/');
+	}).catch((e) => console.log(e))
 });
 
 module.exports = router;

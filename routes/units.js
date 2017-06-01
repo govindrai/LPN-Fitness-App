@@ -1,6 +1,10 @@
+// Modules
 var express = require('express');
+
+// Models
+var Unit = require('./../models/unit');
+
 var router = express.Router();
-const Unit = require('./../models/unit');
 
 /* GET users listing. */
 router.get('/new', function(req, res, next) {
