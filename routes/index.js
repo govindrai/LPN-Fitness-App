@@ -6,13 +6,56 @@ var express = require('express'),
 var User = require('./../models/user'),
   Family = require('./../models/family');
 
-var router = express.Router(),
-verifyAuthorization = require('./../middleware/verifyAuthorization');
+var router = express.Router()
 
-router.use(verifyAuthorization);
+// GET login form
+router.get('/login', (req, res) => {
+    res.render('sessions/login');
+});
 
+// POST login form data
+router.post('/login', (req, res) => {
+  var body = _.pick(req.body, [
+    'email',
+    'password'
+  ]);
+
+  var user;
+  User.findOne({email: body.email})
+  .then(foundUser => {
+    user = foundUser;
+    return user.authenticate(body.password)
+  })
+  .then(res => {
+    console.log(res)
+    if (!res) {
+      return Promise.reject("Username/Password Incorrect");
+    }
+    return user.generateAuthorizationToken();
+  })
+  .then((authToken) => {
+    token = authToken;
+    user.tokens.push({access: "auth", token});
+    return user.save();
+  })
+  .then(() => {
+    return User.populate(user, 'family');
+  })
+  .then((newUser) => {
+    user = newUser;
+    req.session["x-auth"] = token;
+    res.redirect('/families/' + user.family.name);
+  })
+  .catch(e => {
+    console.log(e)
+    res.render('sessions/login', {error: e})
+  });
+})
+
+// GET to Root (registration form or homepage depending on authorization)
 router.get('/', (req, res) => {
   if (!res.locals.loggedIn) {
+    // Need families for registration form
     Family.find()
     .then(families => {
       res.render('index', {families});
@@ -59,46 +102,10 @@ router.post('/register', (req, res) => {
   .catch(e => console.log(e));
 })
 
-// Login Form
-router.get('/login', (req, res) => {
-    res.render('sessions/login');
-});
 
-// Login
-router.post('/login', (req, res) => {
-  var body = _.pick(req.body, [
-    'email',
-    'password'
-  ]);
 
-  var user;
-  User.findOne({email: body.email})
-  .then(foundUser => {
-    user = foundUser;
-    return user.authenticate(body.password)
-  })
-  .then(res => {
-    console.log(res)
-    if (!res) {
-      return Promise.reject("Username/Password Incorrect");
-    }
-    return user.generateAuthorizationToken();
-  })
-  .then((authToken) => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
-  })
-  .then(() => {
-    return User.populate(user, 'family');
-  })
-  .then((newUser) => {
-    user = newUser;
-    req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
-  })
-  .catch(e => console.log(e));
-})
+
+
 
 // Logout
 router.get('/logout', (req, res) => {

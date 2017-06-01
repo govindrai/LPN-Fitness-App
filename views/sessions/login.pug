@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+  if error
+    h1= error
+
   h1 Sign In
   form(action='/login' method='POST')
     | Email
@@ -8,3 +11,6 @@ block content
     | Password
     input(name='password' type='password' required)
     input(type='submit' value='Sign In')
+
+  h2 Don't have an account?
+  a(href="/register") Register

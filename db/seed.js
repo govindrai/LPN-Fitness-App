@@ -280,31 +280,10 @@ removeModelObjs(Family)
       family: emerald,
       allTimePoints: 200,
       admin: true
-    })
-  ];
+    })];
   return createObjs(users);
 })
 .catch(e => console.log(e))
-
-
-// new Promise((resolve, reject) => {
-//   User.remove({}, (err) => {
-//     if (err) {
-//       reject(err);
-//     }
-//     resolve();
-//   });
-// })
-// .then(() => {
-//   users.forEach(user => {
-//     user.save()
-//     .then()
-//     .catch(e => console.log(e));
-//   });
-// })
-// .catch(e => console.log(e));
-
-
 
 
     //,
