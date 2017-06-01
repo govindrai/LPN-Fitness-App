@@ -7,268 +7,302 @@ var mongoose = require('./mongoose'),
   // Participation = require('./../models/participation'),
   Unit = require('./../models/unit');
 
-// User.insertMany([
-// ])
-
-// new Promise(resolve.Family.remove({justOne: false})
-
 var iolite,
   sunstone,
   ruby,
   emerald,
   sapphire,
   topaz,
-  alexandrite;
+  alexandrite,
+  users;
 
-new Promise((resolve, reject) => {
-  Family.remove({}, err => {
-    if (err) {
-      reject(err);
-    }
-    resolve();
-  });
-})
-.then(() => {
-  Family.insertMany([
-    {
-      name: 'Iolite',
-      motto: 'The best family',
-      challengesWon: 3,
-      playoffsReached: 4
-    },
-    {
-      name: 'Alexandrite',
-      motto: 'The 2nd best family',
-      challengesWon: 4,
-      playoffsReached: 3
-    },
-    {
-      name: 'Sunstone',
-      motto: 'A family in LPN',
-      challengesWon: 5,
-      playoffsReached: 2
-    },
-    {
-      name: 'Ruby',
-      motto: 'Another family in LPN',
-      challengesWon: 3,
-      playoffsReached: 1
-    },
-    {
-      name: 'Sapphire',
-      motto: 'Yet another family in LPN',
-      challengesWon: 2,
-      playoffsReached: 1
-    },
-    {
-      name: 'Topaz',
-      motto: 'A chill family in LPN',
-      challengesWon: 2,
-      playoffsReached: 2
-    },
-    {
-      name: 'Emerald',
-      motto: 'Almost forgot this family',
-      challengesWon: 1,
-      playoffsReached: 2
-    }
-  ]).then(families => {
-    families.forEach(family => {
-      switch (family.name) {
-        case 'Iolite':
-          iolite = family;
-          break;
-        case 'Alexandrite':
-          alexandrite = family;
-          break;
-        case 'Sunstone':
-          sunstone = family;
-          break;
-        case 'Ruby':
-          ruby = family;
-          break;
-        case 'Sapphire':
-          sapphire = family;
-          break;
-        case 'Topaz':
-          topaz = family;
-          break;
-        case 'Emerald':
-          emerald = family;
-          break;
-        default:
-          console.log("i don't know that family");
-      }
-    })
-  })
-  .catch(e => console.log(e));
-})
-.catch(e => console.log(e));
-
-users = [
-  new User({
-    email: 'edwardchow@gmail.com',
-    name: {
-      first: 'Edward',
-      last: 'Chow',
-      nickname: 'EdwardChow'
-    },
-    password: '123456',
-    family: iolite,
-    allTimePoints: 100
+var families = [
+  new Family({
+    name: 'Iolite',
+    motto: 'The best family',
+    challengesWon: 3,
+    playoffsReached: 4
   }),
-  new User({
-    email: 'michaelwen@gmail.com',
-    name: {
-      first: 'Michael',
-      last: 'Wen',
-      nickname: 'MichaelWen'
-    },
-    password: '123456',
-    family: topaz,
-    allTimePoints: 50
+  new Family({
+    name: 'Alexandrite',
+    motto: 'The 2nd best family',
+    challengesWon: 4,
+    playoffsReached: 3
   }),
-  new User({
-    email: 'adamwhitescarver@gmail.com',
-    name: {
-      first: 'Adam',
-      last: 'White',
-      nickname: 'AdamWhitescarver'
-    },
-    password: '123456',
-    family: sunstone,
-    allTimePoints: 3000
+  new Family({
+    name: 'Sunstone',
+    motto: 'A family in LPN',
+    challengesWon: 5,
+    playoffsReached: 2
   }),
-  new User({
-    email: 'steventrinh@gmail.com',
-    name: {
-      first: 'Steven',
-      last: 'Trinh',
-      nickname: 'StevenTrinh'
-    },
-    password: '123456',
-    family: emerald,
-    allTimePoints: 2500
+  new Family({
+    name: 'Ruby',
+    motto: 'Another family in LPN',
+    challengesWon: 3,
+    playoffsReached: 1
   }),
-  new User({
-    email: 'callydai@gmail.com',
-    name: {
-      first: 'Cally',
-      last: 'Dai',
-      nickname: 'CallyDai'
-    },
-    password: '123456',
-    family: topaz,
-    allTimePoints: 800
+  new Family({
+    name: 'Sapphire',
+    motto: 'Yet another family in LPN',
+    challengesWon: 2,
+    playoffsReached: 1
   }),
-  new User({
-    email: 'brittanyyoung@gmail.com',
-    name: {
-      first: 'Brittany',
-      last: 'Young',
-      nickname: 'BrittanyYoung'
-    },
-    password: '123456',
-    family: ruby,
-    allTimePoints: 20
+  new Family({
+    name: 'Topaz',
+    motto: 'A chill family in LPN',
+    challengesWon: 2,
+    playoffsReached: 2
   }),
-  new User({
-    email: 'patricklai@gmail.com',
-    name: {
-      first: 'Patrick',
-      last: 'Lai',
-      nickname: 'PatrickLai'
-    },
-    password: '123456',
-    family: ruby,
-    allTimePoints: 45
-  }),
-  new User({
-    email: 'amandagieg@gmail.com',
-    name: {
-      first: 'Amanda',
-      last: 'Gieg',
-      nickname: 'AmandaGieg'
-    },
-    password: '123456',
-    family: sapphire,
-    allTimePoints: 395
-  }),
-  new User({
-    email: 'shannonlee@gmail.com',
-    name: {
-      first: 'Shannon',
-      last: 'Lee',
-      nickname: 'ShannonLee'
-    },
-    password: '123456',
-    family: iolite,
-    allTimePoints: 298
-  }),
-  new User({
-    email: 'stephenlee@gmail.com',
-    name: {
-      first: 'Stephen',
-      last: 'Lee',
-      nickname: 'StephenLee'
-    },
-    password: '123456',
-    family: sunstone,
-    allTimePoints: 400
-  }),
-  new User({
-    email: 'kevinau@gmail.com',
-    name: {
-      first: 'Kevin',
-      last: 'Au',
-      nickname: 'KevinAu'
-    },
-    password: '123456',
-    family: sapphire,
-    allTimePoints: 50
-  }),
-  new User({
-    email: 'raigovind93@gmail.com',
-    name: {
-      first: 'Govind',
-      last: 'Rai',
-      nickname: 'TBE Govind'
-    },
-    password: '123456',
-    family: iolite,
-    allTimePoints: 100,
-    admin: true
-  }),
-  new User({
-    email: 'vilde@vevatne.no',
-    name: {
-      first: 'Vilde',
-      last: 'Vevatne',
-      nickname: 'Jinese'
-    },
-    password: '123456',
-    family: emerald,
-    allTimePoints: 200,
-    admin: true
+  new Family({
+    name: 'Emerald',
+    motto: 'Almost forgot this family',
+    challengesWon: 1,
+    playoffsReached: 2
   })
 ];
 
-new Promise((resolve, reject) => {
-  User.remove({}, (err) => {
-    if (err) {
-      reject(err);
-    }
-    resolve();
-  });
+function removeModelObjs(model) {
+  var promise = new Promise((resolve, reject) => {
+    model.remove({}, err => {
+      if (err) {
+        reject(err);
+      }
+      resolve();
+    });
+  })
+  return promise;
+}
+
+function createObjs(arr) {
+  var promise = new Promise((resolve, reject) => {
+    arr.forEach(obj => {
+      obj.save()
+      .then(() => {
+        resolve();
+      })
+      .catch(e => reject(e))
+    })
+  })
+  return promise;
+}
+
+function assignFamilies() {
+  var promise = new Promise((resolve, reject) => {
+    Family.find()
+    .then(families => {
+      families.forEach(family => {
+        switch (family.name) {
+          case 'Iolite':
+            iolite = family;
+            break;
+          case 'Alexandrite':
+            alexandrite = family;
+            break;
+          case 'Sunstone':
+            sunstone = family;
+            break;
+          case 'Ruby':
+            ruby = family;
+            break;
+          case 'Sapphire':
+            sapphire = family;
+            break;
+          case 'Topaz':
+            topaz = family;
+            break;
+          case 'Emerald':
+            emerald = family;
+            break;
+          default:
+            console.log("i don't know that family");
+        }
+      })
+      resolve();
+    })
+    .catch(e => reject(e));
+  })
+  return promise;
+}
+
+removeModelObjs(Family)
+.then(() => {
+  return removeModelObjs(User);
 })
 .then(() => {
-  users.forEach(user => {
-    user.save()
-    .then()
-    .catch(e => console.log(e));
-  });
+  return createObjs(families);
 })
-.catch(e => console.log(e));
+.then(() => {
+  return assignFamilies();
+})
+.then(() => {
+  users = [
+    new User({
+      email: 'edwardchow@gmail.com',
+      name: {
+        first: 'Edward',
+        last: 'Chow',
+        nickname: 'EdwardChow'
+      },
+      password: '123456',
+      family: iolite,
+      allTimePoints: 100
+    }),
+    new User({
+      email: 'michaelwen@gmail.com',
+      name: {
+        first: 'Michael',
+        last: 'Wen',
+        nickname: 'MichaelWen'
+      },
+      password: '123456',
+      family: topaz,
+      allTimePoints: 50
+    }),
+    new User({
+      email: 'adamwhitescarver@gmail.com',
+      name: {
+        first: 'Adam',
+        last: 'White',
+        nickname: 'AdamWhitescarver'
+      },
+      password: '123456',
+      family: sunstone,
+      allTimePoints: 3000
+    }),
+    new User({
+      email: 'steventrinh@gmail.com',
+      name: {
+        first: 'Steven',
+        last: 'Trinh',
+        nickname: 'StevenTrinh'
+      },
+      password: '123456',
+      family: emerald,
+      allTimePoints: 2500
+    }),
+    new User({
+      email: 'callydai@gmail.com',
+      name: {
+        first: 'Cally',
+        last: 'Dai',
+        nickname: 'CallyDai'
+      },
+      password: '123456',
+      family: topaz,
+      allTimePoints: 800
+    }),
+    new User({
+      email: 'brittanyyoung@gmail.com',
+      name: {
+        first: 'Brittany',
+        last: 'Young',
+        nickname: 'BrittanyYoung'
+      },
+      password: '123456',
+      family: ruby,
+      allTimePoints: 20
+    }),
+    new User({
+      email: 'patricklai@gmail.com',
+      name: {
+        first: 'Patrick',
+        last: 'Lai',
+        nickname: 'PatrickLai'
+      },
+      password: '123456',
+      family: ruby,
+      allTimePoints: 45
+    }),
+    new User({
+      email: 'amandagieg@gmail.com',
+      name: {
+        first: 'Amanda',
+        last: 'Gieg',
+        nickname: 'AmandaGieg'
+      },
+      password: '123456',
+      family: sapphire,
+      allTimePoints: 395
+    }),
+    new User({
+      email: 'shannonlee@gmail.com',
+      name: {
+        first: 'Shannon',
+        last: 'Lee',
+        nickname: 'ShannonLee'
+      },
+      password: '123456',
+      family: iolite,
+      allTimePoints: 298
+    }),
+    new User({
+      email: 'stephenlee@gmail.com',
+      name: {
+        first: 'Stephen',
+        last: 'Lee',
+        nickname: 'StephenLee'
+      },
+      password: '123456',
+      family: sunstone,
+      allTimePoints: 400
+    }),
+    new User({
+      email: 'kevinau@gmail.com',
+      name: {
+        first: 'Kevin',
+        last: 'Au',
+        nickname: 'KevinAu'
+      },
+      password: '123456',
+      family: sapphire,
+      allTimePoints: 50
+    }),
+    new User({
+      email: 'raigovind93@gmail.com',
+      name: {
+        first: 'Govind',
+        last: 'Rai',
+        nickname: 'TBE Govind'
+      },
+      password: '123456',
+      family: iolite,
+      allTimePoints: 100,
+      admin: true
+    }),
+    new User({
+      email: 'vilde@vevatne.no',
+      name: {
+        first: 'Vilde',
+        last: 'Vevatne',
+        nickname: 'Jinese'
+      },
+      password: '123456',
+      family: emerald,
+      allTimePoints: 200,
+      admin: true
+    })
+  ];
+  return createObjs(users);
+})
+.catch(e => console.log(e))
+
+
+// new Promise((resolve, reject) => {
+//   User.remove({}, (err) => {
+//     if (err) {
+//       reject(err);
+//     }
+//     resolve();
+//   });
+// })
+// .then(() => {
+//   users.forEach(user => {
+//     user.save()
+//     .then()
+//     .catch(e => console.log(e));
+//   });
+// })
+// .catch(e => console.log(e));
 
 
 

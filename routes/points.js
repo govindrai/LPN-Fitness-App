@@ -11,10 +11,7 @@ router.get('/new', verifyAuthorization, (req, res) => {
   Activity.find({}).then((activities) => {
     Point.find({}).populate('activityId').then((points) => {
       var activitiesArray = [];
-      activities.forEach((activity) => {
-        activitiesArray.push(activity.name);
-      });
-      res.render('points/new', {points, activitiesArray});
+      res.render('points/new', {points, activities});
     });
   })
   .catch(e => console.log(e));
