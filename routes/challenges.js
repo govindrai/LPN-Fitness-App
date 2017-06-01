@@ -12,13 +12,22 @@ var verifyAuthorization = require('./../middleware/verifyAuthorization'),
 
 var router = express.Router();
 
-router.use(verifyAuthorization);
-router.use(getChallengesCount);
-
-// Get all challenges
+// GET list all challenges
 router.get('/', (req, res) => {
-	Challenge.find({}).populate('winner').then((challenges) => {
-		res.render('challenges/index', {challenges});
+	var currentChallenge, futureChallenges, getPastChallenges;
+	Challenge.getCurrentChallenge()
+	.then((currentChallenge) => {
+		console.log("CURRENT CHALLENGE", currentChallenge)
+		currentChallenge = currentChallenge;
+		return Challenge.getFutureChallenges();
+	})
+	.then((futureChallenges) => {
+		futureChallenges = futureChallenges
+		return Challenge.getPastChallenges();
+	})
+	.then((pastChallenges) => {
+		pastChallenges = pastChallenges
+		res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
 	})
 	.catch(e => console.log(e));
 });

@@ -3,26 +3,27 @@ include ../layout.pug
 a(href="new") Create New Challenge
 
 h2 Current Challenge
-p= "Name: " + challenge.name
-p= "Start Date: " + challenge.date.start
-p= "End Date: " + challenge.date.end
-  if challenge.winner != null
-    p= "Winner: " + challenge.winner.name
+unless currentChallenge.length === 0
+  p= "Name: " + currentChallenge.name
+  p= "Start Date: " + currentChallenge.date.start
+  p= "End Date: " + currentChallenge.date.end
+  if currentChallenge.winner != null
+    p= "Winner: " + currentChallenge.winner.name
 
 h2 Upcoming Challenges
 each challenge in upcomingChallenges
   p= "Name: " + challenge.name
   p= "Start Date: " + challenge.date.start
   p= "End Date: " + challenge.date.end
-    if challenge.winner != null
-      p= "Winner: " + challenge.winner.name
+  if challenge.winner != null
+    p= "Winner: " + challenge.winner.name
 
 h2 Past Challenges
 each challenge in pastChallenges
-	p= "Name: " + challenge.name
-	p= "Start Date: " + challenge.date.start
-	p= "End Date: " + challenge.date.end
-		if challenge.winner != null
-			p= "Winner: " + challenge.winner.name
+  p= "Name: " + challenge.name
+  p= "Start Date: " + challenge.date.start
+  p= "End Date: " + challenge.date.end
+  if challenge.winner != null
+    p= "Winner: " + challenge.winner.name
 
 

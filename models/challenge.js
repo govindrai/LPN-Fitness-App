@@ -32,6 +32,18 @@ var challengeSchema = new Schema({
 	}
 });
 
+challengeSchema.statics.getCurrentChallenge = function() {
+	return Challenge.find().where('date.start').lt(new Date()).where('date.end').gt(new Date());
+}
+
+challengeSchema.statics.getPastChallenges = function() {
+	return Challenge.find().populate('winner').where('date.end').lt(new Date());
+}
+
+challengeSchema.statics.getFutureChallenges = function() {
+	return Challenge.find().where('date.start').gt(new Date());
+}
+
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
 module.exports = Challenge;
