@@ -146,6 +146,10 @@ router.get('/logout', (req, res) => {
   .catch((e) => console.log(e));
 })
 
+router.get('/rules', (req, res) => {
+  res.render('sessions/rules');
+}); 
+
 
 router.get('/profile', (req, res) => {
 });
