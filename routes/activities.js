@@ -19,7 +19,10 @@ router.get('/', (req, res) => {
 		})
 		.catch(e => console.log(e));
 	} else {
-		res.send("This is not an xhr request");
+		Activity.find({})
+		.then(activities => {
+			res.render('activities/index', {activities});
+		})
 	}
 })
 
