@@ -6,7 +6,8 @@ var express = require('express'),
 var User = require('./../models/user'),
   Family = require('./../models/family');
 
-var router = express.Router()
+var router = express.Router(),
+  verifyAuthorization = require('./../middleware/verifyAuthorization');
 
 // GET login form
 router.get('/login', (req, res) => {
@@ -146,7 +147,7 @@ router.get('/logout', (req, res) => {
   .catch((e) => console.log(e));
 })
 
-router.get('/rules', (req, res) => {
+router.get('/rules', verifyAuthorization, (req, res) => {
   res.render('sessions/rules');
 }); 
 

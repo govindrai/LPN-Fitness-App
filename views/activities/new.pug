@@ -1,17 +1,18 @@
 include ../layout.pug
 
-h1 Add an activity
+block content
+	h1 Add an activity
 
-form(action='/activities' method='POST')
-	| Name
-	input(name='name' type='text' required)
-	| Number of Points
-	input(name='numberOfPoints' type='number' required)
-	| Scale
-	input(name='scale' type='number' required)
-	| Unit
-	select(name="unit")
-		each unit in units
-			option(value=unit._id)= unit.name + ', ' + unit.abbreviation
-	input(type='submit' value='Add Activity')
+	form(action='/activities' method='POST')
+		| Name
+		input(name='name' type='text' required)
+		| Number of Points
+		input(name='numberOfPoints' type='number' required)
+		| Scale
+		input(name='scale' type='number' required)
+		| Unit
+		select(name="unit")
+			each unit in units
+				option(value=unit._id)= unit.name + ', ' + unit.abbreviation
+		input(type='submit' value='Add Activity')
 
