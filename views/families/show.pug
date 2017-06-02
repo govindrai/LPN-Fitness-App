@@ -1,8 +1,12 @@
 extends ../layout
 
 block content
-  h1= `Welcome to ${family.name}'s Show page`
-  h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
-  h2= 'Name: ' + user.fullName
-  h2= 'Total Points: ' + user.allTimePoints
+	h1= `Welcome to ${family.name}'s Show page`
+	h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
+	h2= 'Name: ' + user.fullName
+	h2= 'Total Points: ' + user.allTimePoints
+
+	if user
+		p= 'You are currently not signed up for any challenges'
+		a(href='/challenges') See available challenges
 
