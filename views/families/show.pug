@@ -4,7 +4,7 @@ block content
 	h1= `Welcome to ${family.name}'s Show page`
 	h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
 	h2= 'Name: ' + user.fullName
-	h2= 'Total Points: ' + user.allTimePoints
+	h2= 'All time Points: ' + user.allTimePoints
 
 	each challenge in currentChallenges
 		p= 'Current challenge: ' + challenge.name

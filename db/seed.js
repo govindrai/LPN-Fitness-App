@@ -307,68 +307,68 @@ function assignActivities() {
     .then(activities => {
       activities.forEach(activity => {
         switch (activity.name) {
-          case 'jump roping':
+          case 'Jump roping':
             jumpRoping = activity;
             break;
-          case 'biking(<5 min pace)':
+          case 'Biking(<5 min pace)':
             bikingLess5 = activity;
             break;
-          case 'biking(>5 min pace)':
+          case 'Biking(>5 min pace)':
             bikingMore5 = activity;
             break;
-          case 'biking(elevation)':
+          case 'Biking(elevation)':
             bikingElevation = activity;
             break;
-          case 'elliptical':
+          case 'Elliptical':
             elliptical = activity;
             break;
-          case 'bowling':
+          case 'Bowling':
             bowling = activity;
             break;
-          case 'hiking':
+          case 'Hiking':
             hiking = activity;
             break;
-          case 'run/walk(10-15 min pace)':
+          case 'Run/walk(10-15 min pace)':
             runAndWalk = activity;
             break;
-          case 'hiking(elevation)':
+          case 'Hiking(elevation)':
             hikingElevation = activity;
             break;
-          case 'rowing':
+          case 'Rowing':
             rowing = activity;
             break;
-          case 'weightlifting':
+          case 'Weightlifting':
             weightlifting = activity;
             break;
-          case 'swimming':
+          case 'Swimming':
             swimming = activity;
             break;
-          case 'abs':
+          case 'Abs':
             abs = activity;
             break;
-          case 'running(<10 min pace)':
+          case 'Running(<10 min pace)':
             runningLess10 = activity;
             break;
-          case 'sports game':
+          case 'Sports game':
             sportsGame = activity;
             break;
-          case 'fitness class':
+          case 'Fitness class':
             fitnessClass = activity;
             break;
-          case 'golf':
+          case 'Golf':
             golf = activity;
             break;
-          case 'intense workout':
+          case 'Intense workout':
             intenseWorkout = activity;
             break;
-          case 'surfing':
+          case 'Surfing':
             surfing = activity;
             break;
-          case 'snowboarding':
+          case 'Snowboarding':
             snowboarding = activity;
             break;
           default:
-            console.log("i don't know that unit");
+            console.log("i don't know that activity");
         }
       })
       resolve();
@@ -555,128 +555,128 @@ removeModelObjs(Family)
 .then(() => { 
   var activities = [
     new Activity({
-      name: 'jump roping',
+      name: 'Jump roping',
       numberOfPoints: 1,
       scale: 150,
       unit: jump 
     }),
     new Activity({
-      name: 'biking(<5 min pace)',
+      name: 'Biking(<5 min pace)',
       numberOfPoints: 2,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'biking(>5 min pace)',
+      name: 'Biking(>5 min pace)',
       numberOfPoints: 1,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'biking(elevation)',
+      name: 'Biking(elevation)',
       numberOfPoints: 2,
       scale: 100,
       unit: feet
     }),
     new Activity({
-      name: 'elliptical',
+      name: 'Elliptical',
       numberOfPoints: 2,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'bowling',
+      name: 'Bowling',
       numberOfPoints: 2,
       scale: 1,
       unit: game
     }),
     new Activity({
-      name: 'hiking',
+      name: 'Hiking',
       description: 'outdoors on trail',
       numberOfPoints: 4,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'run/walk(10-15 min pace)',
+      name: 'Run/walk(10-15 min pace)',
       numberOfPoints: 3,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'hiking(elevation)',
+      name: 'Hiking(elevation)',
       description: 'after initial 1000ft.',
       numberOfPoints: 1.5,
       scale: 100,
       unit: feet
     }),
     new Activity({
-      name: 'rowing',
+      name: 'Rowing',
       numberOfPoints: 4,
       scale: 1500,
       unit: meter
     }),
     new Activity({
-      name: 'weightlifting',
+      name: 'Weightlifting',
       description: 'body weight exercises like pushups, pullups etc. included',
       numberOfPoints: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
-      name: 'swimming',
+      name: 'Swimming',
       numberOfPoints: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
-      name: 'abs',
+      name: 'Abs',
       description: 'not in class',
       numberOfPoints: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
-      name: 'running(<10 min pace)',
+      name: 'Running(<10 min pace)',
       numberOfPoints: 4,
       scale: 1,
       unit: mile
     }),
     new Activity({
-      name: 'sports game',
+      name: 'Sports game',
       description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
       numberOfPoints: 6,
       scale: 30,
       unit: minute
     }),
     new Activity({
-      name: 'fitness class',
+      name: 'Fitness class',
       description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
       numberOfPoints: 8,
       scale: 1,
       unit: hour
     }),
     new Activity({
-      name: 'golf',
+      name: 'Golf',
       numberOfPoints: 12,
       scale: 9,
       unit: hole
     }),
     new Activity({
-      name: 'intense workout',
+      name: 'Intense workout',
       description: 'p90x, parkour, cycling class, crossfit',
       numberOfPoints: 12,
       scale: 30,
       unit: minute
     }),
     new Activity({
-      name: 'surfing',
+      name: 'Surfing',
       numberOfPoints: 12,
       scale: 1,
       unit: hour
     }),
     new Activity({
-      name: 'snowboarding',
+      name: 'Snowboarding',
       numberOfPoints: 15,
       scale: 0.5,
       unit: day
