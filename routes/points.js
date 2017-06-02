@@ -10,7 +10,7 @@ var router = express.Router()
 
 router.get('/new', (req, res) => {
   Activity.find({}).then((activities) => {
-    Point.find({}).populate('activityId').then((points) => {
+    Point.find({}).populate('activity').then((points) => {
       var activitiesArray = [];
       res.render('points/new', {points, activities});
     });

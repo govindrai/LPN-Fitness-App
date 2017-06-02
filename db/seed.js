@@ -129,6 +129,71 @@ var families = [
   })
 ];
 
+var nextMonth = new Date();
+nextMonth.setDate(nextMonth.getDate() + 30);
+
+var sixMonths = new Date();
+sixMonths.setDate(sixMonths.getDate() + 180);
+
+var sevenMonth = new Date();
+sevenMonth.setDate(sevenMonth.getDate() + 240);
+
+var nextYear = new Date();
+nextYear.setDate(nextYear.getDate() + 365);
+
+var nextYearMonth = new Date();
+nextYearMonth.setDate(nextYearMonth.getDate() + 415);
+
+var lastYear = new Date();
+lastYear.setDate(lastYear.getDate() - 365);
+    
+var lastYearMonth = new Date();
+lastYearMonth.setDate(lastYearMonth.getDate() - 300);
+
+var lastYear = new Date();
+lastYear.setDate(lastYear.getDate() - 500);
+
+var lastYearMonth = new Date();
+lastYearMonth.setDate(lastYearMonth.getDate() - 400);
+
+var challenges = [
+  new Challenge({
+    name: 'Summer 2017',
+    date: {
+      start: new Date(),
+      end: nextMonth
+    }
+  }),
+  new Challenge({
+    name: 'Winter 2017',
+    date: {
+      start: sixMonths,
+      end: sevenMonth
+    }
+  }),
+  new Challenge({
+    name: 'Summer 2018',
+    date: {
+      start: nextYear,
+      end: nextYearMonth
+    }
+  }),
+  new Challenge({
+    name: 'Summer 2016',
+    date: {
+      start: lastYear,
+      end: lastYearMonth
+    }
+  }),
+  new Challenge({
+    name: 'Winter 2016',
+    date: {
+      start: lastYear,
+      end: lastYearMonth
+    }
+  })
+];
+
 function removeModelObjs(model) {
   var promise = new Promise((resolve, reject) => {
     model.remove({}, err => {
@@ -322,6 +387,9 @@ removeModelObjs(Family)
 })
 .then(() => {
   return removeModelObjs(Activity);
+})
+.then(() => {
+  return removeModelObjs(Challenge);
 })
 .then(() => {
   return createObjs(families);
@@ -618,6 +686,9 @@ removeModelObjs(Family)
 })
 .then(() => {
   return assignActivities();
+})
+.then(() => {
+  return createObjs(challenges);
 })
 .catch(e => console.log(e))
 

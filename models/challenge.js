@@ -15,12 +15,12 @@ var challengeSchema = new Schema({
 			type: Date,
 			required: true
 		},
-		registration_start: {
+		registrationStart: {
 			type: Date,
 			required: true,
 			default: new Date()
 		},
-		registration_end: {
+		registrationEnd: {
 			type: Date,
 			required: true
 		}
@@ -31,6 +31,11 @@ var challengeSchema = new Schema({
 		default: null
 	}
 });
+
+challengeSchema.pre('validate', function(next) {
+	this.date.registrationEnd = this.date.start;
+	next();
+})
 
 challengeSchema.statics.getCurrentChallenge = function() {
 	return Challenge.find().where('date.start').lt(new Date()).where('date.end').gt(new Date());
@@ -47,6 +52,7 @@ challengeSchema.statics.getFutureChallenges = function() {
 challengeSchema.statics.getAllExceptPastChallenges = function() {
 	return Challenge.find().where('date.end').lt(new Date()).count();
 }
+
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
