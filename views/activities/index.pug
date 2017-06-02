@@ -1,5 +1,15 @@
 h2 All Activities
 
-each activity in activities
-	b= activity.name + ':' 
-	p= activity.numberOfPoints + " points " + " for every " + activity.scale + " " + activity.unit.name 
+table
+		thead
+			tr
+				td Name
+				td Points
+				td Description
+		tbody
+		each activity in activities
+			tr
+				td= activity.name 
+				td= activity.numberOfPoints + " points " + " for every " + activity.scale + " " + activity.unit.name
+				if activity.description != undefined
+				td= activity.description

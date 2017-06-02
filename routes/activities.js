@@ -18,10 +18,11 @@ router.get('/', (req, res) => {
 		})
 		.catch(e => console.log(e));
 	} else {
-		Activity.find({})
-		.then(activities => {
+		Unit.find({}).then((units) => {
+		Activity.find({}).populate('unit').then((activities) => {
 			res.render('activities/index', {activities});
 		})
+	});
 	}
 })
 
