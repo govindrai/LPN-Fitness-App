@@ -10,7 +10,10 @@ each challenge in currentChallenges
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
-  p= `Participating: ${challenge.participation == true}`
+  if challenge.participation
+    p= "Participating"
+  else 
+    p= "Not Participating"
 
 h2 Future Challenges
 each challenge in futureChallenges
@@ -19,8 +22,10 @@ each challenge in futureChallenges
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
-  p= challenge.participation
-  p= `Participating: ${challenge.participation == true}`
+  if challenge.participation
+    p= "Signed Up"
+  else 
+    p= "Not Signed Up"
 
 h2 Past Challenges
 each challenge in pastChallenges
@@ -29,5 +34,8 @@ each challenge in pastChallenges
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
-  p= `Participating: ${challenge.participation == true}`
+  if challenge.participating
+    p= "Participated"
+  else 
+    p= "Did not Participate"
 
