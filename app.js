@@ -41,7 +41,7 @@ app.use(session({
   secret: 'secret',
   resave: true,
   saveUninitialized: true,
-  cookie: {maxAge: 610080}
+  cookie: {maxAge: 7776000000}
 }));
 app.use(methodOverride('_method'));
 app.use(logger('dev'));
