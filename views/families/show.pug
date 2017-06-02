@@ -6,7 +6,11 @@ block content
 	h2= 'Name: ' + user.fullName
 	h2= 'Total Points: ' + user.allTimePoints
 
-	if user
-		p= 'You are currently not signed up for any challenges'
-		a(href='/challenges') See available challenges
+	each challenge in currentChallenges
+		p= 'Current challenge: ' + challenge.name
+			if challenge.participation
+				p= 'Status: ' + 'participating'
+			else 
+				p= 'Status: ' + 'not participating'
+				a(href='/challenges') See upcoming challenges
 
