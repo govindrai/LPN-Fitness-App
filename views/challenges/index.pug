@@ -25,7 +25,9 @@ each challenge in futureChallenges
   if challenge.participation
     p= "Signed Up"
   else 
-    p= "Not Signed Up"
+    form.participate(action='/participations' method='POST')
+      input(name="_id" type="hidden" value=challenge._id)
+      input(type='submit' value='Sign Up')
 
 h2 Past Challenges
 each challenge in pastChallenges
@@ -39,3 +41,29 @@ each challenge in pastChallenges
   else 
     p= "Did not Participate"
 
+
+script.
+  $(document).ready(function() {
+    $('body').on('submit', '.participate', addParticipation);
+  });
+
+  function addParticipation(e) {
+    e.preventDefault();
+    var form = $(this);
+    var data = form.serialize();
+
+    var request = $.ajax({
+      url: "/participations",
+      type: "POST",
+      data
+    })
+    
+    request.done(function(res) {
+      console.log('Success', res);
+      form.replaceWith("Signed Up");
+    });
+
+    request.fail(function(res) {
+      console.log("Failed", res);
+    })
+  };

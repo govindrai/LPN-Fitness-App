@@ -1,7 +1,6 @@
 var express = require('express');
 
-var mongoose = require('./../db/mongoose'),
-	Activity = require('./../models/activity'),
+var Activity = require('./../models/activity'),
 	Unit = require('./../models/unit');
 
 var router = express.Router()
