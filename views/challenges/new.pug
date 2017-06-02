@@ -1,5 +1,9 @@
 extends ../layout
 
+append scripts
+  script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+  link(rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
+
 block content
 
   h1 Create a challenge
@@ -8,11 +12,41 @@ block content
     | Name
     input(name='name' type='text' required)
     | Start Date
-    input(name='date.start' type='Date' required)
+    input.start(name='date.start' type='text' required)
     | End Date
-    input(name='date.end' type='Date' required)
+    input.end(name='date.end' type='text' required)
+
     input(type='submit' value='Create challenge')
 
-  p
-    b Please note:
-    |  registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
+  p #[b Please note:] Registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
+
+  //- script.
+  //-   var from = $('.start')
+  //-       .datepicker({
+  //-         changeMonth: true,
+  //-         numberOfMonths: 2,
+  //-         minDate: 0
+  //-       })
+  //-       .on("change", function() {
+  //-         var date = getDate(this);
+  //-         to.datepicker("option", "minDate", date);
+  //-         date = date.getDate() + 76;
+  //-         to.datepicker("setDate", date);
+  //-       });
+  //-   var to = $('.end').datepicker({
+  //-       changeMonth: true,
+  //-       numberOfMonths: 2
+  //-     })
+  //-     .on( "change", function() {
+  //-       from.datepicker( "option", "maxDate", getDate(this) );
+  //-     });
+
+  //-   function getDate( element ) {
+  //-     var date;
+  //-     try {
+  //-       date = $.datepicker.parseDate('mm/dd/yy', element.value);
+  //-     } catch(error) {
+  //-       date = null;
+  //-     }
+  //-     return date;
+  //-   }

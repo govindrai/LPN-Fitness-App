@@ -30,11 +30,11 @@ router.post('/', (req, res, next) => {
 
 // Family Show Page/ Authorized User Landing Page
 router.get('/:family_name', (req, res) => {
-  Family.findOne({name: req.params["family_name"]})
-  .then((family) => {
-    res.render('families/show', {family});
-  })
-  .catch(e => console.log(e));
+    Family.findOne({name: req.params["family_name"]})
+    .then((family) => {
+      res.render('families/show', {family});
+    })
+    .catch(e => console.log(e));
 });
 
 module.exports = router;

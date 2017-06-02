@@ -25,8 +25,7 @@ var Family = require('./models/family'),
   User = require('./models/user');
 
 // Middleware
-var verifyAuthorization = require('./middleware/verifyAuthorization'),
-  getChallengesCount = require('./middleware/getChallengesCount');
+var verifyAuthorization = require('./middleware/verifyAuthorization');
 
 // Create Express App
 var app = express();
@@ -42,7 +41,7 @@ app.use(session({
   secret: 'secret',
   resave: true,
   saveUninitialized: true,
-  cookie: {maxAge: 610080}
+  cookie: {maxAge: 7776000000}
 }));
 app.use(methodOverride('_method'));
 app.use(logger('dev'));
@@ -58,10 +57,9 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use('/libs', express.static(__dirname + '/node_modules/typeahead.js/dist/'));
-app.use(verifyAuthorization);
-app.use(getChallengesCount);
 
 app.use('/', index);
+app.use(verifyAuthorization);
 app.use('/users', users);
 app.use('/families', families);
 app.use('/units', units);
