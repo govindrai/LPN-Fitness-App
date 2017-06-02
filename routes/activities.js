@@ -2,9 +2,11 @@ var express = require('express'),
 	pug = require('pug');
 
 var Activity = require('./../models/activity'),
-	Unit = require('./../models/unit');
+	Unit = require('./../models/unit'),
+	Challenge = require('./../models/challenge'),
+	Participation = require('./../models/challenge');
 
-var router = express.Router()
+var router = express.Router();
 
 router.get('/', (req, res) => {
 	if (req.xhr) {
@@ -36,11 +38,28 @@ router.get('/new', (req, res) => {
 	});
 });
 
+// TODO Need middleware to check whether user registered for a current challenge and then set currentChallenge to that challenge
+function checkParticipationInCurrentChallenge(req, res, next) {
+	Challenge.getCurrentChallenge()
+	.then(currentChallenge => {
+		return Participation.findOne({user: res.locals.user._id, challenge: currentChallenge.id})
+	})
+	.then((particpation) => {
+		res.locals.currentChallenge = particpation.challenge;
+		next();
+	})
+	.catch(e => {
+		console.log("Error within checkParticipationInCurrentChallenge", e);
+		res.render('sessions/unauthorized', {message: "You are not currently signed up for the current challenge"});
+	})
+
+}
 // GET activity info
 router.get('/:activityName', (req, res) => {
 	if (req.xhr) {
 		Activity.findOne({name: req.params.activityName}).populate('unit')
 		.then(activity => {
+			var activity = activity
 			res.send(pug.renderFile(process.env.PWD + '/views/points/_form.pug', {activity, user: res.locals.user}));
 		})
 		.catch(e =>  {
