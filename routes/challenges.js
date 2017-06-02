@@ -6,21 +6,31 @@ var express = require('express'),
 var Challenge = require('./../models/challenge'),
 	Family = require('./../models/family');
 
-// Middleware
-var verifyAuthorization = require('./../middleware/verifyAuthorization'),
-  getChallengesCount = require('./../middleware/getChallengesCount');
-
 var router = express.Router();
 
-router.use(verifyAuthorization);
-router.use(getChallengesCount);
 
-// Get all challenges
+
+// GET list all challenges
 router.get('/', (req, res) => {
-	Challenge.find({}).populate('winner').then((challenges) => {
-		res.render('challenges/index', {challenges});
-	})
-	.catch(e => console.log(e));
+	if (res.locals.loggedIn) {
+		var currentChallenge, futureChallenges, getPastChallenges;
+		Challenge.getCurrentChallenge()
+		.then((challenge) => {
+			currentChallenge = challenge;
+			return Challenge.getFutureChallenges();
+		})
+		.then((challenges) => {
+			futureChallenges = challenges;
+			return Challenge.getPastChallenges();
+		})
+		.then((challenges) => {
+			pastChallenges = challenges;
+			res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
+		})
+		.catch(e => console.log(e));
+	} else {
+		res.render('sessions/unauthorized')
+	}
 });
 
 // Create Challenge Form
