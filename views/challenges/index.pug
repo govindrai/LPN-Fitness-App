@@ -4,12 +4,13 @@ if user.admin
   a(href="/challenges/new") Create New Challenge
 
 h2 Current Challenge
-each challenge in currentChallenge
+each challenge in currentChallenges
   p= "Name: " + challenge.name
   p= "Start Date: " + challenge.date.start
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
+  p= `Participating: ${challenge.participation == true}`
 
 h2 Future Challenges
 each challenge in futureChallenges
@@ -18,6 +19,8 @@ each challenge in futureChallenges
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
+  p= challenge.participation
+  p= `Participating: ${challenge.participation == true}`
 
 h2 Past Challenges
 each challenge in pastChallenges
@@ -26,5 +29,5 @@ each challenge in pastChallenges
   p= "End Date: " + challenge.date.end
   if challenge.winner != null
     p= "Winner: " + challenge.winner.name
-
+  p= `Participating: ${challenge.participation == true}`
 
