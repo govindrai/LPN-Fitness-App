@@ -1,20 +1,50 @@
-const mongoose = require('mongoose');
-
-const User = require('./../models/user');
-const Challenge = require('./../models/challenge');
-var Schema = mongoose.Schema;
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema;
 
 var participationSchema = new Schema({
-  challengeId: {
+  challenge: {
     type: Schema.Types.ObjectId,
-    ref: 'Challenge'
+    ref: 'Challenge',
+    required: true
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
+
   }
 });
 
-var Participation = mongoose.model('Participation', participationSchema);
+// participationSchema.statics.getParticipation = function(user, challenges) {
+//   return new Promise((resolve, reject) => {
+//     challengesArray = [];
+//     challenges.forEach((challenge) => {
+//       Participation.findOne({user, challenge})
+//       .then((res) => {
+//         // console.log("RESULT", res);
+//         if (res) {
+//           var leanObj = challenge.toObject();
+//           // console.log("LEAN OBJ", leanObj);
+//           leanObj.participation = true;
+//           challengesArray.push(leanObj);
+//         }
+//       })
+//       .catch(e => reject(e));
+//     })
+//     // Challenges Array empty :(
+//     console.log("CHALLENGES ARRAY", challengesArray);
+//     resolve(challengesArray);
+//   });
+// }
+
+participationSchema.statics.getParticipation = function(user, challenges) {
+  return Promise.all(challenges.map(challenge => {
+    return Participation.findOne({user, challenge}).then(result => {
+      if (result) challenge.participation = true;
+    });
+  }));
+}
+
+var Participation = mongoose.model('Participations', participationSchema);
 
 module.exports = Participation;

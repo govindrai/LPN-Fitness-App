@@ -39,8 +39,8 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(session({
   secret: 'secret',
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie: {maxAge: 7776000000}
 }));
 app.use(methodOverride('_method'));

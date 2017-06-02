@@ -4,7 +4,8 @@ var express = require('express'),
 
 // Models
 var Challenge = require('./../models/challenge'),
-	Family = require('./../models/family');
+	Family = require('./../models/family'),
+	Participation = require('./../models/participation');
 
 var router = express.Router();
 
@@ -13,23 +14,33 @@ var router = express.Router();
 // GET list all challenges
 router.get('/', (req, res) => {
 	if (res.locals.loggedIn) {
-		var currentChallenge, futureChallenges, getPastChallenges;
+		var currentChallenges, futureChallenges, pastChallenges;
+
 		Challenge.getCurrentChallenge()
-		.then((challenge) => {
-			currentChallenge = challenge;
+		.then((challenges) => {
+			currentChallenges = challenges
+			return Participation.getParticipation(res.locals.user, currentChallenges);
+		})
+		.then(() => {
 			return Challenge.getFutureChallenges();
 		})
 		.then((challenges) => {
 			futureChallenges = challenges;
+			return Participation.getParticipation(res.locals.user, futureChallenges);
+		})
+		.then(() => {
 			return Challenge.getPastChallenges();
 		})
 		.then((challenges) => {
 			pastChallenges = challenges;
-			res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
+			return Participation.getParticipation(res.locals.user, pastChallenges);
+		})
+		.then(() => {
+			res.render('challenges/index', {currentChallenges, futureChallenges, pastChallenges});
 		})
 		.catch(e => console.log(e));
 	} else {
-		res.render('sessions/unauthorized')
+		res.render('sessions/unauthorized');
 	}
 });
 

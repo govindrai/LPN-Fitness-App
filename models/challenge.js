@@ -50,7 +50,7 @@ challengeSchema.statics.getFutureChallenges = function() {
 }
 
 challengeSchema.statics.getAllExceptPastChallenges = function() {
-	return Challenge.find().where('date.end').lt(new Date()).count();
+	return Challenge.find().where('date.end').gt(new Date()).count();
 }
 
 
