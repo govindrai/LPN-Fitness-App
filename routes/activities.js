@@ -4,8 +4,7 @@ var mongoose = require('./../db/mongoose'),
 	Activity = require('./../models/activity'),
 	Unit = require('./../models/unit');
 
-var router = express.Router(),
-	verifyAuthorization = require('./../middleware/verifyAuthorization');
+var router = express.Router()
 
 router.get('/', (req, res) => {
 	if (req.xhr) {
@@ -19,12 +18,16 @@ router.get('/', (req, res) => {
 		})
 		.catch(e => console.log(e));
 	} else {
-		res.send("This is not an xhr request");
+		Unit.find({}).then((units) => {
+		Activity.find({}).populate('unit').then((activities) => {
+			res.render('activities/index', {activities});
+		})
+	});
 	}
 })
 
 /* GET users listing. */
-router.get('/new', verifyAuthorization, (req, res) => {
+router.get('/new', (req, res) => {
 	Unit.find({}).then((units) => {
 		Activity.find({}).populate('unit').then((activities) => {
 			console.log(activities);
