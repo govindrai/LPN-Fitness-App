@@ -32,6 +32,11 @@ var challengeSchema = new Schema({
 	}
 });
 
+challengeSchema.pre('validate', function(next) {
+	this.date.registrationEnd = this.date.start;
+	next();
+})
+
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
 module.exports = Challenge;
