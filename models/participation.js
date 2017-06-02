@@ -5,13 +5,21 @@ const Challenge = require('./../models/challenge');
 var Schema = mongoose.Schema;
 
 var participationSchema = new Schema({
-  challengeId: {
+  challenge: {
     type: Schema.Types.ObjectId,
-    ref: 'Challenge'
+    ref: 'Challenge',
+    required: true
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
+
+  },
+  point: {
+    type: Schema.Types.ObjectId,
+    ref: 'Point',
+    required: true
   }
 });
 
