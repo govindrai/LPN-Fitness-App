@@ -1,4 +1,5 @@
-var express = require('express');
+var express = require('express'),
+	pug = require('pug');
 
 var Activity = require('./../models/activity'),
 	Unit = require('./../models/unit');
@@ -25,7 +26,7 @@ router.get('/', (req, res) => {
 	}
 })
 
-/* GET users listing. */
+// GET all activities
 router.get('/new', (req, res) => {
 	Unit.find({}).then((units) => {
 		Activity.find({}).populate('unit').then((activities) => {
@@ -33,6 +34,22 @@ router.get('/new', (req, res) => {
 			res.render('activities/new', {units, activities});
 		})
 	});
+});
+
+// GET activity info
+router.get('/:activityName', (req, res) => {
+	if (req.xhr) {
+		Activity.findOne({name: req.params.activityName}).populate('unit')
+		.then(activity => {
+			res.send(pug.renderFile(process.env.PWD + '/views/points/_form.pug', {activity, user: res.locals.user}));
+		})
+		.catch(e =>  {
+			console.log(e);
+			res.status(404).send("No Activity with name " + req.params.activityName);
+		})
+	} else {
+		res.status(400).send("Not an XHR request");
+	}
 });
 
 router.post('/', (req, res, next) => {

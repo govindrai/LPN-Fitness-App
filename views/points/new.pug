@@ -9,21 +9,6 @@ block content
   label Activity Name
   input(id="typeahead" type="text")
 
-
-  //- form(action="/points", method="POST")
-  //-   | How many
-  //-   input(name='points' type='Number' required)
-  //-   | Unit
-  //-   select(name="unitId")
-  //-     each unit in units
-  //-       option(value=unit._id)= unit.name
-  //-   | Activity
-  //-   select(name="activity")
-  //-     each activity in activities
-  //-       option(value=activity._id)= activity.name
-
-  //-   input(type='submit' value='Add Points')
-
   script.
     function getActivities() {
       $.ajax({
@@ -46,3 +31,21 @@ block content
         });
       });
     }
+
+    $(document).ready(function() {
+      getActivities();
+      $('#typeahead').bind('typeahead:select', function(ev, suggestion) {
+
+        var request = $.ajax({
+          url: '/activities/' + suggestion
+        });
+
+        request.done(res => {
+          $('body').append(res);
+        });
+
+        request.fail(res => {
+          console.log("FAIL", res)
+        });
+      });
+    })
