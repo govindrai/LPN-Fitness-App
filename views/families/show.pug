@@ -1,7 +1,16 @@
 extends ../layout
 
 block content
-  h1= `Welcome to ${family.name}'s Show page`
-  h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
-  h2= 'Name: ' + user.fullName
+	h1= `Welcome to ${family.name}'s Show page`
+	h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
+	h2= 'Name: ' + user.fullName
+	h2= 'All time Points: ' + user.allTimePoints
+
+	each challenge in currentChallenges
+		p= 'Current challenge: ' + challenge.name
+			if challenge.participation
+				p= 'Status: ' + 'participating'
+			else 
+				p= 'Status: ' + 'not participating'
+				a(href='/challenges') See upcoming challenges
 
