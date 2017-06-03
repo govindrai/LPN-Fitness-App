@@ -6,11 +6,12 @@ block content
 	h2= 'Name: ' + user.fullName
 	h2= 'All time Points: ' + user.allTimePoints
 
-	each challenge in currentChallenges
+	if currentChallenge
+		- var challenge = currentChallenge
 		p= 'Current challenge: ' + challenge.name
 			if challenge.participation
 				p= 'Status: ' + 'participating'
-			else 
+			else
 				p= 'Status: ' + 'not participating'
 				a(href='/challenges') See upcoming challenges
 

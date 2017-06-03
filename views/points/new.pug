@@ -34,20 +34,31 @@ block content
       });
     }
 
+    function getActivityData(ev, suggestion) {
+      var request = $.ajax({
+        url: '/activities/' + suggestion
+      });
+
+      request.done(res => {
+        $('#add-points').append(res);
+      });
+
+      request.fail(res => {
+        console.log("FAIL", res)
+      });
+    }
+
+    function calculatePoints() {
+      var activityPoints = $('#points').text();
+      var activityScale = $('#scale').text();
+
+      var pointScale = this.val();
+
+      $('#point-calculator').text((parseInt(activityPoints) / parseInt(activityScale)) * parseInt(pointScale) + " Points");
+    }
+
     $(document).ready(function() {
       getActivities();
-      $('#typeahead').bind('typeahead:select', function(ev, suggestion) {
-
-        var request = $.ajax({
-          url: '/activities/' + suggestion
-        });
-
-        request.done(res => {
-          $('#add-points').append(res);
-        });
-
-        request.fail(res => {
-          console.log("FAIL", res)
-        });
-      });
+      $('#typeahead').bind('typeahead:select', getActivityData);
+      $('body').on('keyup', '#point-scale', calculatePoints)
     })

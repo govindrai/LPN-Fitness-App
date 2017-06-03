@@ -1,13 +1,13 @@
 input(type='hidden', name="activity", value=activity._id)
 
-div= `${activity.name}: ${activity.numberOfPoints} points for every ${activity.scale} ${activity.unit.name}`
+div= `${activity.name}: <span id="points">${activity.numberOfPoints}</span> points for every <span id="scale">${activity.scale}</span> ${activity.unit.name}`
 
 if activity.description
   div= 'Description' + activity.description
 
 
 label(for="scale")= `How many ${activity.unit.name}s?`
-input(type=text name="scale")
+input#point-scale(type=text name="scale")
 
 label Point Value:
 div#point-value 0 #[span Points]
