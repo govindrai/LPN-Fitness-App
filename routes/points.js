@@ -1,24 +1,23 @@
 // Modules
-var express = require('express');
+var express = require('express'),
+  _ = require('lodash');
 
 // Models
 var Activity = require('./../models/activity'),
   Point = require('./../models/point'),
   Unit = require('./../models/unit'),
   Challenge = require('./../models/challenge'),
-  Participation = require('./../models/participation');
+  Participation = require('./../models/participation'),
+  User = require('./../models/user');
 
 var router = express.Router();
 
 function checkParticipationInCurrentChallenge(req, res, next) {
   Challenge.getCurrentChallenge()
   .then(currentChallenge => {
-    console.log(res.locals.user._id);
-    console.log(currentChallenge._id);
     return Participation.findOne({user: res.locals.user._id, challenge: currentChallenge._id})
   })
   .then((participation) => {
-    console.log(participation);
     res.locals.participationId = participation._id;
     next();
   })
@@ -38,13 +37,22 @@ router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
   .catch(e => console.log(e));
 });
 
-
-
 router.post('/', (req, res) => {
-  var point = new Point(req.body)
+  var body = _.pick(req.body, ['participation', 'activity', 'numOfUnits', 'calculatedPoints']);
+  body.user = res.locals.user._id;
+  var point = new Point(body);
   point.save().then((point) => {
-		res.redirect('/');
-	}).catch((e) => console.log(e))
+    return new Promise((resolve, reject) => {
+      User.where({_id: body.user}).update({$inc: {allTimePoints: parseInt(body.calculatedPoints)}}, (err, res) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+	})
+  .then(() => {
+    res.redirect('/');
+  })
+  .catch((e) => console.log(e))
 });
 
 module.exports = router;

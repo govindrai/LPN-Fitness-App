@@ -32,19 +32,23 @@ router.post('/', (req, res, next) => {
 
 // Family Show Page/ Authorized User Landing Page
 router.get('/:family_name', (req, res) => {
-    var currentChallenge;
+    var family, currentChallenge;
     Family.findOne({name: req.params["family_name"]})
-    .then((family) => {
-      Challenge.getCurrentChallenge()
+    .then((familyObj) => {
+      family = familyObj;
+      return Challenge.getCurrentChallenge();
+    })
     .then((challenge) => {
       currentChallenge = challenge;
       return Participation.getParticipation(res.locals.user, [currentChallenge]);
     })
     .then(() => {
+      return Participation.getParticipantsByFamily(currentChallenge._id, family._id);
+    })
+    .then(() => {
       res.render('families/show', {family, currentChallenge});
     })
     .catch(e => console.log(e));
-  });
 });
 
 module.exports = router;
