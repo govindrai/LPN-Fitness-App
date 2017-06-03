@@ -4,7 +4,8 @@ if user.admin
   a(href="/challenges/new") Create New Challenge
 
 h2 Current Challenge
-each challenge in currentChallenges
+if currentChallenge
+  - var challenge = currentChallenge
   p= "Name: " + challenge.name
   p= "Start Date: " + challenge.date.start
   p= "End Date: " + challenge.date.end
@@ -12,7 +13,7 @@ each challenge in currentChallenges
     p= "Winner: " + challenge.winner.name
   if challenge.participation
     p= "Participating"
-  else 
+  else
     p= "Not Participating"
 
 h2 Future Challenges
@@ -24,7 +25,7 @@ each challenge in futureChallenges
     p= "Winner: " + challenge.winner.name
   if challenge.participation
     p= "Signed Up"
-  else 
+  else
     form.participate(action='/participations' method='POST')
       input(name="_id" type="hidden" value=challenge._id)
       input(type='submit' value='Sign Up')
@@ -38,7 +39,7 @@ each challenge in pastChallenges
     p= "Winner: " + challenge.winner.name
   if challenge.participating
     p= "Participated"
-  else 
+  else
     p= "Did not Participate"
 
 
@@ -57,7 +58,7 @@ script.
       type: "POST",
       data
     })
-    
+
     request.done(function(res) {
       form.replaceWith("Signed Up");
     });

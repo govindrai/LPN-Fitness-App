@@ -4,13 +4,14 @@ block content
 	h1= `Welcome to ${family.name}'s Show page`
 	h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
 	h2= 'Name: ' + user.fullName
-	h2= 'All time Points: ' + user.allTimePoints
+	h2= 'Lifetime Points: ' + user.lifetimePoints
 
-	each challenge in currentChallenges
+	if currentChallenge
+		- var challenge = currentChallenge
 		p= 'Current challenge: ' + challenge.name
 			if challenge.participation
 				p= 'Status: ' + 'participating'
-			else 
+			else
 				p= 'Status: ' + 'not participating'
 				a(href='/challenges') See upcoming challenges
 

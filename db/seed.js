@@ -16,7 +16,7 @@ var iolite,
   alexandrite,
   users,
   mile,
-  game, 
+  game,
   feet,
   meter,
   minute,
@@ -48,39 +48,39 @@ var iolite,
 var units = [
   new Unit({
     name: 'Mile',
-    abbreviation: 'mi' 
+    abbreviation: 'mi'
   }),
   new Unit({
     name: 'Game',
-    abbreviation: 'game' 
+    abbreviation: 'game'
   }),
   new Unit({
     name: 'Feet',
-    abbreviation: 'ft' 
+    abbreviation: 'ft'
   }),
   new Unit({
     name: 'Meter',
-    abbreviation: 'mm' 
+    abbreviation: 'mm'
   }),
   new Unit({
     name: 'Minute',
-    abbreviation: 'min' 
+    abbreviation: 'min'
   }),
   new Unit({
     name: 'Hour',
-    abbreviation: 'hr' 
+    abbreviation: 'hr'
   }),
   new Unit({
     name: 'Hole',
-    abbreviation: 'hole' 
+    abbreviation: 'hole'
   }),
   new Unit({
     name: 'Day',
-    abbreviation: 'day' 
+    abbreviation: 'day'
   }),
   new Unit({
     name: 'Jump',
-    abbreviation: 'jump' 
+    abbreviation: 'jump'
   })
 ];
 
@@ -146,7 +146,7 @@ nextYearMonth.setDate(nextYearMonth.getDate() + 415);
 
 var lastYear = new Date();
 lastYear.setDate(lastYear.getDate() - 365);
-    
+
 var lastYearMonth = new Date();
 lastYearMonth.setDate(lastYearMonth.getDate() - 300);
 
@@ -408,7 +408,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: iolite,
-      allTimePoints: 100
+      lifetimePoints: 100
     }),
     new User({
       email: 'michaelwen@gmail.com',
@@ -419,7 +419,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: topaz,
-      allTimePoints: 50
+      lifetimePoints: 50
     }),
     new User({
       email: 'adamwhitescarver@gmail.com',
@@ -430,7 +430,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: sunstone,
-      allTimePoints: 3000
+      lifetimePoints: 3000
     }),
     new User({
       email: 'steventrinh@gmail.com',
@@ -441,7 +441,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: emerald,
-      allTimePoints: 2500
+      lifetimePoints: 2500
     }),
     new User({
       email: 'callydai@gmail.com',
@@ -452,7 +452,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: topaz,
-      allTimePoints: 800
+      lifetimePoints: 800
     }),
     new User({
       email: 'brittanyyoung@gmail.com',
@@ -463,7 +463,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: ruby,
-      allTimePoints: 20
+      lifetimePoints: 20
     }),
     new User({
       email: 'patricklai@gmail.com',
@@ -474,7 +474,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: ruby,
-      allTimePoints: 45
+      lifetimePoints: 45
     }),
     new User({
       email: 'amandagieg@gmail.com',
@@ -485,7 +485,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: sapphire,
-      allTimePoints: 395
+      lifetimePoints: 395
     }),
     new User({
       email: 'shannonlee@gmail.com',
@@ -496,7 +496,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: iolite,
-      allTimePoints: 298
+      lifetimePoints: 298
     }),
     new User({
       email: 'stephenlee@gmail.com',
@@ -507,7 +507,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: sunstone,
-      allTimePoints: 400
+      lifetimePoints: 400
     }),
     new User({
       email: 'kevinau@gmail.com',
@@ -518,7 +518,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: sapphire,
-      allTimePoints: 50
+      lifetimePoints: 50
     }),
     new User({
       email: 'raigovind93@gmail.com',
@@ -529,7 +529,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: iolite,
-      allTimePoints: 100,
+      lifetimePoints: 100,
       admin: true
     }),
     new User({
@@ -541,7 +541,7 @@ removeModelObjs(Family)
       },
       password: '123456',
       family: emerald,
-      allTimePoints: 200,
+      lifetimePoints: 200,
       admin: true
     })];
   return createObjs(users);
@@ -552,132 +552,132 @@ removeModelObjs(Family)
 .then(() => {
   return assignUnits();
 })
-.then(() => { 
+.then(() => {
   var activities = [
     new Activity({
       name: 'Jump roping',
-      numberOfPoints: 1,
+      points: 1,
       scale: 150,
-      unit: jump 
+      unit: jump
     }),
     new Activity({
       name: 'Biking(<5 min pace)',
-      numberOfPoints: 2,
+      points: 2,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Biking(>5 min pace)',
-      numberOfPoints: 1,
+      points: 1,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Biking(elevation)',
-      numberOfPoints: 2,
+      points: 2,
       scale: 100,
       unit: feet
     }),
     new Activity({
       name: 'Elliptical',
-      numberOfPoints: 2,
+      points: 2,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Bowling',
-      numberOfPoints: 2,
+      points: 2,
       scale: 1,
       unit: game
     }),
     new Activity({
       name: 'Hiking',
       description: 'outdoors on trail',
-      numberOfPoints: 4,
+      points: 4,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Run/walk(10-15 min pace)',
-      numberOfPoints: 3,
+      points: 3,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Hiking(elevation)',
       description: 'after initial 1000ft.',
-      numberOfPoints: 1.5,
+      points: 1.5,
       scale: 100,
       unit: feet
     }),
     new Activity({
       name: 'Rowing',
-      numberOfPoints: 4,
+      points: 4,
       scale: 1500,
       unit: meter
     }),
     new Activity({
       name: 'Weightlifting',
       description: 'body weight exercises like pushups, pullups etc. included',
-      numberOfPoints: 4,
+      points: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
       name: 'Swimming',
-      numberOfPoints: 4,
+      points: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
       name: 'Abs',
       description: 'not in class',
-      numberOfPoints: 4,
+      points: 4,
       scale: 15,
       unit: minute
     }),
     new Activity({
       name: 'Running(<10 min pace)',
-      numberOfPoints: 4,
+      points: 4,
       scale: 1,
       unit: mile
     }),
     new Activity({
       name: 'Sports game',
       description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
-      numberOfPoints: 6,
+      points: 6,
       scale: 30,
       unit: minute
     }),
     new Activity({
       name: 'Fitness class',
       description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
-      numberOfPoints: 8,
+      points: 8,
       scale: 1,
       unit: hour
     }),
     new Activity({
       name: 'Golf',
-      numberOfPoints: 12,
+      points: 12,
       scale: 9,
       unit: hole
     }),
     new Activity({
       name: 'Intense workout',
       description: 'p90x, parkour, cycling class, crossfit',
-      numberOfPoints: 12,
+      points: 12,
       scale: 30,
       unit: minute
     }),
     new Activity({
       name: 'Surfing',
-      numberOfPoints: 12,
+      points: 12,
       scale: 1,
       unit: hour
     }),
     new Activity({
       name: 'Snowboarding',
-      numberOfPoints: 15,
+      points: 15,
       scale: 0.5,
       unit: day
     })
@@ -703,7 +703,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -715,7 +715,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -727,7 +727,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -739,7 +739,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -751,7 +751,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -763,7 +763,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -775,7 +775,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -787,7 +787,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -799,7 +799,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -811,7 +811,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -823,7 +823,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -835,7 +835,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -847,7 +847,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -859,7 +859,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -871,7 +871,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -883,7 +883,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -895,7 +895,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -907,7 +907,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -919,7 +919,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -931,7 +931,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -943,7 +943,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -955,7 +955,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -967,7 +967,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -979,7 +979,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -991,7 +991,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1003,7 +1003,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1015,7 +1015,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1027,7 +1027,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1039,7 +1039,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1051,7 +1051,7 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },
     // {
@@ -1063,6 +1063,6 @@ removeModelObjs(Family)
     //   },
     //   password: '123456',
     //   family: '',
-    //   allTimePoints:
+    //   lifetimePoints:
 
     // },

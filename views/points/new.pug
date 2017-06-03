@@ -5,24 +5,11 @@ append scripts
 
 block content
   h1 Add Points
+  form#add-points(action="/points" method="POST")
+    input(type='hidden', name="participation", value=participationId)
 
-  label Activity Name
-  input(id="typeahead" type="text")
-
-
-  //- form(action="/points", method="POST")
-  //-   | How many
-  //-   input(name='points' type='Number' required)
-  //-   | Unit
-  //-   select(name="unitId")
-  //-     each unit in units
-  //-       option(value=unit._id)= unit.name
-  //-   | Activity
-  //-   select(name="activity")
-  //-     each activity in activities
-  //-       option(value=activity._id)= activity.name
-
-  //-   input(type='submit' value='Add Points')
+    label Activity Name
+    input(id="typeahead" type="text")
 
   script.
     function getActivities() {
@@ -46,3 +33,35 @@ block content
         });
       });
     }
+
+    function getActivityData(ev, suggestion) {
+      var request = $.ajax({
+        url: '/activities/' + suggestion
+      });
+
+      request.done(res => {
+        $('#add-points').append(res);
+      });
+
+      request.fail(res => {
+        console.log("FAIL", res)
+      });
+    }
+
+    function calculatePoints() {
+      var activityPoints = $('#activity-points').text();
+      var activityPointsScale = $('#activity-points-scale').text();
+
+      var numOfUnits = $(this).val();
+      if (numOfUnits == "") {
+        $('#calculated-points').text(0);
+      } else {
+        $('#calculated-points').text((parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits));
+      }
+    }
+
+    $(document).ready(function() {
+      getActivities();
+      $('#typeahead').bind('typeahead:select', getActivityData);
+      $('body').on('keyup', '#num-of-units', calculatePoints);
+    })

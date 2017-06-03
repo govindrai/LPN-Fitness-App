@@ -9,17 +9,14 @@ var Challenge = require('./../models/challenge'),
 
 var router = express.Router();
 
-
-
 // GET list all challenges
 router.get('/', (req, res) => {
+	var currentChallenge, futureChallenges, pastChallenges
 	if (res.locals.loggedIn) {
-		var currentChallenges, futureChallenges, pastChallenges;
-
 		Challenge.getCurrentChallenge()
-		.then((challenges) => {
-			currentChallenges = challenges
-			return Participation.getParticipation(res.locals.user, currentChallenges);
+		.then((challenge) => {
+			currentChallenge = challenge
+			return Participation.getParticipation(res.locals.user, [currentChallenge]);
 		})
 		.then(() => {
 			return Challenge.getFutureChallenges();
@@ -36,7 +33,7 @@ router.get('/', (req, res) => {
 			return Participation.getParticipation(res.locals.user, pastChallenges);
 		})
 		.then(() => {
-			res.render('challenges/index', {currentChallenges, futureChallenges, pastChallenges});
+			res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
 		})
 		.catch(e => console.log(e));
 	} else {
