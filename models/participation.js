@@ -23,6 +23,10 @@ participationSchema.statics.getParticipation = function(user, challenges) {
   }));
 }
 
+participationSchema.statics.getParticipantsByFamily = function(challengeId, familyId) {
+  return Participation.find({challenge: challengeId}).populate('user').where({'user.family': familyId});
+}
+
 var Participation = mongoose.model('Participations', participationSchema);
 
 module.exports = Participation;
