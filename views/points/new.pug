@@ -5,9 +5,11 @@ append scripts
 
 block content
   h1 Add Points
+  form#add-points(action="/points" method="POST")
+    input(type='hidden', name="participation", value=participationId)
 
-  label Activity Name
-  input(id="typeahead" type="text")
+    label Activity Name
+    input(id="typeahead" type="text")
 
   script.
     function getActivities() {
@@ -41,7 +43,7 @@ block content
         });
 
         request.done(res => {
-          $('body').append(res);
+          $('#add-points').append(res);
         });
 
         request.fail(res => {

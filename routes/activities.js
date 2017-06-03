@@ -36,8 +36,6 @@ router.get('/new', (req, res) => {
 	});
 });
 
-// TODO Need middleware to check whether user registered for a current challenge and then set currentChallenge to that challenge
-
 // GET activity info
 router.get('/:activityName', (req, res) => {
 	if (req.xhr) {
