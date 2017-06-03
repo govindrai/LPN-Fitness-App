@@ -12,7 +12,7 @@ var activitySchema = new Schema({
 	description: {
 		type: String
 	},
-	numberOfPoints: {
+	points: {
 		type: Number,
 		required: true
 	},

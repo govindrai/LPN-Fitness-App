@@ -1,15 +1,14 @@
 input(type='hidden', name="activity", value=activity._id)
 
-div= `${activity.name}: <span id="points">${activity.numberOfPoints}</span> points for every <span id="scale">${activity.scale}</span> ${activity.unit.name}`
+div!= `${activity.name}: <span id="activity-points">${activity.points}</span> points for every <span id="activity-points-scale">${activity.scale} ${activity.unit.name}s`
 
 if activity.description
-  div= 'Description' + activity.description
+  div= 'Description: ' + activity.description
 
+label(for="numOfUnits")= `How many ${activity.unit.name}s?`
+input#num-of-units(type=text name="numofUnits")
 
-label(for="scale")= `How many ${activity.unit.name}s?`
-input#point-scale(type=text name="scale")
-
-label Point Value:
-div#point-value 0 #[span Points]
+label Point Calculator:
+div #[span#calculated-points() 0] Points
 
 input(type='submit' value='Add Points')

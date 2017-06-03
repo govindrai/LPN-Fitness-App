@@ -12,7 +12,7 @@ block content
 			tbody
 			each activity in activities
 				tr
-					td= activity.name 
-					td= activity.numberOfPoints + " points " + " for every " + activity.scale + " " + activity.unit.name
+					td= activity.name
+					td= activity.points + " points " + " for every " + activity.scale + " " + activity.unit.name
 					if activity.description != undefined
 					td= activity.description

@@ -11,11 +11,11 @@ var pointSchema = new Schema({
 		ref: 'Activity',
 		required: true
 	},
-	scale: {
+	numOfUnits: {
 		type: Number,
 		required: true
 	},
-	points: {
+	calculatedPoints: {
 		type: Number,
 		required: true
 	}

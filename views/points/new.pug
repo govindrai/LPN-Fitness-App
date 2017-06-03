@@ -49,16 +49,19 @@ block content
     }
 
     function calculatePoints() {
-      var activityPoints = $('#points').text();
-      var activityScale = $('#scale').text();
+      var activityPoints = $('#activity-points').text();
+      var activityPointsScale = $('#activity-points-scale').text();
 
-      var pointScale = this.val();
-
-      $('#point-calculator').text((parseInt(activityPoints) / parseInt(activityScale)) * parseInt(pointScale) + " Points");
+      var numOfUnits = $(this).val();
+      if (numOfUnits == "") {
+        $('#calculated-points').text(0);
+      } else {
+        $('#calculated-points').text((parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits));
+      }
     }
 
     $(document).ready(function() {
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
-      $('body').on('keyup', '#point-scale', calculatePoints)
+      $('body').on('keyup', '#num-of-units', calculatePoints);
     })
