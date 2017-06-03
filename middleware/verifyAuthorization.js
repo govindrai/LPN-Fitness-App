@@ -4,6 +4,7 @@ var User = require('./../models/user'),
 // Checks if the user is logged in
 function verifyAuthorization(req, res, next) {
   if (!req.session["x-auth"]) {
+    console.log("SESSION NOT FOUND");
     res.render('sessions/unauthorized');
   } else {
     User.verifyAuthorizationToken(req.session["x-auth"])

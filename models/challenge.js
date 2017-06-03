@@ -38,7 +38,7 @@ challengeSchema.pre('validate', function(next) {
 })
 
 challengeSchema.statics.getCurrentChallenge = function() {
-	return Challenge.find().where('date.start').lt(new Date()).where('date.end').gt(new Date());
+	return Challenge.findOne().where('date.start').lt(new Date()).where('date.end').gt(new Date());
 }
 
 challengeSchema.statics.getPastChallenges = function() {

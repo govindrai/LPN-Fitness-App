@@ -32,16 +32,16 @@ router.post('/', (req, res, next) => {
 
 // Family Show Page/ Authorized User Landing Page
 router.get('/:family_name', (req, res) => {
-    var currentChallenges, futureChallenges
+    var currentChallenge;
     Family.findOne({name: req.params["family_name"]})
     .then((family) => {
-    Challenge.getCurrentChallenge()
-    .then((challenges) => {
-      currentChallenges = challenges
-      return Participation.getParticipation(res.locals.user, currentChallenges);
+      Challenge.getCurrentChallenge()
+    .then((challenge) => {
+      currentChallenge = challenge;
+      return Participation.getParticipation(res.locals.user, [currentChallenge]);
     })
     .then(() => {
-      res.render('families/show', {family, currentChallenges});
+      res.render('families/show', {family, currentChallenge});
     })
     .catch(e => console.log(e));
   });

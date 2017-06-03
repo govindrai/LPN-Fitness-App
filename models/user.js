@@ -42,7 +42,7 @@ var userSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Family'
 	},
-	allTimePoints: {
+	lifetimePoints: {
 		type: Number,
 		default: 0
 	},

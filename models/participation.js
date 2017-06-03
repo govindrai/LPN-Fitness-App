@@ -15,28 +15,6 @@ var participationSchema = new Schema({
   }
 });
 
-// participationSchema.statics.getParticipation = function(user, challenges) {
-//   return new Promise((resolve, reject) => {
-//     challengesArray = [];
-//     challenges.forEach((challenge) => {
-//       Participation.findOne({user, challenge})
-//       .then((res) => {
-//         // console.log("RESULT", res);
-//         if (res) {
-//           var leanObj = challenge.toObject();
-//           // console.log("LEAN OBJ", leanObj);
-//           leanObj.participation = true;
-//           challengesArray.push(leanObj);
-//         }
-//       })
-//       .catch(e => reject(e));
-//     })
-//     // Challenges Array empty :(
-//     console.log("CHALLENGES ARRAY", challengesArray);
-//     resolve(challengesArray);
-//   });
-// }
-
 participationSchema.statics.getParticipation = function(user, challenges) {
   return Promise.all(challenges.map(challenge => {
     return Participation.findOne({user, challenge}).then(result => {
