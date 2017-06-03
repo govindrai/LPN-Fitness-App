@@ -3,6 +3,8 @@ var express = require('express');
 
 // Models
 var Family = require('./../models/family'),
+  Challenge = require('./../models/challenge'),
+  Participation = require('./../models/participation'),
   User = require('./../models/user');
 
 var router = express.Router();
@@ -30,11 +32,19 @@ router.post('/', (req, res, next) => {
 
 // Family Show Page/ Authorized User Landing Page
 router.get('/:family_name', (req, res) => {
+    var currentChallenges, futureChallenges
     Family.findOne({name: req.params["family_name"]})
     .then((family) => {
-      res.render('families/show', {family});
+    Challenge.getCurrentChallenge()
+    .then((challenges) => {
+      currentChallenges = challenges
+      return Participation.getParticipation(res.locals.user, currentChallenges);
+    })
+    .then(() => {
+      res.render('families/show', {family, currentChallenges});
     })
     .catch(e => console.log(e));
+  });
 });
 
 module.exports = router;
