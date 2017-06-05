@@ -36,16 +36,24 @@ script.
         maxDate.setDate(now.getDate() - 1);
       //- if after 12pm on a Monday
       } else {
+        //- minDate/maxDate should both be monday (already set)
+
+        //- Alternative Version where full range is available
         //- minDate already set to today
         //- set the maxDate to Sunday (6 days from today)
-        maxDate.setDate(now.getDate() + 6)
+        //- maxDate.setDate(now.getDate() + 6)
       }
     //- if not a Monday
     } else {
       //- set the minDate to the current date minus one less than the weekday number
       minDate.setDate(now.getDate() - (weekdayNumber - 1));
+      //- the maxDate should be the current date (already set);
+
+      //- Alternative Version where full range is available
+      //- minDate.setDate(now.getDate() - (weekdayNumber - 1));
+      //- minDate.setDate(now.getDate() - (weekdayNumber - 1));
       //- set the maxDate to the current date plus 7 less than the weekday number
-      maxDate.setDate(now.getDate() + (7 - weekdayNumber));
+      //- maxDate.setDate(now.getDate() + (7 - weekdayNumber));
     }
     return [minDate, maxDate];
   }
