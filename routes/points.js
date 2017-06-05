@@ -50,7 +50,7 @@ router.post('/', (req, res) => {
     });
 	})
   .then(() => {
-    res.redirect('/');
+    res.redirect(res.locals.home);
   })
   .catch((e) => console.log(e))
 });
