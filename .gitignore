@@ -2,6 +2,9 @@
 logs
 *.log
 
+# Redis Dump
+dump.rdb
+
 # Runtime data
 pids
 *.pid
