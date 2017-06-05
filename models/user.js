@@ -108,7 +108,7 @@ userSchema.statics.verifyAuthorizationToken = function(token) {
 			resolve(decoded);
 		});
 	}).then((decoded) => {
-		return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access})
+		return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
 	}).catch((e) => console.log(e));
 }
 

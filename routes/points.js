@@ -43,14 +43,14 @@ router.post('/', (req, res) => {
   var point = new Point(body);
   point.save().then((point) => {
     return new Promise((resolve, reject) => {
-      User.where({_id: body.user}).update({$inc: {allTimePoints: parseInt(body.calculatedPoints)}}, (err, res) => {
+      User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}}, (err, res) => {
         if (err) reject(err);
         resolve();
       });
     });
 	})
   .then(() => {
-    res.redirect('/');
+    res.redirect(res.locals.home);
   })
   .catch((e) => console.log(e))
 });

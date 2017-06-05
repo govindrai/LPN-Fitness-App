@@ -14,6 +14,7 @@ function verifyAuthorization(req, res, next) {
       }
       res.locals.loggedIn = true;
       res.locals.user = user;
+      res.locals.home = '/families/' + user.family.name
       return Challenge.getAllExceptPastChallenges();
     })
     .then((challengeCount) => {
