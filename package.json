@@ -5,11 +5,13 @@
   "scripts": {
     "start": "node ./bin/www",
     "nodemon": "nodemon ./bin/www -e .js",
-    "node-sass": "node-sass -w public/stylesheets/ -o public/stylesheets/"
+    "node-sass": "node-sass -w public/stylesheets/ -o public/stylesheets/",
+    "redis": "~/redis-3.2.9/src/redis-server"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.17.1",
+    "connect-redis": "^3.3.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
@@ -24,6 +26,7 @@
     "morgan": "~1.8.1",
     "node-sass-middleware": "0.9.8",
     "pug": "~2.0.0-beta11",
+    "redis": "^2.7.1",
     "serve-favicon": "~2.4.2",
     "typeahead.js": "^0.11.1",
     "validator": "^7.0.0"
