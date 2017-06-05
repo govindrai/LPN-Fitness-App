@@ -6,9 +6,17 @@ if activity.description
   div= 'Description: ' + activity.description
 
 label(for="numOfUnits")= `How many ${activity.unit.name}s?`
+<<<<<<< HEAD
 input#num-of-units(type=text name="numofUnits")
 
 label Point Calculator:
 div #[span#calculated-points() 0] Points
+=======
+input#num-of-units(type=text name="numOfUnits")
+
+label Point Calculator:
+div #[span#calculated-points() 0] Points
+input#calculatedPoints(type="hidden" name="calculatedPoints" value="0")
+>>>>>>> 146858f52f3c755adb16a753dbb519058981b2b5
 
 input(type='submit' value='Add Points')
