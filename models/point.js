@@ -11,6 +11,10 @@ var pointSchema = new Schema({
 		ref: 'Activity',
 		required: true
 	},
+	date: {
+		type: Date,
+		required: true
+	},
 	numOfUnits: {
 		type: Number,
 		required: true
