@@ -42,13 +42,8 @@ router.post('/', (req, res) => {
   body.user = res.locals.user._id;
   var point = new Point(body);
   point.save().then((point) => {
-    return new Promise((resolve, reject) => {
-      User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}}, (err, res) => {
-        if (err) reject(err);
-        resolve();
-      });
-    });
-	})
+      return User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}});
+  })
   .then(() => {
     res.redirect(res.locals.home);
   })
