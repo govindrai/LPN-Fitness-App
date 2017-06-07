@@ -42,11 +42,11 @@ challengeSchema.statics.getCurrentChallenge = function() {
 }
 
 challengeSchema.statics.getPastChallenges = function() {
-	return Challenge.find().populate('winner').where('date.end').lt(new Date());
+	return Challenge.find().populate('winner').where('date.end').lt(new Date()).sort('date.start');
 }
 
 challengeSchema.statics.getFutureChallenges = function() {
-	return Challenge.find().where('date.start').gt(new Date());
+	return Challenge.find().where('date.start').gt(new Date()).sort('date.start');
 }
 
 challengeSchema.statics.getAllExceptPastChallenges = function() {

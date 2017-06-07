@@ -13,12 +13,14 @@ html
     nav
       div LPN Fitness Challenge
       div
-        li
-          a(href="/") Home
         if !loggedIn
+          li
+            a(href="/") Home
           li
             a(href="/login") Login
         else
+          li
+            a(href=home) Home
           li
             a(href="/families") Families
           li
@@ -28,9 +30,9 @@ html
           li
             a(href="/settings") Settings
           li
-            a(href="/activities") Activities 
+            a(href="/activities") Activities
           li
-            a(href="/rules") Rules 
+            a(href="/rules") Rules
           li
             a(href="/logout") Logout
 

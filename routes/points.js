@@ -41,17 +41,12 @@ router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
 
 
 router.post('/', (req, res) => {
-  var body = _.pick(req.body, ['participation', 'activity', 'numOfUnits', 'calculatedPoints']);
+  var body = _.pick(req.body, ['participation', 'activity', 'date', 'numOfUnits', 'calculatedPoints']);
   body.user = res.locals.user._id;
   var point = new Point(body);
   point.save().then((point) => {
-    return new Promise((resolve, reject) => {
-      User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}}, (err, res) => {
-        if (err) reject(err);
-        resolve();
-      });
-    });
-	})
+      return User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}});
+  })
   .then(() => {
     res.redirect(res.locals.home);
   })
