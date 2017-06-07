@@ -12,6 +12,7 @@ var Activity = require('./../models/activity'),
 
 var router = express.Router();
 
+
 function checkParticipationInCurrentChallenge(req, res, next) {
   Challenge.getCurrentChallenge()
   .then(currentChallenge => {
@@ -36,6 +37,8 @@ router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
   })
   .catch(e => console.log(e));
 });
+
+
 
 router.post('/', (req, res) => {
   var body = _.pick(req.body, ['participation', 'activity', 'numOfUnits', 'calculatedPoints']);
