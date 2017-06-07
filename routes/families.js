@@ -32,16 +32,8 @@ router.post('/', (req, res, next) => {
 
 // Family Show Page/ Authorized User Landing Page
 router.get('/:family_name', (req, res) => {
-<<<<<<< HEAD
-    var currentChallenge;
-    Family.findOne({name: req.params["family_name"]})
-    .then((family) => {
-      Challenge.getCurrentChallenge()
-    .then((challenge) => {
-      currentChallenge = challenge;
-      return Participation.getParticipation(res.locals.user, [currentChallenge]);
-=======
-    var family, currentChallenge;
+    var family, currentChallenge, users;
+    var participatingUsers = [];
     Family.findOne({name: req.params["family_name"]})
     .then((familyObj) => {
       family = familyObj;
@@ -52,11 +44,11 @@ router.get('/:family_name', (req, res) => {
       return Participation.getParticipation(res.locals.user, [currentChallenge]);
     })
     .then(() => {
-      return Participation.getParticipantsByFamily(currentChallenge._id, family._id);
->>>>>>> 146858f52f3c755adb16a753dbb519058981b2b5
+      return Participation.getParticipationByFamily(currentChallenge._id, family._id);
     })
-    .then(() => {
-      res.render('families/show', {family, currentChallenge});
+    .then((familyParticipations) => {
+      console.log("familyParticipations", familyParticipations);
+      res.render('families/show', {family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
 });

@@ -15,6 +15,7 @@ var participationSchema = new Schema({
   }
 });
 
+// returns partcipation for a given user for specified challenges
 participationSchema.statics.getParticipation = function(user, challenges) {
   return Promise.all(challenges.map(challenge => {
     return Participation.findOne({user, challenge}).then(result => {
@@ -23,8 +24,10 @@ participationSchema.statics.getParticipation = function(user, challenges) {
   }));
 }
 
-participationSchema.statics.getParticipantsByFamily = function(challengeId, familyId) {
-  return Participation.find({challenge: challengeId}).populate('user').where({'user.family': familyId});
+// returns participation objs for a certain challenge and family
+participationSchema.statics.getParticipationByFamily = function(challengeId, familyId) {
+  return Participation.find({challenge: challengeId}).populate('user')
+  // .where({'user.family': familyId});
 }
 
 var Participation = mongoose.model('Participations', participationSchema);

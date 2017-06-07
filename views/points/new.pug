@@ -55,16 +55,11 @@ block content
       var numOfUnits = $(this).val();
       if (numOfUnits == "") {
         $('#calculated-points').text(0);
-<<<<<<< HEAD
-      } else {
-        $('#calculated-points').text((parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits));
-=======
         $('#calculatedPoints').val(0);
       } else {
         var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
         $('#calculated-points').text(calculation);
         $('#calculatedPoints').val(calculation);
->>>>>>> 146858f52f3c755adb16a753dbb519058981b2b5
       }
     }
 

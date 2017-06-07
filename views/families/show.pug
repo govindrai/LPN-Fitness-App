@@ -6,6 +6,8 @@ block content
 	h2= 'Name: ' + user.fullName
 	h2= 'Lifetime Points: ' + user.lifetimePoints
 
+	hr
+		
 	if currentChallenge
 		- var challenge = currentChallenge
 		p= 'Current challenge: ' + challenge.name
@@ -15,3 +17,9 @@ block content
 				p= 'Status: ' + 'not participating'
 				a(href='/challenges') See upcoming challenges
 
+	hr
+
+	| Current Challenge Participants
+	each participation in familyParticipations
+		p= participation.user.name.first
+		p= participation.user.lifetimePoints
