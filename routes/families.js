@@ -64,13 +64,6 @@ router.get('/:familyName', (req, res) => {
     })
     .then((participations) => {
       familyParticipations = participations;
-      participation = familyParticipations.filter((participation) => {
-        return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');
-    })
-    .then((points) => {
-      console.log('points', points);
       res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
@@ -82,6 +75,16 @@ router.get('/calendar', (req, res) => {
     res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
   }
 });
+
+router.get('/points', (req, res) => {
+  if (req.xhr) {
+    participation = familyParticipations.filter((participation) => {
+        return participation.user._id.toString() == res.locals.user._id.toString();
+      });
+      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');
+    res.send()
+  }
+})
 
 
 module.exports = router;
