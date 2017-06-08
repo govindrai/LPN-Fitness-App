@@ -10,4 +10,7 @@ a {
 input, select {
   display: block; }
 
+#weekdays, #dates {
+  display: flex; }
+
 /*# sourceMappingURL=style.css.map */
