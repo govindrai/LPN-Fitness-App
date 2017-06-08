@@ -52,7 +52,6 @@ router.get('/:family_name', (req, res) => {
       participation = familyParticipations.filter((participation) => {
         return participation.user._id.toString() == res.locals.user._id.toString();
       })
-      console.log(participation)
       return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z')
     })
     .then((points) => {
