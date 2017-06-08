@@ -144,7 +144,7 @@ userSchema.statics.getNonAdmins = function() {
 
 userSchema.statics.getFamilyMembers = function(family_id) {
 	return User.find({family_id})
-}
+};
 
 userSchema.virtual('fullName').get(function() {
   return this.name.first + ' ' + this.name.last;

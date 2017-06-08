@@ -53,6 +53,10 @@ challengeSchema.statics.getAllExceptPastChallenges = function() {
 	return Challenge.find().where('date.end').gt(new Date()).count();
 }
 
+challengeSchema.statics.getChallengeByDate = function(date) {
+	return Challenge.find().where('date.start').lt(new Date(date)).where('date.end').gt(new Date(date));
+};
+
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
