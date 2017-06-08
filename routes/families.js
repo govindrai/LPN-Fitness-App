@@ -6,6 +6,7 @@ var express = require('express'),
 var Family = require('./../models/family'),
   Challenge = require('./../models/challenge'),
   Participation = require('./../models/participation'),
+  Point = require('./../models/point'),
   User = require('./../models/user');
 
 var router = express.Router();
@@ -43,9 +44,9 @@ function weekDates() {
   return dates;
 }
 
-// Family Show Page/ Authorized User Landing Page
+// Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-    var family, currentChallenge, users;
+    var family, currentChallenge, users, familyParticipations, participation;
     var participatingUsers = [];
     var dates = weekDates();
 
@@ -61,9 +62,16 @@ router.get('/:familyName', (req, res) => {
     .then(() => {
       return Participation.getParticipationByFamily(currentChallenge._id, family._id);
     })
-    .then((familyParticipations) => {
-      console.log("familyParticipations", familyParticipations);
-      res.render('families/show', {dates,family, familyParticipations, currentChallenge});
+    .then((participations) => {
+      familyParticipations = participations;
+      participation = familyParticipations.filter((participation) => {
+        return participation.user._id.toString() == res.locals.user._id.toString();
+      });
+      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');
+    })
+    .then((points) => {
+      console.log('points', points);
+      res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
 });

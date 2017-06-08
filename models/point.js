@@ -29,6 +29,11 @@ pointSchema.methods.getUnitName = function(){
 	return this.activity.unit.name ;
 };
 
+pointSchema.statics.getPointsByDay = function(participation, day){
+	return Point.find({participation: participation,
+		date: day });
+};
+
 var Point = mongoose.model('Point', pointSchema);
 
 module.exports = Point;
