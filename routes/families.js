@@ -78,10 +78,6 @@ router.get('/calendar', (req, res) => {
 
 router.get('/points', (req, res) => {
   if (req.xhr) {
-    participation = familyParticipations.filter((participation) => {
-        return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');
     res.send()
   }
 })
