@@ -69,21 +69,12 @@ router.get('/calendar', (req, res) => {
   }
 });
 
-router.get('/points', (req, res) => {
+// gets point objs for a certain date
+router.post('/points', (req, res) => {
   if (req.xhr) {
-    var currentChallenge, participation;
-    Challenge.getCurrentChallenge()
-    .then((challenge) => {
-      currentChallenge = challenge;
-      return Participation.getParticipation(res.locals.user, [currentChallenge]);
-    })
-    .then(() => {
-      Participation.findOne({user: res.locals.user, challenge: currentChallenge._id});
-    })
-    .then((participation) => {
-      console.log(participation);
-      console.log(req.query.date);
-      return Point.getPointsByDay(participation, req.query.date);
+    Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
+    .then(participation => {
+      return Point.getPointsByDay(participation, req.body.date);
     })
     .then((points) => {
       console.log(points);

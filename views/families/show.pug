@@ -54,4 +54,23 @@ block footer-scripts
 			});
 		}
 
-		$('#calendar-head').on('click', '.change-week', getCalendarHead)
+		function getPoints(e) {
+			var date = $(this).data('date')
+			var request = $.ajax({
+				data: {date},
+				url: '/families/points',
+				type: 'POST'
+			});
+
+			request.done((res) => {
+			console.log("hello");
+			console.log(res)
+				$('#calendar-head').append(res);
+			});
+
+			request.fail((res) => {
+			console.log("Error", res)
+			});
+		}
+		$('#calendar-head').on('click', '.change-week', getCalendarHead);
+		$('#calendar-head').on('click', '#dates div', getPoints);

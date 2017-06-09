@@ -65,7 +65,4 @@ input, select {
 #weekdays div, #dates div {
   width: 14%; }
 
-#weekdays, #dates {
-  display: flex; }
-
 /*# sourceMappingURL=style.css.map */
