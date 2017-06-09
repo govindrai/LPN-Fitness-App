@@ -94,5 +94,4 @@ router.get('/:familyName', (req, res) => {
     .catch(e => console.log(e));
 });
 
-
 module.exports = router;
