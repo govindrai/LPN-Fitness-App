@@ -31,7 +31,6 @@ function checkParticipationInCurrentChallenge(req, res, next) {
 router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
   Activity.find({}).then((activities) => {
     Point.find({}).populate('activity').then((points) => {
-      var activitiesArray = [];
       res.render('points/new', {points, activities});
     });
   })
@@ -52,5 +51,18 @@ router.post('/', (req, res) => {
   })
   .catch((e) => console.log(e))
 });
+
+router.put('/:_id', function(req, res) {
+    console.log("Made it here");
+    Point.findOneAndUpdate({_id: req.params._id}, {$set: req.body}).then((point) => {
+    res.render('points/edit', {point}); 
+  }).catch(e => console.log(e)); 
+});
+
+router.delete('/:_id', function(req, res) {
+  console.log("DELETE");
+  req.params.
+
+})
 
 module.exports = router;
