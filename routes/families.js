@@ -1,5 +1,6 @@
 // Modules
 var express = require('express'),
+  path = require('path'),
   pug = require('pug');
 
 // Models
@@ -32,15 +33,31 @@ router.post('/', (req, res, next) => {
 	}).catch(e => console.log(e));
 });
 
-function weekDates() {
-  var today = new Date();
-  today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  var day = today.getDay();
-  var monday = new Date(today.setDate(today.getDate() - (day - 1)));
-  var dates = [new Date(monday)];
-  for (var i = 0; i < 6; i++) {
-    dates.push(new Date(monday.setDate(monday.getDate() + 1)));
+router.post('/calendar', (req, res) => {
+  if (req.xhr) {
+    res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
   }
+});
+
+function weekDates(weekInfo) {
+  var startDate;
+  if (typeof weekInfo == 'object') {
+    startDate = new Date(weekInfo.date);
+    if (weekInfo.direction == 'previous') {
+      startDate.setDate(startDate.getDate() - 7);
+    } else {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  } else {
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var day = today.getDay();
+    startDate = new Date(today.setDate(today.getDate() - (day - 1)));
+  }
+  var dates = [new Date(startDate)];
+    for (var i = 0; i < 6; i++) {
+      dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
+    }
   console.log(dates);
   return dates;
 }
@@ -75,15 +92,6 @@ router.get('/:familyName', (req, res) => {
       res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
-});
-
-router.get('/calendar', (req, res) => {
-  if (req.xhr) {
-    console.log(res.params);
-    console.log(res.body);
-    dates = [5,6,7,8,9,10,11];
-    res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
-  }
 });
 
 

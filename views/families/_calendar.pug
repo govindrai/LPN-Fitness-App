@@ -12,13 +12,7 @@ div#calendar-head
       div S
       div S
     div#dates
-      div#monday(data-date=dates[0])= dates[0].getDate()
-      div(data-date=dates[1])= dates[1].getDate()
-      div(data-date=dates[2])= dates[2].getDate()
-      div(data-date=dates[3])= dates[3].getDate()
-      div(data-date=dates[4])= dates[4].getDate()
-      div(data-date=dates[5])= dates[5].getDate()
-      div#sunday(data-date=dates[6])= dates[6].getDate()
+      include ./_calendar_dates
   div.col-2
     if true
       button#next.change-week &rarr;
@@ -26,7 +20,28 @@ div#calendar-head
 script.
   function getCalendarHead(e) {
     e.preventDefault();
-    var direction = $(this).attr('id');
+    var data = {};
+    data.direction = $(this).attr('id');
+
+    if (data.direction == 'next') {
+      data.date = $('#sunday').data('date');
+    } else {
+      data.date = $('#monday').data('date');
+    }
+
+    var request = $.ajax({
+      url: "/families/calendar",
+      data,
+      type: "POST"
+    });
+
+    request.done((response) => {
+      $('#dates').html(response);
+    });
+
+    request.fail(() => {
+      console.log("Getting Calendar Head failed");
+    });
   }
 
   $('#calendar-head').on('click', '.change-week', getCalendarHead)
