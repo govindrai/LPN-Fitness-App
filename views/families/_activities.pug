@@ -1,6 +1,14 @@
-each point in points
-	p= point.activity.name
-	p= point.numOfUnits
-	p= point.activity.unit.name
-	p= point.calculatedPoints
-
+table
+		thead
+			tr
+				td Activity
+				td Number of
+				td Units
+				td Calculated Points
+		tbody
+		each point in points
+			tr
+				td= point.activity.name
+				td= point.numOfUnits
+				td= point.activity.unit.name
+				td= point.calculatedPoints
