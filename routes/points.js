@@ -66,12 +66,14 @@ router.put('/:_id', function(req, res) {
   }).catch(e => console.log(e)); 
 });
 
-router.delete('/:_id', function(req, res) {
-  console.log("DELETE");
-  Point.remove({_id: req.params._id})
-  .then((doc) => {
-    console.log('Success')
-  }).catch(e => console.log(e));
+router.delete('/', function(req, res) {
+  if (req.xhr) {
+    Point.remove({_id: req.body.point})
+    .then((doc) => {
+      res.status(200).send("Deleted!");
+    })
+    .catch(e => console.log(e));
+  }
 });
 
 module.exports = router;

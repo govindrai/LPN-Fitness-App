@@ -56,21 +56,19 @@ block footer-scripts
 
     function deletePoint(e) {
       e.preventDefault();
+      var point = $(this).parent().parent();
 
-      var confirmation = confirm("Are you sure you want to delete?");
-
-      if (confirmation == true) {
-        var element = $(this);
-
-        var request = $.ajax({
+      var request = $.ajax({
         type: 'DELETE',
-        url: $(this).attr('href')})
+        url: '/points',
+        data: { point: point.data('point') }
+      });
 
-        request.done((res) => {
-         console.log("HELP")
-        })
-        request.fail((res) => console.log(res))
-        }
+      request.done(res => {
+        point.remove();
+      });
+
+      request.fail(res => console.log(res));
     }
 
     function getPoints(e) {
@@ -82,8 +80,6 @@ block footer-scripts
       });
 
       request.done((res) => {
-      console.log("hello");
-      console.log(res)
         $('#points-body').html(res);
       });
 
@@ -93,4 +89,4 @@ block footer-scripts
     }
     $('#calendar-head').on('click', '.change-week', getCalendarHead);
     $('#calendar-head').on('click', '#dates div', getPoints);
-    $('#points-body').on('click', '.linkdeletepoint', deletePoint);
+    $('#points-body').on('click', '.delete-point', deletePoint);

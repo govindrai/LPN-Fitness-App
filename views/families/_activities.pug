@@ -7,10 +7,10 @@ table
 				td Calculated Points
 		tbody
 		each point in points
-			tr
+			tr(data-point=point._id)
 				td= point.activity.name
 				td= point.numOfUnits
 				td= point.activity.unit.name
 				td= point.calculatedPoints
-					a(href=`/points/${point._id}`) Edit
-					a(class='linkdeletepoint' href=`/points/${point._id}`) Delete
+				td #[button Edit]
+				td #[button.delete-point Delete]
