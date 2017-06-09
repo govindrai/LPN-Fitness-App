@@ -25,12 +25,12 @@ router.get('/new', function(req, res) {
 });
 
 router.post('/', (req, res, next) => {
-	var family = new Family(req.body);
+  var family = new Family(req.body);
 
-	family.save().then(() => {
+  family.save().then(() => {
     res.params({added: true});
-		res.redirect('/families');
-	}).catch(e => console.log(e));
+    res.redirect('/families');
+  }).catch(e => console.log(e));
 });
 
 router.post('/calendar', (req, res) => {
@@ -62,9 +62,39 @@ function weekDates(weekInfo) {
   return dates;
 }
 
+router.get('/calendar', (req, res) => {
+  if (req.xhr) {
+    dates = [5,6,7,8,9,10,11];
+    res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
+  }
+});
+
+router.get('/points', (req, res) => {
+  if (req.xhr) {
+    var currentChallenge, participation;
+    Challenge.getCurrentChallenge()
+    .then((challenge) => {
+      currentChallenge = challenge;
+      return Participation.getParticipation(res.locals.user, [currentChallenge]);
+    })
+    .then(() => {
+      Participation.findOne({user: res.locals.user, challenge: currentChallenge._id});
+    })
+    .then((participation) => {
+      console.log(participation);
+      console.log(req.query.date);
+      return Point.getPointsByDay(participation, req.query.date);
+    })
+    .then((points) => {
+      console.log(points);
+      res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points}));
+    });
+  }
+});
+
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-    var family, currentChallenge, users, familyParticipations, participation;
+    var family, currentChallenge, users, participation;
     var participatingUsers = [];
     var dates = weekDates();
 
@@ -80,15 +110,7 @@ router.get('/:familyName', (req, res) => {
     .then(() => {
       return Participation.getParticipationByFamily(currentChallenge._id, family._id);
     })
-    .then((participations) => {
-      familyParticipations = participations;
-      participation = familyParticipations.filter((participation) => {
-        return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');
-    })
-    .then((points) => {
-      console.log('points', points);
+    .then((familyParticipations) => {
       res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
