@@ -1,5 +1,7 @@
 div#calendar-head
-  div#previous-week.col-2 &larr;
+  div.col-2
+    if true
+      button#previous.change-week &larr;
   div#calendar.col-8
     div#weekdays
       div M
@@ -10,11 +12,21 @@ div#calendar-head
       div S
       div S
     div#dates
-      div(data-date=dates[0])= dates[0].getDate()
+      div#monday(data-date=dates[0])= dates[0].getDate()
       div(data-date=dates[1])= dates[1].getDate()
       div(data-date=dates[2])= dates[2].getDate()
       div(data-date=dates[3])= dates[3].getDate()
       div(data-date=dates[4])= dates[4].getDate()
       div(data-date=dates[5])= dates[5].getDate()
-      div(data-date=dates[6])= dates[6].getDate()
-  div#next-week.col-2 &rarr;
+      div#sunday(data-date=dates[6])= dates[6].getDate()
+  div.col-2
+    if true
+      button#next.change-week &rarr;
+
+script.
+  function getCalendarHead(e) {
+    e.preventDefault();
+    var direction = $(this).attr('id');
+  }
+
+  $('#calendar-head').on('click', '.change-week', getCalendarHead)

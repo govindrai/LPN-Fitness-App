@@ -34,6 +34,7 @@ router.post('/', (req, res, next) => {
 
 function weekDates() {
   var today = new Date();
+  today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   var day = today.getDay();
   var monday = new Date(today.setDate(today.getDate() - (day - 1)));
   var dates = [new Date(monday)];
@@ -78,6 +79,8 @@ router.get('/:familyName', (req, res) => {
 
 router.get('/calendar', (req, res) => {
   if (req.xhr) {
+    console.log(res.params);
+    console.log(res.body);
     dates = [5,6,7,8,9,10,11];
     res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
   }
