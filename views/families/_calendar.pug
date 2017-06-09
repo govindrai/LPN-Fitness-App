@@ -23,7 +23,7 @@ script.
   function getPoints(e) {
     var date = $(this).data('date')
     var request = $.ajax({
-      data: date,
+      data: "date=" + date,
       url: '/families/points',
       type: 'GET'
     });

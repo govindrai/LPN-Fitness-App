@@ -52,27 +52,24 @@ router.get('/calendar', (req, res) => {
 });
 
 router.get('/points', (req, res) => {
-  var currentChallenge, users, participation;
+  var currentChallenge, participation;
+  if (req.xhr) {
     Challenge.getCurrentChallenge()
     .then((challenge) => {
       currentChallenge = challenge;
       return Participation.getParticipation(res.locals.user, [currentChallenge]);
     })
     .then(() => {
-      return Participation.getParticipationByFamily(currentChallenge._id, res.locals.user.family._id);
-    })
-    .then((familyParticipations) => {
-      participation = familyParticipations.filter((participation) => {
-        return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-      return participation
-    })
+      Participation.findOne({user: res.locals.user, challenge: currentChallenge._id})
     .then((participation) => {
-     if (req.xhr) {
-      res.send(participation)
-      };
+      return Point.getPointsByDay(participation, req.query.date)
+    .then((points) => {
+      res.send(points)
+    })
     })
   })
+  }
+}) 
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
