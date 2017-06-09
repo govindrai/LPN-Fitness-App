@@ -24,12 +24,12 @@ router.get('/new', function(req, res) {
 });
 
 router.post('/', (req, res, next) => {
-	var family = new Family(req.body);
+  var family = new Family(req.body);
 
-	family.save().then(() => {
+  family.save().then(() => {
     res.params({added: true});
-		res.redirect('/families');
-	}).catch(e => console.log(e));
+    res.redirect('/families');
+  }).catch(e => console.log(e));
 });
 
 function weekDates() {
@@ -43,6 +43,36 @@ function weekDates() {
   console.log(dates);
   return dates;
 }
+
+router.get('/calendar', (req, res) => {
+  if (req.xhr) {
+    dates = [5,6,7,8,9,10,11];
+    res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
+  }
+});
+
+router.get('/points', (req, res) => {
+  var currentChallenge, users, participation;
+    Challenge.getCurrentChallenge()
+    .then((challenge) => {
+      currentChallenge = challenge;
+      return Participation.getParticipation(res.locals.user, [currentChallenge]);
+    })
+    .then(() => {
+      return Participation.getParticipationByFamily(currentChallenge._id, res.locals.user.family._id);
+    })
+    .then((familyParticipations) => {
+      participation = familyParticipations.filter((participation) => {
+        return participation.user._id.toString() == res.locals.user._id.toString();
+      });
+      return participation
+    })
+    .then((participation) => {
+     if (req.xhr) {
+      res.send(participation)
+      };
+    })
+  })
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
@@ -63,30 +93,11 @@ router.get('/:familyName', (req, res) => {
       return Participation.getParticipationByFamily(currentChallenge._id, family._id);
     })
     .then((familyParticipations) => {
-      console.log("FAMILY PARTICIPATIONS: ", familyParticipations);
       res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
 });
 
-router.get('/calendar', (req, res) => {
-  if (req.xhr) {
-    dates = [5,6,7,8,9,10,11];
-    res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
-  }
-});
-
-router.get('/points', (req, res) => {
-  Challenge.getCurrentChallenge()
-  .then((challenge) => {
-    return Participation.getParticipation(res.locals.user, [challenge])
-  })
-  .then((participation) => {
-    if (req.xhr) {
-      res.send(participation)
-    };
-  })
-})
 
 
 module.exports = router;
