@@ -29,7 +29,8 @@ script.
     });
 
     request.done((res) => {
-      console.log(res)
+    console.log(res)
+      $('#calendar-head').append(res);
     });
 
     request.fail((res) => {

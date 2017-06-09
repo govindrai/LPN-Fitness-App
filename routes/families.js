@@ -62,9 +62,12 @@ router.get('/points', (req, res) => {
     .then(() => {
       Participation.findOne({user: res.locals.user, challenge: currentChallenge._id})
     .then((participation) => {
+      console.log(participation)
+      console.log(req.query.date)
       return Point.getPointsByDay(participation, req.query.date)
     .then((points) => {
-      res.send(points)
+      console.log(points)
+      res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points}));
     })
     })
   })
