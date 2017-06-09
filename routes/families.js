@@ -1,5 +1,6 @@
 // Modules
 var express = require('express'),
+  path = require('path'),
   pug = require('pug');
 
 // Models
@@ -32,14 +33,31 @@ router.post('/', (req, res, next) => {
   }).catch(e => console.log(e));
 });
 
-function weekDates() {
-  var today = new Date();
-  var day = today.getDay();
-  var monday = new Date(today.setDate(today.getDate() - (day - 1)));
-  var dates = [new Date(monday)];
-  for (var i = 0; i < 6; i++) {
-    dates.push(new Date(monday.setDate(monday.getDate() + 1)));
+router.post('/calendar', (req, res) => {
+  if (req.xhr) {
+    res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
   }
+});
+
+function weekDates(weekInfo) {
+  var startDate;
+  if (typeof weekInfo == 'object') {
+    startDate = new Date(weekInfo.date);
+    if (weekInfo.direction == 'previous') {
+      startDate.setDate(startDate.getDate() - 7);
+    } else {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  } else {
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var day = today.getDay();
+    startDate = new Date(today.setDate(today.getDate() - (day - 1)));
+  }
+  var dates = [new Date(startDate)];
+    for (var i = 0; i < 6; i++) {
+      dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
+    }
   console.log(dates);
   return dates;
 }
@@ -51,28 +69,19 @@ router.get('/calendar', (req, res) => {
   }
 });
 
-router.get('/points', (req, res) => {
-  var currentChallenge, participation;
+// gets point objs for a certain date
+router.post('/points', (req, res) => {
   if (req.xhr) {
-    Challenge.getCurrentChallenge()
-    .then((challenge) => {
-      currentChallenge = challenge;
-      return Participation.getParticipation(res.locals.user, [currentChallenge]);
+    Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
+    .then(participation => {
+      return Point.getPointsByDay(participation, req.body.date);
     })
-    .then(() => {
-      Participation.findOne({user: res.locals.user, challenge: currentChallenge._id})
-    .then((participation) => {
-      console.log(participation)
-      console.log(req.query.date)
-      return Point.getPointsByDay(participation, req.query.date)
     .then((points) => {
-      console.log(points)
+      console.log(points);
       res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points}));
-    })
-    })
-  })
+    });
   }
-}) 
+});
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
@@ -97,7 +106,5 @@ router.get('/:familyName', (req, res) => {
     })
     .catch(e => console.log(e));
 });
-
-
 
 module.exports = router;

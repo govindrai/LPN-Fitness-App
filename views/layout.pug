@@ -5,7 +5,7 @@ html
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     link(rel='stylesheet', href='/stylesheets/style.css')
-    block scripts
+    block head-scripts
       script(src="/libs/jquery.min.js")
       script(src="/javascripts/main.js")
 
@@ -37,3 +37,5 @@ html
             a(href="/logout") Logout
 
     block content
+
+    block footer-scripts

@@ -10,15 +10,19 @@ function verifyAuthorization(req, res, next) {
     User.verifyAuthorizationToken(req.session["x-auth"])
     .then((user) => {
       if (!user) {
-        res.status(404).send('UNAUTHORIZED.')
+        res.status(404).send('UNAUTHORIZED.');
       }
       res.locals.loggedIn = true;
       res.locals.user = user;
-      res.locals.home = '/families/' + user.family.name
+      res.locals.home = '/families/' + user.family.name;
       return Challenge.getAllExceptPastChallenges();
     })
-    .then((challengeCount) => {
+    .then(challengeCount => {
       res.locals.challengeCount = challengeCount;
+      return Challenge.getCurrentChallenge();
+    })
+    .then(currentChallenge => {
+      res.locals.currentChallenge = currentChallenge;
       next();
     })
     .catch((e) => console.log(e));

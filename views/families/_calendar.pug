@@ -1,39 +1,19 @@
 div#calendar-head
-  div#weekdays
-    div M
-    div T
-    div W
-    div T
-    div F
-    div S
-    div S
-  div#dates
-    div(data-date=dates[0])= dates[0].getDate()
-    div(data-date=dates[1])= dates[1].getDate()
-    div(data-date=dates[2])= dates[2].getDate()
-    div(data-date=dates[3])= dates[3].getDate()
-    div(data-date=dates[4])= dates[4].getDate()
-    div(data-date=dates[5])= dates[5].getDate()
-    div(data-date=dates[6])= dates[6].getDate()
-
-
-script.
-  $('#calendar-head').on('click', '#dates div', getPoints);
-
-  function getPoints(e) {
-    var date = $(this).data('date')
-    var request = $.ajax({
-      data: "date=" + date,
-      url: '/families/points',
-      type: 'GET'
-    });
-
-    request.done((res) => {
-    console.log(res)
-      $('#calendar-head').append(res);
-    });
-
-    request.fail((res) => {
-    console.log("Error", res)
-    });
-  }
+  div.col-2
+    if true
+      button#previous.change-week &larr;
+  div#calendar.col-8
+    div#weekdays
+      div M
+      div T
+      div W
+      div T
+      div F
+      div S
+      div S
+    div#dates
+      include ./_calendar_dates
+  div.col-2
+    if true
+      button#next.change-week &rarr;
+div#points-body

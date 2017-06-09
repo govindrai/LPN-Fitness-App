@@ -48,12 +48,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({
-  store: new RedisStore,
+  store: new RedisStore(),
   resave: false,
   saveUninitialized: false,
   cookie: {maxAge: 7776000000},
   secret: 'secret'
 }));
+
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
@@ -62,8 +63,8 @@ app.use(sassMiddleware({
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/libs', express.static(__dirname + '/node_modules/jquery/dist/'));
-app.use('/libs', express.static(__dirname + '/node_modules/typeahead.js/dist/'));
+app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/')));
+app.use('/libs', express.static(path.join(__dirname, '/node_modules/typeahead.js/dist/')));
 
 app.use('/', index);
 app.use(verifyAuthorization);
