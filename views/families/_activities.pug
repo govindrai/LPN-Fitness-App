@@ -12,4 +12,5 @@ table
 				td= point.numOfUnits
 				td= point.activity.unit.name
 				td= point.calculatedPoints
-				td= a(href="/points/edit") Home
+					a(href=`/points/${point._id}`) Edit
+					a(href=`/points/${point._id}`) Delete

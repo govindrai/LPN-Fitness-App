@@ -61,8 +61,10 @@ router.put('/:_id', function(req, res) {
 
 router.delete('/:_id', function(req, res) {
   console.log("DELETE");
-  req.params.
-
-})
+  Point.remove({_id: req.params._id})
+  .then((doc) => {
+    console.log('Success')
+  }).catch(e => console.log(e));
+});
 
 module.exports = router;
