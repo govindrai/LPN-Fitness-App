@@ -29,7 +29,13 @@ block content
 
 	script.
 		$(document).ready(function(){
-			
+			dateListener();
 		})
 
 
+		var dateListener = function(){
+			$('body').on('click', '#dates', function(){
+				var hello = $(this).closest('div').html();
+				console.log(hello);
+			})
+		}

@@ -46,7 +46,7 @@ function weekDates() {
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-    var family, currentChallenge, users, familyParticipations, participation;
+    var family, currentChallenge, users, participation;
     var participatingUsers = [];
     var dates = weekDates();
 
@@ -62,15 +62,9 @@ router.get('/:familyName', (req, res) => {
     .then(() => {
       return Participation.getParticipationByFamily(currentChallenge._id, family._id);
     })
-    .then((participations) => {
-      familyParticipations = participations;
-      return familyParticipations.filter((participation) => {
-        return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-    })
-    .then((currentParticipation) => {
-      participation = currentParticipation;
-      res.render('families/show', {dates, family, participation, familyParticipations, currentChallenge});
+    .then((familyParticipations) => {
+      console.log("FAMILY PARTICIPATIONS: ", familyParticipations);
+      res.render('families/show', {dates, family, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
 });
@@ -83,9 +77,15 @@ router.get('/calendar', (req, res) => {
 });
 
 router.get('/points', (req, res) => {
-  if (req.xhr) {
-    res.send()
-  }
+  Challenge.getCurrentChallenge()
+  .then((challenge) => {
+    return Participation.getParticipation(res.locals.user, [challenge])
+  })
+  .then((participation) => {
+    if (req.xhr) {
+      res.send(participation)
+    };
+  })
 })
 
 
