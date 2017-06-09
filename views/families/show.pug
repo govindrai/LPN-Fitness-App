@@ -1,7 +1,6 @@
 extends ../layout
 
 block content
-
 	include ./_calendar
 
 	h1= `Welcome to ${family.name}'s Show page`
@@ -27,21 +26,10 @@ block content
 		p= participation.user.name.first
 		p= participation.user.lifetimePoints
 
-	script.
-		$(document).ready(function() {
-      getActivities();
-      $('#typeahead').bind('typeahead:select', getActivityData);
-      $('body').on('keyup', '#num-of-units', calculatePoints);
-    })
-    
-		function getParticipation() {
-			participation = familyParticipations.filter((participation) => {
-      	return participation.user._id.toString() == res.locals.user._id.toString();
-      });
-		};
 
-		function getPoints() {
-			$.ajax({
-			data: 
-			})
-      return Point.getPointsByDay(participation, '2017-06-08 07:00:00.000Z');		}
+	script.
+		$(document).ready(function(){
+			
+		})
+
+

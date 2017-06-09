@@ -64,7 +64,13 @@ router.get('/:familyName', (req, res) => {
     })
     .then((participations) => {
       familyParticipations = participations;
-      res.render('families/show', {dates, family, familyParticipations, currentChallenge});
+      return familyParticipations.filter((participation) => {
+        return participation.user._id.toString() == res.locals.user._id.toString();
+      });
+    })
+    .then((currentParticipation) => {
+      participation = currentParticipation;
+      res.render('families/show', {dates, family, participation, familyParticipations, currentChallenge});
     })
     .catch(e => console.log(e));
 });
