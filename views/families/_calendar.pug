@@ -16,32 +16,3 @@ div#calendar-head
   div.col-2
     if true
       button#next.change-week &rarr;
-
-script.
-  function getCalendarHead(e) {
-    e.preventDefault();
-    var data = {};
-    data.direction = $(this).attr('id');
-
-    if (data.direction == 'next') {
-      data.date = $('#sunday').data('date');
-    } else {
-      data.date = $('#monday').data('date');
-    }
-
-    var request = $.ajax({
-      url: "/families/calendar",
-      data,
-      type: "POST"
-    });
-
-    request.done((response) => {
-      $('#dates').html(response);
-    });
-
-    request.fail(() => {
-      console.log("Getting Calendar Head failed");
-    });
-  }
-
-  $('#calendar-head').on('click', '.change-week', getCalendarHead)

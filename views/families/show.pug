@@ -26,3 +26,33 @@ block content
 	each participation in familyParticipations
 		p= participation.user.name.first
 		p= participation.user.lifetimePoints
+
+block footer-scripts
+	script.
+		function getCalendarHead(e) {
+			e.preventDefault();
+			var data = {};
+			data.direction = $(this).attr('id');
+
+			if (data.direction == 'next') {
+				data.date = $('#sunday').data('date');
+			} else {
+				data.date = $('#monday').data('date');
+			}
+
+			var request = $.ajax({
+				url: "/families/calendar",
+				data,
+				type: "POST"
+			});
+
+			request.done((response) => {
+				$('#dates').html(response);
+			});
+
+			request.fail(() => {
+				console.log("Getting Calendar Head failed");
+			});
+		}
+
+		$('#calendar-head').on('click', '.change-week', getCalendarHead)
