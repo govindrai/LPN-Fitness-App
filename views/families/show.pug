@@ -65,7 +65,7 @@ block footer-scripts
 			request.done((res) => {
 			console.log("hello");
 			console.log(res)
-				$('#calendar-head').append(res);
+				$('#points-body').html(res);
 			});
 
 			request.fail((res) => {

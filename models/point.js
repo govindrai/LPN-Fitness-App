@@ -31,7 +31,7 @@ pointSchema.methods.getUnitName = function(){
 
 pointSchema.statics.getPointsByDay = function(participation, day){
 	return Point.find({participation: participation,
-		date: day });
+		date: day }).populate({ path: 'activity', populate: { path: 'unit' }});
 };
 
 var Point = mongoose.model('Point', pointSchema);
