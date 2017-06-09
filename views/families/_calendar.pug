@@ -1,4 +1,4 @@
-div
+div#calendar-head
   div#weekdays
     div M
     div T
@@ -15,3 +15,25 @@ div
     div(data-date=dates[4])= dates[4].getDate()
     div(data-date=dates[5])= dates[5].getDate()
     div(data-date=dates[6])= dates[6].getDate()
+
+
+script.
+  $('#calendar-head').on('click', '#dates div', getPoints);
+
+  function getPoints(e) {
+    var date = $(this).data('date')
+    var request = $.ajax({
+      data: "date=" + date,
+      url: '/families/points',
+      type: 'GET'
+    });
+
+    request.done((res) => {
+    console.log(res)
+      $('#calendar-head').append(res);
+    });
+
+    request.fail((res) => {
+    console.log("Error", res)
+    });
+  }

@@ -1,7 +1,6 @@
 extends ../layout
 
 block content
-
 	include ./_calendar
 
 	h1= `Welcome to ${family.name}'s Show page`
@@ -25,4 +24,4 @@ block content
 	| Current Challenge Participants
 	each participation in familyParticipations
 		p= participation.user.name.first
-		p= participation.user.lifetimePoints
+		p= participation.user.lifetimePoints  
