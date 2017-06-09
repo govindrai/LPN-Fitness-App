@@ -52,6 +52,13 @@ router.post('/', (req, res) => {
   .catch((e) => console.log(e))
 });
 
+router.get('/:_id', function(req, res) {
+    console.log("Made it here");
+    Point.findOneAndUpdate({_id: req.params._id}, {$set: req.body}).then((point) => {
+    res.render('points/edit', {point}); 
+  }).catch(e => console.log(e)); 
+});
+
 router.put('/:_id', function(req, res) {
     console.log("Made it here");
     Point.findOneAndUpdate({_id: req.params._id}, {$set: req.body}).then((point) => {

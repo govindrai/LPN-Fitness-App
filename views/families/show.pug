@@ -54,6 +54,10 @@ block footer-scripts
 			});
 		}
 
+		function deletePoint(e) {
+			e.preventDefault();
+		}
+
 		function getPoints(e) {
 			var date = $(this).data('date')
 			var request = $.ajax({
@@ -74,3 +78,4 @@ block footer-scripts
 		}
 		$('#calendar-head').on('click', '.change-week', getCalendarHead);
 		$('#calendar-head').on('click', '#dates div', getPoints);
+		$('#points-body').on('click', '.linkdeletepoint', deletePoint)
