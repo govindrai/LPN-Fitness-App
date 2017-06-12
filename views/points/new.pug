@@ -42,7 +42,7 @@ block content
 
       request.done(res => {
         $('#add-points').append(res);
-        $('#add-points').append("<button type='button'>Add Activity</button>")
+        $('#add-points').append("<button id='addActivity' type='button'>Add Activity</button>")
       });
 
       request.fail(res => {
@@ -51,6 +51,7 @@ block content
     }
 
     function addMoreActivities() {
+    console.log('working')
       var request = $.ajax({})
 
       request.done(res => {
@@ -79,4 +80,5 @@ block content
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
       $('body').on('keyup', '#num-of-units', calculatePoints);
+      $('body').on('click', '#addActivity', addMoreActivities);
     })
