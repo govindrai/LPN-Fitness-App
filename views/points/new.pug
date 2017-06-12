@@ -42,7 +42,7 @@ block content
 
       request.done(res => {
         $('#add-points').append(res);
-        $('#add-points').append("<button id='addActivity' type='button'>Add Activity</button>")
+        $('#add-points').append("<button id='addActivity' type='button'>Add Another Activity</button>")
       });
 
       request.fail(res => {
@@ -51,14 +51,17 @@ block content
     }
 
     function addMoreActivities() {
-    console.log('working')
-      var request = $.ajax({})
+      var request = $.ajax({
+        url: "/activities"
+      })
 
       request.done(res => {
         $("span.twitter-typeahead").detach().insertAfter($("#add-points"));
       })
 
-
+      request.fail(res => {
+        console.log("Fail", res)
+      });
     }
 
     function calculatePoints() {
