@@ -1,67 +1,8 @@
-input(type='hidden', name="activity", value=activity._id)
-
-div!= `${activity.name}: <span id="activity-points">${activity.points}</span> points for every <span id="activity-points-scale">${activity.scale} ${activity.unit.name}s`
-
-if activity.description
-  div= 'Description: ' + activity.description
-
-label(for="date") Date of Activity
-input#datepicker(type="text", name="date")
-
-label(for="numOfUnits")= `How many ${activity.unit.name}s?`
-input#num-of-units(type="text", name="numOfUnits")
+div#activity-list
+  include ./_activity
 
 label Point Calculator:
 div #[span#calculated-points() 0] Points
 input#calculatedPoints(type="hidden" name="calculatedPoints" value="0")
 
 input(type='submit' value='Add Points')
-
-script.
-  function calculateMinMaxDates() {
-    var now = new Date();
-    var minDate = new Date(now.getTime());
-    var maxDate = new Date(now.getTime());
-    var weekdayNumber = now.getDay();
-
-    //- if monday
-    if (weekdayNumber === 1) {
-      //- if before 12pm on a Monday
-      if (now.getHours() < 12) {
-        //- set the minDate to last monday (7 days ago)
-        //- it's important to get the date
-        //- otherwise the number will become the actual date
-        minDate.setDate(now.getDate() - 7);
-        //- set teh maxDate to yesterday (1 day ago)
-        maxDate.setDate(now.getDate() - 1);
-      //- if after 12pm on a Monday
-      } else {
-        //- minDate/maxDate should both be monday (already set)
-
-        //- Alternative Version where full range is available
-        //- minDate already set to today
-        //- set the maxDate to Sunday (6 days from today)
-        //- maxDate.setDate(now.getDate() + 6)
-      }
-    //- if not a Monday
-    } else {
-      //- set the minDate to the current date minus one less than the weekday number
-      minDate.setDate(now.getDate() - (weekdayNumber - 1));
-      //- the maxDate should be the current date (already set);
-
-      //- Alternative Version where full range is available
-      //- minDate.setDate(now.getDate() - (weekdayNumber - 1));
-      //- minDate.setDate(now.getDate() - (weekdayNumber - 1));
-      //- set the maxDate to the current date plus 7 less than the weekday number
-      //- maxDate.setDate(now.getDate() + (7 - weekdayNumber));
-    }
-    return [minDate, maxDate];
-  }
-
-  $(document).ready(function() {
-    var dates = calculateMinMaxDates();
-    $('#datepicker').datepicker({
-      minDate: dates[0],
-      maxDate: dates[1]
-    });
-  })

@@ -8,11 +8,14 @@ block content
   h1 Add Points
   form#add-points(action="/points" method="POST")
     input(type='hidden', name="participation", value=participationId)
+    div
+      label#activity-name Activity Name
+      input(id="typeahead" type="text")
 
-    label#activity-name Activity Name
-    input(id="typeahead" type="text")
-
+block footer-scripts
   script.
+    var typeaheadElements;
+
     function getActivities() {
       $.ajax({
         url: "/activities"
@@ -35,12 +38,15 @@ block content
       });
     }
 
-    function getActivityData(ev, suggestion) {
+    function getActivityData(ev, suggestion, partial=false) {
       var request = $.ajax({
         url: '/activities/' + suggestion
+        data: partial == true ? "partial=true" ? "partial=false"
       });
 
       request.done(res => {
+        typeaheadElements = $('#typeahead').parent().parent()
+        typeaheadElements.hide();
         $('#add-points').append(res);
         $('#add-points').append("<button id='addActivity' type='button'>Add Another Activity</button>")
       });

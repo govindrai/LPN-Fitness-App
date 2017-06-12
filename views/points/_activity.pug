@@ -1,0 +1,17 @@
+div.activity
+  input(type='hidden', name="activity", value=activity._id)
+
+  div= 'Activity:' + activity.name
+
+  div= "Point Criteria: "
+    span#activity-points= ` ${activity.points} points for every `
+    span#activity-points-scale= `${activity.scale} ${activity.unit.name}s`
+   
+  if activity.description
+    div= 'Description: ' + activity.description
+
+  label(for="date") Date of Activity
+  input#datepicker(type="text", name="date")
+
+  label(for="numOfUnits")= `How many ${activity.unit.name}s?`
+  input#num-of-units(type="text", name="numOfUnits")
