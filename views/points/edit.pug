@@ -1,15 +1,18 @@
-extends ../layout
+include ../layout.pug
+
 
 append head-scripts
   include ../partials/jqueryui
   script(src="/libs/typeahead.bundle.min.js")
 
-block content
-  h1 Add Points
-  form#add-points(action="/points" method="POST")
+
+  block content
+  h1 Edit your Point
+
+  form#add-points(action="?_method=PUT" method="POST")
     input(type='hidden', name="participation", value=participationId)
 
-    label#activity-name Activity Name
+    label Activity Name
     input(id="typeahead" type="text")
 
   script.
@@ -42,22 +45,11 @@ block content
 
       request.done(res => {
         $('#add-points').append(res);
-        $('#add-points').append("<button type='button'>Add Activity</button>")
       });
 
       request.fail(res => {
         console.log("FAIL", res)
       });
-    }
-
-    function addMoreActivities() {
-      var request = $.ajax({})
-
-      request.done(res => {
-        $("span.twitter-typeahead").detach().insertAfter($("#add-points"));
-      })
-
-
     }
 
     function calculatePoints() {
