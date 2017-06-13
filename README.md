@@ -10,6 +10,13 @@ LPN is comprised of seven distinct houses: Alexandrite, Emerald, Iolite, Ruby, S
 ## Problem
 Traditionally, the fraternity implemented the competition through Google Sheets. However, as the challenge grew, so did its complexity and time required to manage the program. In additon, the user experience, or lack therof, has been a key factor in deterring participation. Here are some screenshots for perspective:
 
+### __Old View of Competition Schedule__
+<img src="https://github.com/govindrai/LPN-Fitness-App/blob/master/public/images/readme/schedule_old.png?raw=true">
+
+### __Old View of Scoreboard__
+<img src="https://github.com/govindrai/LPN-Fitness-App/blob/master/public/images/readme/scoreboard_old.png?raw=true">
+
+
 
 Having once been a part of this fraternity and having web development experience, I saw this as a perfect opportunity to practice my skills and give back to an organization that helped me shape my career and make lifelong friendships.
 
