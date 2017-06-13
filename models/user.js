@@ -96,7 +96,7 @@ userSchema.methods.generateAuthorizationToken = function() {
 			}
 				resolve(token);
 		});
-	})
+	});
 };
 
 userSchema.statics.verifyAuthorizationToken = function(token) {
