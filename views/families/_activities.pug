@@ -1,6 +1,17 @@
-each point in points
-	p= point.activity.name
-	p= point.numOfUnits
-	p= point.activity.unit.name
-	p= point.calculatedPoints
-
+table
+		thead
+			tr
+				td #[button.add-point Add Points]
+				td Activity
+				td Number of
+				td Units
+				td Calculated Points
+		tbody
+		each point in points
+			tr(data-point=point._id)
+				td= point.activity.name
+				td= point.numOfUnits
+				td= point.activity.unit.name
+				td= point.calculatedPoints
+				td #[button Edit]
+				td #[button.delete-point Delete]

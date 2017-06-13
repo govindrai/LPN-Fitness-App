@@ -1,76 +1,98 @@
 extends ../layout
 
 block content
-	include ./_calendar
+  include ./_calendar
 
-	h1= `Welcome to ${family.name}'s Show page`
-	h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
-	h2= 'Name: ' + user.fullName
-	h2= 'Lifetime Points: ' + user.lifetimePoints
+  h1= `Welcome to ${family.name}'s Show page`
+  h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
+  h2= 'Name: ' + user.fullName
+  h2= 'Lifetime Points: ' + user.lifetimePoints
 
-	hr
+  hr
 
-	if currentChallenge
-		- var challenge = currentChallenge
-		p= 'Current challenge: ' + challenge.name
-			if challenge.participation
-				p= 'Status: ' + 'participating'
-			else
-				p= 'Status: ' + 'not participating'
-				a(href='/challenges') See upcoming challenges
+  if currentChallenge
+    - var challenge = currentChallenge
+    p= 'Current challenge: ' + challenge.name
+      if challenge.participation
+        p= 'Status: ' + 'participating'
+      else
+        p= 'Status: ' + 'not participating'
+        a(href='/challenges') See upcoming challenges
 
-	hr
+  hr
 
-	| Current Challenge Participants
-	each participation in familyParticipations
-		p= participation.user.name.first
-		p= participation.user.lifetimePoints
+  | Current Challenge Participants
+  each participation in familyParticipations
+    p= participation.user.name.first
+    p= participation.user.lifetimePoints
 
 block footer-scripts
-	script.
-		function getCalendarHead(e) {
-			e.preventDefault();
-			var data = {};
-			data.direction = $(this).attr('id');
+  script.
+    function getCalendarHead(e) {
+      e.preventDefault();
+      var data = {};
+      data.direction = $(this).attr('id');
 
-			if (data.direction == 'next') {
-				data.date = $('#sunday').data('date');
-			} else {
-				data.date = $('#monday').data('date');
-			}
+      if (data.direction == 'next') {
+        data.date = $('#sunday').data('date');
+      } else {
+        data.date = $('#monday').data('date');
+      }
 
-			var request = $.ajax({
-				url: "/families/calendar",
-				data,
-				type: "POST"
-			});
+      var request = $.ajax({
+        url: "/families/calendar",
+        data,
+        type: "POST"
+      });
 
-			request.done((response) => {
-				$('#dates').html(response);
-			});
+      request.done((response) => {
+        $('#dates').html(response);
+      });
 
-			request.fail(() => {
-				console.log("Getting Calendar Head failed");
-			});
-		}
+      request.fail(() => {
+        console.log("Getting Calendar Head failed");
+      });
+    }
 
-		function getPoints(e) {
-			var date = $(this).data('date')
-			var request = $.ajax({
-				data: {date},
-				url: '/families/points',
-				type: 'POST'
-			});
+    function deletePoint(e) {
+      e.preventDefault();
+      var point = $(this).parent().parent();
 
-			request.done((res) => {
-			console.log("hello");
-			console.log(res)
-				$('#points-body').html(res);
-			});
+      var request = $.ajax({
+        type: 'DELETE',
+        url: '/points',
+        data: { point: point.data('point') }
+      });
 
-			request.fail((res) => {
-			console.log("Error", res)
-			});
-		}
-		$('#calendar-head').on('click', '.change-week', getCalendarHead);
-		$('#calendar-head').on('click', '#dates div', getPoints);
+      request.done(res => {
+        point.remove();
+      });
+
+      request.fail(res => console.log(res));
+    }
+
+    function addPoint() {
+      var request = $.ajax({
+        type: 
+      })
+    }
+
+    function getPoints(e) {
+      var date = $(this).data('date')
+      var request = $.ajax({
+        data: {date},
+        url: '/families/points',
+        type: 'POST'
+      });
+
+      request.done((res) => {
+        $('#points-body').html(res);
+      });
+
+      request.fail((res) => {
+      console.log("Error", res)
+      });
+    }
+    $('#calendar-head').on('click', '.change-week', getCalendarHead);
+    $('#calendar-head').on('click', '#dates div', getPoints);
+    $('#points-body').on('click', '.delete-point', deletePoint);
