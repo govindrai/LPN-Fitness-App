@@ -25,10 +25,9 @@ router.post('/login', (req, res) => {
   User.findOne({email: body.email})
   .then(foundUser => {
     user = foundUser;
-    return user.authenticate(body.password)
+    return user.authenticate(body.password);
   })
   .then(res => {
-    console.log(res)
     if (!res) {
       return Promise.reject("Username/Password Incorrect");
     }
@@ -48,10 +47,9 @@ router.post('/login', (req, res) => {
     res.redirect('/families/' + user.family.name);
   })
   .catch(e => {
-    console.log(e)
-    res.render('sessions/login', {error: e})
+    res.render('sessions/login', {error: e});
   });
-})
+});
 
 // GET to Root (registration form or homepage depending on authorization)
 router.get('/', (req, res) => {
@@ -69,7 +67,7 @@ router.get('/', (req, res) => {
     })
     .catch(e => {
       console.log(e);
-    })
+    });
   }
 });
 
@@ -106,22 +104,15 @@ router.post('/register', (req, res) => {
   })
   .catch(e => {
     if (body.family === 'Please Select') {
-      e.errors.family.message = "Please select a family"
+      e.errors.family.message = "Please select a family";
     }
-    console.log(e)
     Family.find()
     .then(families => {
       res.render('index', {families, errors: e.errors, user});
     })
-    e.errors
-    console.log(e.errors);
+    .catch(e => console.log(e.errors));
   });
-})
-
-
-
-
-
+});
 
 // Logout
 router.get('/logout', (req, res) => {
@@ -129,27 +120,27 @@ router.get('/logout', (req, res) => {
   User.destroyAuthorizationToken(token)
   .then((user) => {
     if (!user) {
-      res.send("We don't know who you are and why you wanna logout")
+      res.send("We don't know who you are and why you wanna logout");
     }
-    user.tokens = _.remove(user.tokens, (tokenObj) => {
-      tokenObj.access === "auth" && tokenObj.token === token
+    user.tokens = _.remove(user.tokens, tokenObj => {
+      return tokenObj.access === "auth" && tokenObj.token === token;
     });
-    return user.save()
+    return user.save();
   })
   .then((user) => {
     req.session.destroy((err) => {
       if (err) {
-        console.log(err, "Session could not be destroyed")
+        console.log(err, "Session could not be destroyed");
       }
       res.redirect('/');
-    })
+    });
   })
   .catch((e) => console.log(e));
-})
+});
 
 router.get('/rules', verifyAuthorization, (req, res) => {
   res.render('sessions/rules');
-}); 
+});
 
 
 router.get('/profile', (req, res) => {
