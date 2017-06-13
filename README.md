@@ -21,32 +21,17 @@ Traditionally, the fraternity implemented the competition through Google Sheets.
 Having once been a part of this fraternity and having web development experience, I saw this as a perfect opportunity to practice my skills and give back to an organization that helped me shape my career and make lifelong friendships.
 
 ## Authors
-Cally Dai, UX/UI Designer
-Govind Rai, Full Stack Web Developer
-Vilde Vevatne, Full Stack Web Developer
+- Cally Dai - UX/UI Designer
+- Govind Rai - Full Stack Web Developer
+- Vilde Vevatne - Full Stack Web Developer
 
 ## Technology Stack
-#### Backend & ORM
-Node.js
-MongoDB
-Mongoose.js
-Redis
-
-#### Frameworks
-Express.js
-
-#### Frontend
-Pug.js
-Typeahead.js
-SASS
-jQuery
-
-#### Authentication & Authorization
-JSON Web Token
-Bcrypt
-
-#### Other
-Lodash.js
+| Backend & ORM | Frameworks | Frontend     | Authentication & Authorization | Other     |
+|---------------|------------|--------------|--------------------------------|-----------|
+| Node.js       | Express.js | Pug.js       | JSON Web Token                 | Lodash.js |
+| MongoDB       |            | Typeahead.js | Bcrypt                         |           |
+| Mongoose.js   |            | SASS         |                                |           |
+| Redis         |            | jQuery       |                                |           |
 
 
 ## Feature Roadmap ##
@@ -54,7 +39,7 @@ Lodash.js
 ### Implement secret code during registration
 - Currently anyone can register and gain access to the application
 
-### Todos ###
+### Todos
 - points/new
     + ✅ Add a date field, which defaults to today and has a min of Monday and a max of Sunday
     + ✅ Users can add points for a given week up to the next Monday at 12 pm
@@ -63,19 +48,14 @@ Lodash.js
     + Display all participants (in a table format) from family who are participating, ordered by total contribution on current challenge
         * Table Head needs to be Monday-Sunday with respective dates
         * clicking on a certain date should trigger points
+    + Display the name of user + nickname 
+    + Total points (all time)
+    + Points for current challenge
+    + If not participating, then show message that suggests you sign up for challenge
 - challenges/index
     + Display challenges in right order on challenges index
-
-
 - challenges/new
- - For new challenges, ensure end date is after start date
- - Automate dates so only start date is necessary
- - Add field for weeks
- - Days or time remaining until registration deadline (challenges index) + until current challenge ends  
-- Index
- - Display the name of user + nickname 
- - Total points (all time)
- - Points for current challenge
- - If not participating, then show message that suggests you sign up for challenge
-
- 
+    + For new challenges, ensure end date is after start date
+    + Automate dates so only start date is necessary
+    + Add field for weeks
+    + Days or time remaining until registration deadline (challenges index) + until current challenge ends
