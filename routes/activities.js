@@ -41,11 +41,10 @@ router.get('/:activityName', (req, res) => {
 	if (req.xhr) {
 		Activity.findOne({name: req.params.activityName}).populate('unit')
 		.then(activity => {
-			var file = req.query.partial ? "_activity.pug" : "_form.pug";
-			res.send(pug.renderFile(process.env.PWD + '/views/points/' + file, {activity, user: res.locals.user}));
+			var file = req.query.partial == 'false' ? "_form.pug" : "_activity.pug";
+			res.send(pug.renderFile(process.env.PWD + '/views/points/' + file, {activity, date: new Date()}));
 		})
 		.catch(e =>  {
-			console.log(e);
 			res.status(404).send("No Activity with name " + req.params.activityName);
 		});
 	} else {
