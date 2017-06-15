@@ -38,11 +38,19 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/edit', (req, res) => {
-	console.log(req.body);
-	console.log(req.body.user);
+	var user, currentAdmin;
 	User.findById(req.body.user)
-	.then(user => {
-		console.log(user);
+	.then(foundUser => {
+		user = foundUser;
+		currentAdmin = user.admin;
+		if (req.body.changeAdmin) {
+			user.admin = !user.admin;
+			return user.save();
+		}
+	})
+	.then(() => {
+		var message = currentAdmin ? "is no longer an admin" : "is now an admin";
+		res.send(`${user.fullName} ${message}`);
 	})
 	.catch(e => console.log(e));
 });
