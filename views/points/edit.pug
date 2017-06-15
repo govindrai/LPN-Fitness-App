@@ -1,0 +1,74 @@
+include ../layout.pug
+
+
+append head-scripts
+  include ../partials/jqueryui
+  script(src="/libs/typeahead.bundle.min.js")
+
+
+  block content
+  h1 Edit your Point
+
+  form#add-points(action="?_method=PUT" method="POST")
+    input(type='hidden', name="participation", value=participationId)
+
+    label Activity Name
+    input(id="typeahead" type="text")
+
+  script.
+    function getActivities() {
+      $.ajax({
+        url: "/activities"
+      })
+      .done(function(res) {
+        var activitiesFn = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: res
+        });
+
+        $('#typeahead').typeahead({
+          minLength: 1,
+          highlight: true
+        },
+        {
+          name: 'my-dataset',
+          source: activitiesFn
+        });
+      });
+    }
+
+    function getActivityData(ev, suggestion) {
+      var request = $.ajax({
+        url: '/activities/' + suggestion
+      });
+
+      request.done(res => {
+        $('#add-points').append(res);
+      });
+
+      request.fail(res => {
+        console.log("FAIL", res)
+      });
+    }
+
+    function calculatePoints() {
+      var activityPoints = $('#activity-points').text();
+      var activityPointsScale = $('#activity-points-scale').text();
+
+      var numOfUnits = $(this).val();
+      if (numOfUnits == "") {
+        $('#calculated-points').text(0);
+        $('#calculatedPoints').val(0);
+      } else {
+        var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
+        $('#calculated-points').text(calculation);
+        $('#calculatedPoints').val(calculation);
+      }
+    }
+
+    $(document).ready(function() {
+      getActivities();
+      $('#typeahead').bind('typeahead:select', getActivityData);
+      $('body').on('keyup', '#num-of-units', calculatePoints);
+    })

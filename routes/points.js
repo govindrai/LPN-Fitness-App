@@ -28,20 +28,21 @@ function checkParticipationInCurrentChallenge(req, res, next) {
   });
 }
 
+// checkParticipationInCurrentChallenge needs to occur to display calendar
+
 router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
-  Activity.find({}).then((activities) => {
-    Point.find({}).populate('activity').then((points) => {
-      var beginningOfDay = new Date();
-      beginningOfDay.setHours(0,0,0,0);
-      res.render('points/new', {points, activities, date: beginningOfDay});
-    });
-  })
-  .catch(e => console.log(e));
+  if (req.xhr) {
+    Activity.find({}).then(activities => {
+      res.render('points/new', {activities, date: req.query.date});
+    })  
+    .catch(e => console.log(e));
+  }
 });
 
 router.post('/', (req, res) => {
+  console.log("MAH BODY", req.body);
   var points = [];
-  if (typeof req.body.activity == "array") {
+  if (typeof req.body.activity == "object") {
     var countOfActivities = req.body.activity.length;
     
 
