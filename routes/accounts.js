@@ -9,8 +9,12 @@ router.get('/', function(req, res, next) {
 	User.getAdmins().then((admins) => {
 		User.getNonAdmins().then((nonAdmins) => {
 			res.render('accounts/index', {admins, nonAdmins});
-		})
-	})
+		});
+	});
+});
+
+router.post('/adminChange', function(req, res) {
+	
 })
 
 router.get('/profile', function(req, res, next) {

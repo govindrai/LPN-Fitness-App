@@ -23,6 +23,7 @@ table
 				td= admin.email
 				td
 					input(type="checkbox" name="admin")
+					input(type="hidden" name="user" value="admin._id")
 
 h2 All Users
 
@@ -41,11 +42,13 @@ table
 				td= nonAdmin.email
 				td
 					input(type="checkbox" name="admin")
+					input(type="hidden" name="user" value="admin._id")
 
 block footer-scripts
 	script.
 		function changeAdmin(e) {
-			console.log('hello');
+			var Event = $(this);
+			var 
 		}
 
 		$('input:checkbox').on('click', changeAdmin);
