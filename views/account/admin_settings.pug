@@ -40,11 +40,12 @@ block content
 					td= nonAdmin.name.last
 					td= nonAdmin.email
 					td
-						input(type="checkbox" name="admin" data-user=`${nonAdmin._id}`)
+						input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
 
 block footer-scripts
 	script.
 		function changeAdmin(e) {
+			var event = $(this);
 			var user = $(this).data('user');
 			var request = $.ajax({
 				url: '/users/edit',
@@ -57,6 +58,7 @@ block footer-scripts
 				$('h1').after(response);
 				$('h1').next().fadeOut('slow', () => {
 					$('h1').next().remove();
+					event.closest('tr').hide();
 				});
 			});
 				
@@ -66,3 +68,4 @@ block footer-scripts
 		}
 
 		$('input:checkbox').on('click', changeAdmin);
+		$('')
