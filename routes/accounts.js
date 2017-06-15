@@ -14,8 +14,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/adminChange', function(req, res) {
-	
-})
+	User.findById(req.body.User).then((user) => {
+		console.log(user);
+	});
+});
 
 router.get('/profile', function(req, res, next) {
 	User.findOne({}).then((user) => {
