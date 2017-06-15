@@ -1,5 +1,7 @@
 include ../layout.pug
 
+
+block content
 h1 Settings
 a(href="accounts/profile") Profile Settings  | 
 a(href="accounts/admin-settings") Admin Settings 
@@ -39,3 +41,9 @@ table
 				td= nonAdmin.email
 				td
 					input(type="checkbox" name="admin")
+
+block footer-scripts
+	script.
+		$(document).ready(function(){
+			console.log("hello");
+		});
