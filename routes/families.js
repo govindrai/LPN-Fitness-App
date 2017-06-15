@@ -77,8 +77,7 @@ router.post('/points', (req, res) => {
       return Point.getPointsByDay(participation, req.body.date);
     })
     .then((points) => {
-      console.log(points);
-      res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points}));
+      res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points, date: req.body.date}));
     });
   }
 });

@@ -71,10 +71,22 @@ block footer-scripts
       request.fail(res => console.log(res));
     }
 
-    function addPoint() {
+    function addPoints(e) {
+      var date = $(this).data('date');
+      
       var request = $.ajax({
-        type: 
+        type: 'GET',
+        data: {date},
+        url: '/points/new'
       })
+
+      request.done(res => {
+        $('#points-body').replaceWith(res);
+        getActivities();
+        $('#typeahead').bind('typeahead:select', getActivityData);
+      });
+
+      request.fail(e => console.log(e))
     }
 
     function getPoints(e) {
@@ -93,6 +105,96 @@ block footer-scripts
       console.log("Error", res)
       });
     }
+
+    var typeaheadElements;
+    var partial = false;
+
+    function getActivities() {
+      $.ajax({
+        url: "/activities"
+      })
+      .done(function(res) {
+        var activitiesFn = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: res
+        });
+
+        $('#typeahead').typeahead({
+          minLength: 1,
+          highlight: true
+        },
+        {
+          name: 'my-dataset',
+          source: activitiesFn
+        });
+      });
+    }
+
+    function getActivityData(ev, suggestion) {
+      var request = $.ajax({
+        url: '/activities/' + suggestion,
+        data: partial == true ? "partial=true" : "partial=false"
+      });
+
+      request.done(res => {
+        typeaheadElements = $('#typeahead').parent().parent();
+        $('#typeahead').typeahead('val', '');
+        typeaheadElements.hide();
+        
+        if (!partial) {
+          $("#add-points").prepend(res);
+        } else {
+          $("#activity-list").append(res);
+          $("#add-activity").show();
+        }
+
+      });
+
+      request.fail(res => {
+        console.log("FAIL", res)
+      });
+    }
+
+    function addMoreActivities(e) {
+      $('#activity-list').after(typeaheadElements);
+      typeaheadElements.show();
+      $("#add-activity").hide();
+      partial = true;
+    }
+    
+    function sumArray(total, num) {
+      return total + num;
+    }
+
+    function calculatePoints(e) {
+      var activity = $(this).parent();
+
+      var activityPoints = activity.find('.activity-points').text();
+      var activityPointsScale = activity.find('.activity-points-scale').text();
+
+      var numOfUnits = $(this).val();
+
+      if (numOfUnits == "") {
+        activity.find('.calculatedPoints').val(0);
+      } else {
+        var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
+        activity.find('.calculatedPoints').val(calculation);
+      }
+      
+      var totalPoints = $(".calculatedPoints").map(function() {
+        return $(this).val() == "" ? 0 : parseInt($(this).val());
+      }).get();
+
+      totalPoints = totalPoints.reduce(sumArray);
+
+      $("#totalPointsDisplay").text(totalPoints);
+      $("#totalPoints").val(totalPoints);
+    }
+
     $('#calendar-head').on('click', '.change-week', getCalendarHead);
     $('#calendar-head').on('click', '#dates div', getPoints);
     $('#points-body').on('click', '.delete-point', deletePoint);
+    $('#points-body').on('click', '.add-points', addPoints);
+    $('body').on('keyup', '.num-of-units', calculatePoints);
+    $('body').on('click', '#add-activity button', addMoreActivities);
