@@ -66,8 +66,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/')));
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/typeahead.js/dist/')));
 
-app.use('/', index);
 app.use(verifyAuthorization);
+app.use('/', index);
 app.use('/users', users);
 app.use('/families', families);
 app.use('/units', units);
