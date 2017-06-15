@@ -1,3 +1,7 @@
+// Modules
+var _ = require('lodash');
+
+// Models
 var User = require('./../models/user'),
   Challenge = require('./../models/challenge');
 
@@ -7,30 +11,35 @@ function verifyAuthorization(req, res, next) {
   //  render the 404 view (meaning they are not logged in)
   // else
   //  verify the JWT and find the user associated with the JWT
-  if (!req.session["x-auth"]) {
-    res.render('sessions/unauthorized');
+  var exemptPaths = ['/login', '/register'];
+  if (_.includes(exemptPaths, req.path)) {
+    next();
   } else {
-    var token = req.session["x-auth"];
-    User.decodeAuthorizationToken(token)
-    .then(decoded => {
-      return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
-    })
-    .then(user => {
-      if (!user) res.status(404).send('UNAUTHORIZED.');
-      res.locals.loggedIn = true;
-      res.locals.user = user;
-      res.locals.home = '/families/' + user.family.name;
-      return user.getRegisterableChallengesCount();
-    })
-    .then(challengeCount => {
-      res.locals.challengeCount = challengeCount;
-      return Challenge.getCurrentChallenge();
-    })
-    .then(currentChallenge => {
-      res.locals.currentChallenge = currentChallenge;
-      next();
-    })
-    .catch(e => console.log(e));
+    if (!req.session["x-auth"]) {
+      res.render('sessions/unauthorized');
+    } else {
+      var token = req.session["x-auth"];
+      User.decodeAuthorizationToken(token)
+      .then(decoded => {
+        return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
+      })
+      .then(user => {
+        if (!user) res.status(404).send('UNAUTHORIZED.');
+        res.locals.loggedIn = true;
+        res.locals.user = user;
+        res.locals.home = '/families/' + user.family.name;
+        return user.getRegisterableChallengesCount();
+      })
+      .then(challengeCount => {
+        res.locals.challengeCount = challengeCount;
+        return Challenge.getCurrentChallenge();
+      })
+      .then(currentChallenge => {
+        res.locals.currentChallenge = currentChallenge;
+        next();
+      })
+      .catch(e => console.log(e));
+    }
   }
 }
 

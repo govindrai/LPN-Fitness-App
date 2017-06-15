@@ -28,31 +28,48 @@ function checkParticipationInCurrentChallenge(req, res, next) {
   });
 }
 
+// checkParticipationInCurrentChallenge needs to occur to display calendar
+
 router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
-  Activity.find({}).then((activities) => {
-    Point.find({}).populate('activity').then((points) => {
-      res.render('points/new', {points, activities, date: new Date()});
-    });
-  })
-  .catch(e => console.log(e));
+  if (req.xhr) {
+    Activity.find({}).then(activities => {
+      res.render('points/new', {activities, date: req.query.date});
+    })  
+    .catch(e => console.log(e));
+  }
 });
 
-
-
 router.post('/', (req, res) => {
-  // 
-  console.log(req.body);
+  console.log("MAH BODY", req.body);
+  var points = [];
+  if (typeof req.body.activity == "object") {
+    var countOfActivities = req.body.activity.length;
+    
 
-  // var body = _.pick(req.body, ['participation', 'activity', 'date', 'numOfUnits', 'calculatedPoints']);
-  // body.user = res.locals.user._id;
-  // var point = new Point(body);
-  // point.save().then((point) => {
-  //     return User.update({_id: body.user}, {$inc: {lifetimePoints: body.calculatedPoints}});
-  // })
-  // .then(() => {
-  //   res.redirect(res.locals.home);
-  // })
-  // .catch((e) => console.log(e));
+    for (var i = 0; i < countOfActivities; i++) {
+      points.push({
+        participation: req.body.participation,
+        user: res.locals.user._id,
+        activity: req.body.activity[i],
+        numOfUnits: req.body.numOfUnits[i],
+        calculatedPoints: req.body.calculatedPoints[i],
+        date: req.body.date
+      });
+    }
+  } else {
+    var body = _.pick(req.body, ['activity', 'participation', 'numOfUnits', 'calculatedPoints', 'date']);
+    body.user = res.locals.user._id;
+    points.push(body);
+  }
+
+  Point.insertMany(points)
+  .then(() => {
+    return User.update({_id: res.locals.user._id}, {$inc: {lifetimePoints: req.body.totalPoints}});
+  })
+  .then(() => {
+    res.redirect(res.locals.home);
+  })
+  .catch(e => console.log(e));
 });
 
 router.delete('/', function(req, res) {
