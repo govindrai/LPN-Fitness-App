@@ -52,11 +52,15 @@ block footer-scripts
 				type: 'PUT'
 			});
 
-			request.done((res)=>{
-				$('h1').after(`<div>${res}</div>`)
+			request.done(res => {
+				var response = `<div>${res}</div>`
+				$('h1').after(response);
+				$('h1').next().fadeOut('slow', () => {
+					$('h1').next().remove();
+				});
 			});
-			
-			request.fail((res) => {
+				
+			request.fail(res => {
 				console.log("ERROR", res)
 			});
 		}
