@@ -45,15 +45,18 @@ table
 block footer-scripts
 	script.
 		function changeAdmin(e) {
-			var User = $(this).data('user');
+			console.log("INSIDE changeAdmin");
+			var user = $(this).data('user');
 			var request = $.ajax({
-				url: '/accounts/adminChange',
-				data: {User},
-				type: 'POST'
+				url: '/users/edit',
+				data: {changeAdmin: true, user},
+				type: 'PUT'
 			});
+
 			request.done((res)=>{
 				console.log(res)
 			});
+			
 			request.fail((res) => {
 				console.log("ERROR", res)
 			});
