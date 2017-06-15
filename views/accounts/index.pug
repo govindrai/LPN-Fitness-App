@@ -44,6 +44,8 @@ table
 
 block footer-scripts
 	script.
-		$(document).ready(function(){
-			console.log("hello");
-		});
+		function changeAdmin(e) {
+			console.log('hello');
+		}
+
+		$('input:checkbox').on('click', changeAdmin);
