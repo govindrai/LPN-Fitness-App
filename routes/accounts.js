@@ -15,14 +15,14 @@ router.get('/', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
 	User.findOne({}).then((user) => {
-		res.render('settings/edit', {user}); 
+		res.render('accounts/edit', {user}); 
 	}).catch(e => console.log(e)); 
 }); 
 
 router.put('/profile', function(req, res, next) {
 		console.log("Made it here");
 		User.findOneAndUpdate({}, {$set: req.body}).then((user) => {
-		res.render('settings/edit', {user}); 
+		res.render('accounts/edit', {user}); 
 	}).catch(e => console.log(e)); 
 });
 
