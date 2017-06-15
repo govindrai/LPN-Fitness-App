@@ -3,6 +3,7 @@ include ../layout.pug
 block content
 	h1 Admin Settings
 
+
 	include ./_account_nav
 
 	h2 All Admins
@@ -44,7 +45,6 @@ block content
 block footer-scripts
 	script.
 		function changeAdmin(e) {
-			console.log("INSIDE changeAdmin");
 			var user = $(this).data('user');
 			var request = $.ajax({
 				url: '/users/edit',
@@ -53,7 +53,7 @@ block footer-scripts
 			});
 
 			request.done((res)=>{
-				console.log(res)
+				$('h1').after(`<div>${res}</div>`)
 			});
 			
 			request.fail((res) => {
