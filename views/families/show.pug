@@ -71,11 +71,16 @@ block footer-scripts
       request.fail(res => console.log(res));
     }
 
-    //- function addPoint() {
-    //-   var request = $.ajax({
-    //-     type: 
-    //-   })
-    //- }
+    function addPoint() {
+      var request = $.ajax({
+        type: 'GET',
+        url: '/points/new'
+      })
+      request.done(res => {
+        $('#points-body').prepend(res);
+      });
+      request.fail(e => console.log(e))
+    }
 
     function getPoints(e) {
       var date = $(this).data('date')
@@ -96,3 +101,4 @@ block footer-scripts
     $('#calendar-head').on('click', '.change-week', getCalendarHead);
     $('#calendar-head').on('click', '#dates div', getPoints);
     $('#points-body').on('click', '.delete-point', deletePoint);
+    $('#points-body').on('click', '.add-point', addPoint);
