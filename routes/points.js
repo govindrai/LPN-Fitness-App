@@ -40,18 +40,25 @@ router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  var countOfActivities = req.body.activity.length;
   var points = [];
+  if (typeof req.body.activity == "array") {
+    var countOfActivities = req.body.activity.length;
+    
 
-  for (var i = 0; i < countOfActivities; i++) {
-    points.push({
-      participation: req.body.participation,
-      user: res.locals.user._id,
-      activity: req.body.activity[i],
-      numOfUnits: req.body.numOfUnits[i],
-      calculatedPoints: req.body.calculatedPoints[i],
-      date: req.body.date
-    });
+    for (var i = 0; i < countOfActivities; i++) {
+      points.push({
+        participation: req.body.participation,
+        user: res.locals.user._id,
+        activity: req.body.activity[i],
+        numOfUnits: req.body.numOfUnits[i],
+        calculatedPoints: req.body.calculatedPoints[i],
+        date: req.body.date
+      });
+    }
+  } else {
+    var body = _.pick(req.body, ['activity', 'participation', 'numOfUnits', 'calculatedPoints', 'date']);
+    body.user = res.locals.user._id;
+    points.push(body);
   }
 
   Point.insertMany(points)

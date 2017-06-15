@@ -72,12 +72,14 @@ block footer-scripts
     }
 
     function addPoint() {
+      var date = $(this).data('date');
       var request = $.ajax({
         type: 'GET',
+        data: {date},
         url: '/points/new'
       })
       request.done(res => {
-        $('#points-body').prepend(res);
+        $('#points-body').replaceWith(res);
       });
       request.fail(e => console.log(e))
     }
