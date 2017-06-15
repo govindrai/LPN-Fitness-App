@@ -20,7 +20,7 @@ var index = require('./routes/index'),
   units = require('./routes/units'),
   activities = require('./routes/activities'),
   challenges = require('./routes/challenges'),
-  accounts = require('./routes/accounts'),
+  account = require('./routes/account'),
   points = require('./routes/points'),
   participations = require('./routes/participations');
 
@@ -73,7 +73,7 @@ app.use('/families', families);
 app.use('/units', units);
 app.use('/activities', activities);
 app.use('/challenges', challenges);
-app.use('/accounts', accounts);
+app.use('/account', account);
 app.use('/points', points);
 app.use('/participations', participations);
 

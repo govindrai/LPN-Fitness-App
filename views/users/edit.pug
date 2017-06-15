@@ -1,8 +1,10 @@
 include ../layout.pug
 
+include ../account/_account_nav
+
 h1 Edit your Profile
 
-form(action='?_method=PUT' method='POST')
+form(action='/users/edit?_method=PUT' method='POST')
 	| First Name
 	input(value=user.name.first name='name.first' type='text' required)
 	| Last Name
