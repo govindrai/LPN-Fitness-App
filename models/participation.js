@@ -11,7 +11,6 @@ var participationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
-
   }
 });
 
@@ -23,7 +22,7 @@ participationSchema.statics.getParticipation = function(user, challenges) {
       if (result) challenge.participation = true;
     });
   }));
-}
+};
 
 // returns participation objs for a certain challenge and family
 participationSchema.statics.getParticipationByFamily = function(challengeId, familyId) {

@@ -3,7 +3,8 @@ var mongoose = require('mongoose'),
 	jwt = require('jsonwebtoken'),
 	bcrypt = require('bcryptjs');
 
-var Schema = mongoose.Schema;
+var Schema = mongoose.Schema,
+	Challenge = require('./challenge');
 
 var userSchema = new Schema({
 	name: {
@@ -66,13 +67,9 @@ userSchema.pre('save', function(next) {
 	var user = this;
 	if (user.isModified('password')) {
 		bcrypt.genSalt(10, (err, salt) => {
-			if (err) {
-				console.log(err);
-			}
+			if (err) return console.log(err);
 			bcrypt.hash(user.password, salt, (error, hash) => {
-				if (error) {
-					console.log(err);
-				}
+				if (error) return console.log(err);
 				user.password = hash;
 				next();
 			});
@@ -99,56 +96,56 @@ userSchema.methods.generateAuthorizationToken = function() {
 	});
 };
 
-userSchema.statics.verifyAuthorizationToken = function(token) {
+// Verifies authorization token and returns a user
+userSchema.statics.decodeAuthorizationToken = function(token) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(token, 'secret', (err, decoded) => {
-			if (err) {
-				reject(err);
-			}
+			if (err) reject(err);
 			resolve(decoded);
 		});
-	}).then((decoded) => {
-		return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
-	}).catch((e) => console.log(e));
-}
+	});
+};
 
-userSchema.statics.destroyAuthorizationToken = function(token) {
-	return userSchema.statics.verifyAuthorizationToken(token);
-}
+userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
 
 userSchema.methods.authenticate = function(password) {
   var user = this;
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, user.password, (err, res) => {
-    	if (err) {
-				console.log(err);
-				console.log("THeRE IS AN ERROR")
-    		reject(err);
-    	}
+    	if (err) reject(err);
       resolve(res);
     });
   });
 };
 
-userSchema.statics.extractUser = function(token) {
-	return userSchema.statics.verifyAuthorizationToken(token);
-}
+userSchema.statics.getAdmins = () => User.find({admin: true}).populate('family');
 
-userSchema.statics.getAdmins = function() {
-	return User.find({admin: true}).populate('family');
-};
+userSchema.statics.getNonAdmins = () => User.find({admin: false}).populate('family');
 
-userSchema.statics.getNonAdmins = function() {
-	return User.find({admin: false}).populate('family');
-};
+userSchema.statics.getFamilyMembers = familyId => User.find({familyId});
 
-userSchema.statics.getFamilyMembers = function(family_id) {
-	return User.find({family_id})
+userSchema.methods.getRegisterableChallengesCount = function() {
+	var user = this;
+	var futureChallenges;
+	Challenge.getFutureChallenges()
+	.then(challenges => {
+		futureChallenges = challenges;
+		return Particpation.getParticipation(user, futureChallenges);
+	})
+	.then(() => {
+		console.log(futureChallenges.reduce((total, challenge) => {
+			total += challenge.particpation ? 1 : 0;
+		}));
+		return futureChallenges.reduce((total, challenge) => {
+			total += challenge.particpation ? 1 : 0;
+		});
+	});
+	// .catch(e => console.log(e));
 };
 
 userSchema.virtual('fullName').get(function() {
-  return this.name.first + ' ' + this.name.last;
-});
+	  return this.name.first + ' ' + this.name.last;
+	});
 
 var User = mongoose.model('User', userSchema);
 

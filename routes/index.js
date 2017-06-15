@@ -9,6 +9,26 @@ var User = require('./../models/user'),
 var router = express.Router(),
   verifyAuthorization = require('./../middleware/verifyAuthorization');
 
+// GET to Root (registration form or homepage depending on authorization)
+router.get('/', (req, res) => {
+  if (!res.locals.loggedIn) {
+    // Need families for registration form
+    Family.find()
+    .then(families => {
+      res.render('index', {families, user: new User({})});
+    })
+    .catch(e => console.log(e));
+  } else {
+    User.populate(res.locals.user, 'family')
+    .then(user => {
+      res.redirect(`families/${user.family.name}`);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+});
+
 // GET login form
 router.get('/login', (req, res) => {
     res.render('sessions/login');
@@ -49,26 +69,6 @@ router.post('/login', (req, res) => {
   .catch(e => {
     res.render('sessions/login', {error: e});
   });
-});
-
-// GET to Root (registration form or homepage depending on authorization)
-router.get('/', (req, res) => {
-  if (!res.locals.loggedIn) {
-    // Need families for registration form
-    Family.find()
-    .then(families => {
-      res.render('index', {families, user: new User({})});
-    })
-    .catch(e => console.log(e));
-  } else {
-    User.populate(res.locals.user, 'family')
-    .then(user => {
-      res.redirect(`families/${user.family.name}`);
-    })
-    .catch(e => {
-      console.log(e);
-    });
-  }
 });
 
 // Register

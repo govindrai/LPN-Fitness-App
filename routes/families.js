@@ -58,7 +58,6 @@ function weekDates(weekInfo) {
     for (var i = 0; i < 6; i++) {
       dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
     }
-  console.log(dates);
   return dates;
 }
 

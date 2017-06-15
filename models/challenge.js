@@ -67,7 +67,7 @@ challengeSchema.statics.getFutureChallenges = () => {
 	return Challenge.find().where('date.start').gt(new Date()).sort('date.start');
 };
 
-challengeSchema.statics.getAllExceptPastChallenges = () => {
+challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 	return Challenge.find().where('date.end').gt(new Date()).count();
 };
 
