@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/profile', function(req, res, next) {
-	User.findOne({}).then((user) => {
+	User.findById(res.locals.user._id).then((user) => {
 		res.render('accounts/edit', {user}); 
 	}).catch(e => console.log(e)); 
 }); 
