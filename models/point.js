@@ -34,6 +34,20 @@ pointSchema.statics.getPointsByDay = function(participation, day){
 		date: day }).populate({ path: 'activity', populate: { path: 'unit' }});
 };
 
+// gets the total points for each particpation object 
+// and sets the total points to the participation obj's totalPoints property
+pointSchema.statics.getTotalPointsForParticipations = participations => {
+	return Promise.all(participations.map(participation => {
+		return Point.aggregate([{$match: {participation: participation._id}}, {$group: {_id: null, total: {$sum: '$calculatedPoints'}}}]);
+	}))
+	.then(totalPointObjs => {
+		console.log("TOTLA POINTS OBJS", totalPointObjs);
+		totalPointObjs.forEach((totalPointObj, index) => {
+			participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+		});
+	});
+};
+
 var Point = mongoose.model('Point', pointSchema);
 
 module.exports = Point;

@@ -1,0 +1,19 @@
+include ../layout.pug
+
+include ../account/_account_nav
+
+h1 Edit your Profile
+
+form(action='/users/edit?_method=PUT' method='POST')
+	| First Name
+	input(value=user.name.first name='name.first' type='text' required)
+	| Last Name
+	input(value=user.name.last name='name.last' type='text' required)
+	| Nickname
+	input(value=user.name.nickname name='name.nickname' type='text')
+	| Email
+	input(value=user.email name='email' type='email' required)
+	| Password
+	input(value=user.password name='password' type='password' required)
+	
+	input(type='submit' value='Edit Profile')

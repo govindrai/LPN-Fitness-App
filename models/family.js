@@ -23,13 +23,13 @@ familySchema.methods.increaseChallengesWon = function() {
 	var challenge = this;
 	challenge.challengesWon += 1;
 	return challenge.save();
-}
+};
 
 familySchema.methods.increasePlayoffsReached = function() {
 	var challenge = this;
 	challenge.playoffsReached += 1;
 	return challenge.save();
-}
+};
 
 var Family = mongoose.model('Family', familySchema);
 

@@ -132,18 +132,22 @@ userSchema.methods.authenticate = function(password) {
 
 userSchema.statics.extractUser = function(token) {
 	return userSchema.statics.verifyAuthorizationToken(token);
-}
+};
 
 userSchema.statics.getAdmins = function() {
 	return User.find({admin: true}).populate('family');
 };
+
+userSchema.methods.getPointsCurrentChallenge = function() {
+	
+}
 
 userSchema.statics.getNonAdmins = function() {
 	return User.find({admin: false}).populate('family');
 };
 
 userSchema.statics.getFamilyMembers = function(family_id) {
-	return User.find({family_id})
+	return User.find({family_id});
 };
 
 userSchema.virtual('fullName').get(function() {
