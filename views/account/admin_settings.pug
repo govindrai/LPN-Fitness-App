@@ -8,7 +8,7 @@ block content
 
 	h2 All Admins
 
-	table
+	table#admins
 			thead
 				tr
 					td First Name
@@ -26,7 +26,7 @@ block content
 
 	h2 All Users
 
-	table
+	table#nonAdmins
 			thead
 				tr
 					td First Name
@@ -45,7 +45,7 @@ block content
 block footer-scripts
 	script.
 		function changeAdmin(e) {
-			var event = $(this);
+			var input = $(this);
 			var user = $(this).data('user');
 			var request = $.ajax({
 				url: '/users/edit',
@@ -54,11 +54,17 @@ block footer-scripts
 			});
 
 			request.done(res => {
-				var response = `<div>${res}</div>`
+				var response = `<div>${res}</div>`;
+				var user = input.closest('tr');
 				$('h1').after(response);
 				$('h1').next().fadeOut('slow', () => {
 					$('h1').next().remove();
-					event.closest('tr').hide();
+					input[0].checked = false;
+					if (user.parent().parent().attr('id') == 'admins') {
+						$('#nonAdmins').append(user);
+					} else {
+						$('#admins').append(user);
+					}
 				});
 			});
 				
