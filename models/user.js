@@ -134,12 +134,9 @@ userSchema.methods.getRegisterableChallengesCount = function() {
 		return Participation.setUserParticipationForChallenges(user, futureChallenges);
 	})
 	.then(() => {
-		console.log(futureChallenges.reduce((total, challenge) => {
-			total += challenge.participation ? 1 : 0;
-		}));
 		return futureChallenges.reduce((total, challenge) => {
-			total += challenge.participation ? 1 : 0;
-		});
+			return total += challenge.participation ? 0 : 1;
+		}, 0);
 	});
 };
 

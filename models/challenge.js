@@ -76,6 +76,9 @@ challengeSchema.statics.getFamilyIds = () => {
 challengeSchema.methods.generateSchedule = () => {
 	return Challenge.getFamilyIds()
 	.then(familyIds => {
+		console.log(familyIds);
+		familyIds.push("Bye");
+		console.log(familyIds);
 		var schedule = {
 	    week1: {},
 	    week2: {},
