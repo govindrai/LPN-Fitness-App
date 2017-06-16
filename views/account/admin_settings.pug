@@ -1,0 +1,76 @@
+include ../layout.pug
+
+block content
+	h1 Admin Settings
+
+
+	include ./_account_nav
+
+	h2 All Admins
+
+	table#admins
+			thead
+				tr
+					td First Name
+					td Last Name
+					td Email
+					td Remove Admin Access
+			tbody
+			each admin in admins
+				tr
+					td= admin.name.first
+					td= admin.name.last
+					td= admin.email
+					td
+						input(type="checkbox" name="admin" data-user=`${admin._id}`)
+
+	h2 All Users
+
+	table#nonAdmins
+			thead
+				tr
+					td First Name
+					td Last Name
+					td Email
+					td Add Admin Access
+			tbody
+			each nonAdmin in nonAdmins
+				tr
+					td= nonAdmin.name.first
+					td= nonAdmin.name.last
+					td= nonAdmin.email
+					td
+						input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
+
+block footer-scripts
+	script.
+		function changeAdmin(e) {
+			var input = $(this);
+			var user = $(this).data('user');
+			var request = $.ajax({
+				url: '/users/edit',
+				data: {changeAdmin: true, user},
+				type: 'PUT'
+			});
+
+			request.done(res => {
+				var response = `<div>${res}</div>`;
+				var user = input.closest('tr');
+				$('h1').after(response);
+				$('h1').next().fadeOut('slow', () => {
+					$('h1').next().remove();
+					input[0].checked = false;
+					if (user.parent().parent().attr('id') == 'admins') {
+						$('#nonAdmins').append(user);
+					} else {
+						$('#admins').append(user);
+					}
+				});
+			});
+				
+			request.fail(res => {
+				console.log("ERROR", res)
+			});
+		}
+
+		$('input:checkbox').on('click', changeAdmin);

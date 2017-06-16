@@ -140,7 +140,6 @@ userSchema.methods.getRegisterableChallengesCount = function() {
 			total += challenge.particpation ? 1 : 0;
 		});
 	});
-	// .catch(e => console.log(e));
 };
 
 userSchema.virtual('fullName').get(function() {

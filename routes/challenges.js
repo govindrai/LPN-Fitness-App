@@ -15,22 +15,22 @@ router.get('/', (req, res) => {
 	if (res.locals.loggedIn) {
 		Challenge.getCurrentChallenge()
 		.then((challenge) => {
-			currentChallenge = challenge
-			return Participation.getParticipation(res.locals.user, [currentChallenge]);
+			currentChallenge = challenge;
+			return Participation.setUserParticipationForChallenges(res.locals.user, [currentChallenge]);
 		})
 		.then(() => {
 			return Challenge.getFutureChallenges();
 		})
 		.then((challenges) => {
 			futureChallenges = challenges;
-			return Participation.getParticipation(res.locals.user, futureChallenges);
+			return Participation.setUserParticipationForChallenges(res.locals.user, futureChallenges);
 		})
 		.then(() => {
 			return Challenge.getPastChallenges();
 		})
 		.then((challenges) => {
 			pastChallenges = challenges;
-			return Participation.getParticipation(res.locals.user, pastChallenges);
+			return Participation.setUserParticipationForChallenges(res.locals.user, pastChallenges);
 		})
 		.then(() => {
 			res.render('challenges/index', {currentChallenge, futureChallenges, pastChallenges});
@@ -55,6 +55,6 @@ router.post('/', (req, res) => {
 		res.redirect('/challenges');
 	})
 	.catch(e => console.log(e));
-})
+});
 
 module.exports = router;
