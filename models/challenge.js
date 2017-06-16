@@ -39,9 +39,11 @@ var challengeSchema = new Schema({
 });
 
 challengeSchema.pre('validate', function(next) {
-	this.date.registrationEnd = this.date.start;
-	this.generateSchedule()
-	.then(() => {
+	var challenge = this;
+	challenge.date.registrationEnd = this.date.start;
+	challenge.generateSchedule()
+	.then((schedule) => {
+		challenge.schedule = schedule;
 		next();
 	})
 	.catch(e => console.log("Problem inside generate Schedule", e));
@@ -71,9 +73,7 @@ challengeSchema.statics.getFamilyIds = () => {
 	return Family.find({}).select('_id');
 };
 
-challengeSchema.methods.generateSchedule = function() {
-	var challenge = this;
-
+challengeSchema.methods.generateSchedule = () => {
 	return Challenge.getFamilyIds()
 	.then(familyIds => {
 		var schedule = {
@@ -114,11 +114,10 @@ challengeSchema.methods.generateSchedule = function() {
 	        // add same entry for versing family
 	        schedule[weekNumber][newFamilies[i]] = family;
 	      }
-      	week++;
+      week++;
 	    }
 	  });
-	  challenge.schedule = schedule;
-	  return challenge.save();
+	  return schedule;
 	});
 };
 

@@ -48,7 +48,9 @@ router.get('/new', (req, res) => {
 
 // Create Challenge
 router.post('/', (req, res) => {
+	console.log("REQ.BODY", req.body);
 	var body = _.pick(req.body, ["name", "date.start", "date.end"]);
+	debugger;
 	var challenge = new Challenge(body);
 	challenge.save()
 	.then(() => {

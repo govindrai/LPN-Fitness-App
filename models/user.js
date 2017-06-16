@@ -4,7 +4,8 @@ var mongoose = require('mongoose'),
 	bcrypt = require('bcryptjs');
 
 var Schema = mongoose.Schema,
-	Challenge = require('./challenge');
+	Challenge = require('./challenge'),
+	Participation = require('./participation');
 
 var userSchema = new Schema({
 	name: {
@@ -127,17 +128,17 @@ userSchema.statics.getFamilyMembers = familyId => User.find({familyId});
 userSchema.methods.getRegisterableChallengesCount = function() {
 	var user = this;
 	var futureChallenges;
-	Challenge.getFutureChallenges()
+	return Challenge.getFutureChallenges()
 	.then(challenges => {
 		futureChallenges = challenges;
-		return Particpation.getParticipation(user, futureChallenges);
+		return Participation.setUserParticipationForChallenges(user, futureChallenges);
 	})
 	.then(() => {
 		console.log(futureChallenges.reduce((total, challenge) => {
-			total += challenge.particpation ? 1 : 0;
+			total += challenge.participation ? 1 : 0;
 		}));
 		return futureChallenges.reduce((total, challenge) => {
-			total += challenge.particpation ? 1 : 0;
+			total += challenge.participation ? 1 : 0;
 		});
 	});
 };

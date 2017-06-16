@@ -34,7 +34,7 @@ pointSchema.statics.getPointsByDay = function(participation, day){
 		date: day }).populate({ path: 'activity', populate: { path: 'unit' }});
 };
 
-// gets the total points for each particpation object 
+// gets the total points for each participation object
 // and sets the total points to the participation obj's totalPoints property
 pointSchema.statics.getTotalPointsForParticipations = participations => {
 	return Promise.all(participations.map(participation => {

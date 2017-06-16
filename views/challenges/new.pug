@@ -13,7 +13,7 @@ block content
     | Start Date
     input.start(name='date.start' type='text' required)
     | End Date
-    input.end(name='date.end' type='text' disabled)
+    input.end(name='date.end' type='text' readonly)
 
     input(type='submit' value='Create challenge')
 
@@ -22,7 +22,6 @@ block content
   script.
     $('.start').datepicker()
     .on("change", function() {
-    debugger;
       var date = $(this).datepicker("getDate");
       date.setDate(date.getDate() + 62);
       $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
