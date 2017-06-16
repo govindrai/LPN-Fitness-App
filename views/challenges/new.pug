@@ -1,6 +1,6 @@
 extends ../layout
 
-append scripts
+append head-scripts
   include ../partials/jqueryui
 
 block content
@@ -13,42 +13,17 @@ block content
     | Start Date
     input.start(name='date.start' type='text' required)
     | End Date
-    input.end(name='date.end' type='text' required)
+    input.end(name='date.end' type='text' disabled)
 
     input(type='submit' value='Create challenge')
 
-  p #[b Please note:] Registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
+  p #[b Please note:] Challenges must Registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
 
   script.
-    $('.start').datepicker();
-    $('.end').datepicker();
-  //- script.
-  //-   var from = $('.start')
-  //-       .datepicker({
-  //-         changeMonth: true,
-  //-         numberOfMonths: 2,
-  //-         minDate: 0
-  //-       })
-  //-       .on("change", function() {
-  //-         var date = getDate(this);
-  //-         to.datepicker("option", "minDate", date);
-  //-         date = date.getDate() + 76;
-  //-         to.datepicker("setDate", date);
-  //-       });
-  //-   var to = $('.end').datepicker({
-  //-       changeMonth: true,
-  //-       numberOfMonths: 2
-  //-     })
-  //-     .on( "change", function() {
-  //-       from.datepicker( "option", "maxDate", getDate(this) );
-  //-     });
-
-  //-   function getDate( element ) {
-  //-     var date;
-  //-     try {
-  //-       date = $.datepicker.parseDate('mm/dd/yy', element.value);
-  //-     } catch(error) {
-  //-       date = null;
-  //-     }
-  //-     return date;
-  //-   }
+    $('.start').datepicker()
+    .on("change", function() {
+    debugger;
+      var date = $(this).datepicker("getDate");
+      date.setDate(date.getDate() + 62);
+      $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
+    });
