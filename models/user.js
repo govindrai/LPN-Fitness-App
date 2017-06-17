@@ -117,17 +117,17 @@ userSchema.statics.destroyAuthorizationToken = function(token) {
 }
 
 userSchema.methods.authenticate = function(password) {
-  var user = this;
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, user.password, (err, res) => {
-    	if (err) {
+	var user = this;
+	return new Promise((resolve, reject) => {
+		bcrypt.compare(password, user.password, (err, res) => {
+			if (err) {
 				console.log(err);
 				console.log("THeRE IS AN ERROR")
-    		reject(err);
-    	}
-      resolve(res);
-    });
-  });
+				reject(err);
+			}
+			resolve(res);
+		});
+	});
 };
 
 userSchema.statics.extractUser = function(token) {
@@ -135,15 +135,21 @@ userSchema.statics.extractUser = function(token) {
 };
 
 userSchema.statics.getAdmins = function() {
-	return User.find({admin: true}).populate('family');
+	return User.find({admin: true}).populate('family')
+	.then((admins) => {
+		return admins.sort((a, b) => a.name.last < b.name.last ? -1 : 1);
+	});
 };
 
 userSchema.methods.getPointsCurrentChallenge = function() {
 	
-}
+};
 
 userSchema.statics.getNonAdmins = function() {
-	return User.find({admin: false}).populate('family');
+	return User.find({admin: false}).populate('family')
+	.then((nonAdmins)=> {
+		return nonAdmins.sort((a, b) => a.name.last < b.name.last ? -1 : 1);
+	});
 };
 
 userSchema.statics.getFamilyMembers = function(family_id) {
@@ -151,7 +157,7 @@ userSchema.statics.getFamilyMembers = function(family_id) {
 };
 
 userSchema.virtual('fullName').get(function() {
-  return this.name.first + ' ' + this.name.last;
+	return this.name.first + ' ' + this.name.last;
 });
 
 var User = mongoose.model('User', userSchema);
