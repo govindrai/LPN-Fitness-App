@@ -8,12 +8,12 @@ var User = require('./../models/user'),
 
 var router = express.Router();
 
-// GET to Root (registration form or homepage depending on authorization)
+// GET Root (registration form)
 router.get('/', (req, res) => {
   // Need families for registration form
   Family.find()
   .then(families => {
-    res.render('index', {families, user: new User({})});
+    res.render('index', {families, user: new User()});
   })
   .catch(e => console.log(e));
 });
@@ -25,21 +25,15 @@ router.get('/login', (req, res) => {
 
 // POST login form data
 router.post('/login', (req, res) => {
-  var body = _.pick(req.body, [
-    'email',
-    'password'
-  ]);
-
   var user;
-  User.findOne({email: body.email})
-  .then(foundUser => {
-    user = foundUser;
-    return user.authenticate(body.password);
+
+  User.findOne({email: req.body.email})
+  .then(userObj => {
+    user = userObj;
+    return user.authenticate(req.body.password);
   })
   .then(res => {
-    if (!res) {
-      return Promise.reject("Username/Password Incorrect");
-    }
+    if (!res) return Promise.reject("Username/Password Incorrect");
     return user.generateAuthorizationToken();
   })
   .then((authToken) => {
@@ -118,13 +112,7 @@ router.get('/logout', (req, res) => {
   .catch((e) => console.log(e));
 });
 
-router.get('/rules', (req, res) => {
-  res.render('sessions/rules');
-});
-
-
-router.get('/profile', (req, res) => {
-});
-
+// GET rules page
+router.get('/rules', (req, res) => res.render('sessions/rules'));
 
 module.exports = router;

@@ -17,7 +17,7 @@ function verifyAuthorization(req, res, next) {
   } else {
     if (!req.session["x-auth"]) {
       if (req.path == '/') {
-        res.render('index');
+        next();
       } else {
         res.render('sessions/unauthorized');
       }
