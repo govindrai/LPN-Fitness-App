@@ -20,10 +20,15 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/admin-settings', isAdmin , function(req, res, next) {
-	User.getAdmins().then((admins) => {
-		User.getNonAdmins().then((nonAdmins) => {
-			res.render('account/admin_settings', {admins, nonAdmins});
-		});
+	var adminss, nonAdminss;
+	User.getAdmins()
+	.then((admins) => {
+		adminss = admins;
+		return User.getNonAdmins();
+	})
+	.then((nonAdmins) => {
+		nonAdminss = nonAdmins;
+		res.render('account/admin_settings', {admins: adminss, nonAdmins: nonAdminss});
 	});
 });
 

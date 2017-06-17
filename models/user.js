@@ -81,7 +81,6 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods.generateAuthorizationToken = function() {
-	var user = this;
 	var payload = {
 		_id: this._id,
 		access: "auth"
@@ -119,11 +118,21 @@ userSchema.methods.authenticate = function(password) {
   });
 };
 
-userSchema.statics.getAdmins = () => User.find({admin: true}).populate('family');
-
-userSchema.statics.getNonAdmins = () => User.find({admin: false}).populate('family');
-
 userSchema.statics.getFamilyMembers = familyId => User.find({familyId});
+
+userSchema.statics.getAdmins = function() {
+	return User.find({admin: true}).populate('family')
+	.then((admins) => {
+		return admins.sort((a, b) => a.name.last < b.name.last ? -1 : 1);
+	});
+};
+
+userSchema.statics.getNonAdmins = function() {
+	return User.find({admin: false}).populate('family')
+	.then((nonAdmins)=> {
+		return nonAdmins.sort((a, b) => a.name.last < b.name.last ? -1 : 1);
+	});
+};
 
 userSchema.methods.getRegisterableChallengesCount = function() {
 	var user = this;
@@ -141,8 +150,8 @@ userSchema.methods.getRegisterableChallengesCount = function() {
 };
 
 userSchema.virtual('fullName').get(function() {
-	  return this.name.first + ' ' + this.name.last;
-	});
+	return this.name.first + ' ' + this.name.last;
+});
 
 var User = mongoose.model('User', userSchema);
 

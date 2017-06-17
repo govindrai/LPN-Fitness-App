@@ -75,7 +75,10 @@ challengeSchema.statics.getFamilyIds = () => {
 
 challengeSchema.methods.generateSchedule = () => {
 	return Challenge.getFamilyIds()
-	.then(familyIds => {
+	.then(aggregationObjs => {
+		familyIds = aggregationObjs.map(aggregationObj => {
+			return aggregationObj._id;
+		})
 		console.log(familyIds);
 		familyIds.push("Bye");
 		console.log(familyIds);
