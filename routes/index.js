@@ -117,10 +117,9 @@ router.post('/register', (req, res) => {
 router.get('/logout', (req, res) => {
   var token = req.session["x-auth"];
   User.destroyAuthorizationToken(token)
-  .then((user) => {
-    if (!user) {
-      res.send("We don't know who you are and why you wanna logout");
-    }
+  .then(user => {
+    if (!user) res.send("We don't know who you are and why you wanna logout");
+    console.log(user);
     user.tokens = _.remove(user.tokens, tokenObj => {
       return tokenObj.access === "auth" && tokenObj.token === token;
     });

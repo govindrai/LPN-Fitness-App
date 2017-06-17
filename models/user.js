@@ -103,7 +103,10 @@ userSchema.statics.decodeAuthorizationToken = function(token) {
 			if (err) reject(err);
 			resolve(decoded);
 		});
-	});
+	})
+	.then(decoded => {
+    return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
+  });
 };
 
 userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);

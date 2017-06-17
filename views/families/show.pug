@@ -74,7 +74,7 @@ block footer-scripts
 
     function addPoints(e) {
       var date = $(this).data('date');
-      
+
       var request = $.ajax({
         type: 'GET',
         data: {date},
@@ -142,7 +142,7 @@ block footer-scripts
         typeaheadElements = $('#typeahead').parent().parent();
         $('#typeahead').typeahead('val', '');
         typeaheadElements.hide();
-        
+
         if (!partial) {
           $("#add-points").prepend(res);
         } else {
@@ -163,7 +163,7 @@ block footer-scripts
       $("#add-activity").hide();
       partial = true;
     }
-    
+
     function sumArray(total, num) {
       return total + num;
     }
@@ -182,7 +182,7 @@ block footer-scripts
         var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
         activity.find('.calculatedPoints').val(calculation);
       }
-      
+
       var totalPoints = $(".calculatedPoints").map(function() {
         return $(this).val() == "" ? 0 : parseInt($(this).val());
       }).get();
