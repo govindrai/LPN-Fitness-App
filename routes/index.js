@@ -60,11 +60,11 @@ router.post('/register', (req, res) => {
     return user.generateAuthorizationToken();
   })
   .then(() => {
-    return User.populate(user, 'family');
+    return user.populate('family').execPopulate();
   })
   .then(() => {
-    req.session["x-auth"] = res.locals.token;
-    res.redirect('/families/' + res.locals.user.family.name);
+    req.session["x-auth"] = user.tokens[0].token;
+    res.redirect(`/families/${user.family.name}`);
   })
   .catch(e => {
     if (body.family === 'Please Select') {
