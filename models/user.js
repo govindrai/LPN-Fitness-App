@@ -112,13 +112,7 @@ userSchema.statics.decodeAuthorizationToken = function(token) {
 userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
 
 userSchema.methods.authenticate = function(password) {
-  var user = this;
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, user.password, (err, res) => {
-    	if (err) reject(err);
-      resolve(res);
-    });
-  });
+	return bcrypt.compare(password, this.password);
 };
 
 userSchema.statics.getFamilyMembers = familyId => User.find({familyId});

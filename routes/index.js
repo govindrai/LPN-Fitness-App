@@ -19,9 +19,7 @@ router.get('/', (req, res) => {
 });
 
 // GET login form
-router.get('/login', (req, res) => {
-    res.render('sessions/login');
-});
+router.get('/login', (req, res) => res.render('sessions/login'));
 
 // POST login form data
 router.post('/login', (req, res) => {
@@ -36,22 +34,16 @@ router.post('/login', (req, res) => {
     if (!res) return Promise.reject("Username/Password Incorrect");
     return user.generateAuthorizationToken();
   })
-  .then((authToken) => {
+  .then(authToken => {
     token = authToken;
     user.tokens.push({access: "auth", token});
     return user.save();
   })
   .then(() => {
-    return User.populate(user, 'family');
-  })
-  .then((newUser) => {
-    user = newUser;
     req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
+    res.redirect('/');
   })
-  .catch(e => {
-    res.render('sessions/login', {error: e});
-  });
+  .catch(error => res.render('sessions/login', {error}));
 });
 
 // Register
