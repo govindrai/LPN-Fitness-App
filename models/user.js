@@ -81,18 +81,21 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods.generateAuthorizationToken = function() {
-	var payload = {
-		_id: this._id,
-		access: "auth"
-	};
+	var user = this;
 
 	return new Promise((resolve, reject) => {
+		var payload = {_id: user._id, access: "auth"};
 		jwt.sign(payload, 'secret', (err, token) => {
-			if (err) {
-				reject(err);
-			}
-				resolve(token);
+			if (err) reject(err);
+			resolve(token);
 		});
+	})
+	.then(token => {
+    user.tokens.push({access: "auth", token});
+  	return user.save();
+	})
+	.then(() => {
+		return user.populate('family').execPopulate();
 	});
 };
 

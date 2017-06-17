@@ -34,14 +34,9 @@ router.post('/login', (req, res) => {
     if (!res) return Promise.reject("Username/Password Incorrect");
     return user.generateAuthorizationToken();
   })
-  .then(authToken => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
-  })
   .then(() => {
-    req.session["x-auth"] = token;
-    res.redirect('/');
+    req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
+    res.redirect(`/families/${user.family.name}`);
   })
   .catch(error => res.render('sessions/login', {error}));
 });
@@ -64,18 +59,12 @@ router.post('/register', (req, res) => {
   .then(() => {
     return user.generateAuthorizationToken();
   })
-  .then((authToken) => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
-  })
   .then(() => {
     return User.populate(user, 'family');
   })
-  .then((newUser) => {
-    user = newUser;
-    req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
+  .then(() => {
+    req.session["x-auth"] = res.locals.token;
+    res.redirect('/families/' + res.locals.user.family.name);
   })
   .catch(e => {
     if (body.family === 'Please Select') {

@@ -78,10 +78,8 @@ challengeSchema.methods.generateSchedule = () => {
 	.then(aggregationObjs => {
 		familyIds = aggregationObjs.map(aggregationObj => {
 			return aggregationObj._id;
-		})
-		console.log(familyIds);
+		});
 		familyIds.push("Bye");
-		console.log(familyIds);
 		var schedule = {
 	    week1: {},
 	    week2: {},
