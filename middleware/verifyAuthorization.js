@@ -11,15 +11,19 @@ function verifyAuthorization(req, res, next) {
   //  render the 404 view (meaning they are not logged in)
   // else
   //  verify the JWT and find the user associated with the JWT
-  var exemptPaths = ['/login', '/register', '/logout'];
+  var exemptPaths = ['/login', '/register'];
   if (_.includes(exemptPaths, req.path)) {
     next();
   } else {
     if (!req.session["x-auth"]) {
-      res.render('sessions/unauthorized');
+      if (req.path == '/') {
+        res.render('index');
+      } else {
+        res.render('sessions/unauthorized');
+      }
     } else {
-      var token = req.session["x-auth"];
-      User.decodeAuthorizationToken(token)
+      res.locals.token = req.session["x-auth"];
+      User.decodeAuthorizationToken(res.locals.token)
       .then(user => {
         if (!user) res.status(404).send('UNAUTHORIZED.');
         res.locals.loggedIn = true;

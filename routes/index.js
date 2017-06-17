@@ -10,22 +10,12 @@ var router = express.Router();
 
 // GET to Root (registration form or homepage depending on authorization)
 router.get('/', (req, res) => {
-  if (!res.locals.loggedIn) {
-    // Need families for registration form
-    Family.find()
-    .then(families => {
-      res.render('index', {families, user: new User({})});
-    })
-    .catch(e => console.log(e));
-  } else {
-    User.populate(res.locals.user, 'family')
-    .then(user => {
-      res.redirect(`families/${user.family.name}`);
-    })
-    .catch(e => {
-      console.log(e);
-    });
-  }
+  // Need families for registration form
+  Family.find()
+  .then(families => {
+    res.render('index', {families, user: new User({})});
+  })
+  .catch(e => console.log(e));
 });
 
 // GET login form
@@ -113,23 +103,15 @@ router.post('/register', (req, res) => {
   });
 });
 
-// Logout
+// Logout (Remove JWT from user, then redirect to Home)
 router.get('/logout', (req, res) => {
-  var token = req.session["x-auth"];
-  User.destroyAuthorizationToken(token)
-  .then(user => {
-    if (!user) res.send("We don't know who you are and why you wanna logout");
-    console.log(user);
-    user.tokens = _.remove(user.tokens, tokenObj => {
-      return tokenObj.access === "auth" && tokenObj.token === token;
-    });
-    return user.save();
-  })
-  .then((user) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err, "Session could not be destroyed");
-      }
+  res.locals.user.tokens = _.remove(res.locals.user.tokens, tokenObj => {
+    return tokenObj.access === "auth" && tokenObj.token === res.locals.token;
+  });
+  res.locals.user.save()
+  .then(() => {
+    req.session.destroy(err => {
+      if (err) console.log(err, "Session could not be destroyed");
       res.redirect('/');
     });
   })
