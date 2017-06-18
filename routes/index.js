@@ -52,8 +52,7 @@ router.post('/register', (req, res) => {
     'password'
   ]);
 
-  var user = new User(body),
-    token;
+  var user = new User(body);
 
   user.save()
   .then(() => {
@@ -80,11 +79,9 @@ router.post('/register', (req, res) => {
 
 // Logout (Remove JWT from user, then redirect to Home)
 router.get('/logout', (req, res) => {
-  res.locals.user.tokens = _.remove(res.locals.user.tokens, tokenObj => {
-    return tokenObj.access === "auth" && tokenObj.token === res.locals.token;
-  });
+  res.locals.user.tokens.pull({access: "auth", token: res.locals.token});
   res.locals.user.save()
-  .then(() => {
+  .then((user) => {
     req.session.destroy(err => {
       if (err) console.log(err, "Session could not be destroyed");
       res.redirect('/');

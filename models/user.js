@@ -53,6 +53,7 @@ var userSchema = new Schema({
 		default: false
 	},
 	tokens: [{
+		_id: false,
 		access: {
 			type: String,
 			required: true
@@ -60,7 +61,7 @@ var userSchema = new Schema({
 		token: {
 			type: String,
 			required: true
-		}
+		},
 	}]
 });
 
