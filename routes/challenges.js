@@ -11,7 +11,7 @@ var router = express.Router();
 
 // GET list all challenges
 router.get('/', (req, res) => {
-	var currentChallenge, futureChallenges, pastChallenges
+	var currentChallenge, futureChallenges, pastChallenges;
 	if (res.locals.loggedIn) {
 		Challenge.getCurrentChallenge()
 		.then((challenge) => {

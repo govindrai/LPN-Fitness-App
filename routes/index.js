@@ -8,66 +8,37 @@ var User = require('./../models/user'),
 
 var router = express.Router();
 
-// GET login form
-router.get('/login', (req, res) => {
-    res.render('sessions/login');
+// GET Root (registration form)
+router.get('/', (req, res) => {
+  // Need families for registration form
+  Family.find()
+  .then(families => {
+    res.render('index', {families, user: new User()});
+  })
+  .catch(e => console.log(e));
 });
+
+// GET login form
+router.get('/login', (req, res) => res.render('sessions/login'));
 
 // POST login form data
 router.post('/login', (req, res) => {
-  var body = _.pick(req.body, [
-    'email',
-    'password'
-  ]);
-
   var user;
-  User.findOne({email: body.email})
-  .then(foundUser => {
-    user = foundUser;
-    return user.authenticate(body.password);
+
+  User.findOne({email: req.body.email})
+  .then(userObj => {
+    user = userObj;
+    return user.authenticate(req.body.password);
   })
   .then(res => {
-    if (!res) {
-      return Promise.reject("Username/Password Incorrect");
-    }
+    if (!res) return Promise.reject("Username/Password Incorrect");
     return user.generateAuthorizationToken();
   })
-  .then((authToken) => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
-  })
   .then(() => {
-    return User.populate(user, 'family');
+    req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
+    res.redirect(`/families/${user.family.name}`);
   })
-  .then((newUser) => {
-    user = newUser;
-    req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
-  })
-  .catch(e => {
-    res.render('sessions/login', {error: e});
-  });
-});
-
-// GET to Root (registration form or homepage depending on authorization)
-router.get('/', (req, res) => {
-  if (!res.locals.loggedIn) {
-    // Need families for registration form
-    Family.find()
-    .then(families => {
-      res.render('index', {families, user: new User({})});
-    })
-    .catch(e => console.log(e));
-  } else {
-    User.populate(res.locals.user, 'family')
-    .then(user => {
-      res.redirect(`families/${user.family.name}`);
-    })
-    .catch(e => {
-      console.log(e);
-    });
-  }
+  .catch(error => res.render('sessions/login', {error}));
 });
 
 // Register
@@ -81,25 +52,18 @@ router.post('/register', (req, res) => {
     'password'
   ]);
 
-  var user = new User(body),
-    token;
+  var user = new User(body);
 
   user.save()
   .then(() => {
     return user.generateAuthorizationToken();
   })
-  .then((authToken) => {
-    token = authToken;
-    user.tokens.push({access: "auth", token});
-    return user.save();
+  .then(() => {
+    return user.populate('family').execPopulate();
   })
   .then(() => {
-    return User.populate(user, 'family');
-  })
-  .then((newUser) => {
-    user = newUser;
-    req.session["x-auth"] = token;
-    res.redirect('/families/' + user.family.name);
+    req.session["x-auth"] = user.tokens[0].token;
+    res.redirect(`/families/${user.family.name}`);
   })
   .catch(e => {
     if (body.family === 'Please Select') {
@@ -113,37 +77,20 @@ router.post('/register', (req, res) => {
   });
 });
 
-// Logout
+// Logout (Remove JWT from user, then redirect to Home)
 router.get('/logout', (req, res) => {
-  var token = req.session["x-auth"];
-  User.destroyAuthorizationToken(token)
+  res.locals.user.tokens.pull({access: "auth", token: res.locals.token});
+  res.locals.user.save()
   .then((user) => {
-    if (!user) {
-      res.send("We don't know who you are and why you wanna logout");
-    }
-    user.tokens = _.remove(user.tokens, tokenObj => {
-      return tokenObj.access === "auth" && tokenObj.token === token;
-    });
-    return user.save();
-  })
-  .then((user) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err, "Session could not be destroyed");
-      }
+    req.session.destroy(err => {
+      if (err) console.log(err, "Session could not be destroyed");
       res.redirect('/');
     });
   })
   .catch((e) => console.log(e));
 });
 
-router.get('/rules', (req, res) => {
-  res.render('sessions/rules');
-});
-
-
-router.get('/profile', (req, res) => {
-});
-
+// GET rules page
+router.get('/rules', (req, res) => res.render('sessions/rules'));
 
 module.exports = router;

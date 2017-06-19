@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+	Schema = mongoose.Schema;
 
 var familySchema = new mongoose.Schema({
 	name: {
@@ -20,15 +21,13 @@ var familySchema = new mongoose.Schema({
 });
 
 familySchema.methods.increaseChallengesWon = function() {
-	var challenge = this;
-	challenge.challengesWon += 1;
-	return challenge.save();
+	this.challengesWon += 1;
+	return this.save();
 };
 
 familySchema.methods.increasePlayoffsReached = function() {
-	var challenge = this;
-	challenge.playoffsReached += 1;
-	return challenge.save();
+	this.playoffsReached += 1;
+	return this.save();
 };
 
 var Family = mongoose.model('Family', familySchema);

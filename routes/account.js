@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const mongoose = require('./../db/mongoose'); 
-const User = require('./../models/user'); 
+const mongoose = require('./../db/mongoose');
+const User = require('./../models/user');
 
 /* GET users listing. */
 
@@ -30,13 +30,6 @@ router.get('/admin-settings', isAdmin , function(req, res, next) {
 		nonAdminss = nonAdmins;
 		res.render('account/admin_settings', {admins: adminss, nonAdmins: nonAdminss});
 	});
-});
-
-router.put('/profile', function(req, res, next) {
-		User.findOneAndUpdate({_id: res.locals.user._id}, {$set: req.body})
-		.then(user => {
-			res.render('users/edit', {user});
-		}).catch(e => console.log(e)); 
 });
 
 

@@ -5,25 +5,31 @@ var _ = require('lodash');
 var User = require('./../models/user'),
   Challenge = require('./../models/challenge');
 
-// Checks if the user is logged in
+// middleware to check if the user is logged in
 function verifyAuthorization(req, res, next) {
+  // if x-auth key doesn't exist in session object
+  //  render the 404 view (meaning they are not logged in)
+  // else
+  //  verify the JWT and find the user associated with the JWT
   var exemptPaths = ['/login', '/register'];
   if (_.includes(exemptPaths, req.path)) {
     next();
   } else {
     if (!req.session["x-auth"]) {
-      console.log("SESSION NOT FOUND");
-      res.render('sessions/unauthorized');
+      if (req.path == '/') {
+        next();
+      } else {
+        res.render('sessions/unauthorized');
+      }
     } else {
-      User.verifyAuthorizationToken(req.session["x-auth"])
-      .then((user) => {
-        if (!user) {
-          res.status(404).send('UNAUTHORIZED.');
-        }
+      res.locals.token = req.session["x-auth"];
+      User.decodeAuthorizationToken(res.locals.token)
+      .then(user => {
+        if (!user) res.status(404).send('UNAUTHORIZED.');
         res.locals.loggedIn = true;
         res.locals.user = user;
         res.locals.home = '/families/' + user.family.name;
-        return Challenge.getAllExceptPastChallenges();
+        return user.getRegisterableChallengesCount();
       })
       .then(challengeCount => {
         res.locals.challengeCount = challengeCount;
@@ -31,11 +37,9 @@ function verifyAuthorization(req, res, next) {
       })
       .then(currentChallenge => {
         res.locals.currentChallenge = currentChallenge;
-        // if for some reason user decides to go to the home page
-        if (req.path == '/') res.redirect(res.locals.home);
         next();
       })
-      .catch((e) => console.log(e));
+      .catch(e => console.log(e));
     }
   }
 }

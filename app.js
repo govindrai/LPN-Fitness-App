@@ -34,6 +34,7 @@ var verifyAuthorization = require('./middleware/verifyAuthorization');
 // Create Express App
 var app = express();
 
+
 // Setup View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

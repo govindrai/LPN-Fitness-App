@@ -32,27 +32,21 @@ var challengeSchema = new Schema({
 		ref: 'Family',
 		default: null
 	},
-	schedule: [{
-		week: {
-			type: Number,
-			required: true
-		},
-		matchups: [{
-			family: {
-				type: Schema.Types.ObjectId,
-				required: true
-			},
-			versing: {
-				type: Schema.Types.ObjectId,
-				required: true
-			}
-		}]
-	}]
+	schedule: {
+		type: Object,
+		required: true
+	}
 });
 
 challengeSchema.pre('validate', function(next) {
-	this.date.registrationEnd = this.date.start;
-	next();
+	var challenge = this;
+	challenge.date.registrationEnd = this.date.start;
+	challenge.generateSchedule()
+	.then((schedule) => {
+		challenge.schedule = schedule;
+		next();
+	})
+	.catch(e => console.log("Problem inside generate Schedule", e));
 });
 
 challengeSchema.statics.getCurrentChallenge = () => {
@@ -67,7 +61,7 @@ challengeSchema.statics.getFutureChallenges = () => {
 	return Challenge.find().where('date.start').gt(new Date()).sort('date.start');
 };
 
-challengeSchema.statics.getAllExceptPastChallenges = () => {
+challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 	return Challenge.find().where('date.end').gt(new Date()).count();
 };
 
@@ -75,35 +69,62 @@ challengeSchema.statics.getChallengeByDate = date => {
 	return Challenge.find().where('date.start').lt(new Date(date)).where('date.end').gt(new Date(date));
 };
 
-// challengeSchema.statics.generateSchedule = () => {
-// 	Family.find({}).select('_id name')
-// 	.then(families => {
-// 		function generateSchedule(families) {
-// 			var matches = {
-// 				iolite: [],
-// 				alexandrite: [],
-// 				ruby: [],
-// 				sapphire: [],
-// 				emerald: [],
-// 				topaz: [],
-// 				sunstone: [],
-// 				bye: []
-// 			};
-// 			for (var i = 0; i < 7; i++) {
-// 				families.forEach((family, index) => {
-// 					if (matches[family.name][index] || (family.name == families[i].name)) {
-// 						// don't do anything since fam is not free that week
-// 					} else {
-// 						// add a verse for opposing family
-// 						matches[families[i].name].push(family.name);
-// 						// add same entry for versing family
-// 						matches[family.name][index] = families[i].name;
-// 					}
-// 				});
-// 			}
-// 			return matches;
-// 		}
-// });
+challengeSchema.statics.getFamilyIds = () => {
+	return Family.find({}).select('_id');
+};
+
+challengeSchema.methods.generateSchedule = () => {
+	return Challenge.getFamilyIds()
+	.then(aggregationObjs => {
+		familyIds = aggregationObjs.map(aggregationObj => {
+			return aggregationObj._id;
+		});
+		familyIds.push("Bye");
+		var schedule = {
+	    week1: {},
+	    week2: {},
+	    week3: {},
+	    week4: {},
+	    week5: {},
+	    week6: {},
+	    week7: {}
+	  };
+
+	  familyIds.forEach((family, index) => {
+	    var newFamilies = familyIds.filter(newFamily => newFamily != family);
+	    var week = 1;
+	    for (var i = 0; i < 7; i++) {
+	      var weekNumber = "week" + week;
+	      if (schedule[weekNumber][family]) {
+	      	// don't do anything since fam not free that week
+	      } else if (schedule[weekNumber][newFamilies[i]]) {
+	      	var tempFams = newFamilies.slice(i+1);
+	    		tempFams.some(tempFam => {
+	    			if(schedule[weekNumber][tempFam]) {
+	    				return false;
+	    				// do nothing as fam is unavailable
+	    			} else {
+	    				 // add a verse for opposing family
+			        schedule[weekNumber][family] = tempFam;
+			        // add same entry for versing family
+			        schedule[weekNumber][tempFam] = family;
+			        newFamilies[newFamilies.indexOf(tempFam)] = newFamilies[i];
+							return true;
+	    			}
+	    		});
+	      } else {
+	        // add a verse for opposing family
+	        schedule[weekNumber][family] = newFamilies[i];
+	        // add same entry for versing family
+	        schedule[weekNumber][newFamilies[i]] = family;
+	      }
+      week++;
+	    }
+	  });
+	  return schedule;
+	});
+};
+
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
 

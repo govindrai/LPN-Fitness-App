@@ -39,28 +39,7 @@ router.post('/calendar', (req, res) => {
 	}
 });
 
-function weekDates(weekInfo) {
-	var startDate;
-	if (typeof weekInfo == 'object') {
-		startDate = new Date(weekInfo.date);
-		if (weekInfo.direction == 'previous') {
-			startDate.setDate(startDate.getDate() - 7);
-		} else {
-			startDate.setDate(startDate.getDate() + 1);
-		}
-	} else {
-		var today = new Date();
-		today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-		var day = today.getDay();
-		startDate = new Date(today.setDate(today.getDate() - (day - 1)));
-	}
-	var dates = [new Date(startDate)];
-		for (var i = 0; i < 6; i++) {
-			dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
-		}
-	console.log(dates);
-	return dates;
-}
+
 
 // router.get('/calendar', (req, res) => {
 //   if (req.xhr) {
@@ -85,29 +64,55 @@ router.post('/points', (req, res) => {
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
 	var family, currentChallenge, users, participation, familyParticipations;
-	var participatingUsers = [];
-	var dates = weekDates();
 
+  // First get the family who's page was requested
 	Family.findOne({name: req.params.familyName})
-	.then((familyObj) => {
+	.then(familyObj => {
 		family = familyObj;
 		return Challenge.getCurrentChallenge();
 	})
-	.then((challenge) => {
+  // then get information on the currentChallenge
+	.then(challenge => {
 		currentChallenge = challenge;
 		return Participation.setUserParticipationForChallenges(res.locals.user, [currentChallenge]);
 	})
+  // then check if the user is participating in the current challenge
 	.then(() => {
 		return Participation.getParticipationForChallengeByFamily(currentChallenge._id, family._id);
 	})
-	.then((familyParticipationsArray) => {
+	.then(familyParticipationsArray => {
 		familyParticipations = familyParticipationsArray;
 		return Point.getTotalPointsForParticipations(familyParticipations);
 	})
 	.then(() => {
-		res.render('families/show', {dates, family, familyParticipations, currentChallenge});
+		res.render('families/show', {dates: weekDates(), family, familyParticipations, currentChallenge});
 	})
 	.catch(e => console.log(e));
 });
 
 module.exports = router;
+
+// PRIVATE FUNCTIONS
+
+// calculates all the dates for a given week
+function weekDates(weekInfo) {
+  var startDate;
+  if (typeof weekInfo == 'object') {
+    startDate = new Date(weekInfo.date);
+    if (weekInfo.direction == 'previous') {
+      startDate.setDate(startDate.getDate() - 7);
+    } else {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  } else {
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    var day = today.getDay();
+    startDate = new Date(today.setDate(today.getDate() - (day - 1)));
+  }
+  var dates = [new Date(startDate)];
+    for (var i = 0; i < 6; i++) {
+      dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
+    }
+  return dates;
+}

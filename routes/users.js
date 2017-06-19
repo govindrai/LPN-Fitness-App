@@ -12,12 +12,12 @@ router.get('/', function(req, res, next) {
 	Family.find({}).then((families) => {
 		User.find({}).populate('family').then((users) => {
 			res.render('users/index', {families, users});
-		})
+		});
 	});
-})
+});
 
 router.post('/', (req, res, next) => {
-	var user = new User(req.body)
+	var user = new User(req.body);
 	user.save().then((user) => {
 		user.generateAuthToken().then((token) => {
 				res.redirect('/families');
@@ -39,20 +39,27 @@ router.post('/', (req, res, next) => {
 
 router.put('/edit', (req, res) => {
 	var user, currentAdmin;
-	User.findById(req.body.user)
-	.then(foundUser => {
-		user = foundUser;
-		currentAdmin = user.admin;
-		if (req.body.changeAdmin) {
-			user.admin = !user.admin;
-			return user.save();
-		}
-	})
-	.then(() => {
-		var message = currentAdmin ? "is no longer an admin" : "is now an admin";
-		res.send(`${user.fullName} ${message}`);
-	})
-	.catch(e => console.log(e));
+	if (req.body.changeAdmin) {
+		User.findById(req.body.user)
+		.then(foundUser => {
+			user = foundUser;
+			currentAdmin = user.admin;
+			if (req.body.changeAdmin) {
+				user.admin = !user.admin;
+				return user.save();
+			}
+		})
+		.then(() => {
+			var message = currentAdmin ? "is no longer an admin" : "is now an admin";
+			res.send(`${user.fullName} ${message}`);
+		})
+		.catch(e => console.log(e));
+	} else {
+		User.findOneAndUpdate({_id: res.locals.user._id}, {$set: req.body}, {runValidators: true, new: true})
+		.then(user => {
+			res.send({message: "Your profile has been updated!"});
+		}).catch(e => console.log(e));
+	}
 });
 
 module.exports = router;

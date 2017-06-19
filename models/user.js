@@ -3,7 +3,9 @@ var mongoose = require('mongoose'),
 	jwt = require('jsonwebtoken'),
 	bcrypt = require('bcryptjs');
 
-var Schema = mongoose.Schema;
+var Schema = mongoose.Schema,
+	Challenge = require('./challenge'),
+	Participation = require('./participation');
 
 var userSchema = new Schema({
 	name: {
@@ -51,6 +53,7 @@ var userSchema = new Schema({
 		default: false
 	},
 	tokens: [{
+		_id: false,
 		access: {
 			type: String,
 			required: true
@@ -58,7 +61,7 @@ var userSchema = new Schema({
 		token: {
 			type: String,
 			required: true
-		}
+		},
 	}]
 });
 
@@ -66,13 +69,9 @@ userSchema.pre('save', function(next) {
 	var user = this;
 	if (user.isModified('password')) {
 		bcrypt.genSalt(10, (err, salt) => {
-			if (err) {
-				console.log(err);
-			}
+			if (err) return console.log(err);
 			bcrypt.hash(user.password, salt, (error, hash) => {
-				if (error) {
-					console.log(err);
-				}
+				if (error) return console.log(err);
 				user.password = hash;
 				next();
 			});
@@ -84,65 +83,49 @@ userSchema.pre('save', function(next) {
 
 userSchema.methods.generateAuthorizationToken = function() {
 	var user = this;
-	var payload = {
-		_id: this._id,
-		access: "auth"
-	};
 
 	return new Promise((resolve, reject) => {
+		var payload = {_id: user._id, access: "auth"};
 		jwt.sign(payload, 'secret', (err, token) => {
-			if (err) {
-				reject(err);
-			}
-				resolve(token);
+			if (err) reject(err);
+			resolve(token);
 		});
+	})
+	.then(token => {
+    user.tokens.push({access: "auth", token});
+  	return user.save();
+	})
+	.then(() => {
+		return user.populate('family').execPopulate();
 	});
 };
 
-userSchema.statics.verifyAuthorizationToken = function(token) {
+// Verifies authorization token and returns a user
+userSchema.statics.decodeAuthorizationToken = function(token) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(token, 'secret', (err, decoded) => {
-			if (err) {
-				reject(err);
-			}
+			if (err) reject(err);
 			resolve(decoded);
 		});
-	}).then((decoded) => {
-		return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
-	}).catch((e) => console.log(e));
-}
+	})
+	.then(decoded => {
+    return User.findOne({_id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access}).populate('family');
+  });
+};
 
-userSchema.statics.destroyAuthorizationToken = function(token) {
-	return userSchema.statics.verifyAuthorizationToken(token);
-}
+userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
 
 userSchema.methods.authenticate = function(password) {
-	var user = this;
-	return new Promise((resolve, reject) => {
-		bcrypt.compare(password, user.password, (err, res) => {
-			if (err) {
-				console.log(err);
-				console.log("THeRE IS AN ERROR")
-				reject(err);
-			}
-			resolve(res);
-		});
-	});
+	return bcrypt.compare(password, this.password);
 };
 
-userSchema.statics.extractUser = function(token) {
-	return userSchema.statics.verifyAuthorizationToken(token);
-};
+userSchema.statics.getFamilyMembers = familyId => User.find({familyId});
 
 userSchema.statics.getAdmins = function() {
 	return User.find({admin: true}).populate('family')
 	.then((admins) => {
 		return admins.sort((a, b) => a.name.last < b.name.last ? -1 : 1);
 	});
-};
-
-userSchema.methods.getPointsCurrentChallenge = function() {
-	
 };
 
 userSchema.statics.getNonAdmins = function() {
@@ -152,8 +135,19 @@ userSchema.statics.getNonAdmins = function() {
 	});
 };
 
-userSchema.statics.getFamilyMembers = function(family_id) {
-	return User.find({family_id});
+userSchema.methods.getRegisterableChallengesCount = function() {
+	var user = this;
+	var futureChallenges;
+	return Challenge.getFutureChallenges()
+	.then(challenges => {
+		futureChallenges = challenges;
+		return Participation.setUserParticipationForChallenges(user, futureChallenges);
+	})
+	.then(() => {
+		return futureChallenges.reduce((total, challenge) => {
+			return total += challenge.participation ? 0 : 1;
+		}, 0);
+	});
 };
 
 userSchema.virtual('fullName').get(function() {
