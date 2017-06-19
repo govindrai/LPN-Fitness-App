@@ -1,5 +1,7 @@
 // Modules
-var express = require('express');
+var express = require('express'),
+	pug = require('pug'),
+	path = require('path');
 
 // Models
 var User = require('./../models/user'),
@@ -57,7 +59,7 @@ router.put('/edit', (req, res) => {
 	} else {
 		User.findOneAndUpdate({_id: res.locals.user._id}, {$set: req.body}, {runValidators: true, new: true})
 		.then(user => {
-			res.send({message: "Your profile has been updated!"});
+			res.send(pug.renderFile(path.join(__dirname, '../views/users/_edit_form.pug'), {message: "Your profile has been updated!", user}));
 		}).catch(e => console.log(e));
 	}
 });
