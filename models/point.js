@@ -51,9 +51,9 @@ pointSchema.statics.getTotalPointsForParticipations = participations => {
 	});
 };
 
-pointSchema.statics.getTotalPointsForParticipatingFamily = participations => {
+pointSchema.statics.getTotalPointsForParticipatingFamily = (participations, weekStart, weekEnd) => {
 	return Promise.all(participations.map(participation => {
-		return Point.aggregate([{$match: {participation: participation._id}}, {$group: {_id: null, total: {$sum: '$calculatedPoints'}}}]);
+		return Point.aggregate([{$match: {$and: [{participation: participation._id}, {date: {$gt: weekStart, $lt: weekEnd}}]}}, {$group: {_id: null, total: {$sum: '$calculatedPoints'}}}]);
 	}))
 	.then(totalPointObjs => {
 		console.log("TOTLA POINTS OBJS", totalPointObjs);
