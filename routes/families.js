@@ -85,7 +85,10 @@ router.get('/:familyName', (req, res) => {
 		return Point.getTotalPointsForParticipations(familyParticipations);
 	})
 	.then(() => {
-		res.render('families/show', {dates: weekDates(), family, familyParticipations, currentChallenge});
+		return Point.getTotalPointsForParticipatingFamily(familyParticipations);
+	})
+	.then((totalPoints) => {
+		res.render('families/show', {dates: weekDates(), family, totalPoints, familyParticipations, currentChallenge});
 	})
 	.catch(e => console.log(e));
 });

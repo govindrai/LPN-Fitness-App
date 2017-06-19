@@ -51,6 +51,21 @@ pointSchema.statics.getTotalPointsForParticipations = participations => {
 	});
 };
 
+pointSchema.statics.getTotalPointsForParticipatingFamily = participations => {
+	return Promise.all(participations.map(participation => {
+		return Point.aggregate([{$match: {participation: participation._id}}, {$group: {_id: null, total: {$sum: '$calculatedPoints'}}}]);
+	}))
+	.then(totalPointObjs => {
+		console.log("TOTLA POINTS OBJS", totalPointObjs);
+		totalPointObjs.forEach((totalPointObj, index) => {
+			participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+		});
+	})
+	.then(()=>{
+		return participations.reduce((a, b) =>  a.totalPoints + b.totalPoints);
+	});
+};
+
 var Point = mongoose.model('Point', pointSchema);
 
 module.exports = Point;
