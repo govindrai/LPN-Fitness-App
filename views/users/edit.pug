@@ -2,10 +2,9 @@ include ../layout.pug
 
 include ../account/_account_nav
 
-h1 Edit your Profile
+h1 My Profile
 
-form(action='/users/edit?_method=PUT' method='POST')
-	input(type="hidden", name="_id", value=user._id)
+form#editProfile(action='/users/edit?_method=PUT' method='POST')
 	| First Name
 	input(value=user.name.first name='name.first' type='text' required)
 	| Last Name
@@ -18,3 +17,19 @@ form(action='/users/edit?_method=PUT' method='POST')
 	input(value=user.password name='password' type='password' required)
 
 	input(type='submit' value='Edit Profile')
+
+block footer-scripts
+	script.
+		$("editProfile").on("submit", function(e) {
+			e.preventDefault();
+			var form = this;
+			$.ajax({
+				url: "/users/edit"
+				data: form.serialize(),
+				type: "POST"
+			}).done(function(res) {
+				$("body").prepend(res);
+			}).fail(function(res) {
+				$("body").prepend(res);
+			})
+		});
