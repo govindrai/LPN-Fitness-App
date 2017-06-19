@@ -47,7 +47,7 @@ pointSchema.statics.getTotalPointsForParticipations = participations => {
 		});
 	})
 	.then(()=>{
-		participations.sort((a, b) =>  a.user.totalPoints - b.user.totalPoints);
+		return participations.reduce((a, b) =>  a.totalPoints + b.totalPoints);
 	});
 };
 
