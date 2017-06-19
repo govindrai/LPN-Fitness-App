@@ -63,29 +63,27 @@ router.post('/points', (req, res) => {
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-	var family, currentChallenge, users, participation, familyParticipations;
+	var family, users, participation, familyParticipations, totalPoints;
 
   // First get the family who's page was requested
 	Family.findOne({name: req.params.familyName})
 	.then(familyObj => {
 		family = familyObj;
-		return Challenge.getCurrentChallenge();
-	})
-  // then get information on the currentChallenge
-	.then(challenge => {
-		currentChallenge = challenge;
-		return Participation.setUserParticipationForChallenges(res.locals.user, [currentChallenge]);
+		return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
 	})
   // then check if the user is participating in the current challenge
 	.then(() => {
-		return Participation.getParticipationForChallengeByFamily(currentChallenge._id, family._id);
+		return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
 	})
 	.then(familyParticipationsArray => {
 		familyParticipations = familyParticipationsArray;
 		return Point.getTotalPointsForParticipations(familyParticipations);
 	})
 	.then((totalPoints) => {
-		res.render('families/show', {dates: weekDates(), family, totalPoints, familyParticipations, currentChallenge});
+		familyParticipations = familyParticipations.sort((a,b) => { 
+			return b.totalPoints - a.totalPoints; 
+		});
+		res.render('families/show', {dates: weekDates(), family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge});
 	})
 	.catch(e => console.log(e));
 });
