@@ -45,6 +45,9 @@ pointSchema.statics.getTotalPointsForParticipations = participations => {
 		totalPointObjs.forEach((totalPointObj, index) => {
 			participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
 		});
+	})
+	.then(()=>{
+		participations.sort((a, b) =>  a.user.totalPoints - b.user.totalPoints);
 	});
 };
 
