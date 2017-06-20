@@ -49,29 +49,50 @@ router.post('/calendar', (req, res) => {
 
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-	var family, users, participation, familyParticipations, totalPoints;
-	var dates = weekDates();
+	var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints;
+	var dates = weekDates(),
+    weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
 
-  // First get the family who's page was requested
+  // first get the family who's page was requested
 	Family.findOne({name: req.params.familyName})
 	.then(familyObj => {
 		family = familyObj;
-		return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
-	})
-  // then check if the user is participating in the current challenge
+    return Family.findById(res.locals.currentChallenge.schedule["week" + weekNumber][family.id]);
+  }).
+  // then get the versing family
+  then(versingFamilyObj => {
+    versingFamily = versingFamilyObj;
+    return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
+  })
+  // then check to see if the user is participating in the current challenge
 	.then(() => {
 		return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
 	})
+  // then get all participants from the family in the current challenge
 	.then(familyParticipationsArray => {
 		familyParticipations = familyParticipationsArray;
+    return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, versingFamily._id);
+  })
+  // then get all participants from versing family in the current challenge
+  .then(versingFamilyParticipationsArray => {
+    versingFamilyParticipations = versingFamilyParticipationsArray;
 		return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
 	})
-	.then(totalPoints => {
+  // then get an aggregation of the total points entered by the family for the current week
+	.then(totalPointsForWeek => {
+    totalPoints = totalPointsForWeek;
+    return Point.getTotalPointsForParticipationsByWeek(versingFamilyParticipations, dates[0], dates[6]);
+  })
+  // then get the same aggregation for the versing family
+  .then(versingTotalPointsForWeek => {
+    versingTotalPoints = versingTotalPointsForWeek;
 		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
+
+    // check whether or not to show next/previous week buttons
     var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
-      weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
-		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext, weekNumber});
+      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+
+		res.render('families/show', {dates, family, versingFamily, totalPoints, versingTotalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext, weekNumber});
 	})
 	.catch(e => console.log(e));
 });
