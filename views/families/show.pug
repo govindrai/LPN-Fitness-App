@@ -13,7 +13,7 @@ block content
   h2= `183 points needed to catch up`
 
   hr
-  h1#time 
+  div#time= Hello
 
 
   if currentChallenge
@@ -49,11 +49,21 @@ block footer-scripts
       };
     }
 
-    jQuery(function ($) {
-      var fiveMinutes = 60 * 5,
-        display = $('#time');
-      startTimer(fiveMinutes, display);
-    });
+    function initializeClock(id, endtime){
+    var clock = document.getElementById(id);
+    var timeinterval = setInterval(()=>{
+    var t = getTimeRemaining(endtime);
+    clock.innerHTML = 'days: ' + t.days +
+                      'hours:' + t.hours +
+                      'minutes:'+ t.minutes;
+      if (t.total<=0){
+        clearInterval(timeinterval);
+        }
+      }, 1000);
+    }
+    $(document).ready(function(){
+      initializeClock('#time', $('#sunday').data('date'));
+     });
 
     function getCalendarHead(e) {
       e.preventDefault();
