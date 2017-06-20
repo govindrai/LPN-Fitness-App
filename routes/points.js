@@ -1,5 +1,7 @@
 // Modules
 var express = require('express'),
+  pug = require('pug'),
+  path = require('path'),
   _ = require('lodash');
 
 // Models
@@ -12,6 +14,18 @@ var Activity = require('./../models/activity'),
 
 var router = express.Router();
 
+router.get('/', (req, res) => {
+  Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
+  .then(participation => {
+    console.log("PARTICIPATION", participation);
+    return Point.getPointsByDay(participation, req.query.date);
+  })
+  .then(points => {
+    console.log("AND NOW THIS WAS HIT");
+    res.send(pug.renderFile(path.join(__dirname + '/../views/points/_user_points_for_day.pug'), {points, date: req.query.date}));
+  })
+  .catch(e => console.log(e));
+});
 
 function checkParticipationInCurrentChallenge(req, res, next) {
   Challenge.getCurrentChallenge()
@@ -34,17 +48,16 @@ router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
   if (req.xhr) {
     Activity.find({}).then(activities => {
       res.render('points/new', {activities, date: req.query.date});
-    })  
+    })
     .catch(e => console.log(e));
   }
 });
 
 router.post('/', (req, res) => {
-  console.log("MAH BODY", req.body);
   var points = [];
   if (typeof req.body.activity == "object") {
     var countOfActivities = req.body.activity.length;
-    
+
 
     for (var i = 0; i < countOfActivities; i++) {
       points.push({
@@ -73,13 +86,11 @@ router.post('/', (req, res) => {
 });
 
 router.delete('/', function(req, res) {
-  if (req.xhr) {
-    Point.remove({_id: req.body.point})
-    .then((doc) => {
-      res.status(200).send("Deleted!");
-    })
-    .catch(e => console.log(e));
-  }
+  Point.remove({_id: req.body.point})
+  .then(doc => {
+    res.status(200).send("Deleted!");
+  })
+  .catch(e => console.log(e));
 });
 
 module.exports = router;

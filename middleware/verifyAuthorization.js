@@ -26,9 +26,10 @@ function verifyAuthorization(req, res, next) {
       User.decodeAuthorizationToken(res.locals.token)
       .then(user => {
         if (!user) res.status(404).send('UNAUTHORIZED.');
-        res.locals.loggedIn = true;
-        res.locals.user = user;
         res.locals.home = '/families/' + user.family.name;
+        if (req.path == '/') res.redirect(res.locals.home);
+        res.locals.loggedIn = true; //actually don't need this; can just check for user
+        res.locals.user = user;
         return user.getRegisterableChallengesCount();
       })
       .then(challengeCount => {

@@ -29,9 +29,8 @@ pointSchema.methods.getUnitName = function(){
 	return this.activity.unit.name ;
 };
 
-pointSchema.statics.getPointsByDay = function(participation, day){
-	return Point.find({participation: participation,
-		date: day }).populate({ path: 'activity', populate: { path: 'unit' }});
+pointSchema.statics.getPointsByDay = function(participation, date){
+	return Point.find({participation, date}).populate({ path: 'activity', populate: { path: 'unit' }});
 };
 
 // gets the total points for each participation object

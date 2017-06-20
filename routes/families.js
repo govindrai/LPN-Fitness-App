@@ -12,53 +12,30 @@ var Family = require('./../models/family'),
 
 var router = express.Router();
 
-/* View all families */
-router.get('/', function(req, res) {
-	Family.find({}).then((families) => {
-		res.render('families/index', {families});
-	});
+// GET all families
+router.get('/', (req, res) => {
+	Family.find()
+  .then(families => res.render('families/index', {families, added: req.query.added ? req.query.added : false}))
+  .catch(e => console.log(e));
 });
 
-/* Create a new family */
-router.get('/new', function(req, res) {
-	res.render('families/new');
-});
+// GET add family form
+router.get('/new', (req, res) => res.render('families/new'));
 
+// POST create family
 router.post('/', (req, res, next) => {
 	var family = new Family(req.body);
 
-	family.save().then(() => {
-		res.params({added: true});
-		res.redirect('/families');
-	}).catch(e => console.log(e));
+	family.save()
+  .then(() => {
+		res.redirect(`/families?added=${family.name}`);
+	})
+  .catch(e => console.log(e));
 });
 
+// POST get new calendar dates
 router.post('/calendar', (req, res) => {
-	if (req.xhr) {
-		res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
-	}
-});
-
-
-
-// router.get('/calendar', (req, res) => {
-//   if (req.xhr) {
-//     dates = [5,6,7,8,9,10,11];
-//     res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
-//   }
-// });
-
-// gets point objs for a certain date
-router.post('/points', (req, res) => {
-	if (req.xhr) {
-		Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
-		.then(participation => {
-			return Point.getPointsByDay(participation, req.body.date);
-		})
-		.then((points) => {
-			res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points, date: req.body.date}));
-		});
-	}
+	res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
 });
 
 // Family Show Page/Authorized User Landing Page
@@ -106,7 +83,7 @@ function weekDates(weekInfo) {
     }
   } else {
     var today = new Date();
-    today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     var day = today.getDay();
     startDate = new Date(today.setDate(today.getDate() - (day - 1)));
   }

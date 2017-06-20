@@ -8,7 +8,9 @@ var familySchema = new mongoose.Schema({
 		required: true
 	},
 	motto: {
-		type: String
+		type: String,
+		required: true,
+		default: "We are too cool for a motto."
 	},
 	challengesWon: {
 		type: Number,
