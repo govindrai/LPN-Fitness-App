@@ -3,17 +3,19 @@ extends ../layout
 block content
   include ./_calendar
 
-  h1= `${family.name}`
-  h2= `Week 4 score: ${totalPoints}`
-  h2= `${family.motto}`
+  h1= family.name
+  h2.
+    Week #[span.weekNumber= weekNumber] score: #[=totalPoints]
+  h2= family.motto
 
   hr
 
-  h1= `Week 4: vs Iolite (183 points)`
-  h2= `183 points needed to catch up`
+  h1.
+    Week #[span.weekNumber= weekNumber]: vs #[= `${versingFamily.name} (${versingTotalPoints} points)`]
+  h2 BLANK points needed to catch up
 
   hr
-  h2#time 
+  h2#time
 
   if currentChallenge
     - var challenge = currentChallenge
@@ -69,6 +71,8 @@ block footer-scripts
         } else {
           next.remove();
         }
+
+        $(".weekNumber").text(res.weekNumber);
       });
 
       request.fail(() => {
@@ -203,7 +207,7 @@ block footer-scripts
       $("#totalPointsDisplay").text(totalPoints);
       $("#totalPoints").val(totalPoints);
     }
-    
+
     function getTimeRemaining(endtime) {
       var t = Date.parse(endtime) - Date.parse(new Date());
       var seconds = Math.floor((t/1000) % 60);
@@ -232,7 +236,7 @@ block footer-scripts
         }
       }, 1000);
     }
-    
+
     var endtime = new Date($('#sunday').data('date'));
     endtime.setDate(endtime.getDate()+1);
 
