@@ -80,12 +80,12 @@ router.get('/:familyName', (req, res) => {
 	})
   // then get an aggregation of the total points entered by the family for the current week
 	.then(totalPointsForWeek => {
-    totalPoints = totalPointsForWeek;
+    totalPoints = calculatePoints(totalPointsForWeek, familyParticipations.length);
     return Point.getTotalPointsForParticipationsByWeek(versingFamilyParticipations, dates[0], dates[6]);
   })
   // then get the same aggregation for the versing family
   .then(versingTotalPointsForWeek => {
-    versingTotalPoints = versingTotalPointsForWeek;
+    versingTotalPoints = calculatePoints(versingTotalPointsForWeek,versingFamilyParticipations.length);
 		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
 
     // check whether or not to show next/previous week buttons
@@ -155,3 +155,9 @@ function dateDiffInDays(a, b) {
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
+
+function calculatePoints(familyTotalPoints, numOfParticipants) {
+  numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
+  return (familyTotalPoints/numOfParticipants).toFixed(2);
+}
+
