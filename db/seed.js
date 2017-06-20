@@ -133,7 +133,7 @@ var today = new Date();
 today.setDate(today.getDate() - 1);
 
 var nextMonth = new Date();
-nextMonth.setDate(nextMonth.getDate() + 28);
+nextMonth.setDate(nextMonth.getDate() + 62);
 
 var sixMonths = new Date();
 sixMonths.setDate(sixMonths.getDate() + 181);
@@ -145,7 +145,7 @@ var nextYear = new Date();
 nextYear.setDate(nextYear.getDate() + 363);
 
 var nextYearMonth = new Date();
-nextYearMonth.setDate(nextYearMonth.getDate() + 419);
+nextYearMonth.setDate(nextYearMonth.getDate() + 426);
 
 var lastYear = new Date();
 lastYear.setDate(lastYear.getDate() - 365);
@@ -157,7 +157,7 @@ var lastYear = new Date();
 lastYear.setDate(lastYear.getDate() - 498);
 
 var lastYearMonth = new Date();
-lastYearMonth.setDate(lastYearMonth.getDate() - 400);
+lastYearMonth.setDate(lastYearMonth.getDate() - 435);
 
 var challenges = [
 	new Challenge({
@@ -216,9 +216,9 @@ function createObjs(arr) {
 			.then(() => {
 				resolve();
 			})
-			.catch(e => reject(e))
-		})
-	})
+			.catch(e => reject(e));
+		});
+	});
 	return promise;
 }
 
@@ -252,11 +252,11 @@ function assignFamilies() {
 					default:
 						console.log("i don't know that family");
 				}
-			})
+			});
 			resolve();
 		})
 		.catch(e => reject(e));
-	})
+	});
 	return promise;
 }
 
@@ -296,11 +296,11 @@ function assignUnits() {
 					default:
 						console.log("i don't know that unit");
 				}
-			})
+			});
 			resolve();
 		})
 		.catch(e => reject(e));
-	})
+	});
 	return promise;
 }
 
