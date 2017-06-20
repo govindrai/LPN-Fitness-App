@@ -102,6 +102,7 @@ function weekDates(weekInfo) {
   return dates;
 }
 
+
 function showPreviousWeek(challengeStartDate, monday) {
   return challengeStartDate.toString() != monday.toString();
 }
@@ -110,4 +111,8 @@ function showNextWeek(challengeEndDate, sunday) {
   var dateAfterSunday = new Date(sunday.getTime());
   dateAfterSunday.setDate(sunday.getDate() + 1);
   return challengeEndDate.toString() != dateAfterSunday.toString();
+}
+
+function getWeekNumber(challengeEndDate, sunday) {
+
 }
