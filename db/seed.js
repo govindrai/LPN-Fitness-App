@@ -700,6 +700,105 @@ removeModelObjs(Family)
       password: '123456',
       family: emerald,
       lifetimePoints: 200
+    }),
+    new User({
+      email: 'parthdhingreja@gmail.com',
+      name: {
+        first: 'Parth',
+        last: 'TDhi',
+        nickname: 'PT'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'trinhtruong@gmail.com',
+      name: {
+        first: 'Trinh',
+        last: 'Truong',
+        nickname: 'TT'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'christinatruong@gmail.com',
+      name: {
+        first: 'Christina',
+        last: 'Truong',
+        nickname: 'CT'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'richardperez@gmail.com',
+      name: {
+        first: 'Richard',
+        last: 'Perez',
+        nickname: 'rP'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'vivianmai@gmail.com',
+      name: {
+        first: 'Vivian',
+        last: 'Mai',
+        nickname: 'VVVV'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'henryhe@gmail.com',
+      name: {
+        first: 'Henry',
+        last: 'He',
+        nickname: 'HH'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'annatran@gmail.com',
+      name: {
+        first: 'Anna',
+        last: 'Tran',
+        nickname: 'Anna'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'ryanteo@gmail.com',
+      name: {
+        first: 'Ryan',
+        last: 'Teo',
+        nickname: 'Win'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'vinayakdhingreja@gmail.com',
+      name: {
+        first: 'Vinayak',
+        last: 'Dhir',
+        nickname: 'Win'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
     })];
   return createObjs(users);
 })
