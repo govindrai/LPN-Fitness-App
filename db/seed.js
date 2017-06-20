@@ -4,7 +4,7 @@ var mongoose = require('./mongoose'),
 	Family = require('./../models/family'),
 	Challenge = require('./../models/challenge'),
 	Point = require('./../models/point'),
-	// Participation = require('./../models/participation'),
+	Participation = require('./../models/participation'),
 	Unit = require('./../models/unit');
 
 var iolite,
@@ -978,6 +978,22 @@ removeModelObjs(Family)
 			lifetimePoints: 200
 		})];
 	return createObjs(users);
+})
+.then(() => {
+	return User.find({}); 
+})
+.then((users) => {
+	var participations = [];
+		users.forEach(user => {
+		participations.push(new Participation({
+			challenge: 'summer 2017',
+			user: user
+		}));
+	});
+	return participations;
+})
+.then(() => {
+	return createObjs(participations); 
 })
 .then(() => {
 	return createObjs(units);
