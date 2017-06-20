@@ -39,8 +39,6 @@ router.post('/calendar', (req, res) => {
 	}
 });
 
-
-
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
 	var family, currentChallenge, users, participation, familyParticipations;
