@@ -57,4 +57,8 @@ router.post('/', (req, res) => {
 	.catch(e => console.log(e));
 });
 
+router.get('/schedule', (req, res) => {
+	res.render('challenges/schedule');
+});
+
 module.exports = router;
