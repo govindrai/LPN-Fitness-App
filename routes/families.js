@@ -83,7 +83,7 @@ function weekDates(weekInfo) {
     }
   } else {
     var today = new Date();
-    today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     var day = today.getDay();
     startDate = new Date(today.setDate(today.getDate() - (day - 1)));
   }
