@@ -129,29 +129,32 @@ var families = [
   })
 ];
 
+var today = new Date();
+today.setDate(today.getDate() - 1);
+
 var nextMonth = new Date();
-nextMonth.setDate(nextMonth.getDate() + 30);
+nextMonth.setDate(nextMonth.getDate() + 28);
 
 var sixMonths = new Date();
-sixMonths.setDate(sixMonths.getDate() + 180);
+sixMonths.setDate(sixMonths.getDate() + 181);
 
 var sevenMonth = new Date();
-sevenMonth.setDate(sevenMonth.getDate() + 240);
+sevenMonth.setDate(sevenMonth.getDate() + 244);
 
 var nextYear = new Date();
-nextYear.setDate(nextYear.getDate() + 365);
+nextYear.setDate(nextYear.getDate() + 363);
 
 var nextYearMonth = new Date();
-nextYearMonth.setDate(nextYearMonth.getDate() + 415);
+nextYearMonth.setDate(nextYearMonth.getDate() + 419);
 
 var lastYear = new Date();
 lastYear.setDate(lastYear.getDate() - 365);
 
 var lastYearMonth = new Date();
-lastYearMonth.setDate(lastYearMonth.getDate() - 300);
+lastYearMonth.setDate(lastYearMonth.getDate() - 302);
 
 var lastYear = new Date();
-lastYear.setDate(lastYear.getDate() - 500);
+lastYear.setDate(lastYear.getDate() - 498);
 
 var lastYearMonth = new Date();
 lastYearMonth.setDate(lastYearMonth.getDate() - 400);
@@ -160,7 +163,7 @@ var challenges = [
   new Challenge({
     name: 'Summer 2017',
     date: {
-      start: new Date(),
+      start: today,
       end: nextMonth
     }
   }),
@@ -202,7 +205,7 @@ function removeModelObjs(model) {
       }
       resolve();
     });
-  })
+  });
   return promise;
 }
 
@@ -543,6 +546,259 @@ removeModelObjs(Family)
       family: emerald,
       lifetimePoints: 200,
       admin: true
+    }),
+    new User({
+      email: 'owenwilson@gmail.com',
+      name: {
+        first: 'Owen',
+        last: 'Wilson',
+        nickname: 'Duuh'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 500
+    }),
+    new User({
+      email: 'michaelphelps@gmail.com',
+      name: {
+        first: 'Michael',
+        last: 'Phelps',
+        nickname: 'Swimmer'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 5000
+    }),
+    new User({
+      email: 'barchobama@gmail.com',
+      name: {
+        first: 'Barack',
+        last: 'Obama',
+        nickname: 'President'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 50000
+    }),
+    new User({
+      email: 'ruthjohnson@gmail.com',
+      name: {
+        first: 'Ruth',
+        last: 'Johnson',
+        nickname: 'Woman'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 50
+    }),
+    new User({
+      email: 'caaarz@gmail.com',
+      name: {
+        first: 'C',
+        last: 'Arz',
+        nickname: 'Car-lover'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 5
+    }),
+    new User({
+      email: 'tragedy@gmail.com',
+      name: {
+        first: 'T',
+        last: 'Ragedy',
+        nickname: 'Sad'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 0
+    }),
+    new User({
+      email: 'cornmuffins@gmail.com',
+      name: {
+        first: 'Corn',
+        last: 'Muffin',
+        nickname: 'Eat me'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 500
+    }), 
+    new User({
+      email: 'tracylam@gmail.com',
+      name: {
+        first: 'Tracy',
+        last: 'Lam',
+        nickname: 'TracyLam'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'michaelho@gmail.com',
+      name: {
+        first: 'Michael',
+        last: 'Ho',
+        nickname: 'MichaelHo'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'staceyli@gmail.com',
+      name: {
+        first: 'Stacey',
+        last: 'Li',
+        nickname: 'StaceyLi'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'andrewkuo@gmail.com',
+      name: {
+        first: 'Andrew',
+        last: 'Kuo',
+        nickname: 'J'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'jaytsui@gmail.com',
+      name: {
+        first: 'Jay',
+        last: 'Tsui',
+        nickname: 'Jay’Tsu'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'inicoperez@gmail.com',
+      name: {
+        first: 'Nico',
+        last: 'Perez',
+        nickname: 'Nico’Pere'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'ireneear@gmail.com',
+      name: {
+        first: 'Irene',
+        last: 'Ear',
+        nickname: 'IreneEar'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'parthdhingreja@gmail.com',
+      name: {
+        first: 'Parth',
+        last: 'TDhi',
+        nickname: 'PT'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'trinhtruong@gmail.com',
+      name: {
+        first: 'Trinh',
+        last: 'Truong',
+        nickname: 'TT'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'christinatruong@gmail.com',
+      name: {
+        first: 'Christina',
+        last: 'Truong',
+        nickname: 'CT'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'richardperez@gmail.com',
+      name: {
+        first: 'Richard',
+        last: 'Perez',
+        nickname: 'rP'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'vivianmai@gmail.com',
+      name: {
+        first: 'Vivian',
+        last: 'Mai',
+        nickname: 'VVVV'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'henryhe@gmail.com',
+      name: {
+        first: 'Henry',
+        last: 'He',
+        nickname: 'HH'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'annatran@gmail.com',
+      name: {
+        first: 'Anna',
+        last: 'Tran',
+        nickname: 'Anna'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'ryanteo@gmail.com',
+      name: {
+        first: 'Ryan',
+        last: 'Teo',
+        nickname: 'Win'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'vinayakdhingreja@gmail.com',
+      name: {
+        first: 'Vinayak',
+        last: 'Dhir',
+        nickname: 'Win'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 200
     })];
   return createObjs(users);
 })
@@ -691,378 +947,3 @@ removeModelObjs(Family)
   return createObjs(challenges);
 })
 .catch(e => console.log(e))
-
-
-    //,
-    // {
-    //   email: 'aileenju@gmail.com',
-    //   name: {
-    //     first: 'Aileen',
-    //     last: 'Ju',
-    //     nickname: 'AileenJu'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'ivanwoo@gmail.com',
-    //   name: {
-    //     first: 'Ivan',
-    //     last: 'Woo',
-    //     nickname: 'IvanWoo'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'sophiaduong@gmail.com',
-    //   name: {
-    //     first: 'Sophia',
-    //     last: 'Duong',
-    //     nickname: 'SophiaDuong'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'harrisonhuang@gmail.com',
-    //   name: {
-    //     first: 'Harrison',
-    //     last: 'Huang',
-    //     nickname: 'HarrisonHuang'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'emilyrong@gmail.com',
-    //   name: {
-    //     first: 'Emily',
-    //     last: 'Rong',
-    //     nickname: 'EmilyRong'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'irischan@gmail.com',
-    //   name: {
-    //     first: 'Iris',
-    //     last: 'Chan',
-    //     nickname: 'IrisChan'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'michellele@gmail.com',
-    //   name: {
-    //     first: 'Michelle',
-    //     last: 'Le',
-    //     nickname: 'MichelleLe'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'jackiesiu@gmail.com',
-    //   name: {
-    //     first: 'Jackie',
-    //     last: 'Siu',
-    //     nickname: 'JackieSiu'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'scotthenry@gmail.com',
-    //   name: {
-    //     first: 'Scott',
-    //     last: 'Henry',
-    //     nickname: 'ScottHenry'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'artreyes@gmail.com',
-    //   name: {
-    //     first: 'Art',
-    //     last: 'Reye,
-    //     nickname: 'Art'sRey'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'eliselin@gmail.com',
-    //   name: {
-    //     first: 'Elise',
-    //     last: 'Lin',
-    //     nickname: 'EliseLin'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'calvinchan@gmail.com',
-    //   name: {
-    //     first: 'Calvin',
-    //     last: 'Chan',
-    //     nickname: 'CalvinChan'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'kurtkline@gmail.com',
-    //   name: {
-    //     first: 'Kurt',
-    //     last: 'Kline,
-    //     nickname: 'Kurt'Klin'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'shoumyodewan@gmail.com',
-    //   name: {
-    //     first: 'Shoumyo',
-    //     last: 'Dewan',
-    //     nickname: 'ShoumyoDewan'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'andypark@gmail.com',
-    //   name: {
-    //     first: 'Andy',
-    //     last: 'Park',
-    //     nickname: 'AndyPark'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'parthdhingreja@gmail.com',
-    //   name: {
-    //     first: 'Parth',
-    //     last: 'Dhingr,
-    //     nickname: 'Parth'ejaDhing'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'trinhtruong@gmail.com',
-    //   name: {
-    //     first: 'Trinh',
-    //     last: 'Truong,
-    //     nickname: 'Trinh'Truon'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'christinatruong@gmail.com',
-    //   name: {
-    //     first: 'Christina',
-    //     last: 'Truong',
-    //     nickname: 'ChristinaTruong'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'richardperez@gmail.com',
-    //   name: {
-    //     first: 'Richard',
-    //     last: 'Perez',
-    //     nickname: 'RichardPerez'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'vivianmai@gmail.com',
-    //   name: {
-    //     first: 'Vivian',
-    //     last: 'Mai',
-    //     nickname: 'VivianMai'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'henryhe@gmail.com',
-    //   name: {
-    //     first: 'Henry',
-    //     last: 'He',
-    //     nickname: 'HenryHe'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'annatran@gmail.com',
-    //   name: {
-    //     first: 'Anna',
-    //     last: 'Tran',
-    //     nickname: 'AnnaTran'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'ryanteo@gmail.com',
-    //   name: {
-    //     first: 'Ryan',
-    //     last: 'Teo',
-    //     nickname: 'RyanTeo'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'vinayakdhingreja@gmail.com',
-    //   name: {
-    //     first: 'Vinayak',
-    //     last: 'Dhingrej,
-    //     nickname: 'Vinayak'aDhingre'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'tracylam@gmail.com',
-    //   name: {
-    //     first: 'Tracy',
-    //     last: 'Lam',
-    //     nickname: 'TracyLam'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'michaelho@gmail.com',
-    //   name: {
-    //     first: 'Michael',
-    //     last: 'Ho',
-    //     nickname: 'MichaelHo'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'staceyli@gmail.com',
-    //   name: {
-    //     first: 'Stacey',
-    //     last: 'Li',
-    //     nickname: 'StaceyLi'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'andrewkuo@gmail.com',
-    //   name: {
-    //     first: 'Andrew',
-    //     last: 'Kuo',
-    //     nickname: 'AndrewKuo'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'jaytsui@gmail.com',
-    //   name: {
-    //     first: 'Jay',
-    //     last: 'Tsui,
-    //     nickname: 'Jay'Tsu'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'nicoperez@gmail.com',
-    //   name: {
-    //     first: 'Nico',
-    //     last: 'Perez,
-    //     nickname: 'Nico'Pere'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
-    // {
-    //   email: 'ireneear@gmail.com',
-    //   name: {
-    //     first: 'Irene',
-    //     last: 'Ear',
-    //     nickname: 'IreneEar'
-    //   },
-    //   password: '123456',
-    //   family: '',
-    //   lifetimePoints:
-
-    // },
