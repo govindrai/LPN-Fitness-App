@@ -39,22 +39,16 @@ router.post('/', (req, res, next) => {
 	}).catch(e => console.log(err));
 });
 
+// handles both admin changes as well as profile edits
 router.put('/edit', (req, res) => {
-	var user, currentAdmin;
 	if (req.body.changeAdmin) {
+		if (!res.locals.user.admin) res.status(400).send("You must be an admin to access this feature");
 		User.findById(req.body.user)
-		.then(foundUser => {
-			user = foundUser;
-			currentAdmin = user.admin;
-			if (req.body.changeAdmin) {
-				user.admin = !user.admin;
-				return user.save();
-			}
+		.then(user => {
+			user.admin = !user.admin;
+			return user.save();
 		})
-		.then(() => {
-			var message = currentAdmin ? "is no longer an admin" : "is now an admin";
-			res.send(`${user.fullName} ${message}`);
-		})
+		.then(user => res.send(`${user.fullName} ${user.admin ? "is now an admin" : "is no longer an admin"}`))
 		.catch(e => console.log(e));
 	} else {
 		User.findOneAndUpdate({_id: res.locals.user._id}, {$set: req.body}, {runValidators: true, new: true})

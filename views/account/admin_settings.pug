@@ -1,10 +1,8 @@
 include ../layout.pug
 
 block content
-	h1 Admin Settings
-
-
 	include ./_account_nav
+	h1 Admin Settings
 
 	h2 All Admins
 
@@ -67,7 +65,7 @@ block footer-scripts
 					}
 				});
 			});
-				
+
 			request.fail(res => {
 				console.log("ERROR", res)
 			});
