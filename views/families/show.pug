@@ -3,13 +3,17 @@ extends ../layout
 block content
   include ./_calendar
 
-  h1= `Welcome to ${family.name}'s Show page`
-  h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
-  h2= 'Name: ' + user.fullName
-  h2= 'Lifetime Points: ' + user.lifetimePoints
-  h2= totalPoints
+  h1= `${family.name}`
+  h2= `Week 4 score: ${totalPoints}`
+  h2= `${family.motto}`
 
   hr
+
+  h1= `Week 4: vs Iolite (183 points)`
+  h2= `183 points needed to catch up`
+
+  hr
+  h2#time 
 
   if currentChallenge
     - var challenge = currentChallenge
@@ -27,6 +31,7 @@ block content
     p= participation.user.name.first
     p= "Lifetime Points: " + participation.user.lifetimePoints
     p= "Points for this Challenge: " + participation.totalPoints
+  hr
 
 block footer-scripts
   script.
@@ -198,6 +203,42 @@ block footer-scripts
       $("#totalPointsDisplay").text(totalPoints);
       $("#totalPoints").val(totalPoints);
     }
+    
+    function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t/1000) % 60);
+      var minutes = Math.floor((t/1000/60) % 60);
+      var hours = Math.floor((t/(1000*60*60)) % 24);
+      var days = Math.floor(t/(1000*60*60*24));
+      return {
+        'total': t,
+        'days': days,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds
+      };
+    }
+
+    function initializeClock(id, endtime){
+    var clock = document.getElementById(id);
+    var timeinterval = setInterval(()=>{
+    var t = getTimeRemaining(endtime);
+    clock.innerHTML = t.days + ' days' + ' ' +
+                      t.hours + ' hours' + ' ' +
+                      t.minutes + ' minutes' + ' ' +
+                      t.seconds + ' seconds' + ' left in Week 4';
+      if (t.total<=0){
+        clearInterval(timeinterval);
+        }
+      }, 1000);
+    }
+    
+    var endtime = new Date($('#sunday').data('date'));
+    endtime.setDate(endtime.getDate()+1);
+
+    $(document).ready(function(){
+      initializeClock('time', endtime);
+    });
 
     $('#calendarHead').on('click', '.change-week', getDates);
     $('#calendarHead').on('click', '#dates div', getPoints);
