@@ -23,6 +23,6 @@ block content
     $('.start').datepicker()
     .on("change", function() {
       var date = $(this).datepicker("getDate");
-      date.setDate(date.getDate() + 62);
+      date.setDate(date.getDate() + 63);
       $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
     });

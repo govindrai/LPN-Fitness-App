@@ -58,11 +58,10 @@ router.get('/:familyName', (req, res) => {
 		return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
 	})
 	.then(totalPoints => {
-		familyParticipations = familyParticipations.sort((a,b) => { 
-			return b.totalPoints - a.totalPoints; 
-		});
-		console.log(res.locals.currentChallenge.schedule);
-		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge});
+		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
+    var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]);
+    var showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext});
 	})
 	.catch(e => console.log(e));
 });
@@ -92,4 +91,13 @@ function weekDates(weekInfo) {
       dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
     }
   return dates;
+}
+
+function showPreviousWeek(challengeStartDate, monday) {
+  return challengeStartDate.toString() != monday.toString();
+}
+
+function showNextWeek(challengeEndDate, sunday) {
+  var dateAfterSunday = (new Date(sunday.getTime())).setDate(sunday.getDate() + 1);
+  return challengeEndDate.toString() != dateAfterSunday;
 }
