@@ -2,7 +2,7 @@ extends ../layout
 
 block content
   if (added)
-    h2 Family Added!
+    h2#familyAddedMessage= `We welcome ${added} to LPN!`
 
   a(href="/families/new") Add New Family
 
@@ -24,4 +24,9 @@ block content
           td
             a(href=`families/${family.name}`)= `${family.name} Page`
 
-
+block footer-scripts
+  script.
+    $(document).ready(() => {
+      var el = $("#familyAddedMessage");
+      if (el) el.fadeOut(2000);
+    })

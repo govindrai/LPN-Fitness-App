@@ -81,13 +81,13 @@ router.post('/register', (req, res) => {
 router.get('/logout', (req, res) => {
   res.locals.user.tokens.pull({access: "auth", token: res.locals.token});
   res.locals.user.save()
-  .then((user) => {
+  .then(user => {
     req.session.destroy(err => {
       if (err) console.log(err, "Session could not be destroyed");
       res.redirect('/');
     });
   })
-  .catch((e) => console.log(e));
+  .catch(e => console.log(e));
 });
 
 // GET rules page

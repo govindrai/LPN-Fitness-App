@@ -10,7 +10,7 @@ var familySchema = new mongoose.Schema({
 	motto: {
 		type: String,
 		required: true,
-		default: "We are too cool for a motto"
+		default: "We are too cool for a motto."
 	},
 	challengesWon: {
 		type: Number,

@@ -13,10 +13,10 @@ var Family = require('./../models/family'),
 var router = express.Router();
 
 // GET all families
-router.get('/', function(req, res) {
-	Family.find({}).then((families) => {
-		res.render('families/index', {families});
-	});
+router.get('/', (req, res) => {
+	Family.find()
+  .then(families => res.render('families/index', {families, added: req.query.added ? req.query.added : false}))
+  .catch(e => console.log(e));
 });
 
 // GET add family form
@@ -26,10 +26,11 @@ router.get('/new', (req, res) => res.render('families/new'));
 router.post('/', (req, res, next) => {
 	var family = new Family(req.body);
 
-	family.save().then(() => {
-		res.params({added: true});
-		res.redirect('/families');
-	}).catch(e => console.log(e));
+	family.save()
+  .then(() => {
+		res.redirect(`/families?added=${family.name}`);
+	})
+  .catch(e => console.log(e));
 });
 
 // POST get new calendar dates
