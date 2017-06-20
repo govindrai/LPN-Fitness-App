@@ -221,6 +221,7 @@ function createObjs(arr) {
 	});
 	return promise;
 }
+
 function assignChallenges() {
 	var promise = new Promise((resolve, reject) => {
 		Challenge.find()
@@ -404,13 +405,15 @@ function assignActivities() {
 					default:
 						console.log("i don't know that activity");
 				}
-			})
+			});
 			resolve();
 		})
 		.catch(e => reject(e));
-	})
+	});
 	return promise;
 }
+
+var participations = [];
 
 removeModelObjs(Family)
 .then(() => {
@@ -424,6 +427,9 @@ removeModelObjs(Family)
 })
 .then(() => {
 	return removeModelObjs(Challenge);
+})
+.then(() => {
+	return removeModelObjs(Participation);
 })
 .then(() => {
 	return createObjs(families);
@@ -1161,8 +1167,7 @@ removeModelObjs(Family)
 	return User.find({}); 
 })
 .then((users) => {
-	var participations = [];
-		users.forEach(user => {
+	users.forEach(user => {
 		participations.push(new Participation({
 			challenge: summer2017,
 			user: user
