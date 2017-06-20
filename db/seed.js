@@ -4,7 +4,7 @@ var mongoose = require('./mongoose'),
 	Family = require('./../models/family'),
 	Challenge = require('./../models/challenge'),
 	Point = require('./../models/point'),
-	// Participation = require('./../models/participation'),
+	Participation = require('./../models/participation'),
 	Unit = require('./../models/unit');
 
 var iolite,
@@ -222,6 +222,38 @@ function createObjs(arr) {
 	return promise;
 }
 
+function assignChallenges() {
+	var promise = new Promise((resolve, reject) => {
+		Challenge.find()
+		.then(challenges => {
+			challenges.forEach(challenge => {
+				switch (challenge.name) {
+					case 'Summer 2017':
+						summer2017 = challenge;
+						break;
+					case 'Winter 2017':
+						winter2017 = challenge;
+						break;
+					case 'Summer 2018':
+						summer2018 = challenge;
+						break;
+					case 'Summer 2016':
+						summer2016 = challenge;
+						break;
+					case 'Winter 2016':
+						winter2016 = challenge;
+						break;
+					default:
+						console.log("i don't know that challenge");
+				}
+			});
+			resolve();
+		})
+		.catch(e => reject(e));
+	});
+	return promise;
+}
+
 function assignFamilies() {
 	var promise = new Promise((resolve, reject) => {
 		Family.find()
@@ -373,13 +405,15 @@ function assignActivities() {
 					default:
 						console.log("i don't know that activity");
 				}
-			})
+			});
 			resolve();
 		})
 		.catch(e => reject(e));
-	})
+	});
 	return promise;
 }
+
+var participations = [];
 
 removeModelObjs(Family)
 .then(() => {
@@ -393,6 +427,9 @@ removeModelObjs(Family)
 })
 .then(() => {
 	return removeModelObjs(Challenge);
+})
+.then(() => {
+	return removeModelObjs(Participation);
 })
 .then(() => {
 	return createObjs(families);
@@ -1122,5 +1159,23 @@ removeModelObjs(Family)
 })
 .then(() => {
 	return createObjs(challenges);
+})
+.then(() => {
+	return assignChallenges();
+})
+.then(() => {
+	return User.find({}); 
+})
+.then((users) => {
+	users.forEach(user => {
+		participations.push(new Participation({
+			challenge: summer2017,
+			user: user
+		}));
+	});
+	return participations;
+})
+.then(() => {
+	return createObjs(participations); 
 })
 .catch(e => console.log(e));
