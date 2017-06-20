@@ -12,18 +12,17 @@ var Family = require('./../models/family'),
 
 var router = express.Router();
 
-/* View all families */
+// GET all families
 router.get('/', function(req, res) {
 	Family.find({}).then((families) => {
 		res.render('families/index', {families});
 	});
 });
 
-/* Create a new family */
-router.get('/new', function(req, res) {
-	res.render('families/new');
-});
+// GET add family form
+router.get('/new', (req, res) => res.render('families/new'));
 
+// POST create family
 router.post('/', (req, res, next) => {
 	var family = new Family(req.body);
 
@@ -33,10 +32,9 @@ router.post('/', (req, res, next) => {
 	}).catch(e => console.log(e));
 });
 
+// POST get new calendar dates
 router.post('/calendar', (req, res) => {
-	if (req.xhr) {
-		res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
-	}
+	res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
 });
 
 // Family Show Page/Authorized User Landing Page
