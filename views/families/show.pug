@@ -13,7 +13,7 @@ block content
   h2= `183 points needed to catch up`
 
   hr
-  div#time= Hello
+  h2#time
 
 
   if currentChallenge
@@ -38,6 +38,7 @@ block footer-scripts
 
     function getTimeRemaining(endtime) {
       var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t/1000) % 60);
       var minutes = Math.floor((t/1000/60) % 60);
       var hours = Math.floor((t/(1000*60*60)) % 24);
       var days = Math.floor(t/(1000*60*60*24));
@@ -45,7 +46,8 @@ block footer-scripts
         'total': t,
         'days': days,
         'hours': hours,
-        'minutes': minutes
+        'minutes': minutes,
+        'seconds': seconds
       };
     }
 
@@ -53,16 +55,17 @@ block footer-scripts
     var clock = document.getElementById(id);
     var timeinterval = setInterval(()=>{
     var t = getTimeRemaining(endtime);
-    clock.innerHTML = 'days: ' + t.days +
-                      'hours:' + t.hours +
-                      'minutes:'+ t.minutes;
+    clock.innerHTML = t.days + ' days' + ' ' +
+                      t.hours + ' hours' + ' ' +
+                      t.minutes + ' minutes' + ' ' +
+                      t.seconds + ' seconds';
       if (t.total<=0){
         clearInterval(timeinterval);
         }
       }, 1000);
     }
     $(document).ready(function(){
-      initializeClock('#time', $('#sunday').data('date'));
+      initializeClock('time', $('#sunday').data('date'));
      });
 
     function getCalendarHead(e) {
