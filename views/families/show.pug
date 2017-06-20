@@ -36,21 +36,17 @@ block content
 block footer-scripts
   script.
 
-    function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.text(minutes + ":" + seconds);
-
-        if (--timer < 0) {
-            timer = duration;
-        }
-      }, 1000);
+    function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var minutes = Math.floor((t/1000/60) % 60);
+      var hours = Math.floor((t/(1000*60*60)) % 24);
+      var days = Math.floor(t/(1000*60*60*24));
+      return {
+        'total': t,
+        'days': days,
+        'hours': hours,
+        'minutes': minutes
+      };
     }
 
     jQuery(function ($) {
