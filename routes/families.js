@@ -37,11 +37,13 @@ router.post('/', (req, res, next) => {
 router.post('/calendar', (req, res) => {
   var dates = weekDates(req.body);
   var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-    showNext = showNextWeek(res.locals.currentChallenge.date.end, dates[6]);
+    showNext = showNextWeek(res.locals.currentChallenge.date.end, dates[6]),
+    weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
 	res.send({
     datesHTML: pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}),
     showPrevious,
-    showNext
+    showNext,
+    weekNumber
   });
 });
 
@@ -67,9 +69,9 @@ router.get('/:familyName', (req, res) => {
 	.then(totalPoints => {
 		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
     var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
-
-		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext});
+      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
+      weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
+		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext, weekNumber});
 	})
 	.catch(e => console.log(e));
 });
@@ -113,6 +115,22 @@ function showNextWeek(challengeEndDate, sunday) {
   return challengeEndDate.toString() != dateAfterSunday.toString();
 }
 
+// have to get day before since challenge ends on
+// Monday at 12:00:00 AM instead of Sunday at 11:59:59 PM
 function getWeekNumber(challengeEndDate, sunday) {
+  var dayBeforeEndDate = new Date(challengeEndDate.getTime());
+  dayBeforeEndDate.setDate(dayBeforeEndDate.getDate() - 1);
+  return (63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday)))/7;
+}
 
+
+
+// a and b are javascript Date objects
+function dateDiffInDays(a, b) {
+  var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  // Discard the time and time-zone information.
+  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
