@@ -15,7 +15,6 @@ block content
   hr
   h2#time 
 
-
   if currentChallenge
     - var challenge = currentChallenge
     p= 'Current challenge: ' + challenge.name
@@ -36,61 +35,40 @@ block content
 
 block footer-scripts
   script.
-
-    function getTimeRemaining(endtime) {
-      var t = Date.parse(endtime) - Date.parse(new Date());
-      var seconds = Math.floor((t/1000) % 60);
-      var minutes = Math.floor((t/1000/60) % 60);
-      var hours = Math.floor((t/(1000*60*60)) % 24);
-      var days = Math.floor(t/(1000*60*60*24));
-      return {
-        'total': t,
-        'days': days,
-        'hours': hours,
-        'minutes': minutes,
-        'seconds': seconds
-      };
-    }
-
-    function initializeClock(id, endtime){
-    var clock = document.getElementById(id);
-    var timeinterval = setInterval(()=>{
-    var t = getTimeRemaining(endtime);
-    clock.innerHTML = t.days + ' days' + ' ' +
-                      t.hours + ' hours' + ' ' +
-                      t.minutes + ' minutes' + ' ' +
-                      t.seconds + ' seconds' + ' left in Week 4';
-      if (t.total<=0){
-        clearInterval(timeinterval);
-        }
-      }, 1000);
-    }
-    var endtime = new Date($('#sunday').data('date'));
-    endtime.setDate(endtime.getDate()+1);
-
-    $(document).ready(function(){
-      initializeClock('time', endtime);
-     });
-
-    function getCalendarHead(e) {
+    function getDates(e) {
       e.preventDefault();
-      var data = {};
-      data.direction = $(this).attr('id');
 
-      if (data.direction == 'next') {
-        data.date = $('#sunday').data('date');
-      } else {
-        data.date = $('#monday').data('date');
+      var data = {
+        direction: $(this).attr('id'),
+        sunday: $('#sunday').data('date'),
+        monday: $('#monday').data('date')
       }
 
       var request = $.ajax({
         url: "/families/calendar",
-        data,
-        type: "POST"
+        type: "POST",
+        data
       });
 
-      request.done((response) => {
-        $('#dates').html(response);
+      request.done(res => {
+        console.log(res);
+
+        var previous = $("#previous"),
+          next = $("#next");
+
+        $('#dates').html(res.datesHTML);
+
+        if (res.showPrevious) {
+          if (previous.length === 0) $("#calendarHead div.col-2:first-of-type").append(`<button id="previous" class="change-week">&larr;</button>`);
+        } else {
+          previous.remove();
+        }
+
+        if (res.showNext) {
+          if (next.length === 0) $("#calendarHead div.col-2:last-of-type").append(`<button id="next" class="change-week">&rarr;</button>`);
+        } else {
+          next.remove();
+        }
       });
 
       request.fail(() => {
@@ -225,9 +203,45 @@ block footer-scripts
       $("#totalPointsDisplay").text(totalPoints);
       $("#totalPoints").val(totalPoints);
     }
+    
+    function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t/1000) % 60);
+      var minutes = Math.floor((t/1000/60) % 60);
+      var hours = Math.floor((t/(1000*60*60)) % 24);
+      var days = Math.floor(t/(1000*60*60*24));
+      return {
+        'total': t,
+        'days': days,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds
+      };
+    }
 
-    $('#calendar-head').on('click', '.change-week', getCalendarHead);
-    $('#calendar-head').on('click', '#dates div', getPoints);
+    function initializeClock(id, endtime){
+    var clock = document.getElementById(id);
+    var timeinterval = setInterval(()=>{
+    var t = getTimeRemaining(endtime);
+    clock.innerHTML = t.days + ' days' + ' ' +
+                      t.hours + ' hours' + ' ' +
+                      t.minutes + ' minutes' + ' ' +
+                      t.seconds + ' seconds' + ' left in Week 4';
+      if (t.total<=0){
+        clearInterval(timeinterval);
+        }
+      }, 1000);
+    }
+    
+    var endtime = new Date($('#sunday').data('date'));
+    endtime.setDate(endtime.getDate()+1);
+
+    $(document).ready(function(){
+      initializeClock('time', endtime);
+    });
+
+    $('#calendarHead').on('click', '.change-week', getDates);
+    $('#calendarHead').on('click', '#dates div', getPoints);
     $('#points-body').on('click', '.delete-point', deletePoint);
     $('#points-body').on('click', '.add-points', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);

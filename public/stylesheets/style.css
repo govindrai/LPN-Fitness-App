@@ -54,7 +54,7 @@ a {
 input, select {
   display: block; }
 
-#calendar-head {
+#calendarHead {
   text-align: center;
   display: flex;
   align-items: center; }

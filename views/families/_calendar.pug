@@ -1,6 +1,9 @@
-div#calendar-head
+div#weekNumber
+  | WEEK 1 of the FITNESS CHALLENGE!! HORAY
+
+div#calendarHead
   div.col-2
-    if true
+    if showPrevious
       button#previous.change-week &larr;
   div#calendar.col-8
     div#weekdays
@@ -14,6 +17,6 @@ div#calendar-head
     div#dates
       include ./_calendar_dates
   div.col-2
-    if true
+    if showNext
       button#next.change-week &rarr;
 div#points-body
