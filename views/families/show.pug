@@ -30,25 +30,40 @@ block content
 
 block footer-scripts
   script.
-    function getCalendarHead(e) {
+    function getDates(e) {
       e.preventDefault();
-      var data = {};
-      data.direction = $(this).attr('id');
 
-      if (data.direction == 'next') {
-        data.date = $('#sunday').data('date');
-      } else {
-        data.date = $('#monday').data('date');
+      var data = {
+        direction: $(this).attr('id'),
+        sunday: $('#sunday').data('date'),
+        monday: $('#monday').data('date')
       }
 
       var request = $.ajax({
         url: "/families/calendar",
-        data,
-        type: "POST"
+        type: "POST",
+        data
       });
 
-      request.done((response) => {
-        $('#dates').html(response);
+      request.done(res => {
+        console.log(res);
+
+        var previous = $("#previous"),
+          next = $("#next");
+
+        $('#dates').html(res.datesHTML);
+
+        if (res.showPrevious) {
+          if (previous.length === 0) $("#calendarHead div.col-2:first-of-type").append(`<button id="previous" class="change-week">&larr;</button>`);
+        } else {
+          previous.remove();
+        }
+
+        if (res.showNext) {
+          if (next.length === 0) $("#calendarHead div.col-2:last-of-type").append(`<button id="next" class="change-week">&rarr;</button>`);
+        } else {
+          next.remove();
+        }
       });
 
       request.fail(() => {
@@ -184,8 +199,8 @@ block footer-scripts
       $("#totalPoints").val(totalPoints);
     }
 
-    $('#calendar-head').on('click', '.change-week', getCalendarHead);
-    $('#calendar-head').on('click', '#dates div', getPoints);
+    $('#calendarHead').on('click', '.change-week', getDates);
+    $('#calendarHead').on('click', '#dates div', getPoints);
     $('#points-body').on('click', '.delete-point', deletePoint);
     $('#points-body').on('click', '.add-points', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);

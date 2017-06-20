@@ -35,7 +35,14 @@ router.post('/', (req, res, next) => {
 
 // POST get new calendar dates
 router.post('/calendar', (req, res) => {
-	res.send(pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}));
+  var dates = weekDates(req.body);
+  var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
+    showNext = showNextWeek(res.locals.currentChallenge.date.end, dates[6]);
+	res.send({
+    datesHTML: pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}),
+    showPrevious,
+    showNext
+  });
 });
 
 // Family Show Page/Authorized User Landing Page
@@ -59,8 +66,9 @@ router.get('/:familyName', (req, res) => {
 	})
 	.then(totalPoints => {
 		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
-    var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]);
-    var showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+    var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
+      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+
 		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext});
 	})
 	.catch(e => console.log(e));
@@ -74,10 +82,11 @@ module.exports = router;
 function weekDates(weekInfo) {
   var startDate;
   if (typeof weekInfo == 'object') {
-    startDate = new Date(weekInfo.date);
     if (weekInfo.direction == 'previous') {
+      startDate = new Date(weekInfo.monday);
       startDate.setDate(startDate.getDate() - 7);
     } else {
+      startDate = new Date(weekInfo.sunday);
       startDate.setDate(startDate.getDate() + 1);
     }
   } else {
@@ -98,6 +107,7 @@ function showPreviousWeek(challengeStartDate, monday) {
 }
 
 function showNextWeek(challengeEndDate, sunday) {
-  var dateAfterSunday = (new Date(sunday.getTime())).setDate(sunday.getDate() + 1);
-  return challengeEndDate.toString() != dateAfterSunday;
+  var dateAfterSunday = new Date(sunday.getTime());
+  dateAfterSunday.setDate(sunday.getDate() + 1);
+  return challengeEndDate.toString() != dateAfterSunday.toString();
 }
