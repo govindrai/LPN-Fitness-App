@@ -129,29 +129,32 @@ var families = [
   })
 ];
 
+var today = new Date();
+today.setDate(today.getDate() - 1);
+
 var nextMonth = new Date();
-nextMonth.setDate(nextMonth.getDate() + 30);
+nextMonth.setDate(nextMonth.getDate() + 28);
 
 var sixMonths = new Date();
-sixMonths.setDate(sixMonths.getDate() + 180);
+sixMonths.setDate(sixMonths.getDate() + 181);
 
 var sevenMonth = new Date();
-sevenMonth.setDate(sevenMonth.getDate() + 240);
+sevenMonth.setDate(sevenMonth.getDate() + 244);
 
 var nextYear = new Date();
-nextYear.setDate(nextYear.getDate() + 365);
+nextYear.setDate(nextYear.getDate() + 363);
 
 var nextYearMonth = new Date();
-nextYearMonth.setDate(nextYearMonth.getDate() + 415);
+nextYearMonth.setDate(nextYearMonth.getDate() + 419);
 
 var lastYear = new Date();
 lastYear.setDate(lastYear.getDate() - 365);
 
 var lastYearMonth = new Date();
-lastYearMonth.setDate(lastYearMonth.getDate() - 300);
+lastYearMonth.setDate(lastYearMonth.getDate() - 302);
 
 var lastYear = new Date();
-lastYear.setDate(lastYear.getDate() - 500);
+lastYear.setDate(lastYear.getDate() - 498);
 
 var lastYearMonth = new Date();
 lastYearMonth.setDate(lastYearMonth.getDate() - 400);
@@ -160,7 +163,7 @@ var challenges = [
   new Challenge({
     name: 'Summer 2017',
     date: {
-      start: new Date(),
+      start: today,
       end: nextMonth
     }
   }),
@@ -202,7 +205,7 @@ function removeModelObjs(model) {
       }
       resolve();
     });
-  })
+  });
   return promise;
 }
 
