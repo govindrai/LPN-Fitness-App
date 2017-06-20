@@ -623,6 +623,83 @@ removeModelObjs(Family)
       password: '123456',
       family: emerald,
       lifetimePoints: 500
+    }), 
+    new User({
+      email: 'tracylam@gmail.com',
+      name: {
+        first: 'Tracy',
+        last: 'Lam',
+        nickname: 'TracyLam'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'michaelho@gmail.com',
+      name: {
+        first: 'Michael',
+        last: 'Ho',
+        nickname: 'MichaelHo'
+      },
+      password: '123456',
+      family: ruby,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'staceyli@gmail.com',
+      name: {
+        first: 'Stacey',
+        last: 'Li',
+        nickname: 'StaceyLi'
+      },
+      password: '123456',
+      family: sapphire,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'andrewkuo@gmail.com',
+      name: {
+        first: 'Andrew',
+        last: 'Kuo',
+        nickname: 'J'
+      },
+      password: '123456',
+      family: sunstone,
+      lifetimePoints: 20
+    }),
+    new User({
+      email: 'jaytsui@gmail.com',
+      name: {
+        first: 'Jay',
+        last: 'Tsui',
+        nickname: 'Jay’Tsu'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'inicoperez@gmail.com',
+      name: {
+        first: 'Nico',
+        last: 'Perez',
+        nickname: 'Nico’Pere'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 200
+    }),
+    new User({
+      email: 'ireneear@gmail.com',
+      name: {
+        first: 'Irene',
+        last: 'Ear',
+        nickname: 'IreneEar'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 200
     })];
   return createObjs(users);
 })
