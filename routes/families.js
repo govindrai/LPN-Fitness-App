@@ -84,6 +84,7 @@ router.get('/:familyName', (req, res) => {
 		familyParticipations = familyParticipations.sort((a,b) => { 
 			return b.totalPoints - a.totalPoints; 
 		});
+		console.log(res.locals.currentChallenge.schedule);
 		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge});
 	})
 	.catch(e => console.log(e));
