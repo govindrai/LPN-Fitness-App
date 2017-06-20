@@ -1011,22 +1011,6 @@ removeModelObjs(Family)
 	return createObjs(users);
 })
 .then(() => {
-	return User.find({}); 
-})
-.then((users) => {
-	var participations = [];
-		users.forEach(user => {
-		participations.push(new Participation({
-			challenge: 'summer 2017',
-			user: user
-		}));
-	});
-	return participations;
-})
-.then(() => {
-	return createObjs(participations); 
-})
-.then(() => {
 	return createObjs(units);
 })
 .then(() => {
@@ -1169,5 +1153,24 @@ removeModelObjs(Family)
 })
 .then(() => {
 	return createObjs(challenges);
+})
+.then(() => {
+	return assignChallenges();
+})
+.then(() => {
+	return User.find({}); 
+})
+.then((users) => {
+	var participations = [];
+		users.forEach(user => {
+		participations.push(new Participation({
+			challenge: summer2017,
+			user: user
+		}));
+	});
+	return participations;
+})
+.then(() => {
+	return createObjs(participations); 
 })
 .catch(e => console.log(e));
