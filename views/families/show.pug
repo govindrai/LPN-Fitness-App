@@ -60,8 +60,8 @@ block footer-scripts
       var point = $(this).parent().parent();
 
       var request = $.ajax({
-        type: 'DELETE',
-        url: '/points',
+        type: 'POST',
+        url: '/points?_method=DELETE',
         data: { point: point.data('point') }
       });
 
@@ -92,19 +92,9 @@ block footer-scripts
 
     function getPoints(e) {
       var date = $(this).data('date')
-      var request = $.ajax({
-        data: {date},
-        url: '/families/points',
-        type: 'POST'
-      });
-
-      request.done((res) => {
-        $('#points-body').html(res);
-      });
-
-      request.fail((res) => {
-      console.log("Error", res)
-      });
+      $.ajax({url: `/points?date=${date}`})
+      .done(res => $('#points-body').html(res))
+      .fail(res => console.log(res));
     }
 
     var typeaheadElements;

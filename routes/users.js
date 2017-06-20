@@ -24,7 +24,7 @@ router.post('/', (req, res, next) => {
 		user.generateAuthToken().then((token) => {
 				res.redirect('/families');
 		});
-	}).catch(e => console.log(err));
+	}).catch(e => console.log(e));
 });
 
 // initialize new user, if save successful,
@@ -36,7 +36,7 @@ router.post('/', (req, res, next) => {
 		user.generateAuthToken().then((token) => {
 				res.redirect('/families/');
 		});
-	}).catch(e => console.log(err));
+	}).catch(e => console.log(e));
 });
 
 // handles both admin changes as well as profile edits

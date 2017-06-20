@@ -41,26 +41,6 @@ router.post('/calendar', (req, res) => {
 
 
 
-// router.get('/calendar', (req, res) => {
-//   if (req.xhr) {
-//     dates = [5,6,7,8,9,10,11];
-//     res.send(pug.renderFile(process.env.PWD + '/views/families/_calendar.pug', {dates}));
-//   }
-// });
-
-// gets point objs for a certain date
-router.post('/points', (req, res) => {
-	if (req.xhr) {
-		Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
-		.then(participation => {
-			return Point.getPointsByDay(participation, req.body.date);
-		})
-		.then((points) => {
-			res.send(pug.renderFile(process.env.PWD + '/views/families/_activities.pug', {points, date: req.body.date}));
-		});
-	}
-});
-
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
 	var family, currentChallenge, users, participation, familyParticipations;
