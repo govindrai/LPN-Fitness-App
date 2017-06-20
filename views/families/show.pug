@@ -64,8 +64,11 @@ block footer-scripts
         }
       }, 1000);
     }
+    var endtime = new Date($('#sunday').data('date'));
+    endtime.setDate(endtime.getDate()+1);
+    
     $(document).ready(function(){
-      initializeClock('time', $('#sunday').data('date'));
+      initializeClock('time', endtime);
      });
 
     function getCalendarHead(e) {
