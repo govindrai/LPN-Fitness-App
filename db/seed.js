@@ -546,6 +546,83 @@ removeModelObjs(Family)
       family: emerald,
       lifetimePoints: 200,
       admin: true
+    }),
+    new User({
+      email: 'owenwilson@gmail.com',
+      name: {
+        first: 'Owen',
+        last: 'Wilson',
+        nickname: 'Duuh'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 500
+    }),
+    new User({
+      email: 'michaelphelps@gmail.com',
+      name: {
+        first: 'Michael',
+        last: 'Phelps',
+        nickname: 'Swimmer'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 5000
+    }),
+    new User({
+      email: 'barchobama@gmail.com',
+      name: {
+        first: 'Barack',
+        last: 'Obama',
+        nickname: 'President'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 50000
+    }),
+    new User({
+      email: 'ruthjohnson@gmail.com',
+      name: {
+        first: 'Ruth',
+        last: 'Johnson',
+        nickname: 'Woman'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 50
+    }),
+    new User({
+      email: 'caaarz@gmail.com',
+      name: {
+        first: 'C',
+        last: 'Arz',
+        nickname: 'Car-lover'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 5
+    }),
+    new User({
+      email: 'tragedy@gmail.com',
+      name: {
+        first: 'T',
+        last: 'Ragedy',
+        nickname: 'Sad'
+      },
+      password: '123456',
+      family: iolite,
+      lifetimePoints: 0
+    }),
+    new User({
+      email: 'cornmuffins@gmail.com',
+      name: {
+        first: 'Corn',
+        last: 'Muffin',
+        nickname: 'Eat me'
+      },
+      password: '123456',
+      family: emerald,
+      lifetimePoints: 500
     })];
   return createObjs(users);
 })
