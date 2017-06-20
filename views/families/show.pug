@@ -3,10 +3,7 @@ extends ../layout
 block content
   include ./_calendar
 
-  h1= `Welcome to ${family.name}'s Show page`
-  h2=  user.name.nickname ? 'Nickname: ' + user.name.nickname : 'Nickname: ' + user.fullName
-  h2= 'Name: ' + user.fullName
-  h2= 'Lifetime Points: ' + user.lifetimePoints
+  h1= `${family.name}`
   h2= totalPoints
 
   hr
