@@ -15,33 +15,41 @@ if currentChallenge
     p= "Participating"
   else
     p= "Not Participating"
+else
+  h3 There are no current challenges :( Contact your challenge administrator and request one!
 
 h2 Future Challenges
-each challenge in futureChallenges
-  p= "Name: " + challenge.name
-  p= "Start Date: " + challenge.date.start
-  p= "End Date: " + challenge.date.end
-  if challenge.winner != null
-    p= "Winner: " + challenge.winner.name
-  if challenge.participation
-    p= "Signed Up"
-  else
-    form.participate(action='/participations' method='POST')
-      input(name="_id" type="hidden" value=challenge._id)
-      input(type='submit' value='Sign Up')
+if futureChallenges.length > 0
+  each challenge in futureChallenges
+    p= "Name: " + challenge.name
+    p= "Start Date: " + challenge.date.start
+    p= "End Date: " + challenge.date.end
+    if challenge.winner != null
+      p= "Winner: " + challenge.winner.name
+    if challenge.participation
+      p= "Signed Up"
+    else
+      form.participate(action='/participations' method='POST')
+        input(name="_id" type="hidden" value=challenge._id)
+        input(type='submit' value='Sign Up')
+else
+  h3 There aren't any scheduled challenges. Contact your program administrator and request one!
+
 
 h2 Past Challenges
-each challenge in pastChallenges
-  p= "Name: " + challenge.name
-  p= "Start Date: " + challenge.date.start
-  p= "End Date: " + challenge.date.end
-  if challenge.winner != null
-    p= "Winner: " + challenge.winner.name
-  if challenge.participating
-    p= "Participated"
-  else
-    p= "Did not Participate"
-
+if pastChallenges.length > 0
+  each challenge in pastChallenges
+    p= "Name: " + challenge.name
+    p= "Start Date: " + challenge.date.start
+    p= "End Date: " + challenge.date.end
+    if challenge.winner != null
+      p= "Winner: " + challenge.winner.name
+    if challenge.participating
+      p= "Participated"
+    else
+      p= "Did not Participate"
+else
+  h3 This will fill up as soon as your organization starts competing!
 
 script.
   $(document).ready(function() {
