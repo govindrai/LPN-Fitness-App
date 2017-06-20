@@ -221,6 +221,37 @@ function createObjs(arr) {
 	});
 	return promise;
 }
+function assignChallenges() {
+	var promise = new Promise((resolve, reject) => {
+		Challenge.find()
+		.then(challenges => {
+			challenges.forEach(challenge => {
+				switch (challenge.name) {
+					case 'Summer 2017':
+						summer2017 = challenge;
+						break;
+					case 'Winter 2017':
+						winter2017 = challenge;
+						break;
+					case 'Summer 2018':
+						summer2018 = challenge;
+						break;
+					case 'Summer 2016':
+						summer2016 = challenge;
+						break;
+					case 'Winter 2016':
+						winter2016 = challenge;
+						break;
+					default:
+						console.log("i don't know that challenge");
+				}
+			});
+			resolve();
+		})
+		.catch(e => reject(e));
+	});
+	return promise;
+}
 
 function assignFamilies() {
 	var promise = new Promise((resolve, reject) => {
