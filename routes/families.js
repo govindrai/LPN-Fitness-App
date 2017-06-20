@@ -64,6 +64,7 @@ router.post('/points', (req, res) => {
 // Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
 	var family, users, participation, familyParticipations, totalPoints;
+	var dates = weekDates();
 
   // First get the family who's page was requested
 	Family.findOne({name: req.params.familyName})
@@ -77,13 +78,13 @@ router.get('/:familyName', (req, res) => {
 	})
 	.then(familyParticipationsArray => {
 		familyParticipations = familyParticipationsArray;
-		return Point.getTotalPointsForParticipations(familyParticipations);
+		return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
 	})
-	.then((totalPoints) => {
+	.then(totalPoints => {
 		familyParticipations = familyParticipations.sort((a,b) => { 
 			return b.totalPoints - a.totalPoints; 
 		});
-		res.render('families/show', {dates: weekDates(), family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge});
+		res.render('families/show', {dates, family, totalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge});
 	})
 	.catch(e => console.log(e));
 });
