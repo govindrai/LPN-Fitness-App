@@ -70,7 +70,7 @@ challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
 		// use below line to better debug
-		// families = families.map(family => family.toObject());
+		families = families.map(family => family.toObject()); debugger;
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -99,11 +99,13 @@ challengeSchema.methods.generateSchedule = () => {
 			        // add same entry for versing family
 			        schedule[weekNumber][tempFam.name] = family;
 
+			        // now that a family has been added
+			        // swap places of added family with family that should've been added
 			        var matchingIndex;
 			        for (var j = 0; j < newFamilies.length; j++) {
-			        	if (tempFam.name == family.name) {
+			        	if (tempFam.name == newFamilies[j].name) {
 			        		matchingIndex = j;
-			        		return;
+			        		break;
 			        	}
 			        }
 
