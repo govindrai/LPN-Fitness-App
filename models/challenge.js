@@ -124,7 +124,6 @@ challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
-		families.push({name: "Bye"});
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -178,7 +177,6 @@ challengeSchema.methods.generateSchedule = () => {
 	  return schedule;
 	});
 };
-
 
 var Challenge = mongoose.model('Challenge', challengeSchema);
 

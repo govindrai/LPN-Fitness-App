@@ -126,6 +126,9 @@ var families = [
 		motto: 'Almost forgot this family',
 		challengesWon: 1,
 		playoffsReached: 2
+	}),
+	new Family({
+		name: 'Bye'
 	})
 ];
 
@@ -660,7 +663,7 @@ removeModelObjs(Family)
 			password: '123456',
 			family: emerald,
 			lifetimePoints: 500
-		}), 
+		}),
 		new User({
 			email: 'tracylam@gmail.com',
 			name: {
@@ -1164,7 +1167,7 @@ removeModelObjs(Family)
 	return assignChallenges();
 })
 .then(() => {
-	return User.find({}); 
+	return User.find({});
 })
 .then((users) => {
 	users.forEach(user => {
@@ -1176,6 +1179,10 @@ removeModelObjs(Family)
 	return participations;
 })
 .then(() => {
-	return createObjs(participations); 
+	return createObjs(participations);
+})
+.then(() => {
+	console.log("Finished Seeding");
+	process.exit();
 })
 .catch(e => console.log(e));
