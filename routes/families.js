@@ -32,15 +32,17 @@ router.get('/:familyName', (req, res) => {
   var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints;
   var dates = req.xhr ? weekDates(req.query) : weekDates();
   res.locals.currentChallenge.weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
+  console.log(res.locals.currentChallenge.weekNumber);
 
   Family.findOne({name: req.params.familyName})
   .then(familyObj => {
     family = familyObj;
-    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.id]);
+    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name]);
   })
   // then get the versing family
   .then(versingFamilyObj => {
     versingFamily = versingFamilyObj;
+    console.log(versingFamily);
     return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
   })
   // then check to see if the user is participating in the current challenge

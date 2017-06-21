@@ -59,3 +59,4 @@ Having once been a part of this fraternity and having web development experience
     + Automate dates so only start date is necessary
     + Add field for weeks
     + Days or time remaining until registration deadline (challenges index) + until current challenge ends
+    + Do not allow concurrent challenges
