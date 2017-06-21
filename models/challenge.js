@@ -125,7 +125,7 @@ challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
-		// families = families.map(family => family.toObject());
+		families = families.map(family => family.toObject());
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -135,7 +135,7 @@ challengeSchema.methods.generateSchedule = () => {
 	    week6: {},
 	    week7: {}
 	  };
-	  // debugger;
+	  debugger;
 	  families.forEach((family, index) => {
 	    var newFamilies = families.filter(newFamily => newFamily.name != family.name);
 	    var week = 1;
@@ -143,7 +143,7 @@ challengeSchema.methods.generateSchedule = () => {
 	      var weekNumber = "week" + week;
 	      if (schedule[weekNumber][family.name]) {
 	      	// don't do anything since fam not free that week
-	      } else if (schedule[weekNumber][newFamilies[i]]) {
+	      } else if (schedule[weekNumber][newFamilies[i].name]) {
 	      	var tempFams = newFamilies.slice(i+1);
 	    		tempFams.some(tempFam => {
 	    			if(schedule[weekNumber][tempFam.name]) {
@@ -157,7 +157,7 @@ challengeSchema.methods.generateSchedule = () => {
 
 			        var matchingIndex;
 			        for (var j = 0; j < newFamilies.length; j++) {
-			        	if (tempfam.name == family.name) {
+			        	if (tempFam.name == family.name) {
 			        		matchingIndex = j;
 			        		return;
 			        	}
