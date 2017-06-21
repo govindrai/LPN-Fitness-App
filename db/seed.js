@@ -43,7 +43,12 @@ var iolite,
 	golf,
 	intenseWorkout,
 	surfing,
-	snowboarding;
+	snowboarding,
+	currentChallenge,
+	nextYearChallenge,
+	twoYearsLaterChallenge,
+	lastYearChallenge,
+	twoYearsAgoChallenge;
 
 var units = [
 	new Unit({
@@ -132,70 +137,68 @@ var families = [
 	})
 ];
 
-var today = new Date();
-today.setDate(today.getDate() - 1);
+// generates an array of dates for two challenges in the past,
+// two in the future and one in the present
+// SEED FILE ONLY FUNCTION
+function getMonday(date) {
+	var monday = new Date(date.getTime());
+	monday.setDate(date.getDate() - (date.getDay() - 1));
+	return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate());
+}
 
-var nextMonth = new Date();
-nextMonth.setDate(nextMonth.getDate() + 62);
+function getChallengeStartDates() {
+	var dates = [];
 
-var sixMonths = new Date();
-sixMonths.setDate(sixMonths.getDate() + 181);
+	var thisMonday = getMonday(new Date());
 
-var sevenMonth = new Date();
-sevenMonth.setDate(sevenMonth.getDate() + 244);
+	var lastYear = new Date(thisMonday.getTime());
+	lastYear.setDate(lastYear.getDate() - 365);
 
-var nextYear = new Date();
-nextYear.setDate(nextYear.getDate() + 363);
+	var twoYearsAgo = new Date(thisMonday.getTime());
+	twoYearsAgo.setDate(twoYearsAgo.getDate() - 730);
 
-var nextYearMonth = new Date();
-nextYearMonth.setDate(nextYearMonth.getDate() + 426);
+	var nextYear = new Date(thisMonday.getTime());
+	nextYear.setDate(nextYear.getDate() + 365);
 
-var lastYear = new Date();
-lastYear.setDate(lastYear.getDate() - 365);
+	var twoYearsLater = new Date(thisMonday.getTime());
+	twoYearsLater.setDate(twoYearsLater.getDate() + 730);
 
-var lastYearMonth = new Date();
-lastYearMonth.setDate(lastYearMonth.getDate() - 302);
+	dates.push(thisMonday, getMonday(lastYear), getMonday(twoYearsAgo), getMonday(nextYear), getMonday(twoYearsLater));
+	console.log(dates);
+	return dates;
+}
 
-var lastYear = new Date();
-lastYear.setDate(lastYear.getDate() - 498);
-
-var lastYearMonth = new Date();
-lastYearMonth.setDate(lastYearMonth.getDate() - 435);
+var startDates = getChallengeStartDates();
 
 var challenges = [
 	new Challenge({
-		name: 'Summer 2017',
+		name: 'THE CURRENT CHALLENGE',
 		date: {
-			start: today,
-			end: nextMonth
+			start: startDates[0]
 		}
 	}),
 	new Challenge({
-		name: 'Winter 2017',
+		name: 'LAST YEAR CHALLENGE',
 		date: {
-			start: sixMonths,
-			end: sevenMonth
+			start: startDates[1]
 		}
 	}),
 	new Challenge({
-		name: 'Summer 2018',
+		name: 'TWO YEARS AGO CHALLENGE',
 		date: {
-			start: nextYear,
-			end: nextYearMonth
+			start: startDates[2]
 		}
 	}),
 	new Challenge({
-		name: 'Summer 2016',
+		name: 'NEXT YEAR CHALLENGE',
 		date: {
-			start: lastYear,
-			end: lastYearMonth
+			start: startDates[3]
 		}
 	}),
 	new Challenge({
-		name: 'Winter 2016',
+		name: 'TWO YEARS LATER CHALLENGE',
 		date: {
-			start: lastYear,
-			end: lastYearMonth
+			start: startDates[4]
 		}
 	})
 ];
@@ -231,20 +234,20 @@ function assignChallenges() {
 		.then(challenges => {
 			challenges.forEach(challenge => {
 				switch (challenge.name) {
-					case 'Summer 2017':
-						summer2017 = challenge;
+					case 'THE CURRENT CHALLENGE':
+						currentChallenge = challenge;
 						break;
-					case 'Winter 2017':
-						winter2017 = challenge;
+					case 'LAST YEAR CHALLENGE':
+						lastYearChallenge = challenge;
 						break;
-					case 'Summer 2018':
-						summer2018 = challenge;
+					case 'TWO YEARS AGO CHALLENGE':
+						twoYearsAgoChallenge = challenge;
 						break;
-					case 'Summer 2016':
-						summer2016 = challenge;
+					case 'NEXT YEAR CHALLENGE':
+						nextYearChallenge = challenge;
 						break;
-					case 'Winter 2016':
-						winter2016 = challenge;
+					case 'TWO YEARS LATER CHALLENGE':
+						twoYearsLaterChallenge = challenge;
 						break;
 					default:
 						console.log("i don't know that challenge");
@@ -1172,7 +1175,7 @@ removeModelObjs(Family)
 .then((users) => {
 	users.forEach(user => {
 		participations.push(new Participation({
-			challenge: summer2017,
+			challenge: currentChallenge,
 			user: user
 		}));
 	});

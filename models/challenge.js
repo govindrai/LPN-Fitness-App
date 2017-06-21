@@ -41,6 +41,7 @@ var challengeSchema = new Schema({
 challengeSchema.pre('validate', function(next) {
 	var challenge = this;
 	challenge.date.registrationEnd = this.date.start;
+	challenge.date.end = getChallengeEndDate(challenge.date.start);
 	challenge.generateSchedule()
 	.then((schedule) => {
 		challenge.schedule = schedule;
@@ -124,6 +125,7 @@ challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
+		// families = families.map(family => family.toObject());
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -133,9 +135,9 @@ challengeSchema.methods.generateSchedule = () => {
 	    week6: {},
 	    week7: {}
 	  };
-
+	  // debugger;
 	  families.forEach((family, index) => {
-	    var newFamilies = families.filter(newFamily => newFamily != family);
+	    var newFamilies = families.filter(newFamily => newFamily.name != family.name);
 	    var week = 1;
 	    for (var i = 0; i < 7; i++) {
 	      var weekNumber = "week" + week;
@@ -181,3 +183,11 @@ challengeSchema.methods.generateSchedule = () => {
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
 module.exports = Challenge;
+
+// Private Helper Functions
+
+function getChallengeEndDate(startDate) {
+	var date = new Date(startDate.getTime());
+	date.setDate(startDate.getDate() + 63);
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
