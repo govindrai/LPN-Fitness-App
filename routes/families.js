@@ -1,7 +1,5 @@
 // Modules
-var express = require('express'),
-	path = require('path'),
-	pug = require('pug');
+var express = require('express');
 
 // Models
 var Family = require('./../models/family'),
@@ -23,28 +21,11 @@ router.get('/', (req, res) => {
 router.get('/new', (req, res) => res.render('families/new'));
 
 // POST create family
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
 	var family = new Family(req.body);
-
 	family.save()
-  .then(() => {
-		res.redirect(`/families?added=${family.name}`);
-	})
+  .then(() => res.redirect(`/families?added=${family.name}`))
   .catch(e => console.log(e));
-});
-
-// POST get new calendar dates
-router.post('/calendar', (req, res) => {
-  var dates = weekDates(JSON.parse(req.body).weekInfo);
-  var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-    showNext = showNextWeek(res.locals.currentChallenge.date.end, dates[6]),
-    weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
-	res.send({
-    datesHTML: pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates}),
-    showPrevious,
-    showNext,
-    weekNumber
-  });
 });
 
 router.get('/:familyName', (req, res) => {
@@ -93,7 +74,7 @@ router.get('/:familyName', (req, res) => {
       options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext};
 
     if (req.xhr) {
-      res.render("families/_show_body.pug", options);
+      res.render("families/_show_body", options);
     } else {
       res.render("families/show", options);
     }
@@ -146,7 +127,6 @@ function getWeekNumber(challengeEndDate, sunday) {
   dayBeforeEndDate.setDate(dayBeforeEndDate.getDate() - 1);
   return (63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday)))/7;
 }
-
 
 // a and b are javascript Date objects
 function dateDiffInDays(a, b) {

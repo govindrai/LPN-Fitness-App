@@ -6,9 +6,7 @@ block content
 
 block footer-scripts
   script.
-    function updateShow(e) {
-      e.preventDefault();
-
+    function updateShow() {
       var data = {
           direction: $(this).attr('id'),
           sunday: $('#sunday').data('date'),
@@ -16,10 +14,7 @@ block footer-scripts
       }
 
       $.ajax({url: window.location.pathname, data})
-      .done(res => {
-        console.log(res);
-        $("#showBody").html(res);
-      })
+      .done(res => $("#showBody").html(res))
       .fail(() => console.log("Getting Calendar Head failed"));
     }
 
