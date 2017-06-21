@@ -1,83 +1,26 @@
 extends ../layout
 
 block content
-  include ./_calendar
-
-  h1= family.name
-  h2.
-    Week #[span.weekNumber= weekNumber] score: #[=totalPoints]
-  h2= family.motto
-
-  hr
-
-  h1.
-    Week #[span.weekNumber= weekNumber]: vs #[= `${versingFamily.name} (${versingTotalPoints} points)`]
-  h2 BLANK points needed to catch up
-
-  hr
-  h2#time
-
-  if currentChallenge
-    - var challenge = currentChallenge
-    p= 'Current challenge: ' + challenge.name
-      if challenge.participation
-        p= 'Status: ' + 'participating'
-      else
-        p= 'Status: ' + 'not participating'
-        a(href='/challenges') See upcoming challenges
-
-  hr
-
-  | Current Challenge Participants
-  each participation in familyParticipations
-    p= participation.user.name.first
-    p= "Lifetime Points: " + participation.user.lifetimePoints
-    p= "Points for this Challenge: " + participation.totalPoints
-  hr
+  div#showBody
+    include ./_show_body
 
 block footer-scripts
   script.
-    function getDates(e) {
+    function updateShow(e) {
       e.preventDefault();
 
       var data = {
-        direction: $(this).attr('id'),
-        sunday: $('#sunday').data('date'),
-        monday: $('#monday').data('date')
+          direction: $(this).attr('id'),
+          sunday: $('#sunday').data('date'),
+          monday: $('#monday').data('date')
       }
 
-      var request = $.ajax({
-        url: "/families/calendar",
-        type: "POST",
-        data
-      });
-
-      request.done(res => {
+      $.ajax({url: window.location.pathname, data})
+      .done(res => {
         console.log(res);
-
-        var previous = $("#previous"),
-          next = $("#next");
-
-        $('#dates').html(res.datesHTML);
-
-        if (res.showPrevious) {
-          if (previous.length === 0) $("#calendarHead div.col-2:first-of-type").append(`<button id="previous" class="change-week">&larr;</button>`);
-        } else {
-          previous.remove();
-        }
-
-        if (res.showNext) {
-          if (next.length === 0) $("#calendarHead div.col-2:last-of-type").append(`<button id="next" class="change-week">&rarr;</button>`);
-        } else {
-          next.remove();
-        }
-
-        $(".weekNumber").text(res.weekNumber);
-      });
-
-      request.fail(() => {
-        console.log("Getting Calendar Head failed");
-      });
+        $("#showBody").html(res);
+      })
+      .fail(() => console.log("Getting Calendar Head failed"));
     }
 
     function deletePoint(e) {
@@ -244,7 +187,7 @@ block footer-scripts
       initializeClock('time', endtime);
     });
 
-    $('#calendarHead').on('click', '.change-week', getDates);
+    $('body').on('click', '.change-week', updateShow);
     $('#calendarHead').on('click', '#dates div', getPoints);
     $('#points-body').on('click', '.delete-point', deletePoint);
     $('#points-body').on('click', '.add-points', addPoints);

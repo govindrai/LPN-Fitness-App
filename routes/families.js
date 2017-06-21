@@ -35,66 +35,70 @@ router.post('/', (req, res, next) => {
 
 // POST get new calendar dates
 router.post('/calendar', (req, res) => {
-  var dates = weekDates(req.body);
+  var dates = weekDates(JSON.parse(req.body).weekInfo);
   var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
     showNext = showNextWeek(res.locals.currentChallenge.date.end, dates[6]),
     weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
 	res.send({
-    datesHTML: pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates: weekDates(req.body)}),
+    datesHTML: pug.renderFile(path.join(__dirname, '../views/families/_calendar_dates.pug'), {dates}),
     showPrevious,
     showNext,
     weekNumber
   });
 });
 
-// Family Show Page/Authorized User Landing Page
 router.get('/:familyName', (req, res) => {
-	var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints;
-	var dates = weekDates(),
-    weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
+  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints;
+  var dates = req.xhr ? weekDates(req.query) : weekDates();
+  res.locals.currentChallenge.weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
 
-  // first get the family who's page was requested
-	Family.findOne({name: req.params.familyName})
-	.then(familyObj => {
-		family = familyObj;
-    return Family.findById(res.locals.currentChallenge.schedule["week" + weekNumber][family.id]);
-  }).
+  Family.findOne({name: req.params.familyName})
+  .then(familyObj => {
+    family = familyObj;
+    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.id]);
+  })
   // then get the versing family
-  then(versingFamilyObj => {
+  .then(versingFamilyObj => {
     versingFamily = versingFamilyObj;
     return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
   })
   // then check to see if the user is participating in the current challenge
-	.then(() => {
-		return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
-	})
+  .then(() => {
+    return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
+  })
   // then get all participants from the family in the current challenge
-	.then(familyParticipationsArray => {
-		familyParticipations = familyParticipationsArray;
+  .then(familyParticipationsArray => {
+    familyParticipations = familyParticipationsArray;
     return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, versingFamily._id);
   })
   // then get all participants from versing family in the current challenge
   .then(versingFamilyParticipationsArray => {
     versingFamilyParticipations = versingFamilyParticipationsArray;
-		return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
-	})
+    return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
+  })
   // then get an aggregation of the total points entered by the family for the current week
-	.then(totalPointsForWeek => {
-    totalPoints = calculatePoints(totalPointsForWeek, familyParticipations.length);
+  .then(totalPointsForWeek => {
+    family.totalPoints = calculatePoints(totalPointsForWeek, familyParticipations.length);
     return Point.getTotalPointsForParticipationsByWeek(versingFamilyParticipations, dates[0], dates[6]);
   })
   // then get the same aggregation for the versing family
-  .then(versingTotalPointsForWeek => {
-    versingTotalPoints = calculatePoints(versingTotalPointsForWeek,versingFamilyParticipations.length);
-		familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
+  .then(totalPointsForWeek => {
+    versingFamily.totalPoints = calculatePoints(totalPointsForWeek,versingFamilyParticipations.length);
+    family.pointsNeeded = calculatePointsNeededToWin(family.totalPoints, familyParticipations.length, versingFamily.totalPoints);
+    familyParticipations = familyParticipations.sort((a,b) => b.totalPoints - a.totalPoints);
 
     // check whether or not to show next/previous week buttons
     var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+      showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
+      options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext};
 
-		res.render('families/show', {dates, family, versingFamily, totalPoints, versingTotalPoints, familyParticipations, currentChallenge: res.locals.currentChallenge, showPrevious, showNext, weekNumber});
-	})
-	.catch(e => console.log(e));
+    if (req.xhr) {
+      res.render("families/_show_body.pug", options);
+    } else {
+      res.render("families/show", options);
+    }
+  })
+  .catch(e => console.log(e));
 });
 
 module.exports = router;
@@ -125,7 +129,6 @@ function weekDates(weekInfo) {
   return dates;
 }
 
-
 function showPreviousWeek(challengeStartDate, monday) {
   return challengeStartDate.toString() != monday.toString();
 }
@@ -143,7 +146,6 @@ function getWeekNumber(challengeEndDate, sunday) {
   dayBeforeEndDate.setDate(dayBeforeEndDate.getDate() - 1);
   return (63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday)))/7;
 }
-
 
 
 // a and b are javascript Date objects
