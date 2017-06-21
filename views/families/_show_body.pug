@@ -1,0 +1,34 @@
+include ./_calendar
+
+h1= family.name
+h2.
+  Week #[span.weekNumber= currentChallenge.weekNumber] score: #[=family.totalPoints]
+h2= family.motto
+
+hr
+
+h1.
+  Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[= `${versingFamily.name} (${versingFamily.totalPoints} points)`]
+h2= `Points Needed: ${family.pointsNeeded}`
+
+hr
+h2#time
+
+if currentChallenge
+  p= 'Current challenge: ' + currentChallenge.name
+    if currentChallenge.participation
+      p= 'Status: participating'
+    else
+      p= 'Status: not participating'
+      a(href='/challenges') See upcoming challenges
+
+  hr
+
+  | Current Challenge Participants
+  each participation in familyParticipations
+    p= participation.user.name.first
+    p= "Lifetime Points: " + participation.user.lifetimePoints
+    p= `Week ${currentChallenge.weekNumber} Points: ${participation.totalPoints}`
+  hr
+else
+  h3 There is no current challenge. Please contact your program administrator to create one!
