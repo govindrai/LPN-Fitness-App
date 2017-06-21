@@ -69,7 +69,8 @@ challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
-		families = families.map(family => family.toObject());
+		// use below line to better debug
+		// families = families.map(family => family.toObject());
 		var schedule = {
 	    week1: {},
 	    week2: {},
