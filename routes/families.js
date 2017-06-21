@@ -163,3 +163,8 @@ function calculatePoints(familyTotalPoints, numOfParticipants) {
   return (familyTotalPoints/numOfParticipants).toFixed(2);
 }
 
+function calculatePointsNeededToWin(familyTotalPoints, numOfParticipants, versingFamilyTotalPoints) {
+  numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
+  var deficientPoints = versingFamilyTotalPoints - familyTotalPoints;
+  return deficientPoints <= 0 ? 0 : numOfParticipants * deficientPoints;
+}
