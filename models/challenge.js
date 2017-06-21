@@ -69,12 +69,12 @@ challengeSchema.statics.getChallengeByDate = date => {
 	return Challenge.find().where('date.start').lt(new Date(date)).where('date.end').gt(new Date(date));
 };
 
-challengeSchema.statics.getFamilyIds = () => {
-	return Family.find({}).select('_id');
+challengeSchema.statics.getFamilies = () => {
+	return Family.find({});
 };
 
 challengeSchema.methods.generateSchedule = () => {
-	return Challenge.getFamilyIds()
+	return Challenge.getFamilies()
 	.then(aggregationObjs => {
 		familyIds = aggregationObjs.map(aggregationObj => {
 			return aggregationObj._id;
