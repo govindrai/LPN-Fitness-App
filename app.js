@@ -10,7 +10,7 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  sassMiddleware = require('node-sass-middleware'),
+  // sassMiddleware = require('node-sass-middleware'),
   mongoose = require('./db/mongoose');
 
 // Routers
@@ -56,12 +56,12 @@ app.use(session({
   secret: 'secret'
 }));
 
-app.use(sassMiddleware({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: true, // true = .sass and false = .scss
-  sourceMap: true
-}));
+// app.use(sassMiddleware({
+//   src: path.join(__dirname, 'public'),
+//   dest: path.join(__dirname, 'public'),
+//   indentedSyntax: true, // true = .sass and false = .scss
+//   sourceMap: true
+// }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/')));
