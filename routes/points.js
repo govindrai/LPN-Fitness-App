@@ -17,24 +17,18 @@ var router = express.Router();
 
 router.get('/', (req, res) => {
   var family, familyParticipations, points, pointsArray;
-  Family.findById(res.locals.user.family._id)
-  .then(familyObj => {
-    family = familyObj;
-    return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
-  })
-  // then check to see if the user is participating in the current challenge
-  .then(() => {
+  Family.findOne({name: req.query.familyName})
+  .then(family => {
     return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
   })
   // then get all participants from the family in the current challenge
   .then(familyParticipationsArray => {
     familyParticipations = familyParticipationsArray;
-    return Point.getPointsByDay(familyParticipations, req.query.date);
+    var user = req.query.familyName == res.locals.user.family.name ? res.locals.user : undefined;
+    return Point.getPointsForParticipationsByDay(familyParticipations, req.query.date, user);
   })
-  .then(pointsObjs => {
-    console.log(pointsObjs);
-    console.log("AND NOW THIS WAS HIT");
-    res.send(pug.renderFile(path.join(__dirname + '/../views/points/_user_points_for_day.pug'), {points, date: req.query.date}));
+  .then(() => {
+    res.render("families/_daily_points", {familyParticipations, addPointsButtonDate: req.query.date});
   })
   .catch(e => console.log(e));
 });
@@ -57,12 +51,10 @@ function checkParticipationInCurrentChallenge(req, res, next) {
 // checkParticipationInCurrentChallenge needs to occur to display calendar
 
 router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
-  if (req.xhr) {
-    Activity.find({}).then(activities => {
-      res.render('points/new', {activities, date: req.query.date});
-    })
-    .catch(e => console.log(e));
-  }
+  Activity.find({}).then(activities => {
+    res.render('points/new', {activities, date: req.query.date});
+  })
+  .catch(e => console.log(e));
 });
 
 router.post('/', (req, res) => {

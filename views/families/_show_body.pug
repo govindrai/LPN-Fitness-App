@@ -1,5 +1,3 @@
-include ./_calendar
-
 h1= family.name
 h2.
   Week #[span.weekNumber= currentChallenge.weekNumber] score: #[=family.totalPoints]
@@ -23,12 +21,10 @@ if currentChallenge
       a(href='/challenges') See upcoming challenges
 
   hr
+  
+  include ./_calendar
+  include ./_daily_points
 
-  | Current Challenge Participants
-  each participation in familyParticipations
-    p= participation.user.name.first
-    p= "Lifetime Points: " + participation.user.lifetimePoints
-    p= `Week ${currentChallenge.weekNumber} Points: ${participation.totalPoints}`
   hr
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
