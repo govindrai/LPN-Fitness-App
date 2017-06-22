@@ -19,6 +19,9 @@ var familySchema = new mongoose.Schema({
 	playoffsReached: {
 		type: Number,
 		default: 0
+	},
+	winner: {
+		type: Boolean
 	}
 });
 
