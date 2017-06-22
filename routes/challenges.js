@@ -65,6 +65,7 @@ router.get('/schedule', (req, res) => {
 		return Family.find({});
 	})
 	.then(families => {
+		console.log(challenge.schedule);
 		res.render('challenges/schedule', {challenge, families});
 	})
 	.catch(e => console.log(e));

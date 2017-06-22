@@ -54,6 +54,10 @@ challengeSchema.statics.getCurrentChallenge = () => {
 	return Challenge.findOne().where('date.start').lt(new Date()).where('date.end').gt(new Date());
 };
 
+challengeSchema.methods.getWinner = function() {
+	return this.schedule;
+};
+
 challengeSchema.statics.getPastChallenges = () => {
 	return Challenge.find().populate('winner').where('date.end').lt(new Date()).sort('date.start');
 };
