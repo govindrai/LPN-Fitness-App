@@ -26,11 +26,18 @@ var pointSchema = new Schema({
 });
 
 pointSchema.methods.getUnitName = function(){
-	return this.activity.unit.name ;
+	return this.activity.unit.name;
 };
 
-pointSchema.statics.getPointsByDay = function(participation, date){
-	return Point.find({participation, date}).populate({ path: 'activity', populate: { path: 'unit' }});
+pointSchema.statics.getPointsByDay = function(participations, date){
+	var points = [];
+	return Promise.all(participations.forEach(participation => {
+		return Point.find({participation, date}).populate({ path: 'activity', populate: { path: 'unit' }})
+	}))
+	.then(point => {
+		return points.push(point);
+	})
+	.catch(e => console.log(e)); 
 };
 
 // gets the total points for each participation object

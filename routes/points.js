@@ -7,6 +7,7 @@ var express = require('express'),
 // Models
 var Activity = require('./../models/activity'),
   Point = require('./../models/point'),
+  Family = require('./../models/family'),
   Unit = require('./../models/unit'),
   Challenge = require('./../models/challenge'),
   Participation = require('./../models/participation'),
@@ -15,12 +16,23 @@ var Activity = require('./../models/activity'),
 var router = express.Router();
 
 router.get('/', (req, res) => {
-  Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
-  .then(participation => {
-    console.log("PARTICIPATION", participation);
-    return Point.getPointsByDay(participation, req.query.date);
+  var family, familyParticipations, points, pointsArray;
+  Family.findById(res.locals.user.family._id)
+  .then(familyObj => {
+    family = familyObj;
+    return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
   })
-  .then(points => {
+  // then check to see if the user is participating in the current challenge
+  .then(() => {
+    return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
+  })
+  // then get all participants from the family in the current challenge
+  .then(familyParticipationsArray => {
+    familyParticipations = familyParticipationsArray;
+    return Point.getPointsByDay(familyParticipations, req.query.date);
+  })
+  .then(pointsObjs => {
+    console.log(pointsObjs);
     console.log("AND NOW THIS WAS HIT");
     res.send(pug.renderFile(path.join(__dirname + '/../views/points/_user_points_for_day.pug'), {points, date: req.query.date}));
   })
