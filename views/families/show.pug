@@ -1,5 +1,10 @@
 extends ../layout
 
+append head-scripts
+  include ../partials/jqueryui
+  script(src="/libs/typeahead.bundle.min.js")
+
+
 block content
   div#showBody
     include ./_show_body
@@ -45,7 +50,7 @@ block footer-scripts
       })
 
       request.done(res => {
-        $('#points-body').replaceWith(res);
+        $('#pointsBody').replaceWith(res);
         getActivities();
         $('#typeahead').bind('typeahead:select', getActivityData);
       });
@@ -54,9 +59,16 @@ block footer-scripts
     }
 
     function getPoints(e) {
-      var date = $(this).data('date')
-      $.ajax({url: `/points?date=${date}`})
-      .done(res => $('#points-body').html(res))
+      var data = {
+        date: $(this).data('date'),
+        familyName: window.location.pathname.slice(10)
+      };
+
+      $.ajax({
+        url: "/points", 
+        data
+      })
+      .done(res => $("#dailyPoints").replaceWith(res))
       .fail(res => console.log(res));
     }
 
@@ -184,7 +196,7 @@ block footer-scripts
 
     $('body').on('click', '.change-week', updateShow);
     $('#calendarHead').on('click', '#dates div', getPoints);
-    $('#points-body').on('click', '.delete-point', deletePoint);
-    $('#points-body').on('click', '.add-points', addPoints);
+    $('body').on('click', '.delete-point', deletePoint);
+    $('body').on('click', '#addPoints', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);
     $('body').on('click', '#add-activity button', addMoreActivities);

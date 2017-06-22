@@ -29,10 +29,10 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:familyName', (req, res) => {
-  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints;
+  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints, addPointsButtonDate;
   var dates = req.xhr ? weekDates(req.query) : weekDates();
   res.locals.currentChallenge.weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, dates[6]);
-  console.log(res.locals.currentChallenge.weekNumber);
+  res.locals.currentChallenge.currentWeek = getWeekNumber(res.locals.currentChallenge.date.end, getToday());
 
   Family.findOne({name: req.params.familyName})
   .then(familyObj => {
@@ -57,6 +57,12 @@ router.get('/:familyName', (req, res) => {
   // then get all participants from versing family in the current challenge
   .then(versingFamilyParticipationsArray => {
     versingFamilyParticipations = versingFamilyParticipationsArray;
+    addPointsButtonDate = res.locals.currentChallenge.weekNumber == res.locals.currentChallenge.currentWeek ? getToday() : dates[6];
+    var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
+    return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
+  })
+  // then get a list of all points added for each participating family member in the current challenge
+  .then(() => {
     return Point.getTotalPointsForParticipationsByWeek(familyParticipations, dates[0], dates[6]);
   })
   // then get an aggregation of the total points entered by the family for the current week
@@ -73,7 +79,7 @@ router.get('/:familyName', (req, res) => {
     // check whether or not to show next/previous week buttons
     var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
       showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
-      options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext};
+      options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext, addPointsButtonDate};
 
     if (req.xhr) {
       res.render("families/_show_body", options);
@@ -127,7 +133,7 @@ function showNextWeek(challengeEndDate, sunday) {
 function getWeekNumber(challengeEndDate, sunday) {
   var dayBeforeEndDate = new Date(challengeEndDate.getTime());
   dayBeforeEndDate.setDate(dayBeforeEndDate.getDate() - 1);
-  return (63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday)))/7;
+  return Math.ceil((63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday)))/7);
 }
 
 // a and b are javascript Date objects
@@ -149,4 +155,9 @@ function calculatePointsNeededToWin(familyTotalPoints, numOfParticipants, versin
   numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
   var deficientPoints = versingFamilyTotalPoints - familyTotalPoints;
   return deficientPoints <= 0 ? 0 : numOfParticipants * deficientPoints;
+}
+
+function getToday() {
+  var date = new Date();
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }

@@ -7,6 +7,7 @@ var express = require('express'),
 // Models
 var Activity = require('./../models/activity'),
   Point = require('./../models/point'),
+  Family = require('./../models/family'),
   Unit = require('./../models/unit'),
   Challenge = require('./../models/challenge'),
   Participation = require('./../models/participation'),
@@ -15,14 +16,19 @@ var Activity = require('./../models/activity'),
 var router = express.Router();
 
 router.get('/', (req, res) => {
-  Participation.findOne({user: res.locals.user._id, challenge: res.locals.currentChallenge._id})
-  .then(participation => {
-    console.log("PARTICIPATION", participation);
-    return Point.getPointsByDay(participation, req.query.date);
+  var family, familyParticipations, points, pointsArray;
+  Family.findOne({name: req.query.familyName})
+  .then(family => {
+    return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id);
   })
-  .then(points => {
-    console.log("AND NOW THIS WAS HIT");
-    res.send(pug.renderFile(path.join(__dirname + '/../views/points/_user_points_for_day.pug'), {points, date: req.query.date}));
+  // then get all participants from the family in the current challenge
+  .then(familyParticipationsArray => {
+    familyParticipations = familyParticipationsArray;
+    var user = req.query.familyName == res.locals.user.family.name ? res.locals.user : undefined;
+    return Point.getPointsForParticipationsByDay(familyParticipations, req.query.date, user);
+  })
+  .then(() => {
+    res.render("families/_daily_points", {familyParticipations, addPointsButtonDate: req.query.date});
   })
   .catch(e => console.log(e));
 });
@@ -45,12 +51,10 @@ function checkParticipationInCurrentChallenge(req, res, next) {
 // checkParticipationInCurrentChallenge needs to occur to display calendar
 
 router.get('/new', checkParticipationInCurrentChallenge, (req, res) => {
-  if (req.xhr) {
-    Activity.find({}).then(activities => {
-      res.render('points/new', {activities, date: req.query.date});
-    })
-    .catch(e => console.log(e));
-  }
+  Activity.find({}).then(activities => {
+    res.render('points/new', {activities, date: req.query.date});
+  })
+  .catch(e => console.log(e));
 });
 
 router.post('/', (req, res) => {

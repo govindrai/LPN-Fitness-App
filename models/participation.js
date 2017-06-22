@@ -27,11 +27,7 @@ participationSchema.statics.setUserParticipationForChallenges = function(user, c
 // returns participation objs for a certain challenge and family
 participationSchema.statics.getParticipationForChallengeByFamily = function(challengeId, familyId) {
   return Participation.find({challenge: challengeId}).populate('user')
-  .then(participations => {
-    return participations.filter(participation => {
-      return participation.user.family.toString() == familyId.toString();
-    });
-  });
+  .then(participations => participations.filter(participation => participation.user.family.toString() == familyId.toString()));
 };
 
 var Participation = mongoose.model('Participations', participationSchema);

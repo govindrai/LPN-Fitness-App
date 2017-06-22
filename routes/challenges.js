@@ -58,7 +58,16 @@ router.post('/', (req, res) => {
 });
 
 router.get('/schedule', (req, res) => {
-	res.render('challenges/schedule');
+	var challenge;
+	Challenge.findById(res.locals.currentChallenge._id)
+	.then(challengeObj => {
+		challenge = challengeObj; 
+		return Family.find({});
+	})
+	.then(families => {
+		res.render('challenges/schedule', {challenge, families});
+	})
+	.catch(e => console.log(e));
 });
 
 module.exports = router;

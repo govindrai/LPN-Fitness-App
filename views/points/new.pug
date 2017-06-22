@@ -1,14 +1,7 @@
-//- extends ../layout
-
-append head-scripts
-	include ../partials/jqueryui
-	script(src="/libs/typeahead.bundle.min.js")
-
-block content
-	h1 Add Points
-	form#add-points(action="/points" method="POST")
-		input(type="hidden", name="participation", value=participationId)
-		input(type="hidden", name="date", value=date)
-		div
-			label#activity-name Activity Name
-			input(id="typeahead" type="text")
+h1 Add Points
+form#add-points(action="/points" method="POST")
+	input(type="hidden", name="participation", value=participationId)
+	input(type="hidden", name="date", value=date)
+	div
+		label#activity-name Activity Name
+		input(id="typeahead" type="text")
