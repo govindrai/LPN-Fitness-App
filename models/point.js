@@ -43,9 +43,7 @@ pointSchema.statics.getPointsForParticipationsByDay = (participations, date, use
 
 		if (user !== undefined) {
 			var currentUserIndex = participations.findIndex(participation => participation.user._id.toString() == user._id.toString());
-			console.log("CURRENT USER INDEX", currentUserIndex);
 			participations.unshift(participations.splice(currentUserIndex, 1)[0]);
-			console.log(participations);
 		}
 	});
 };
@@ -75,7 +73,7 @@ pointSchema.statics.getTotalPointsForParticipationsByWeek = (participations, wee
 			participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
 		});
 	})
-	.then(()=>{
+	.then(() => {
 		return participations.reduce((total, participation) => total + participation.totalPoints, 0);
 	});
 };
