@@ -164,11 +164,18 @@ function getToday() {
 }
 
 schedule.scheduleJob({hour: 0, minute: 0, dayOfWeek: 1}, function(family, versingFamily){
-  if(family.calculatePoints() > versingFamily.totalPoints){
-
+  if(family.totalPoints > versingFamily.totalPoints){
     res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Loss';
     res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Win';
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScore = versingFamily.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScoreVersing = family.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScore = family.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScoreVersing = versingFamily.totalPoints;
   } else {
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScore = versingFamily.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScoreVersing = family.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScore = family.totalPoints;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScoreVersing = versingFamily.totalPoints;
     res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Win'; 
     res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Loss';
   }; 
