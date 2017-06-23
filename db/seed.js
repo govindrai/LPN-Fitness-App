@@ -1172,7 +1172,7 @@ removeModelObjs(Family)
 .then(() => {
 	return User.find({});
 })
-.then((users) => {
+.then(users => {
 	users.forEach(user => {
 		participations.push(new Participation({
 			challenge: currentChallenge,
