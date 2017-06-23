@@ -165,11 +165,11 @@ function getToday() {
 
 schedule.scheduleJob({hour: 0, minute: 0, dayOfWeek: 1}, function(family, versingFamily){
   if(family.calculatePoints() > versingFamily.totalPoints){
-    
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = false;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = true;
+
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Loss';
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Win';
   } else {
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = true; 
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = false;
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Win'; 
+    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Loss';
   }; 
 });

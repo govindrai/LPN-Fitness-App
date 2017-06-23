@@ -54,10 +54,6 @@ challengeSchema.statics.getCurrentChallenge = () => {
 	return Challenge.findOne().where('date.start').lt(new Date()).where('date.end').gt(new Date());
 };
 
-challengeSchema.methods.getWinner = function() {
-	return this.schedule;
-};
-
 challengeSchema.statics.getPastChallenges = () => {
 	return Challenge.find().populate('winner').where('date.end').lt(new Date()).sort('date.start');
 };
@@ -74,7 +70,7 @@ challengeSchema.methods.generateSchedule = () => {
 	return Family.find()
 	.then(families => {
 		// use below line to better debug
-		families = families.map(family => family.toObject()); debugger;
+		families = families.map(family => family.toObject()); 
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -100,8 +96,15 @@ challengeSchema.methods.generateSchedule = () => {
 	    			} else {
 	    				 // add a verse for opposing family
 			        schedule[weekNumber][family.name] = tempFam;
+			        schedule[weekNumber][family.name].winner = 'TBD';
+			        schedule[weekNumber][family.name].finalScore = 'TBD';
+			        schedule[weekNumber][family.name].finalScoreVersing = 'TBD';
 			        // add same entry for versing family
 			        schedule[weekNumber][tempFam.name] = family;
+			        schedule[weekNumber][tempFam.name].winner = 'TBD';
+			        schedule[weekNumber][tempFam.name].finalScore = 'TBD';
+			        schedule[weekNumber][tempFam.name].finalScoreVersing = 'TBD';
+
 
 			        // now that a family has been added
 			        // swap places of added family with family that should've been added
@@ -120,8 +123,14 @@ challengeSchema.methods.generateSchedule = () => {
 	      } else {
 	        // add a verse for opposing family
 	        schedule[weekNumber][family.name] = newFamilies[i];
+	        schedule[weekNumber][family.name].winner = 'TBD';
+	        schedule[weekNumber][family.name].finalScore = 'TBD';
+	        schedule[weekNumber][family.name].finalScoreVersing = 'TBD';
 	        // add same entry for versing family
 	        schedule[weekNumber][newFamilies[i].name] = family;
+	        schedule[weekNumber][newFamilies[i].name].winner = 'TBD';
+	        schedule[weekNumber][newFamilies[i].name].finalScore = 'TBD';
+	        schedule[weekNumber][newFamilies[i].name].finalScoreVersing = 'TBD';
 	      }
       week++;
 	    }

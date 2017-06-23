@@ -21,7 +21,8 @@ var familySchema = new mongoose.Schema({
 		default: 0
 	},
 	winner: {
-		type: Boolean
+		type: String,
+		default: 'TBD'
 	}
 });
 
