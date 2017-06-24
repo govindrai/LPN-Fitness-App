@@ -90,6 +90,19 @@ router.get('/logout', (req, res) => {
   .catch(e => console.log(e));
 });
 
+router.get('/schedule', (req, res) => {
+  var challenge;
+  Challenge.findById(res.locals.currentChallenge._id)
+  .then(challengeObj => {
+    challenge = challengeObj;
+    return Family.find({});
+  })
+  .then(families => {
+    res.render('challenges/schedule', {challenge, families});
+  })
+  .catch(e => console.log(e));
+});
+
 // GET rules page
 router.get('/rules', (req, res) => res.render('sessions/rules'));
 
