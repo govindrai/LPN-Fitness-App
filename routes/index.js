@@ -90,6 +90,14 @@ router.get('/logout', (req, res) => {
   .catch(e => console.log(e));
 });
 
+router.get('/schedule', (req, res) => {
+  Family.find()
+  .then(families => {
+    res.render('challenges/schedule', {families});
+  })
+  .catch(e => console.log(e));
+});
+
 // GET rules page
 router.get('/rules', (req, res) => res.render('sessions/rules'));
 

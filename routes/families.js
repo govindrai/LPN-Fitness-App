@@ -1,6 +1,4 @@
-// Modules
-var express = require('express'),
-schedule = require('node-schedule');
+var express = require('express');
 
 // Models
 var Family = require('./../models/family'),
@@ -38,7 +36,7 @@ router.get('/:familyName', (req, res) => {
   Family.findOne({name: req.params.familyName})
   .then(familyObj => {
     family = familyObj;
-    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name]);
+    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].versingFamily._id);
   })
   // then get the versing family
   .then(versingFamilyObj => {
@@ -162,21 +160,3 @@ function getToday() {
   var date = new Date();
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
-
-schedule.scheduleJob({hour: 0, minute: 0, dayOfWeek: 1}, function(family, versingFamily){
-  if(family.totalPoints > versingFamily.totalPoints){
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Loss';
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Win';
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScore = versingFamily.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScoreVersing = family.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScore = family.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScoreVersing = versingFamily.totalPoints;
-  } else {
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScore = versingFamily.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].finalScoreVersing = family.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScore = family.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].finalScoreVersing = versingFamily.totalPoints;
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][versingFamily.name].winner = 'Win'; 
-    res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].winner = 'Loss';
-  }; 
-});

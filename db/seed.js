@@ -177,30 +177,30 @@ var challenges = [
 			start: startDates[0]
 		}
 	}),
-	new Challenge({
-		name: 'LAST YEAR CHALLENGE',
-		date: {
-			start: startDates[1]
-		}
-	}),
-	new Challenge({
-		name: 'TWO YEARS AGO CHALLENGE',
-		date: {
-			start: startDates[2]
-		}
-	}),
-	new Challenge({
-		name: 'NEXT YEAR CHALLENGE',
-		date: {
-			start: startDates[3]
-		}
-	}),
-	new Challenge({
-		name: 'TWO YEARS LATER CHALLENGE',
-		date: {
-			start: startDates[4]
-		}
-	})
+	// new Challenge({
+	// 	name: 'LAST YEAR CHALLENGE',
+	// 	date: {
+	// 		start: startDates[1]
+	// 	}
+	// }),
+	// new Challenge({
+	// 	name: 'TWO YEARS AGO CHALLENGE',
+	// 	date: {
+	// 		start: startDates[2]
+	// 	}
+	// }),
+	// new Challenge({
+	// 	name: 'NEXT YEAR CHALLENGE',
+	// 	date: {
+	// 		start: startDates[3]
+	// 	}
+	// }),
+	// new Challenge({
+	// 	name: 'TWO YEARS LATER CHALLENGE',
+	// 	date: {
+	// 		start: startDates[4]
+	// 	}
+	// })
 ];
 
 function removeModelObjs(model) {
@@ -843,7 +843,6 @@ removeModelObjs(Family)
 			family: sapphire,
 			lifetimePoints: 200
 		}),
-
 		new User({
 			email: 'aileenju@gmail.com',
 			name: {
@@ -1186,6 +1185,6 @@ removeModelObjs(Family)
 })
 .then(() => {
 	console.log("Finished Seeding");
-	process.exit();
+	// process.exit();
 })
 .catch(e => console.log(e));
