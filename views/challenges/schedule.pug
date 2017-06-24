@@ -1,10 +1,11 @@
 include ../layout.pug
 
-h1= 'Schedule - Regular Season' 
+block content
+	h1= 'Schedule - Regular Season'
 
-each family in families 
-	h2= family.name
-	table
+	each family in families
+		h2= family.name
+		table
 			thead
 				tr
 					td Week
@@ -13,45 +14,13 @@ each family in families
 					td Team Score
 					td Opp Score
 			tbody
+			- var i = 1
+			while i < 8
 				tr
-					td= 'Week 1'
-					td= challenge.schedule['week1'][family.name].name
-					td= challenge.schedule['week1'][family.name].winner
-					td= challenge.schedule['week1'][family.name].finalScore
-					td= challenge.schedule['week1'][family.name].finalScoreVersing
-				tr
-					td= 'Week 2'
-					td= challenge.schedule['week2'][family.name].name
-					td= challenge.schedule['week2'][family.name].winner
-					td= challenge.schedule['week2'][family.name].finalScore
-					td= challenge.schedule['week2'][family.name].finalScoreVersing
-				tr
-					td= 'Week 3'
-					td= challenge.schedule['week3'][family.name].name
-					td= challenge.schedule['week3'][family.name].winner
-					td= challenge.schedule['week3'][family.name].finalScore
-					td= challenge.schedule['week3'][family.name].finalScoreVersing
-				tr
-					td= 'Week 4'
-					td= challenge.schedule['week4'][family.name].name
-					td= challenge.schedule['week4'][family.name].winner
-					td= challenge.schedule['week4'][family.name].finalScore
-					td= challenge.schedule['week4'][family.name].finalScoreVersing
-				tr
-					td= 'Week 5'
-					td= challenge.schedule['week5'][family.name].name
-					td= challenge.schedule['week5'][family.name].winner
-					td= challenge.schedule['week5'][family.name].finalScore
-					td= challenge.schedule['week5'][family.name].finalScoreVersing
-				tr
-					td= 'Week 6'
-					td= challenge.schedule['week6'][family.name].name
-					td= challenge.schedule['week6'][family.name].winner
-					td= challenge.schedule['week6'][family.name].finalScore
-					td= challenge.schedule['week6'][family.name].finalScoreVersing
-				tr
-					td= 'Week 7'
-					td= challenge.schedule['week7'][family.name].name
-					td= challenge.schedule['week7'][family.name].winner
-					td= challenge.schedule['week7'][family.name].finalScore
-					td= challenge.schedule['week7'][family.name].finalScoreVersing
+					td= i
+					- var week = "week" + i
+					td= currentChallenge.schedule[week][family.name].versingFamily.name
+					td= currentChallenge.schedule[week][family.name].status
+					td= currentChallenge.schedule[week][family.name].finalScore
+					td= currentChallenge.schedule[week][family.name].versingFinalScore
+					- i++

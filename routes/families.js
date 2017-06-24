@@ -36,7 +36,7 @@ router.get('/:familyName', (req, res) => {
   Family.findOne({name: req.params.familyName})
   .then(familyObj => {
     family = familyObj;
-    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name]);
+    return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].versingFamily._id);
   })
   // then get the versing family
   .then(versingFamilyObj => {
