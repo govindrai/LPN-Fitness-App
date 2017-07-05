@@ -39,16 +39,6 @@ router.get('/:familyName', (req, res) => {
   .then(familyObj => {
     family = familyObj;
     if ((res.locals.currentChallenge.weekNumber == 9 && res.locals.currentChallenge.currentWeek < 9) || (res.locals.currentChallenge.weekNumber == 8 && res.locals.currentChallenge.currentWeek < 8)) {
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
-      console.log("WEEK TDB!!!!")
       weekTBD = true;
     } else {
       return Family.findById(res.locals.currentChallenge.schedule["week" + res.locals.currentChallenge.weekNumber][family.name].versingFamily._id);
@@ -58,8 +48,8 @@ router.get('/:familyName', (req, res) => {
   .then(versingFamilyObj => {
     if (!weekTBD) {
       versingFamily = versingFamilyObj;
-      return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
     }
+    return Participation.setUserParticipationForChallenges(res.locals.user, [res.locals.currentChallenge]);
   })
   // then check to see if the user is participating in the current challenge
   .then(() => {
@@ -68,13 +58,6 @@ router.get('/:familyName', (req, res) => {
   // then get all participants from the family in the current challenge
   .then(familyParticipationsArray => {
     familyParticipations = familyParticipationsArray;
-    console.log(weekTBD)
-    console.log(weekTBD)
-    console.log(weekTBD)
-    console.log(weekTBD)
-    console.log(weekTBD)
-    console.log(weekTBD)
-    console.log(weekTBD)
     if (!weekTBD) {
       return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, versingFamily._id);
     }
