@@ -4,7 +4,6 @@ append head-scripts
   include ../partials/jqueryui
   script(src="/libs/typeahead.bundle.min.js")
 
-
 block content
   div#showBody
     include ./_show_body
@@ -65,7 +64,7 @@ block footer-scripts
       };
 
       $.ajax({
-        url: "/points", 
+        url: "/points",
         data
       })
       .done(res => $("#dailyPoints").replaceWith(res))
