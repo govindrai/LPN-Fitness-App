@@ -1028,6 +1028,7 @@ removeModelObjs(Family)
 	return assignUnits();
 })
 .then(() => {
+	// debugger;
 	var activities = [
 		new Activity({
 			name: 'Jump roping',
