@@ -8,6 +8,9 @@ div#dailyPoints
 		//- p= "Lifetime Points: " + participation.user.lifetimePoints
 		//- p= `Points For Week: ${participation.totalPoints}`
 		p= "Today's Total: " + participation.totalDailyPoints
+		if participation.user._id.toString() == user._id.toString()
+			div#pointsBody
+			button#addPoints(data-date=addPointsButtonDate) Add Points
 
 		if participation.points.length > 0
 			table
@@ -25,6 +28,3 @@ div#dailyPoints
 						td= point.activity.unit.name
 						td= point.calculatedPoints
 						td #[button.delete-point Delete]
-
-	div#pointsBody
-		button#addPoints(data-date=addPointsButtonDate) Add Points
