@@ -10,11 +10,28 @@ block content
 
 block footer-scripts
   script.
-    function updateShow() {
-      var data = {
-          direction: $(this).attr('id'),
-          sunday: $('#sunday').data('date'),
-          monday: $('#monday').data('date')
+    function updatePoints(e) {
+      let request = $.ajax({
+        url: window.location.pathname + "/points",
+        data: "date=" + $(this).data('date')
+      });
+
+      request.done((res) => {
+        console.log("SUCCESS!!!! updatePoints")
+        console.log(res);
+      })
+
+      request.fail(e => {
+        console.log("SORRY! Could not get points for that day");
+        console.log(e)
+      })
+    }
+
+    function updateShow(e) {
+      const data = {
+        direction: $(this).attr('id'),
+        sunday: $('#sunday').data('date'),
+        monday: $('#monday').data('date')
       }
 
       $.ajax({url: window.location.pathname, data})
@@ -194,6 +211,7 @@ block footer-scripts
     });
 
     $('body').on('click', '.change-week', updateShow);
+    $('body').on('click', '#dates div', updatePoints);
     $('#calendarHead').on('click', '#dates div', getPoints);
     $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#addPoints', addPoints);

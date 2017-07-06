@@ -28,8 +28,9 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:familyName', (req, res) => {
-  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints, addPointsButtonDate, weekTBD = false;
-  var dates = req.xhr ? weekDates(req.query) : weekDates();
+  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints, addPointsButtonDate, dates, weekTBD = false;
+
+  dates = req.xhr ? weekDates(req.query) : weekDates();
   // current week is the week that it currently is according to today's date
   res.locals.currentChallenge.currentWeek = getWeekNumber(res.locals.currentChallenge.date.end, getToday());
   // week number is the week that the user has requested data for (based on left and right arrows)
@@ -68,7 +69,20 @@ router.get('/:familyName', (req, res) => {
       versingFamilyParticipations = versingFamilyParticipationsArray;
     }
     // the date that will be set on the add points button which will be used to determine which day the activity occurred
-    addPointsButtonDate = res.locals.currentChallenge.weekNumber == res.locals.currentChallenge.currentWeek ? getToday() : dates[6];
+    if (res.locals.currentChallenge.weekNumber == res.locals.currentChallenge.currentWeek) {
+      addPointsButtonDate = getToday();
+    } else {
+      if (req.query.direction == "previous") {
+        addPointsButtonDate = dates[6];
+      } else {
+        addPointsButtonDate = dates[0];
+      }
+    }
+
+    if (addPointsButtonDate > getToday()) {
+      addPointsButtonDate = undefined;
+    }
+
     var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
     return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
   })
@@ -111,6 +125,29 @@ router.get('/:familyName', (req, res) => {
   .catch(e => console.log(e));
 });
 
+router.get('/:familyName/points', (req, res) => {
+  let family, familyParticipations;
+  const date = new Date(req.query.date);
+  // current week is the week that it currently is according to today's date
+  res.locals.currentChallenge.currentWeek = getWeekNumber(res.locals.currentChallenge.date.end, getToday());
+  // week number is the week that the user has requested data for (based on left and right arrows)
+  res.locals.currentChallenge.weekNumber = getWeekNumber(res.locals.currentChallenge.date.end, date);
+
+  Family.findOne({name: req.params.familyName})
+  .then(family => {
+    return Participation.getParticipationForChallengeByFamily(res.locals.currentChallenge._id, family._id)
+  })
+  .then(familyParticipationsArray => {
+    familyParticipations = familyParticipationsArray;
+    addPointsButtonDate = date > getToday() ? undefined : date;
+    var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
+    return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
+  })
+  .then(() => {
+    res.render('families/_daily_points', {familyParticipations});
+  })
+})
+
 module.exports = router;
 
 // PRIVATE FUNCTIONS
@@ -139,9 +176,7 @@ function weekDates(weekInfo) {
   return dates;
 }
 
-function showPreviousWeek(challengeStartDate, monday) {
-  return challengeStartDate.toString() != monday.toString();
-}
+function showPreviousWeek(challengeStartDate, monday) {return challengeStartDate.toString() != monday.toString()};
 
 function showNextWeek(challengeEndDate, sunday) {
   var dateAfterSunday = new Date(sunday.getTime());
