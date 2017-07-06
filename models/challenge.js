@@ -99,7 +99,7 @@ challengeSchema.methods.generateSchedule = function() {
 
 		// use below line to better debug
 		// families = families.map(family => family.toObject());
-		
+
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -155,9 +155,12 @@ challengeSchema.methods.generateSchedule = function() {
 	    }
 	  });
 
-	  console.log(Object.keys(schedule))
+	  for (let i = 8; i < 10; i++) {
+	  	schedule["week" + i] = {};
+	  	families.forEach(family => schedule["week" + i][family.name] = {});
+	  }
+
 	  Object.keys(schedule).forEach(week => {
-	  	console.log(Object.keys(schedule[week]));
 	  	Object.keys(schedule[week]).forEach(contender => {
 	  		schedule[week][contender].status = "TBD";
 	  		schedule[week][contender].finalScore = "TBD";
@@ -175,7 +178,7 @@ challengeSchema.methods.getStandings = function() {
 	.then(families => {
 		let standings = families.map(family => {
 			let {Won: wins, Lost: losses, Tie: ties} = challenge.winCounts[family.name];
-			return {name: family.name, score: wins - losses, wins, losses, ties};
+			return {family, score: wins - losses, wins, losses, ties};
 		});
 		standings.sort((a,b) => b.score - a.score);
 		return standings;
@@ -185,17 +188,32 @@ challengeSchema.methods.getStandings = function() {
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
 	var currentChallenge = this;
-	var endTime = this.date.end;
-	var startTime = this.date.start.getTime();
-	var scheduleOptions = {start: startTime, end: endTime, hour: 0, minute: 0, second: 0, dayOfWeek: 1};
+
+	// set the start time to start on week 2 Monday
+	var startTime = new Date(this.date.start);
+	startTime.setDate(startTime.getDate() + 7);
+
+	// set the end time to end on week 10 Tuesday
+	var endTime = new Date(this.date.end);
+	endTime.setDate(endTime.getDate() + 1);
+
+	var scheduleOptions = {start: startTime, end: endTime, hour: 12, minute: 0, second: 0, dayOfWeek: 1};
+
 	// FOR TESTING, uncomment next five lines and change scheduleOptions to testSchedule options in schedule#scheduleJob
+	// ######## TESTING START ############
 	var testStartTime = new Date(Date.now() + 15000);
 	var today = new Date();
 	const minute = today.getMinutes() + 1;
 	const dayOfWeek = today.getDay();
 	var testScheduleOptions = {start: testStartTime, end: endTime, minute, dayOfWeek};
+	// ######## TESTING END ############
+
+	let counter = 1;
 
 	schedule.scheduleJob(testScheduleOptions, function() {
+		if (counter == 8) {
+
+		}
 		var week = "week" + getWeekNumber(currentChallenge.date.end);
 		var families = Object.keys(currentChallenge.schedule[week]);
 		var versingFamilyParticipations;
@@ -227,13 +245,21 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   			} else if (currentChallenge.schedule[week][family].finalScore - currentChallenge.schedule[week][family].versingFinalScore < 0) {
   				status = "Lost";
   			} else {
-  				status = "Won"; 
+  				status = "Won";
   			}
   			currentChallenge.schedule[week][family].status = status;
-  			if(currentChallenge.schedule[week][family].versingFamily.name == "Bye") {
-  				currentChallenge.winCounts[family]["Won"] += 1;	
+
+  			if (counter == 8 || counter == 9) {
+  				// Only add to the stats if you are in the playoffs
+  				if (currentChallenge.schedule[week][family].name != "Bye" && currentChallenge.schedule[week][family].versingFamily.name != "Bye") {
+  					currentChallenge.winCounts[family][status] += 1;
+  				}
   			} else {
-	  			currentChallenge.winCounts[family][status] += 1;
+	  			if (currentChallenge.schedule[week][family].versingFamily.name == "Bye") {
+	  				currentChallenge.winCounts[family]["Won"] += 1;
+	  			} else {
+		  			currentChallenge.winCounts[family][status] += 1;
+	  			}
   			}
   		});
   		currentChallenge.markModified('schedule');
@@ -241,8 +267,40 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   		return currentChallenge.save();
   	})
   	.then(() => {
-  		console.log("WORKER RAN!!!, Current Challenge Saved");
-  		console.log(currentChallenge.schedule);
+  		console.log("WORKER RAN!!!");
+  		counter++;
+  		if (counter == 7) {
+  			return challenge.getStandings()
+  			.then(standingsArray => {
+		  		let bye = standingsArray.find(standing => standing.family.name == "Bye");
+		  		challenge.schedule["week8"][standingsArray[0].family.name].versingFamily = standingsArray[3].family;
+		  		challenge.schedule["week8"][standingsArray[3].family.name].versingFamily = standingsArray[0].family;
+		  		challenge.schedule["week8"][standingsArray[1].family.name].versingFamily = standingsArray[2].family;
+		  		challenge.schedule["week8"][standingsArray[2].family.name].versingFamily = standingsArray[1].family;
+		  		standingsArray.slice(4).forEach(standing => {
+		  			challenge.schedule["week8"][standing.family.name].versingFamily = bye;
+		  			challenge.schedule["week8"]["Bye"] = standing.family;
+		  		});
+		  		challenge.markModified('schedule');
+		  		return challenge.save();
+  			})
+  		} else if (counter == 8) {
+  			return challenge.getStandings()
+  			.then(standingsArray => {
+		  		let bye = standingsArray.find(standing => standing.family.name == "Bye");
+		  		challenge.schedule["week9"][standingsArray[0].family.name].versingFamily = standingsArray[1].family;
+		  		challenge.schedule["week9"][standingsArray[1].family.name].versingFamily = standingsArray[0].family;
+		  		standingsArray.slice(2).forEach(standing => {
+		  			challenge.schedule["week9"][standing.family.name].versingFamily = bye;
+		  			challenge.schedule["week9"]["Bye"] = standing.family;
+		  		});
+		  		challenge.markModified('schedule');
+		  		return challenge.save();
+  			});
+  		}
+  	})
+  	.then(() => {
+  		console.log("Week 8 or Week 9 schedule has been updated!");
   	})
   	.catch(e => console.log("SCHEDULER FAILED BRO", e));
 	});
