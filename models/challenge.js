@@ -94,7 +94,8 @@ challengeSchema.methods.generateSchedule = function() {
 	var challenge = this;
 
 	return Family.find()
-	.then(families => {
+	.then(familiesA => {
+		let families = shuffleFamilies(familiesA);
 		challenge.generateInitialWinCounts(families);
 
 		// use below line to better debug
