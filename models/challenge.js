@@ -230,7 +230,11 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   				status = "Won"; 
   			}
   			currentChallenge.schedule[week][family].status = status;
-  			currentChallenge.winCounts[family][status] += 1;
+  			if(currentChallenge.schedule[week][family].versingFamily.name == "Bye") {
+  				currentChallenge.winCounts[family]["Won"] += 1;	
+  			} else {
+	  			currentChallenge.winCounts[family][status] += 1;
+  			}
   		});
   		currentChallenge.markModified('schedule');
   		currentChallenge.markModified('winCounts');
