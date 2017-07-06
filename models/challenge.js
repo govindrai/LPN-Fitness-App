@@ -41,6 +41,10 @@ var challengeSchema = new Schema({
 	},
 	jobs: {
 		type: Array
+	},
+	winCounts: {
+		type: Object,
+		required: true
 	}
 });
 
@@ -77,9 +81,21 @@ challengeSchema.statics.getAllExceptPastChallengesCount = () => {
 	return Challenge.find().where('date.end').gt(new Date()).count();
 };
 
-challengeSchema.methods.generateSchedule = () => {
+challengeSchema.methods.generateInitialWinCounts = function(families) {
+	var challenge = this;
+	challenge.winCounts = {};
+
+	families.forEach(family => {
+		challenge.winCounts[family.name] = { wins: 0, losses: 0, ties: 0 };
+	});
+};
+
+challengeSchema.methods.generateSchedule = function() {
+	var challenge = this;
+
 	return Family.find()
 	.then(families => {
+		challenge.generateInitialWinCounts(families);
 		// use below line to better debug
 		// families = families.map(family => family.toObject());
 		var schedule = {
@@ -150,6 +166,30 @@ challengeSchema.methods.generateSchedule = () => {
 	  return schedule;
 	});
 };
+
+// challengeSchema.statics.getStandings = (challenge, currentWeek) => {
+// 	Families.find()
+// 	.then(families => {
+// 		for (var i = 1; i < currentWeek; i++) {
+// 			families.forEach(family => {
+// 				if (challenge.schedule["week" + i][family.name].status == "Won") {
+// 					family.winCount = family.winCount ? family.winCount += 1 : 1;
+// 				} else if (challenge.schedule["week" + i][family.name].status == "Won") {
+
+// 				}
+// 				}
+// 			})
+			
+// 		}
+// 		challenge.schedule.forEach(week => {
+// 			week.forEach((team) => {
+// 				if(team.status == 'Won'){
+// 					team.winCount += 1; 
+// 				}
+// 			})
+// 		})
+// 	});
+// };
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
 	var currentChallenge = this;
@@ -237,10 +277,6 @@ function dateDiffInDays(a, b) {
   var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-}
-
-function standings() {
-	
 }
 
 function calculatePoints(familyTotalPoints, numOfParticipants) {
