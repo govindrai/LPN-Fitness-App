@@ -142,6 +142,7 @@ challengeSchema.methods.generateSchedule = () => {
 	  	console.log(Object.keys(schedule[week]));
 	  	Object.keys(schedule[week]).forEach(contender => {
 	  		schedule[week][contender].status = "TBD";
+	  		schedule[week][contender].winCount = 0;
 	  		schedule[week][contender].finalScore = "TBD";
 	  		schedule[week][contender].versingFinalScore = "TBD";
 	  	});
@@ -195,9 +196,12 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   			} else if (currentChallenge.schedule[week][family].finalScore - currentChallenge.schedule[week][family].versingFinalScore < 0) {
   				status = "Lost";
   			} else {
-  				status = "Won";
+  				status = "Won"; 
   			}
   			currentChallenge.schedule[week][family].status = status;
+  			if (status == "Won") {
+  				currentChallenge.schedule[week][family].winCount += 1; 
+  			}
   		});
   		currentChallenge.markModified('schedule');
   		return currentChallenge.save();
