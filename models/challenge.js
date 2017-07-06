@@ -189,33 +189,30 @@ challengeSchema.methods.getStandings = function() {
 };
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
-	var currentChallenge = this;
+	const currentChallenge = this;
 
 	// set the start time to start on week 2 Monday
-	var startTime = new Date(this.date.start);
+	const startTime = new Date(this.date.start);
 	startTime.setDate(startTime.getDate() + 7);
 
 	// set the end time to end on week 10 Tuesday
-	var endTime = new Date(this.date.end);
+	const endTime = new Date(this.date.end);
 	endTime.setDate(endTime.getDate() + 1);
 
-	var scheduleOptions = {start: startTime, end: endTime, hour: 12, minute: 0, second: 0, dayOfWeek: 1};
+	const scheduleOptions = {start: startTime, end: endTime, hour: 12, minute: 0, second: 0, dayOfWeek: 1};
 
-	// FOR TESTING, uncomment next five lines and change scheduleOptions to testSchedule options in schedule#scheduleJob
+	// FOR TESTING, comment/uncomment previous/next five lines and change scheduleOptions to testSchedule options in schedule#scheduleJob
 	// ######## TESTING START ############
-	var testStartTime = new Date(Date.now() + 15000);
-	var today = new Date();
-	const minute = today.getMinutes() + 1;
-	const dayOfWeek = today.getDay();
-	var testScheduleOptions = {start: testStartTime, end: endTime, minute, dayOfWeek};
+	// const startTime = new Date(Date.now() + 15000);
+	// const today = new Date();
+	// const minute = today.getMinutes() + 1;
+	// const dayOfWeek = today.getDay();
+	// var scheduleOptions = {start: startTime, end: endTime, minute, dayOfWeek};
 	// ######## TESTING END ############
 
 	let counter = 1;
 
-	schedule.scheduleJob(testScheduleOptions, function() {
-		if (counter == 8) {
-
-		}
+	schedule.scheduleJob(scheduleOptions, function() {
 		var week = "week" + getWeekNumber(currentChallenge.date.end);
 		var families = Object.keys(currentChallenge.schedule[week]);
 		var versingFamilyParticipations;
