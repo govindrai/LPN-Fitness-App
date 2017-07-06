@@ -86,7 +86,7 @@ challengeSchema.methods.generateInitialWinCounts = function(families) {
 	challenge.winCounts = {};
 
 	families.forEach(family => {
-		challenge.winCounts[family.name] = { wins: 0, losses: 0, ties: 0 };
+		challenge.winCounts[family.name] = { Won: 0, Lost: 0, Tie: 0 };
 	});
 };
 
@@ -96,8 +96,10 @@ challengeSchema.methods.generateSchedule = function() {
 	return Family.find()
 	.then(families => {
 		challenge.generateInitialWinCounts(families);
+
 		// use below line to better debug
 		// families = families.map(family => family.toObject());
+		
 		var schedule = {
 	    week1: {},
 	    week2: {},
@@ -167,29 +169,19 @@ challengeSchema.methods.generateSchedule = function() {
 	});
 };
 
-// challengeSchema.statics.getStandings = (challenge, currentWeek) => {
-// 	Families.find()
-// 	.then(families => {
-// 		for (var i = 1; i < currentWeek; i++) {
-// 			families.forEach(family => {
-// 				if (challenge.schedule["week" + i][family.name].status == "Won") {
-// 					family.winCount = family.winCount ? family.winCount += 1 : 1;
-// 				} else if (challenge.schedule["week" + i][family.name].status == "Won") {
-
-// 				}
-// 				}
-// 			})
-			
-// 		}
-// 		challenge.schedule.forEach(week => {
-// 			week.forEach((team) => {
-// 				if(team.status == 'Won'){
-// 					team.winCount += 1; 
-// 				}
-// 			})
-// 		})
-// 	});
-// };
+challengeSchema.methods.getStandings = function() {
+	const challenge = this;
+	return Family.find().select('name')
+	.then(families => {
+		let standings = families.map(family => {
+			let {Won: wins, Lost: losses, Tie: ties} = challenge.winCounts[family.name];
+			return {name: family.name, score: wins - losses, wins, losses, ties};
+		});
+		standings.sort((a,b) => b.score - a.score);
+		return standings;
+	})
+	.catch(e => console.log("Error in getStandings", e));
+};
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
 	var currentChallenge = this;
@@ -238,8 +230,10 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   				status = "Won"; 
   			}
   			currentChallenge.schedule[week][family].status = status;
+  			currentChallenge.winCounts[family][status] += 1;
   		});
   		currentChallenge.markModified('schedule');
+  		currentChallenge.markModified('winCounts');
   		return currentChallenge.save();
   	})
   	.then(() => {

@@ -1,4 +1,24 @@
-h1 Standings
+include ../layout
 
-The top 4 teams will make it to the playoffs!
+block content
+	h1 Standings
+
+	h2 The top 4 teams will make it to the playoffs!
+
+	table
+			thead
+				tr
+					td Family Name
+					td Wins
+					td Losses
+					td Ties
+			tbody
+			each standing in standingsArray
+				tr
+					td= standing.name
+					td= standing.wins
+					td= standing.losses
+					td= standing.ties
+
+
 
