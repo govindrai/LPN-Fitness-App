@@ -153,16 +153,15 @@ challengeSchema.methods.generateSchedule = () => {
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
 	var currentChallenge = this;
+	var endTime = this.date.end;
 	var startTime = this.date.start.getTime();
 	var scheduleOptions = {start: startTime, end: endTime, hour: 0, minute: 0, second: 0, dayOfWeek: 1};
-	// FOR TESTING, uncomment next two lines
+	// FOR TESTING, uncomment next five lines and change scheduleOptions to testSchedule options in schedule#scheduleJob
 	var testStartTime = new Date(Date.now() + 15000);
-	var minute = new Date();
-	minute = minute.getMinutes() + 1;
-	var testScheduleOptions = {start: testStartTime, end: endTime, minute: minute, dayOfWeek: 5};
-
-	var endTime = this.date.end;
-
+	var today = new Date();
+	const minute = today.getMinutes() + 1;
+	const dayOfWeek = today.getDay();
+	var testScheduleOptions = {start: testStartTime, end: endTime, minute, dayOfWeek};
 
 	schedule.scheduleJob(testScheduleOptions, function() {
 		var week = "week" + getWeekNumber(currentChallenge.date.end);
@@ -198,7 +197,6 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   			} else {
   				status = "Won";
   			}
-
   			currentChallenge.schedule[week][family].status = status;
   		});
   		currentChallenge.markModified('schedule');
@@ -212,19 +210,11 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
 	});
 };
 
-
-// let startTime = new Date(Date.now() + 5000);
-// let endTime = new Date(startTime.getTime() + 5000);
-// var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/1 * * * * *' }, function(){
-//   console.log('Time for tea!');
-// });
-
 var Challenge = mongoose.model('Challenge', challengeSchema);
 
 module.exports = Challenge;
 
 // Private Helper Functions
-
 function getChallengeEndDate(startDate) {
 	var date = new Date(startDate.getTime());
 	date.setDate(startDate.getDate() + 63);

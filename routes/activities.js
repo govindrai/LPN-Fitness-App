@@ -1,11 +1,17 @@
-var express = require('express'),
+// Modules
+const express = require('express'),
 	pug = require('pug');
 
-var Activity = require('./../models/activity'),
+// Models
+const Activity = require('./../models/activity'),
 	Unit = require('./../models/unit');
 
-var router = express.Router();
+// Middleware
+const isAdmin = require('./../middleware/isAdmin');
 
+const router = express.Router();
+
+// GET list all activities
 router.get('/', (req, res) => {
 	if (req.xhr) {
 		Activity.find({})
@@ -26,8 +32,8 @@ router.get('/', (req, res) => {
 	}
 });
 
-// GET all activities
-router.get('/new', (req, res) => {
+// GET new activity form
+router.get('/new', isAdmin, (req, res) => {
 	Unit.find({}).then((units) => {
 		Activity.find({}).populate('unit').then((activities) => {
 			console.log(activities);

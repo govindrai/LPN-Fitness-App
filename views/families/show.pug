@@ -4,18 +4,26 @@ append head-scripts
   include ../partials/jqueryui
   script(src="/libs/typeahead.bundle.min.js")
 
-
 block content
   div#showBody
     include ./_show_body
 
 block footer-scripts
   script.
-    function updateShow() {
-      var data = {
-          direction: $(this).attr('id'),
-          sunday: $('#sunday').data('date'),
-          monday: $('#monday').data('date')
+    function updatePoints(e) {
+      $.ajax({
+        url: window.location.pathname + "/points",
+        data: "date=" + $(this).data('date')
+      })
+      .done(res => $("#dailyPoints").replaceWith(res))
+      .fail(() => console.log("updatePoints failed"));
+    }
+
+    function updateShow(e) {
+      const data = {
+        direction: $(this).attr('id'),
+        sunday: $('#sunday').data('date'),
+        monday: $('#monday').data('date')
       }
 
       $.ajax({url: window.location.pathname, data})
@@ -56,20 +64,6 @@ block footer-scripts
       });
 
       request.fail(e => console.log(e))
-    }
-
-    function getPoints(e) {
-      var data = {
-        date: $(this).data('date'),
-        familyName: window.location.pathname.slice(10)
-      };
-
-      $.ajax({
-        url: "/points", 
-        data
-      })
-      .done(res => $("#dailyPoints").replaceWith(res))
-      .fail(res => console.log(res));
     }
 
     var typeaheadElements;
@@ -195,7 +189,7 @@ block footer-scripts
     });
 
     $('body').on('click', '.change-week', updateShow);
-    $('#calendarHead').on('click', '#dates div', getPoints);
+    $('body').on('click', '#dates div', updatePoints);
     $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#addPoints', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);

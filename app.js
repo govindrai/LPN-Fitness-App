@@ -22,7 +22,8 @@ var index = require('./routes/index'),
   challenges = require('./routes/challenges'),
   account = require('./routes/account'),
   points = require('./routes/points'),
-  participations = require('./routes/participations');
+  participations = require('./routes/participations'),
+  standings = require('./routes/standings');
 
 // Models
 var Family = require('./models/family'),
@@ -33,7 +34,6 @@ var verifyAuthorization = require('./middleware/verifyAuthorization');
 
 // Create Express App
 var app = express();
-
 
 // Setup View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -77,6 +77,7 @@ app.use('/challenges', challenges);
 app.use('/account', account);
 app.use('/points', points);
 app.use('/participations', participations);
+app.use('/standings', standings);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
