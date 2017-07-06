@@ -79,7 +79,8 @@ router.get('/:familyName', (req, res) => {
       }
     }
 
-    displayAddPointsButton = addPointsButtonDate > getToday() ? false : true;
+    displayAddPointsButton = addPointsButtonDate > getToday() || res.locals.currentChallenge.currentWeek > res.locals.currentChallenge.weekNumber ? false : true;
+    // check if week is not current week.
 
     var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
     return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
