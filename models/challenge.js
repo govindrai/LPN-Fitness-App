@@ -109,6 +109,7 @@ challengeSchema.methods.generateSchedule = function() {
 	    week6: {},
 	    week7: {}
 	  };
+
 	  families.forEach((family, index) => {
 	    var newFamilies = families.filter(newFamily => newFamily.name != family.name);
 	    var week = 1;
@@ -275,6 +276,19 @@ function dateDiffInDays(a, b) {
   var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+function shuffleFamilies(familiesArray) {
+	var m = familiesArray.length, t, i;
+	while (m) {
+		i = Math.floor(Math.random() * m--);
+
+		t = familiesArray[m];
+		familiesArray[m] = familiesArray[i];
+		familiesArray[i] = t;
+	}
+
+	return familiesArray;
 }
 
 function calculatePoints(familyTotalPoints, numOfParticipants) {
