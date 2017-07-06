@@ -79,8 +79,16 @@ router.get('/:familyName', (req, res) => {
       }
     }
 
-    displayAddPointsButton = addPointsButtonDate > getToday() || res.locals.currentChallenge.currentWeek > res.locals.currentChallenge.weekNumber ? false : true;
-    // check if week is not current week.
+    if (addPointsButtonDate > getToday()) {
+      displayAddPointsButton = false;
+    } else if (res.locals.currentChallenge.currentWeek > res.locals.currentChallenge.weekNumber) {
+      const now = new Date();
+      if (now.getHours() >= 12 && now.getMilliseconds() > 0) {
+        displayAddPointsButton = false;
+      }
+    } else {
+      displayAddPointsButton = true;
+    }
 
     var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
     return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
