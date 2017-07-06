@@ -142,7 +142,6 @@ challengeSchema.methods.generateSchedule = () => {
 	  	console.log(Object.keys(schedule[week]));
 	  	Object.keys(schedule[week]).forEach(contender => {
 	  		schedule[week][contender].status = "TBD";
-	  		schedule[week][contender].winCount = 0;
 	  		schedule[week][contender].finalScore = "TBD";
 	  		schedule[week][contender].versingFinalScore = "TBD";
 	  	});
@@ -199,9 +198,6 @@ challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {
   				status = "Won"; 
   			}
   			currentChallenge.schedule[week][family].status = status;
-  			if (status == "Won") {
-  				currentChallenge.schedule[week][family].winCount += 1; 
-  			}
   		});
   		currentChallenge.markModified('schedule');
   		return currentChallenge.save();
@@ -241,6 +237,10 @@ function dateDiffInDays(a, b) {
   var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+function standings() {
+	
 }
 
 function calculatePoints(familyTotalPoints, numOfParticipants) {
