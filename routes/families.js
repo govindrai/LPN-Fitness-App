@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:familyName', (req, res) => {
-  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints, addPointsButtonDate, dates, weekTBD = false;
+  var family, versingFamily, familyParticipations, versingFamilyParticipations, totalPoints, versingTotalPoints, addPointsButtonDate, dates, displayAddPointsButton, weekTBD = false;
 
   dates = req.xhr ? weekDates(req.query) : weekDates();
   // current week is the week that it currently is according to today's date
@@ -79,9 +79,7 @@ router.get('/:familyName', (req, res) => {
       }
     }
 
-    if (addPointsButtonDate > getToday()) {
-      addPointsButtonDate = undefined;
-    }
+    displayAddPointsButton = addPointsButtonDate > getToday() ? false : true;
 
     var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
     return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
@@ -114,7 +112,7 @@ router.get('/:familyName', (req, res) => {
     // check whether or not to show next/previous week buttons
     var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
       showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
-      options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext, addPointsButtonDate, weekTBD};
+      options = {currentChallenge: res.locals.currentChallenge, dates, family, versingFamily, familyParticipations, showPrevious, showNext, addPointsButtonDate, displayAddPointsButton, weekTBD};
 
     if (req.xhr) {
       res.render("families/_show_body", options);
@@ -126,7 +124,7 @@ router.get('/:familyName', (req, res) => {
 });
 
 router.get('/:familyName/points', (req, res) => {
-  let family, familyParticipations;
+  let family, familyParticipations, displayAddPointsButton;
   const date = new Date(req.query.date);
   // current week is the week that it currently is according to today's date
   res.locals.currentChallenge.currentWeek = getWeekNumber(res.locals.currentChallenge.date.end, getToday());
@@ -139,14 +137,17 @@ router.get('/:familyName/points', (req, res) => {
   })
   .then(familyParticipationsArray => {
     familyParticipations = familyParticipationsArray;
-    addPointsButtonDate = date > getToday() ? undefined : date;
+
+    displayAddPointsButton = date > getToday() ? false : true;
+    addPointsButtonDate = date;
     var user = req.params.familyName == res.locals.user.family.name ? res.locals.user : undefined;
     return Point.getPointsForParticipationsByDay(familyParticipations, addPointsButtonDate, user);
   })
   .then(() => {
-    res.render('families/_daily_points', {familyParticipations});
+    res.render('families/_daily_points', {familyParticipations, displayAddPointsButton});
   })
-})
+  .catch(e => console.log(e));
+});
 
 module.exports = router;
 

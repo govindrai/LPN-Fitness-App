@@ -8,7 +8,7 @@ div#dailyPoints
 		//- p= "Lifetime Points: " + participation.user.lifetimePoints
 		//- p= `Points For Week: ${participation.totalPoints}`
 		p= "Today's Total: " + participation.totalDailyPoints
-		if participation.user._id.toString() == user._id.toString() && addPointsButtonDate
+		if participation.user._id.toString() == user._id.toString() && displayAddPointsButton
 			div#pointsBody
 			button#addPoints(data-date=addPointsButtonDate) Add Points
 

@@ -11,20 +11,12 @@ block content
 block footer-scripts
   script.
     function updatePoints(e) {
-      let request = $.ajax({
+      $.ajax({
         url: window.location.pathname + "/points",
         data: "date=" + $(this).data('date')
-      });
-
-      request.done((res) => {
-        console.log("SUCCESS!!!! updatePoints")
-        console.log(res);
       })
-
-      request.fail(e => {
-        console.log("SORRY! Could not get points for that day");
-        console.log(e)
-      })
+      .done(res => $("#dailyPoints").replaceWith(res))
+      .fail(() => console.log("updatePoints failed"));
     }
 
     function updateShow(e) {
@@ -72,20 +64,6 @@ block footer-scripts
       });
 
       request.fail(e => console.log(e))
-    }
-
-    function getPoints(e) {
-      var data = {
-        date: $(this).data('date'),
-        familyName: window.location.pathname.slice(10)
-      };
-
-      $.ajax({
-        url: "/points",
-        data
-      })
-      .done(res => $("#dailyPoints").replaceWith(res))
-      .fail(res => console.log(res));
     }
 
     var typeaheadElements;
@@ -212,7 +190,6 @@ block footer-scripts
 
     $('body').on('click', '.change-week', updateShow);
     $('body').on('click', '#dates div', updatePoints);
-    $('#calendarHead').on('click', '#dates div', getPoints);
     $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#addPoints', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);
