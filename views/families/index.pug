@@ -24,7 +24,7 @@ block content
           td
             a(href=`families/${family.name}`)= `${family.name} Page`
 
-block footer-scripts
+append footer-scripts
   script.
     $(document).ready(() => {
       var el = $("#familyAddedMessage");

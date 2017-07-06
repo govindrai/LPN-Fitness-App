@@ -13,32 +13,36 @@ html
     nav
       div#logo.col-3 LPN Fitness Challenge
       div#navLinks.col-9
-        ul
-          if !loggedIn
-            li
-              a(href="/") Home
-            li
-              a(href="/login") Login
-          else
-            li
-              a(href=home) Home
-            li
-              a(href="/families") Families
-            li
-              a(href="/challenges")= `Challenges (${challengeCount})`
-            li
-              a(href="/activities") Activities
-            li
-              a(href="/schedule") Schedule
-            li
-              a(href="/standings") Standings
-            li
-              a(href="/rules") Rules
-            li
-              a(href="/account") Account
-            li
-              a(href="/logout") Logout
+        if !loggedIn
+          a(href="/") Home
+          a(href="/login") Login
+        else
+          a(href=home) Home
+          - var families = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
+          div#subMenu
+            a(href="#") Families &darr;
+            nav#dropDown
+              each family in families
+                a(href="/families/" + family)= family
+          a(href="/challenges")= `Challenges (${challengeCount})`
+          a(href="/activities") Activities
+          a(href="/schedule") Schedule
+          a(href="/standings") Standings
+          a(href="/rules") Rules
+          a(href="/account") Account
+          a(href="/logout") Logout
 
     block content
 
     block footer-scripts
+      script.
+        $(document).ready(() => {
+          $("#subMenu").on(
+          "mouseover", "click",
+          () => {
+            $("#dropDown").slideToggle();
+          },
+          () => {
+            $("#dropDown").slideToggle();
+          });
+        })

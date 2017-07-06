@@ -8,7 +8,7 @@ block content
   div#showBody
     include ./_show_body
 
-block footer-scripts
+append footer-scripts
   script.
     function updatePoints(e) {
       $.ajax({

@@ -78,15 +78,33 @@ nav {
   text-align: right;
 }
 
-#navLinks ul {
-  list-style: none;
+#navLinks a {
+  display: inline-block;
+  margin: 15px 0 15px 15px;
 }
 
-#navLinks li {
+#navLinks a:not(:last-child) {
+  margin-right: 15px;
+}
+
+
+#subMenu {
+  position: relative;
   display: inline-block;
 }
 
-#navLinks li:not(:last-child) {
-  padding-right: 15px;
+#dropDown {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+
+}
+
+#subMenu #dropDown a {
+  margin: 15px;
+}
+
+#subMenu:hover #dropDown {
+  display: flex;
 }
 /*# sourceMappingURL=style.css.map */
