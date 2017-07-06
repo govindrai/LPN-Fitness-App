@@ -1,13 +1,16 @@
 // Modules
-var express = require('express'),
+const express = require('express'),
 	_ = require('lodash');
 
 // Models
-var Challenge = require('./../models/challenge'),
+const Challenge = require('./../models/challenge'),
 	Family = require('./../models/family'),
 	Participation = require('./../models/participation');
 
-var router = express.Router();
+// Middleware
+const isAdmin = require('./../middleware/isAdmin');
+
+const	router = express.Router();
 
 // GET list all challenges
 router.get('/', (req, res) => {
@@ -42,7 +45,7 @@ router.get('/', (req, res) => {
 });
 
 // Create Challenge Form
-router.get('/new', (req, res) => {
+router.get('/new', isAdmin, (req, res) => {
 	res.render('challenges/new');
 });
 
