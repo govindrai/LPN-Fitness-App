@@ -1,5 +1,5 @@
 * {
-  box-sizing: border-border; }
+  box-sizing: border-box; }
 
 [class*="col-"] {
   float: left;
@@ -44,9 +44,9 @@
 
 body {
   margin: auto;
-  padding: 50px;
   width: 1190px;
-    width-font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
 
 a {
   color: #00B7FF; }
@@ -65,4 +65,28 @@ input, select {
 #weekdays div, #dates div {
   width: 14%; }
 
+nav {
+  display: flex;
+  align-items: center;
+}
+
+#logo {
+  text-align: left;
+}
+
+#navLinks {
+  text-align: right;
+}
+
+#navLinks ul {
+  list-style: none;
+}
+
+#navLinks li {
+  display: inline-block;
+}
+
+#navLinks li:not(:last-child) {
+  padding-right: 15px;
+}
 /*# sourceMappingURL=style.css.map */

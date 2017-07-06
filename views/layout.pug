@@ -11,32 +11,33 @@ html
 
   body
     nav
-      div LPN Fitness Challenge
-      div
-        if !loggedIn
-          li
-            a(href="/") Home
-          li
-            a(href="/login") Login
-        else
-          li
-            a(href=home) Home
-          li
-            a(href="/families") Families
-          li
-            a(href="/challenges")= `Challenges (${challengeCount})`
-          li
-            a(href="/activities") Activities
-          li
-            a(href="/schedule") Schedule
-          li
-            a(href="/standings") Standings
-          li
-            a(href="/rules") Rules
-          li
-            a(href="/account") Account
-          li
-            a(href="/logout") Logout
+      div#logo.col-3 LPN Fitness Challenge
+      div#navLinks.col-9
+        ul
+          if !loggedIn
+            li
+              a(href="/") Home
+            li
+              a(href="/login") Login
+          else
+            li
+              a(href=home) Home
+            li
+              a(href="/families") Families
+            li
+              a(href="/challenges")= `Challenges (${challengeCount})`
+            li
+              a(href="/activities") Activities
+            li
+              a(href="/schedule") Schedule
+            li
+              a(href="/standings") Standings
+            li
+              a(href="/rules") Rules
+            li
+              a(href="/account") Account
+            li
+              a(href="/logout") Logout
 
     block content
 
