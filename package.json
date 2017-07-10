@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "nodemon": "nodemon ./bin/www -e .js",
     "redis": "~/redis-3.2.9/src/redis-server",
-    "test": "mocha **/*.test.js",
+    "test": "mocha *.test.js",
     "test-watch": "nodemon --exec \"npm test\""
   },
   "dependencies": {
