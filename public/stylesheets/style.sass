@@ -1,3 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700')
+
+$opensans: "Open Sans", sans-serif
+$topaz: #f2cd46
+$sunstone: #faa152
+$ruby: #f83b54
+$alexandrite: #cb51d7
+$iolite: #6456f8
+$sapphire: #3b8df8
+$emerald: #24ab60
+
 *
   box-sizing: border-border
 
@@ -32,16 +43,16 @@
   width: 100%
 
 body
-	margin: auto
-	padding: 50px
-	width: 1190px
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
+  margin: auto
+  padding: 50px
+  font: 14px $opensans
+  max-width: 400px
 
 a
   color: #00B7FF
 
 input, select
-	display: block
+  display: block
 
 #calendarHead
   text-align: center
@@ -53,3 +64,21 @@ input, select
 
 #weekdays div, #dates div
   width: 14%
+
+#mobile 
+  text-align: right
+  margin-bottom: 24px
+
+
+.switch-weeks
+  display: flex
+  justify-content: space-between
+  margin-bottom: 32px
+
+.change-week
+  font-family: OpenSans;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.43;
+  text-align: left;
+  color: #a0a3a8;

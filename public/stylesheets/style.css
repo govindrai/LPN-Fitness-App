@@ -1,5 +1,6 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
 * {
-  box-sizing: border-box; }
+  box-sizing: border-border; }
 
 [class*="col-"] {
   float: left;
@@ -44,9 +45,9 @@
 
 body {
   margin: auto;
-  width: 1190px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+  padding: 50px;
+  font: 14px "Open Sans", sans-serif;
+  max-width: 400px; }
 
 a {
   color: #00B7FF; }
@@ -65,46 +66,21 @@ input, select {
 #weekdays div, #dates div {
   width: 14%; }
 
-nav {
-  display: flex;
-  align-items: center;
-}
-
-#logo {
-  text-align: left;
-}
-
-#navLinks {
+#mobile {
   text-align: right;
-}
+  margin-bottom: 24px; }
 
-#navLinks a {
-  display: inline-block;
-  margin: 15px 0 15px 15px;
-}
-
-#navLinks a:not(:last-child) {
-  margin-right: 15px;
-}
-
-
-#subMenu {
-  position: relative;
-  display: inline-block;
-}
-
-#dropDown {
-  position: absolute;
-  display: none;
-  flex-direction: column;
-
-}
-
-#subMenu #dropDown a {
-  margin: 15px;
-}
-
-#subMenu:hover #dropDown {
+.switch-weeks {
   display: flex;
-}
+  justify-content: space-between;
+  margin-bottom: 32px; }
+
+.change-week {
+  font-family: OpenSans;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.43;
+  text-align: left;
+  color: #a0a3a8; }
+
 /*# sourceMappingURL=style.css.map */
