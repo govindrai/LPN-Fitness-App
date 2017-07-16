@@ -15,32 +15,32 @@ function verifyAuthorization(req, res, next) {
   if (_.includes(exemptPaths, req.path)) {
     next();
   } else {
-    if (!req.session["x-auth"]) {
+    if (!req.session['x-auth']) {
       if (req.path == '/') {
         next();
       } else {
         res.render('sessions/unauthorized');
       }
     } else {
-      res.locals.token = req.session["x-auth"];
+      res.locals.token = req.session['x-auth'];
       User.decodeAuthorizationToken(res.locals.token)
-      .then(user => {
-        if (!user) res.status(404).send('UNAUTHORIZED.');
-        res.locals.home = '/families/' + user.family.name;
-        if (req.path == '/') res.redirect(res.locals.home);
-        res.locals.loggedIn = true; //actually don't need this; can just check for user
-        res.locals.user = user;
-        return user.getRegisterableChallengesCount();
-      })
-      .then(challengeCount => {
-        res.locals.challengeCount = challengeCount;
-        return Challenge.getCurrentChallenge();
-      })
-      .then(currentChallenge => {
-        res.locals.currentChallenge = currentChallenge;
-        next();
-      })
-      .catch(e => console.log(e));
+        .then(user => {
+          if (!user) res.status(404).send('UNAUTHORIZED.');
+          res.locals.home = '/families/' + user.family.name;
+          if (req.path == '/') res.redirect(res.locals.home);
+          res.locals.loggedIn = true; //actually don't need this; can just check for user
+          res.locals.user = user;
+          return user.getRegisterableChallengesCount();
+        })
+        .then(challengeCount => {
+          res.locals.challengeCount = challengeCount;
+          return Challenge.getCurrentChallenge();
+        })
+        .then(currentChallenge => {
+          res.locals.currentChallenge = currentChallenge;
+          next();
+        })
+        .catch(e => console.log(e));
     }
   }
 }

@@ -17,18 +17,23 @@ var participationSchema = new Schema({
 // add a participation attribute set to true for challenge objects
 // if user participates in challenges
 participationSchema.statics.setUserParticipationForChallenges = function(user, challenges) {
-  return Promise.all(challenges.map(challenge => {
-    return Participation.findOne({user, challenge}).then(result => {
-      if (result) challenge.participation = true;
-    });
-  }));
+  return Promise.all(
+    challenges.map(challenge => {
+      return Participation.findOne({ user, challenge }).then(result => {
+        if (result) challenge.participation = true;
+      });
+    })
+  );
 };
 
 // returns participation objs for a certain challenge and family
 participationSchema.statics.getParticipationForChallengeByFamily = function(challengeId, familyId) {
-  return Participation.find({challenge: challengeId}).populate('user')
-  .then(participations => participations.filter(participation => participation.user.family.toString() == familyId.toString()))
-  .catch(e => console.log("Error in getParticipationForChallengeByFamily", e));
+  return Participation.find({ challenge: challengeId })
+    .populate('user')
+    .then(participations =>
+      participations.filter(participation => participation.user.family.toString() == familyId.toString())
+    )
+    .catch(e => console.log('Error in getParticipationForChallengeByFamily', e));
 };
 
 var Participation = mongoose.model('Participations', participationSchema);
