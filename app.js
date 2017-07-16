@@ -102,4 +102,4 @@ client.on('connect', function() {
 });
 
 
-module.exports = app;
+module.exports.app = app;
