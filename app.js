@@ -105,4 +105,4 @@ client.on('connect', function() {
   console.log('connected to redis client');
 });
 
-module.exports.app = app;
+module.exports = app;
