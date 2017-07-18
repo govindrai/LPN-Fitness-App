@@ -6,7 +6,7 @@ h1 My Profile
 
 include ./_edit_form
 
-block footer-scripts
+append footer-scripts
 	script.
 		$("body").on("submit", "#editProfile", function(e) {
 			e.preventDefault();

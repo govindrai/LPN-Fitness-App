@@ -10,7 +10,7 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  // sassMiddleware = require('node-sass-middleware'),
+  sassMiddleware = require('node-sass-middleware'),
   mongoose = require('./db/mongoose');
 
 // Routers
@@ -48,20 +48,24 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({
-  store: new RedisStore(),
-  resave: false,
-  saveUninitialized: false,
-  cookie: {maxAge: 7776000000},
-  secret: 'secret'
-}));
+app.use(
+  session({
+    store: new RedisStore(),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 7776000000 },
+    secret: 'secret'
+  })
+);
 
-// app.use(sassMiddleware({
-//   src: path.join(__dirname, 'public'),
-//   dest: path.join(__dirname, 'public'),
-//   indentedSyntax: true, // true = .sass and false = .scss
-//   sourceMap: true
-// }));
+app.use(
+  sassMiddleware({
+    src: path.join(__dirname, 'public'),
+    dest: path.join(__dirname, 'public'),
+    indentedSyntax: true, // true = .sass and false = .scss
+    sourceMap: true
+  })
+);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/')));
@@ -98,8 +102,7 @@ app.use(function(err, req, res, next) {
 });
 
 client.on('connect', function() {
-    console.log('connected to redis client');
+  console.log('connected to redis client');
 });
 
-
-module.exports.app = app;
+module.exports = app;

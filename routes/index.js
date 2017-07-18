@@ -12,10 +12,10 @@ var router = express.Router();
 router.get('/', (req, res) => {
   // Need families for registration form
   Family.find()
-  .then(families => {
-    res.render('index', {families, user: new User()});
-  })
-  .catch(e => console.log(e));
+    .then(families => {
+      res.render('index', { families, user: new User() });
+    })
+    .catch(e => console.log(e));
 });
 
 // GET login form
@@ -25,77 +25,72 @@ router.get('/login', (req, res) => res.render('sessions/login'));
 router.post('/login', (req, res) => {
   var user;
 
-  User.findOne({email: req.body.email})
-  .then(userObj => {
-    user = userObj;
-    return user.authenticate(req.body.password);
-  })
-  .then(res => {
-    if (!res) return Promise.reject("Username/Password Incorrect");
-    return user.generateAuthorizationToken();
-  })
-  .then(() => {
-    req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
-    res.redirect(`/families/${user.family.name}`);
-  })
-  .catch(error => res.render('sessions/login', {error}));
+  User.findOne({ email: req.body.email })
+    .then(userObj => {
+      user = userObj;
+      return user.authenticate(req.body.password);
+    })
+    .then(res => {
+      if (!res) return Promise.reject('Username/Password Incorrect');
+      return user.generateAuthorizationToken();
+    })
+    .then(() => {
+      req.session['x-auth'] = user.tokens[user.tokens.length - 1].token;
+      res.redirect(`/families/${user.family.name}`);
+    })
+    .catch(error => res.render('sessions/login', { error }));
 });
 
 // Register
 router.post('/register', (req, res) => {
-  var body = _.pick(req.body, [
-    'name.first',
-    'name.last',
-    'name.nickname',
-    'email',
-    'family',
-    'password'
-  ]);
+  var body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'family', 'password']);
 
   var user = new User(body);
 
-  user.save()
-  .then(() => {
-    return user.generateAuthorizationToken();
-  })
-  .then(() => {
-    return user.populate('family').execPopulate();
-  })
-  .then(() => {
-    req.session["x-auth"] = user.tokens[0].token;
-    res.redirect(`/families/${user.family.name}`);
-  })
-  .catch(e => {
-    if (body.family === 'Please Select') {
-      e.errors.family.message = "Please select a family";
-    }
-    Family.find()
-    .then(families => {
-      res.render('index', {families, errors: e.errors, user});
+  user
+    .save()
+    .then(() => {
+      return user.generateAuthorizationToken();
     })
-    .catch(e => console.log(e.errors));
-  });
+    .then(() => {
+      return user.populate('family').execPopulate();
+    })
+    .then(() => {
+      req.session['x-auth'] = user.tokens[0].token;
+      res.redirect(`/families/${user.family.name}`);
+    })
+    .catch(e => {
+      if (body.family === 'Please Select') {
+        e.errors.family.message = 'Please select a family';
+      }
+      Family.find()
+        .then(families => {
+          res.render('index', { families, errors: e.errors, user });
+        })
+        .catch(e => console.log(e.errors));
+    });
 });
 
 // Logout (Remove JWT from user, then redirect to Home)
 router.get('/logout', (req, res) => {
-  res.locals.user.tokens.pull({access: "auth", token: res.locals.token});
-  res.locals.user.save()
-  .then(user => {
-    req.session.destroy(err => {
-      if (err) console.log(err, "Session could not be destroyed");
-      res.redirect('/');
-    });
-  })
-  .catch(e => console.log(e));
+  res.locals.user.tokens.pull({ access: 'auth', token: res.locals.token });
+  res.locals.user
+    .save()
+    .then(user => {
+      req.session.destroy(err => {
+        if (err) console.log(err, 'Session could not be destroyed');
+        res.redirect('/');
+      });
+    })
+    .catch(e => console.log(e));
 });
 
 router.get('/schedule', (req, res) => {
   Family.find()
-  .then(families => {
-    res.render('challenges/schedule', {families});
-  })
-  .catch(e => console.log(e));
+    .then(families => {
+      res.render('challenges/schedule', { families });
+    })
+    .catch(e => console.log(e));
 });
 
 // GET rules page

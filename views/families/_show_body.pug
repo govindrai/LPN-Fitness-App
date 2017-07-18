@@ -1,3 +1,9 @@
+div.col-12.switch-weeks
+  if showPrevious
+    #previous.change-week &larr; Previous Week
+  if showNext
+    #next.change-week Next Week &rarr; 
+
 h1= family.name
 h2.
   Week #[span.weekNumber= currentChallenge.weekNumber] score: #[=family.totalPoints]

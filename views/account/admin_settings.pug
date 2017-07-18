@@ -40,7 +40,7 @@ block content
 					td
 						input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
 
-block footer-scripts
+append footer-scripts
 	script.
 		function changeAdmin(e) {
 			var input = $(this);
