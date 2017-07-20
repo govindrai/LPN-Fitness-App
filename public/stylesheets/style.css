@@ -1,104 +1,81 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i");
 * {
-  box-sizing: border-border;
-}
+  box-sizing: border-box;
+  outline: none; }
 
 [class*="col-"] {
   float: left;
   padding: 15px;
-  border: 1px solid red;
-}
+  border: 1px solid red; }
 
 .col-1 {
-  width: 8.33%;
-}
+  width: 8.33%; }
 
 .col-2 {
-  width: 16.66%;
-}
+  width: 16.66%; }
 
 .col-3 {
-  width: 25%;
-}
+  width: 25%; }
 
 .col-4 {
-  width: 33.33%;
-}
+  width: 33.33%; }
 
 .col-5 {
-  width: 41.66%;
-}
+  width: 41.66%; }
 
 .col-6 {
-  width: 50%;
-}
+  width: 50%; }
 
 .col-7 {
-  width: 58.33%;
-}
+  width: 58.33%; }
 
 .col-8 {
-  width: 66.66%;
-}
+  width: 66.66%; }
 
 .col-9 {
-  width: 75%;
-}
+  width: 75%; }
 
 .col-10 {
-  width: 83.33%;
-}
+  width: 83.33%; }
 
 .col-11 {
-  width: 91.66%;
-}
+  width: 91.66%; }
 
 .col-12 {
-  width: 100%;
-}
+  width: 100%; }
 
 body {
   margin: auto;
-  padding: 50px;
   font: 14px "Open Sans", sans-serif;
-  max-width: 400px;
-}
+  max-width: 400px; }
 
 a {
-  color: #00b7ff;
-}
+  color: #00B7FF; }
 
-input,
-select {
-  display: block;
-}
+input, select {
+  display: block; }
 
 #calendarHead {
   text-align: center;
   display: flex;
-  align-items: center;
-}
+  align-items: center; }
 
-#weekdays,
-#dates {
-  display: flex;
-}
+#weekdays, #dates {
+  display: flex; }
 
-#weekdays div,
-#dates div {
-  width: 14%;
-}
+#weekdays div, #dates div {
+  width: 14%; }
 
 #mobile {
-  text-align: right;
-  margin-bottom: 24px;
-}
+  text-align: right; }
+
+#hamburger {
+  font-size: 36px; }
 
 .switch-weeks {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 32px;
-}
+  margin-bottom: 32px; }
 
 .change-week {
   font-family: OpenSans;
@@ -106,7 +83,60 @@ select {
   font-style: italic;
   line-height: 1.43;
   text-align: left;
+  color: #a0a3a8; }
+
+.change-week:hover {
+  text-decoration: underline; }
+
+#heading {
+  font-family: "Open Sans", sans-serif;
+  font-size: 24px;
+  line-height: 1.5;
   color: #a0a3a8;
-}
+  margin-bottom: 4px; }
+
+#signupForm label {
+  display: block;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.43;
+  color: #6b6d70;
+  text-transform: uppercase;
+  margin-bottom: 8px; }
+
+#signupForm input, #signupForm select {
+  width: 100%;
+  height: 56px;
+  background-color: #ffffff;
+  border: solid 1px #a0a3a8;
+  margin-bottom: 16px;
+  font-size: 16px;
+  padding: 0 16px; }
+
+#signupForm input::placeholder {
+  font-style: italic;
+  color: #a0a3a8; }
+
+#signupForm #greyButton {
+  width: 200px;
+  height: 56px;
+  background-color: #b1b4ba;
+  color: white;
+  text-transform: uppercase;
+  margin: 48px auto;
+  font-size: 20px;
+  font-weight: 700; }
+  #signupForm #greyButton:active {
+    box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2); }
+  #signupForm #greyButton:hover {
+    opacity: 0.7; }
+
+#subHeading {
+  font-size: 20px;
+  text-transform: uppercase; }
+
+hr {
+  margin: 16px 0; }
 
 /*# sourceMappingURL=style.css.map */

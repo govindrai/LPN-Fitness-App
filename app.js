@@ -60,10 +60,12 @@ app.use(
 
 app.use(
   sassMiddleware({
-    src: path.join(__dirname, 'public'),
-    dest: path.join(__dirname, 'public'),
+    src: path.join(__dirname, 'public/stylesheets'),
+    dest: path.join(__dirname, 'public/stylesheets'),
+    debug: true,
     indentedSyntax: true, // true = .sass and false = .scss
-    sourceMap: true
+    sourceMap: true,
+    prefix: "/stylesheets"
   })
 );
 

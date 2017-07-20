@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700')
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i')
 
 $opensans: "Open Sans", sans-serif
 $topaz: #f2cd46
@@ -11,17 +11,19 @@ $emerald: #24ab60
 
 $error: #d92b3a
 $success: #0b8c0b
+$grey: #a0a3a8
 
-$topaz-gradient: background-image: linear-gradient(135deg, #fbf0c7, #fad0ad)
-$sunstone-gradient: background-image: linear-gradient(135deg, #fde2cb, #fdbbb1)
-$ruby-gradient: background-image: linear-gradient(135deg, #fcc4cb, #fdacd0)
-$alexandrite-gradient: background-image: linear-gradient(135deg, #f3d6f2, #d8b1f3)
-$iolite-gradient: background-image: linear-gradient(135deg, #dfd9fd, #b3c6fd)
-$sapphire-gradient: background-image: linear-gradient(135deg, #c4dcfc, #aceafd)
-$emerald-gradient: background-image: linear-gradient(135deg, #bde5cf, #a8e6af)
+$topaz-gradient: linear-gradient(135deg, #fbf0c7, #fad0ad)
+$sunstone-gradient: linear-gradient(135deg, #fde2cb, #fdbbb1)
+$ruby-gradient: linear-gradient(135deg, #fcc4cb, #fdacd0)
+$alexandrite-gradient: linear-gradient(135deg, #f3d6f2, #d8b1f3)
+$iolite-gradient: linear-gradient(135deg, #dfd9fd, #b3c6fd)
+$sapphire-gradient: linear-gradient(135deg, #c4dcfc, #aceafd)
+$emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 *
-  box-sizing: border-border
+  box-sizing: border-box
+  outline: none
 
 [class*="col-"]
   float: left
@@ -55,7 +57,6 @@ $emerald-gradient: background-image: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 body
   margin: auto
-  padding: 50px
   font: 14px $opensans
   max-width: 400px
 
@@ -78,8 +79,9 @@ input, select
 
 #mobile
   text-align: right
-  margin-bottom: 24px
 
+#hamburger
+  font-size: 36px
 
 .switch-weeks
   display: flex
@@ -92,7 +94,60 @@ input, select
   font-style: italic;
   line-height: 1.43;
   text-align: left;
-  color: #a0a3a8;
+  color: $grey;
 
 .change-week:hover
   text-decoration: underline
+
+#heading
+  font-family: $opensans
+  font-size: 24px
+  line-height: 1.5
+  color: $grey
+  margin-bottom: 4px
+
+#signupForm
+
+  label
+    display: block
+    font-family: $opensans
+    font-size: 14px
+    font-weight: 600
+    line-height: 1.43
+    color: #6b6d70
+    text-transform: uppercase
+    margin-bottom: 8px
+
+  input, select
+    width: 100%
+    height: 56px
+    background-color: #ffffff
+    border: solid 1px $grey
+    margin-bottom: 16px
+    font-size: 16px
+    padding: 0 16px
+
+  input::placeholder
+    font-style: italic
+    color: $grey
+
+  #greyButton
+    width: 200px
+    height: 56px
+    background-color: #b1b4ba
+    color: white
+    text-transform: uppercase
+    margin: 48px auto
+    font-size: 20px
+    font-weight: 700
+    &:active
+      box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2)
+    &:hover
+      opacity: 0.7
+
+#subHeading
+  font-size: 20px
+  text-transform: uppercase
+
+hr
+  margin: 16px 0

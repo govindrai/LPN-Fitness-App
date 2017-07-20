@@ -1,25 +1,28 @@
-h1 Register
+h1#subHeading Register
 
-form(action='/register' method='POST')
-  | First Name
-  input(name='name.first' type='text' value=user.name.first required)
-  | Last Name
-  input(name='name.last' type='text' value=user.name.last required)
-  | Nickname
-  input(name='name.nickname' type='text' value=user.name.nickname)
+hr
+
+form#signupForm(action='/register' method='POST')
+  label First Name
+  input(name='name.first' type='text' value=user.name.first placeholder="Lambda" required)
+  label Last Name
+  input(name='name.last' type='text' value=user.name.last placeholder="Phinu"
+  required)
+  label Nickname
+  input(name='name.nickname' type='text' value=user.name.nickname placeholder="MR BIG MUSCLES 🔥")
   if errors && errors.email
     p= errors.email.message
-  | Email
+  label Email
   input(name='email' type='email' value=user.email required)
   if errors && errors.family
     p= errors.family.message
-  | Family
+  label Family
   select(name="family")
-    option Please Select
+    option Choose one
     each family in families
       option(value=family._id)= family.name
-  | Password
+  label Password
   input(name='password' type='password' required)
   //| Confirm Password
   //input(name='passwordConfirmation' type='password' required)
-  input(type='submit' value='Add User')
+  input#greyButton(type='submit' value='Join')
