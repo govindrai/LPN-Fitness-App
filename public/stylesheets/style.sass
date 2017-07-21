@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700')
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i')
 
 $opensans: "Open Sans", sans-serif
 $topaz: #f2cd46
@@ -11,22 +11,25 @@ $emerald: #24ab60
 
 $error: #d92b3a
 $success: #0b8c0b
+$grey: #a0a3a8
+$scoreboardBorder: #dadde0
 
-$topaz-gradient: background-image: linear-gradient(135deg, #fbf0c7, #fad0ad)
-$sunstone-gradient: background-image: linear-gradient(135deg, #fde2cb, #fdbbb1)
-$ruby-gradient: background-image: linear-gradient(135deg, #fcc4cb, #fdacd0)
-$alexandrite-gradient: background-image: linear-gradient(135deg, #f3d6f2, #d8b1f3)
-$iolite-gradient: background-image: linear-gradient(135deg, #dfd9fd, #b3c6fd)
-$sapphire-gradient: background-image: linear-gradient(135deg, #c4dcfc, #aceafd)
-$emerald-gradient: background-image: linear-gradient(135deg, #bde5cf, #a8e6af)
+$topaz-gradient: linear-gradient(135deg, #fbf0c7, #fad0ad)
+$sunstone-gradient: linear-gradient(135deg, #fde2cb, #fdbbb1)
+$ruby-gradient: linear-gradient(135deg, #fcc4cb, #fdacd0)
+$alexandrite-gradient: linear-gradient(135deg, #f3d6f2, #d8b1f3)
+$iolite-gradient: linear-gradient(135deg, #dfd9fd, #b3c6fd)
+$sapphire-gradient: linear-gradient(135deg, #c4dcfc, #aceafd)
+$emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 *
-  box-sizing: border-border
+  box-sizing: border-box
+  outline: none
 
 [class*="col-"]
   float: left
-  padding: 15px
-  border: 1px solid red
+  padding: 0 15px
+  // border: 1px solid red
 
 .col-1
   width: 8.33%
@@ -53,9 +56,12 @@ $emerald-gradient: background-image: linear-gradient(135deg, #bde5cf, #a8e6af)
 .col-12
   width: 100%
 
+
+.clear
+  clear: both
+
 body
   margin: auto
-  padding: 50px
   font: 14px $opensans
   max-width: 400px
 
@@ -65,10 +71,49 @@ a
 input, select
   display: block
 
+#backgroundGradient
+  background: $topaz-gradient
+  padding: 32px 15px
+
+  #scoreboard
+    padding: 15px 0
+    background: white
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3)
+
+  hr
+    border-color: #dadde0
+    padding: 0
+    margin: 0
+
 #calendarHead
-  text-align: center
+  padding-bottom: 28px
+
+#calendar
+  padding: 0 15px
   display: flex
-  align-items: center
+  flex-direction: column
+  justify-content: space-between
+  text-align: center
+  color: $grey
+  & .currentDate
+    color: $ruby
+
+  #dates
+    div
+      font-size: 24px
+      font-weight: 700
+      line-height: 1.5
+      position: relative
+
+    div.currentDate::after
+        content: ''
+        position: absolute
+        top: 39px
+        left: 8px
+        width: 50%
+        background-color: $ruby
+        border: 2.5px solid $ruby
+
 
 #weekdays, #dates
   display: flex
@@ -78,21 +123,118 @@ input, select
 
 #mobile
   text-align: right
-  margin-bottom: 24px
 
+#hamburger
+  font-size: 36px
 
 .switch-weeks
   display: flex
   justify-content: space-between
+  margin-top: 24px
   margin-bottom: 32px
 
 .change-week
-  font-family: OpenSans;
-  font-size: 14px;
+  font-weight: 100
+  font-size: 14px
   font-style: italic;
   line-height: 1.43;
   text-align: left;
-  color: #a0a3a8;
+  color: $grey;
 
 .change-week:hover
   text-decoration: underline
+
+#heading
+  font-family: $opensans
+  font-size: 24px
+  line-height: 1.5
+  color: $grey
+  margin-bottom: 4px
+
+#signupForm
+
+  label
+    display: block
+    font-family: $opensans
+    font-size: 14px
+    font-weight: 600
+    line-height: 1.43
+    color: #6b6d70
+    text-transform: uppercase
+    margin-bottom: 8px
+
+  input, select
+    width: 100%
+    height: 56px
+    background-color: #ffffff
+    border: solid 1px $grey
+    margin-bottom: 16px
+    font-size: 16px
+    padding: 0 16px
+    text-transform: none
+
+  input::placeholder
+    font-style: italic
+    color: $grey
+
+  #greyButton
+    width: 200px
+    height: 56px
+    background-color: #b1b4ba
+    color: white
+    text-transform: uppercase
+    margin: 48px auto
+    font-size: 20px
+    font-weight: 700
+    &:active
+      box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2)
+    &:hover
+      opacity: 0.7
+
+#subHeading
+  font-size: 20px
+  text-transform: uppercase
+
+hr
+  margin: 16px 0
+  border: solid 1px #dadde0;
+
+#summary
+  display: flex
+  justify-content: space-between
+  margin-bottom: 32px
+
+  div
+    font-size: 36px
+    font-weight: 700
+    line-height: 1.44
+    color: #f2cd46
+
+#competitorSummary
+  font-size: 24px
+  font-weight: 700
+  line-height: 1.5
+  color: #a0a3a8
+
+  #versingFamily
+    color: #6456f8
+
+#weeklyStatus
+  div
+    font-size: 16px
+    line-height: 1.5
+    color: #353738
+    margin-bottom: 12px
+
+  span
+    display: inline-block
+    margin-left: 16px
+    font-weight: 700
+    color: #353738
+    text-transform: uppercase
+    &.red
+      color: red
+    &.green
+      color: green
+
+

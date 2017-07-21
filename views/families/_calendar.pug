@@ -1,19 +1,14 @@
 div#calendarHead
-  div.col-2
-    if showPrevious
-      button#previous.change-week &larr;
-  div#calendar.col-8
+  div#calendar
     div#weekdays
-      div M
-      div T
-      div W
-      div T
-      div F
-      div S
-      div S
+      div MON
+      div TUE
+      div WED
+      div THU
+      div.currentDate FRI
+      div SAT
+      div SUN
     div#dates
       include ./_calendar_dates
-  div.col-2
-    if showNext
-      button#next.change-week &rarr;
+hr
 div#points-body

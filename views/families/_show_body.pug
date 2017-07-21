@@ -1,36 +1,38 @@
-div.col-12.switch-weeks
+.col-12.switch-weeks
   if showPrevious
-    #previous.change-week &larr; Previous Week
+    #previous.change-week  &lt; Previous Week
   if showNext
-    #next.change-week Next Week &rarr; 
+    #next.change-week Next Week &gt;
 
-h1= family.name
-h2.
-  Week #[span.weekNumber= currentChallenge.weekNumber] score: #[=family.totalPoints]
-h2= family.motto
+#summary.col-12
+  #familyName= family.name
+  #totalPoints= family.totalPoints
 
-hr
-
-h1.
-  Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[= `${versingFamily.name} (${versingFamily.totalPoints} points)`]
-h2= `Points Needed: ${family.pointsNeeded}`
+#competitorSummary.col-12 Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[span#versingFamily= versingFamily.name]
 
 hr
-h2#time
+
+#weeklyStatus.col-12
+  div Opponent score: #[span= versingFamily.totalPoints]
+  div Status: #[span.red= family.pointsNeeded]
+  div Time left: #[span#timeRemaining= timeRemaining]
+
+.clear
 
 if currentChallenge
-  p= 'Current challenge: ' + currentChallenge.name
-    if currentChallenge.participation
-      p= 'Status: participating'
-    else
-      p= 'Status: not participating'
-      a(href='/challenges') See upcoming challenges
-
-  hr
-
-  include ./_calendar
-  include ./_daily_points
-
-  hr
+  //- UNCOMMENT ASK CALLY ABOUT WHERE TO PUTT CHALLENGE NAME AND WHAT TO DISPLAY IF NOT PARTICIPATING
+  //- p= 'Current challenge: ' + currentChallenge.name
+  //-   if currentChallenge.participation
+  //-     p= 'Status: participating'
+  //-   else
+  //-     p= 'Status: not participating'
+  //-     a(href='/challenges') See upcoming challenges
+  #backgroundGradient
+    #scoreboard
+      include ./_calendar
+      include ./_daily_points
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
+
+
+h2= "Motto: " + family.motto

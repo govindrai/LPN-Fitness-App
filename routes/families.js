@@ -137,9 +137,15 @@ router.get('/:familyName', (req, res) => {
 
       // check whether or not to show next/previous week buttons
       var showPrevious = showPreviousWeek(res.locals.currentChallenge.date.start, dates[0]),
-        showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]),
-        options = {
-          currentChallenge: res.locals.currentChallenge,
+        showNext = showNextWeek(res.locals.currentChallenge.date.start, dates[6]);
+
+      let nextMonday = new Date(dates[6]);
+      nextMonday.setDate(nextMonday.getDate() + 1);
+      const timeRemaining = getTimeRemaining(nextMonday);
+
+      const options = {
+          // currentChallenge: res.locals.currentChallenge,
+          timeRemaining,
           dates,
           family,
           versingFamily,
@@ -250,10 +256,18 @@ function calculatePoints(familyTotalPoints, numOfParticipants) {
 function calculatePointsNeededToWin(familyTotalPoints, numOfParticipants, versingFamilyTotalPoints) {
   numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
   var deficientPoints = versingFamilyTotalPoints - familyTotalPoints;
-  return deficientPoints <= 0 ? 0 : numOfParticipants * deficientPoints;
+  return deficientPoints <= 0 ? "winning by x # of points" : `need ${numOfParticipants * deficientPoints} total points to tie`;
 }
 
 function getToday() {
   var date = new Date();
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function getTimeRemaining(endOfWeek) {
+  const total = Date.parse(endOfWeek) - Date.parse(new Date()),
+  days = Math.floor(total/(1000*60*60*24)),
+  hours = Math.floor((total/(1000*60*60)) % 24),
+  minutes = Math.floor((total/1000/60) % 60);
+  return `${days} DAYS, ${hours} HOURS, ${minutes} MINUTES`;
 }
