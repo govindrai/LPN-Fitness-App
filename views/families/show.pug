@@ -152,40 +152,24 @@ append footer-scripts
       $("#totalPoints").val(totalPoints);
     }
 
-    function getTimeRemaining(endtime) {
-      var t = Date.parse(endtime) - Date.parse(new Date());
-      var seconds = Math.floor((t/1000) % 60);
-      var minutes = Math.floor((t/1000/60) % 60);
-      var hours = Math.floor((t/(1000*60*60)) % 24);
-      var days = Math.floor(t/(1000*60*60*24));
-      return {
-        'total': t,
-        'days': days,
-        'hours': hours,
-        'minutes': minutes,
-        'seconds': seconds
-      };
-    }
+    function initializeClock() {
+      const endtime = new Date($('#sunday').data('date'));
+      endtime.setDate(endtime.getDate()+1);
 
-    function initializeClock(id, endtime){
-    var clock = document.getElementById(id);
-    var timeinterval = setInterval(()=>{
-    var t = getTimeRemaining(endtime);
-    clock.innerHTML = t.days + ' days' + ' ' +
-                      t.hours + ' hours' + ' ' +
-                      t.minutes + ' minutes' + ' ' +
-                      t.seconds + ' seconds' + ' left in Week 4';
-      if (t.total<=0){
-        clearInterval(timeinterval);
-        }
-      }, 1000);
+      var clock = document.getElementById('time');
+      var timeinterval = setInterval(()=>{
+      var t = getTimeRemaining(endtime);
+      clock.innerHTML = t.days + ' DAYS' + ' ' +
+                        t.hours + ' HOURS' + ' ' +
+                        t.minutes + ' MINUTES';
+        if (t.total<=0){
+          clearInterval(timeinterval);
+          }
+        }, 1000);
     }
-
-    var endtime = new Date($('#sunday').data('date'));
-    endtime.setDate(endtime.getDate()+1);
 
     $(document).ready(function(){
-      initializeClock('time', endtime);
+      initializeClock();
     });
 
     $('body').on('click', '.change-week', updateShow);

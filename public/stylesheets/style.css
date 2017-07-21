@@ -160,7 +160,20 @@ hr {
   #competitorSummary #versingFamily {
     color: #6456f8; }
 
-#weeklyStatus td {
-  white-space: no-wrap; }
+#weeklyStatus div {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #353738;
+  margin-bottom: 12px; }
+
+#weeklyStatus span {
+  display: inline-block;
+  margin-left: 16px;
+  font-weight: 700;
+  color: #353738; }
+  #weeklyStatus span.red {
+    color: red; }
+  #weeklyStatus span.green {
+    color: green; }
 
 /*# sourceMappingURL=style.css.map */

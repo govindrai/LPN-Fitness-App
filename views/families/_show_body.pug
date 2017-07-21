@@ -12,17 +12,10 @@ div#summary
 
 hr
 
-table#weeklyStatus
-  tbody
-    tr
-      td Opponent Score:
-      td= versingFamily.totalPoints
-    tr
-      td Status:
-      td= family.pointsNeeded
-    tr
-      td Time Left:
-      td#time
+#weeklyStatus
+  div Opponent Score: #[span= versingFamily.totalPoints]
+  div Status: #[span.red= family.pointsNeeded]
+  div Time Left: #[span= timeRemaining]
 
 if currentChallenge
   p= 'Current challenge: ' + currentChallenge.name
