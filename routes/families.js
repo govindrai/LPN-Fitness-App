@@ -256,7 +256,7 @@ function calculatePoints(familyTotalPoints, numOfParticipants) {
 function calculatePointsNeededToWin(familyTotalPoints, numOfParticipants, versingFamilyTotalPoints) {
   numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
   var deficientPoints = versingFamilyTotalPoints - familyTotalPoints;
-  return deficientPoints <= 0 ? "You're Winning By X # of points" : `NEED ${numOfParticipants * deficientPoints} TOTAL POINTS TO TIE`;
+  return deficientPoints <= 0 ? "winning by x # of points" : `need ${numOfParticipants * deficientPoints} total points to tie`;
 }
 
 function getToday() {

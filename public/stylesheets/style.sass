@@ -12,6 +12,7 @@ $emerald: #24ab60
 $error: #d92b3a
 $success: #0b8c0b
 $grey: #a0a3a8
+$scoreboardBorder: #dadde0
 
 $topaz-gradient: linear-gradient(135deg, #fbf0c7, #fad0ad)
 $sunstone-gradient: linear-gradient(135deg, #fde2cb, #fdbbb1)
@@ -27,8 +28,8 @@ $emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 [class*="col-"]
   float: left
-  padding: 15px
-  border: 1px solid red
+  padding: 0 15px
+  // border: 1px solid red
 
 .col-1
   width: 8.33%
@@ -55,6 +56,10 @@ $emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 .col-12
   width: 100%
 
+
+.clear
+  clear: both
+
 body
   margin: auto
   font: 14px $opensans
@@ -66,10 +71,49 @@ a
 input, select
   display: block
 
+#backgroundGradient
+  background: $topaz-gradient
+  padding: 32px 15px
+
+  #scoreboard
+    padding: 15px 0
+    background: white
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3)
+
+  hr
+    border-color: #dadde0
+    padding: 0
+    margin: 0
+
 #calendarHead
-  text-align: center
+  padding-bottom: 28px
+
+#calendar
+  padding: 0 15px
   display: flex
-  align-items: center
+  flex-direction: column
+  justify-content: space-between
+  text-align: center
+  color: $grey
+  & .currentDate
+    color: $ruby
+
+  #dates
+    div
+      font-size: 24px
+      font-weight: 700
+      line-height: 1.5
+      position: relative
+
+    div.currentDate::after
+        content: ''
+        position: absolute
+        top: 39px
+        left: 8px
+        width: 50%
+        background-color: $ruby
+        border: 2.5px solid $ruby
+
 
 #weekdays, #dates
   display: flex
@@ -187,6 +231,7 @@ hr
     margin-left: 16px
     font-weight: 700
     color: #353738
+    text-transform: uppercase
     &.red
       color: red
     &.green

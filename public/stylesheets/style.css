@@ -5,8 +5,7 @@
 
 [class*="col-"] {
   float: left;
-  padding: 15px;
-  border: 1px solid red; }
+  padding: 0 15px; }
 
 .col-1 {
   width: 8.33%; }
@@ -44,6 +43,9 @@
 .col-12 {
   width: 100%; }
 
+.clear {
+  clear: both; }
+
 body {
   margin: auto;
   font: 14px "Open Sans", sans-serif;
@@ -55,10 +57,43 @@ a {
 input, select {
   display: block; }
 
+#backgroundGradient {
+  background: linear-gradient(135deg, #fbf0c7, #fad0ad);
+  padding: 32px 15px; }
+  #backgroundGradient #scoreboard {
+    padding: 15px 0;
+    background: white;
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3); }
+  #backgroundGradient hr {
+    border-color: #dadde0;
+    padding: 0;
+    margin: 0; }
+
 #calendarHead {
-  text-align: center;
+  padding-bottom: 28px; }
+
+#calendar {
+  padding: 0 15px;
   display: flex;
-  align-items: center; }
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  color: #a0a3a8; }
+  #calendar .currentDate {
+    color: #f83b54; }
+  #calendar #dates div {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.5;
+    position: relative; }
+  #calendar #dates div.currentDate::after {
+    content: '';
+    position: absolute;
+    top: 39px;
+    left: 8px;
+    width: 50%;
+    background-color: #f83b54;
+    border: 2.5px solid #f83b54; }
 
 #weekdays, #dates {
   display: flex; }
@@ -170,7 +205,8 @@ hr {
   display: inline-block;
   margin-left: 16px;
   font-weight: 700;
-  color: #353738; }
+  color: #353738;
+  text-transform: uppercase; }
   #weeklyStatus span.red {
     color: red; }
   #weeklyStatus span.green {

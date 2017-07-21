@@ -152,20 +152,20 @@ append footer-scripts
       $("#totalPoints").val(totalPoints);
     }
 
+    function getTimeRemaining(endOfWeek) {
+      const total = Date.parse(endOfWeek) - Date.parse(new Date()),
+      days = Math.floor(total/(1000*60*60*24)),
+      hours = Math.floor((total/(1000*60*60)) % 24),
+      minutes = Math.floor((total/1000/60) % 60);
+      document.getElementById('timeRemaining').innerHTML = `${days} DAYS, ${hours} HOURS, ${minutes} MINUTES`;
+    }
+
     function initializeClock() {
       const endtime = new Date($('#sunday').data('date'));
       endtime.setDate(endtime.getDate()+1);
 
-      var clock = document.getElementById('time');
-      var timeinterval = setInterval(()=>{
-      var t = getTimeRemaining(endtime);
-      clock.innerHTML = t.days + ' DAYS' + ' ' +
-                        t.hours + ' HOURS' + ' ' +
-                        t.minutes + ' MINUTES';
-        if (t.total<=0){
-          clearInterval(timeinterval);
-          }
-        }, 1000);
+      var clock = document.getElementById('timeRemaining');
+      var timeinterval = setInterval(() => getTimeRemaining(endtime), 1000);
     }
 
     $(document).ready(function(){
