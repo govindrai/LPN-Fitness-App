@@ -1,22 +1,28 @@
-div.col-12.switch-weeks
+div.switch-weeks
   if showPrevious
-    #previous.change-week &larr; Previous Week
+    #previous.change-week  &lt; Previous Week
   if showNext
-    #next.change-week Next Week &rarr; 
+    #next.change-week Next Week &gt;
 
-h1= family.name
-h2.
-  Week #[span.weekNumber= currentChallenge.weekNumber] score: #[=family.totalPoints]
-h2= family.motto
+div#summary
+  #familyName= family.name
+  #totalPoints= family.totalPoints
 
-hr
-
-h1.
-  Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[= `${versingFamily.name} (${versingFamily.totalPoints} points)`]
-h2= `Points Needed: ${family.pointsNeeded}`
+#competitorSummary Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[span#versingFamily= versingFamily.name]
 
 hr
-h2#time
+
+table#weeklyStatus
+  tbody
+    tr
+      td Opponent Score:
+      td= versingFamily.totalPoints
+    tr
+      td Status:
+      td= family.pointsNeeded
+    tr
+      td Time Left:
+      td#time
 
 if currentChallenge
   p= 'Current challenge: ' + currentChallenge.name
@@ -34,3 +40,6 @@ if currentChallenge
   hr
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
+
+
+h2= family.motto

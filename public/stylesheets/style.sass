@@ -86,11 +86,12 @@ input, select
 .switch-weeks
   display: flex
   justify-content: space-between
+  margin-top: 24px
   margin-bottom: 32px
 
 .change-week
-  font-family: OpenSans;
-  font-size: 14px;
+  font-weight: 100
+  font-size: 14px
   font-style: italic;
   line-height: 1.43;
   text-align: left;
@@ -126,6 +127,7 @@ input, select
     margin-bottom: 16px
     font-size: 16px
     padding: 0 16px
+    text-transform: none
 
   input::placeholder
     font-style: italic
@@ -151,3 +153,29 @@ input, select
 
 hr
   margin: 16px 0
+  border: solid 1px #dadde0;
+
+#summary
+  display: flex
+  justify-content: space-between
+  margin-bottom: 32px
+
+  div
+    font-size: 36px
+    font-weight: 700
+    line-height: 1.44
+    color: #f2cd46
+
+#competitorSummary
+  font-size: 24px
+  font-weight: 700
+  line-height: 1.5
+  color: #a0a3a8
+
+  #versingFamily
+    color: #6456f8
+
+#weeklyStatus
+
+  td
+    white-space: no-wrap
