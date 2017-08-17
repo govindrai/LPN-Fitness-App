@@ -1,11 +1,11 @@
-var mongoose = require('mongoose'),
-  validator = require('validator'),
-  jwt = require('jsonwebtoken'),
-  bcrypt = require('bcryptjs');
+var mongoose = require("mongoose"),
+  validator = require("validator"),
+  jwt = require("jsonwebtoken"),
+  bcrypt = require("bcryptjs");
 
 var Schema = mongoose.Schema,
-  Challenge = require('./challenge'),
-  Participation = require('./participation');
+  Challenge = require("./challenge"),
+  Participation = require("./participation");
 
 var userSchema = new Schema({
   name: {
@@ -28,12 +28,12 @@ var userSchema = new Schema({
   },
   email: {
     type: String,
-    required: [true, 'Email is Required'],
+    required: [true, "Email is Required"],
     trim: true,
     unique: true,
     validate: {
       validator: validator.isEmail,
-      message: 'Please provide a valid email!'
+      message: "Please provide a valid email!"
     }
   },
   password: {
@@ -42,7 +42,7 @@ var userSchema = new Schema({
   },
   family: {
     type: Schema.Types.ObjectId,
-    ref: 'Family'
+    ref: "Family"
   },
   lifetimePoints: {
     type: Number,
@@ -67,9 +67,9 @@ var userSchema = new Schema({
   ]
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre("save", function(next) {
   var user = this;
-  if (user.isModified('password')) {
+  if (user.isModified("password")) {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return console.log(err);
       bcrypt.hash(user.password, salt, (error, hash) => {
@@ -87,36 +87,35 @@ userSchema.methods.generateAuthorizationToken = function() {
   var user = this;
 
   return new Promise((resolve, reject) => {
-    var payload = { _id: user._id, access: 'auth' };
-    jwt.sign(payload, 'secret', (err, token) => {
+    var payload = { _id: user._id, access: "auth" };
+    jwt.sign(payload, process.env.JWT_SECRET || "secret", (err, token) => {
       if (err) reject(err);
       resolve(token);
     });
-  })
-    .then(token => {
-      user.tokens.push({ access: 'auth', token });
-      return user.save();
-    })
-    .then(() => {
-      return user.populate('family').execPopulate();
-    });
+  }).then(token => {
+    user.tokens.push({ access: "auth", token });
+    return user.save();
+  });
 };
 
 // Verifies authorization token and returns a user
 userSchema.statics.decodeAuthorizationToken = function(token) {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, 'secret', (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET || "secret", (err, decoded) => {
       if (err) reject(err);
       resolve(decoded);
     });
   }).then(decoded => {
-    return User.findOne({ _id: decoded._id, 'tokens.token': token, 'tokens.access': decoded.access }).populate(
-      'family'
-    );
+    return User.findOne({
+      _id: decoded._id,
+      "tokens.token": token,
+      "tokens.access": decoded.access
+    }).populate("family");
   });
 };
 
-userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
+userSchema.statics.destroyAuthorizationToken = token =>
+  userSchema.statics.decodeAuthorizationToken(token);
 
 userSchema.methods.authenticate = function(password) {
   return bcrypt.compare(password, this.password);
@@ -125,13 +124,13 @@ userSchema.methods.authenticate = function(password) {
 userSchema.statics.getFamilyMembers = familyId => User.find({ familyId });
 
 userSchema.statics.getAdmins = function() {
-  return User.find({ admin: true }).populate('family').then(admins => {
+  return User.find({ admin: true }).populate("family").then(admins => {
     return admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
   });
 };
 
 userSchema.statics.getNonAdmins = function() {
-  return User.find({ admin: false }).populate('family').then(nonAdmins => {
+  return User.find({ admin: false }).populate("family").then(nonAdmins => {
     return nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
   });
 };
@@ -142,7 +141,10 @@ userSchema.methods.getRegisterableChallengesCount = function() {
   return Challenge.getFutureChallenges()
     .then(challenges => {
       futureChallenges = challenges;
-      return Participation.setUserParticipationForChallenges(user, futureChallenges);
+      return Participation.setUserParticipationForChallenges(
+        user,
+        futureChallenges
+      );
     })
     .then(() => {
       return futureChallenges.reduce((total, challenge) => {
@@ -151,10 +153,10 @@ userSchema.methods.getRegisterableChallengesCount = function() {
     });
 };
 
-userSchema.virtual('fullName').get(function() {
-  return this.name.first + ' ' + this.name.last;
+userSchema.virtual("fullName").get(function() {
+  return this.name.first + " " + this.name.last;
 });
 
-var User = mongoose.model('User', userSchema);
+var User = mongoose.model("User", userSchema);
 
 module.exports = User;

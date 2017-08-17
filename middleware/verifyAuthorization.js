@@ -7,7 +7,6 @@ var User = require("./../models/user"),
 
 // middleware to check if the user is logged in
 function verifyAuthorization(req, res, next) {
-  console.log("req.session", req.session);
   // if x-auth key doesn't exist in session object
   //  render the 404 view (meaning they are not logged in)
   // else
@@ -26,9 +25,9 @@ function verifyAuthorization(req, res, next) {
       res.locals.token = req.session["x-auth"];
       User.decodeAuthorizationToken(res.locals.token)
         .then(user => {
-          if (!user) res.status(404).send("UNAUTHORIZED.");
+          if (!user) return res.status(404).send("UNAUTHORIZED.");
           res.locals.home = "/families/" + user.family.name;
-          if (req.path == "/") res.redirect(res.locals.home);
+          if (req.path == "/") return res.redirect(res.locals.home);
           res.locals.loggedIn = true; //actually don't need this; can just check for user
           res.locals.user = user;
           return user.getRegisterableChallengesCount();

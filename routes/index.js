@@ -44,7 +44,7 @@ router.post("/login", (req, res) => {
 
 // Register
 router.post("/register", (req, res) => {
-  var body = _.pick(req.body, [
+  const body = _.pick(req.body, [
     "name.first",
     "name.last",
     "name.nickname",
@@ -53,6 +53,10 @@ router.post("/register", (req, res) => {
     "password"
   ]);
 
+  const family = JSON.parse(req.body.family);
+  const familyName = family.name;
+  body.family = family.id;
+
   var user = new User(body);
 
   user
@@ -60,12 +64,9 @@ router.post("/register", (req, res) => {
     .then(() => {
       return user.generateAuthorizationToken();
     })
-    .then(() => {
-      return user.populate("family").execPopulate();
-    })
-    .then(() => {
+    .then(user => {
       req.session["x-auth"] = user.tokens[0].token;
-      res.redirect(`/families/${user.family.name}`);
+      res.redirect(`/families/${familyName}`);
     })
     .catch(e => {
       if (body.family === "Please Select") {

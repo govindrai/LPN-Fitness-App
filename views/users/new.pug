@@ -20,9 +20,7 @@ form#signupForm(action='/register' method='POST')
   select(name="family")
     option Choose one
     each family in families
-      option(value=family._id)= family.name
+      option(value={id: family._id, name: family.name})= family.name
   label Password
   input(name='password' type='password' required)
-  //| Confirm Password
-  //input(name='passwordConfirmation' type='password' required)
   input#greyButton(type='submit' value='Join')
