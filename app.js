@@ -51,7 +51,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   session({
-    store: new RedisStore(),
+    store: new RedisStore({ client }),
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 7776000000 },
