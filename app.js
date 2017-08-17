@@ -32,6 +32,9 @@ var Family = require("./models/family"),
 // Middleware
 var verifyAuthorization = require("./middleware/verifyAuthorization");
 
+// Config vars
+const { REDIS_URL } = require("./config/keys");
+
 // Create Express App
 var app = express();
 
@@ -50,11 +53,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   session({
-    store: new RedisStore(),
-    resave: false,
-    saveUninitialized: false,
+    store: new RedisStore({ url: REDIS_URL }),
+    resave: true,
+    saveUninitialized: true,
     cookie: { maxAge: 7776000000 },
-    secret: "secret"
+    secret: process.env.COOKIE_SECRET || "secret"
   })
 );
 
