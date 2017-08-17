@@ -1,49 +1,57 @@
 // Modules
-var express = require('express'),
-  _ = require('lodash');
+var express = require("express"),
+  _ = require("lodash");
 
 // Models
-var User = require('./../models/user'),
-  Family = require('./../models/family');
+var User = require("./../models/user"),
+  Family = require("./../models/family");
 
 var router = express.Router();
 
 // GET Root (registration form)
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   // Need families for registration form
   Family.find()
     .then(families => {
-      res.render('index', { families, user: new User() });
+      res.render("index", { families, user: new User() });
     })
     .catch(e => console.log(e));
 });
 
 // GET login form
-router.get('/login', (req, res) => res.render('sessions/login'));
+router.get("/login", (req, res) => res.render("sessions/login"));
 
 // POST login form data
-router.post('/login', (req, res) => {
+router.post("/login", (req, res) => {
   var user;
 
+  console.log("req.body", req.body);
   User.findOne({ email: req.body.email })
     .then(userObj => {
       user = userObj;
       return user.authenticate(req.body.password);
     })
     .then(res => {
-      if (!res) return Promise.reject('Username/Password Incorrect');
+      if (!res) return Promise.reject("Username/Password Incorrect");
       return user.generateAuthorizationToken();
     })
     .then(() => {
-      req.session['x-auth'] = user.tokens[user.tokens.length - 1].token;
+      req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
       res.redirect(`/families/${user.family.name}`);
     })
-    .catch(error => res.render('sessions/login', { error }));
+    .catch(error => res.render("sessions/login", { error }));
 });
 
 // Register
-router.post('/register', (req, res) => {
-  var body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'family', 'password']);
+router.post("/register", (req, res) => {
+  var body = _.pick(req.body, [
+    "name.first",
+    "name.last",
+    "name.nickname",
+    "email",
+    "family",
+    "password"
+  ]);
 
   var user = new User(body);
 
@@ -53,47 +61,47 @@ router.post('/register', (req, res) => {
       return user.generateAuthorizationToken();
     })
     .then(() => {
-      return user.populate('family').execPopulate();
+      return user.populate("family").execPopulate();
     })
     .then(() => {
-      req.session['x-auth'] = user.tokens[0].token;
+      req.session["x-auth"] = user.tokens[0].token;
       res.redirect(`/families/${user.family.name}`);
     })
     .catch(e => {
-      if (body.family === 'Please Select') {
-        e.errors.family.message = 'Please select a family';
+      if (body.family === "Please Select") {
+        e.errors.family.message = "Please select a family";
       }
       Family.find()
         .then(families => {
-          res.render('index', { families, errors: e.errors, user });
+          res.render("index", { families, errors: e.errors, user });
         })
         .catch(e => console.log(e.errors));
     });
 });
 
 // Logout (Remove JWT from user, then redirect to Home)
-router.get('/logout', (req, res) => {
-  res.locals.user.tokens.pull({ access: 'auth', token: res.locals.token });
+router.get("/logout", (req, res) => {
+  res.locals.user.tokens.pull({ access: "auth", token: res.locals.token });
   res.locals.user
     .save()
     .then(user => {
       req.session.destroy(err => {
-        if (err) console.log(err, 'Session could not be destroyed');
-        res.redirect('/');
+        if (err) console.log(err, "Session could not be destroyed");
+        res.redirect("/");
       });
     })
     .catch(e => console.log(e));
 });
 
-router.get('/schedule', (req, res) => {
+router.get("/schedule", (req, res) => {
   Family.find()
     .then(families => {
-      res.render('challenges/schedule', { families });
+      res.render("challenges/schedule", { families });
     })
     .catch(e => console.log(e));
 });
 
 // GET rules page
-router.get('/rules', (req, res) => res.render('sessions/rules'));
+router.get("/rules", (req, res) => res.render("sessions/rules"));
 
 module.exports = router;
