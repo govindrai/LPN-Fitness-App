@@ -2,8 +2,9 @@
 var express = require("express"),
   methodOverride = require("method-override"),
   session = require("express-session"),
+  { REDIS_URL } = require("./config/keys"),
   redis = require("redis"),
-  client = redis.createClient(),
+  client = redis.createClient(REDIS_URL),
   RedisStore = require("connect-redis")(session),
   path = require("path"),
   favicon = require("serve-favicon"),
@@ -33,7 +34,7 @@ var Family = require("./models/family"),
 var verifyAuthorization = require("./middleware/verifyAuthorization");
 
 // Config vars
-const { REDIS_URL } = require("./config/keys");
+const
 
 // Create Express App
 var app = express();
@@ -53,7 +54,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
   session({
-    store: new RedisStore({ url: REDIS_URL }),
+    store: new RedisStore(),
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 7776000000 },
