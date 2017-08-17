@@ -33,9 +33,6 @@ var Family = require("./models/family"),
 // Middleware
 var verifyAuthorization = require("./middleware/verifyAuthorization");
 
-// Config vars
-const
-
 // Create Express App
 var app = express();
 
