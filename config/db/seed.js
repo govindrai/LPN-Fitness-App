@@ -1,11 +1,11 @@
-var mongoose = require('./mongoose'),
-  Activity = require('./../models/activity'),
-  User = require('./../models/user'),
-  Family = require('./../models/family'),
-  Challenge = require('./../models/challenge'),
-  Point = require('./../models/point'),
-  Participation = require('./../models/participation'),
-  Unit = require('./../models/unit');
+var mongoose = require("./mongoose"),
+  Activity = require("../../models/activity"),
+  User = require("../../models/user"),
+  Family = require("../../models/family"),
+  Challenge = require("../../models/challenge"),
+  Point = require("../../models/point"),
+  Participation = require("../../models/participation"),
+  Unit = require("../../models/unit");
 
 var iolite,
   sunstone,
@@ -52,88 +52,88 @@ var iolite,
 
 var units = [
   new Unit({
-    name: 'Mile',
-    abbreviation: 'mi'
+    name: "Mile",
+    abbreviation: "mi"
   }),
   new Unit({
-    name: 'Game',
-    abbreviation: 'game'
+    name: "Game",
+    abbreviation: "game"
   }),
   new Unit({
-    name: 'Feet',
-    abbreviation: 'ft'
+    name: "Feet",
+    abbreviation: "ft"
   }),
   new Unit({
-    name: 'Meter',
-    abbreviation: 'mm'
+    name: "Meter",
+    abbreviation: "mm"
   }),
   new Unit({
-    name: 'Minute',
-    abbreviation: 'min'
+    name: "Minute",
+    abbreviation: "min"
   }),
   new Unit({
-    name: 'Hour',
-    abbreviation: 'hr'
+    name: "Hour",
+    abbreviation: "hr"
   }),
   new Unit({
-    name: 'Hole',
-    abbreviation: 'hole'
+    name: "Hole",
+    abbreviation: "hole"
   }),
   new Unit({
-    name: 'Day',
-    abbreviation: 'day'
+    name: "Day",
+    abbreviation: "day"
   }),
   new Unit({
-    name: 'Jump',
-    abbreviation: 'jump'
+    name: "Jump",
+    abbreviation: "jump"
   })
 ];
 
 var families = [
   new Family({
-    name: 'Iolite',
-    motto: 'The best family',
+    name: "Iolite",
+    motto: "The best family",
     challengesWon: 3,
     playoffsReached: 4
   }),
   new Family({
-    name: 'Alexandrite',
-    motto: 'The 2nd best family',
+    name: "Alexandrite",
+    motto: "The 2nd best family",
     challengesWon: 4,
     playoffsReached: 3
   }),
   new Family({
-    name: 'Sunstone',
-    motto: 'A family in LPN',
+    name: "Sunstone",
+    motto: "A family in LPN",
     challengesWon: 5,
     playoffsReached: 2
   }),
   new Family({
-    name: 'Ruby',
-    motto: 'Another family in LPN',
+    name: "Ruby",
+    motto: "Another family in LPN",
     challengesWon: 3,
     playoffsReached: 1
   }),
   new Family({
-    name: 'Sapphire',
-    motto: 'Yet another family in LPN',
+    name: "Sapphire",
+    motto: "Yet another family in LPN",
     challengesWon: 2,
     playoffsReached: 1
   }),
   new Family({
-    name: 'Topaz',
-    motto: 'A chill family in LPN',
+    name: "Topaz",
+    motto: "A chill family in LPN",
     challengesWon: 2,
     playoffsReached: 2
   }),
   new Family({
-    name: 'Emerald',
-    motto: 'Almost forgot this family',
+    name: "Emerald",
+    motto: "Almost forgot this family",
     challengesWon: 1,
     playoffsReached: 2
   }),
   new Family({
-    name: 'Bye'
+    name: "Bye"
   })
 ];
 
@@ -163,7 +163,13 @@ function getChallengeStartDates() {
   var twoYearsLater = new Date(thisMonday.getTime());
   twoYearsLater.setDate(twoYearsLater.getDate() + 730);
 
-  dates.push(thisMonday, getMonday(lastYear), getMonday(twoYearsAgo), getMonday(nextYear), getMonday(twoYearsLater));
+  dates.push(
+    thisMonday,
+    getMonday(lastYear),
+    getMonday(twoYearsAgo),
+    getMonday(nextYear),
+    getMonday(twoYearsLater)
+  );
   console.log(dates);
   return dates;
 }
@@ -172,34 +178,34 @@ var startDates = getChallengeStartDates();
 
 var challenges = [
   new Challenge({
-    name: 'THE CURRENT CHALLENGE',
+    name: "THE CURRENT CHALLENGE",
     date: {
       start: startDates[0]
     }
   })
   // new Challenge({
-  // 	name: 'LAST YEAR CHALLENGE',
-  // 	date: {
-  // 		start: startDates[1]
-  // 	}
+  //  name: 'LAST YEAR CHALLENGE',
+  //  date: {
+  //    start: startDates[1]
+  //  }
   // }),
   // new Challenge({
-  // 	name: 'TWO YEARS AGO CHALLENGE',
-  // 	date: {
-  // 		start: startDates[2]
-  // 	}
+  //  name: 'TWO YEARS AGO CHALLENGE',
+  //  date: {
+  //    start: startDates[2]
+  //  }
   // }),
   // new Challenge({
-  // 	name: 'NEXT YEAR CHALLENGE',
-  // 	date: {
-  // 		start: startDates[3]
-  // 	}
+  //  name: 'NEXT YEAR CHALLENGE',
+  //  date: {
+  //    start: startDates[3]
+  //  }
   // }),
   // new Challenge({
-  // 	name: 'TWO YEARS LATER CHALLENGE',
-  // 	date: {
-  // 		start: startDates[4]
-  // 	}
+  //  name: 'TWO YEARS LATER CHALLENGE',
+  //  date: {
+  //    start: startDates[4]
+  //  }
   // })
 ];
 
@@ -235,19 +241,19 @@ function assignChallenges() {
       .then(challenges => {
         challenges.forEach(challenge => {
           switch (challenge.name) {
-            case 'THE CURRENT CHALLENGE':
+            case "THE CURRENT CHALLENGE":
               currentChallenge = challenge;
               break;
-            case 'LAST YEAR CHALLENGE':
+            case "LAST YEAR CHALLENGE":
               lastYearChallenge = challenge;
               break;
-            case 'TWO YEARS AGO CHALLENGE':
+            case "TWO YEARS AGO CHALLENGE":
               twoYearsAgoChallenge = challenge;
               break;
-            case 'NEXT YEAR CHALLENGE':
+            case "NEXT YEAR CHALLENGE":
               nextYearChallenge = challenge;
               break;
-            case 'TWO YEARS LATER CHALLENGE':
+            case "TWO YEARS LATER CHALLENGE":
               twoYearsLaterChallenge = challenge;
               break;
             default:
@@ -267,25 +273,25 @@ function assignFamilies() {
       .then(families => {
         families.forEach(family => {
           switch (family.name) {
-            case 'Iolite':
+            case "Iolite":
               iolite = family;
               break;
-            case 'Alexandrite':
+            case "Alexandrite":
               alexandrite = family;
               break;
-            case 'Sunstone':
+            case "Sunstone":
               sunstone = family;
               break;
-            case 'Ruby':
+            case "Ruby":
               ruby = family;
               break;
-            case 'Sapphire':
+            case "Sapphire":
               sapphire = family;
               break;
-            case 'Topaz':
+            case "Topaz":
               topaz = family;
               break;
-            case 'Emerald':
+            case "Emerald":
               emerald = family;
               break;
             default:
@@ -305,31 +311,31 @@ function assignUnits() {
       .then(units => {
         units.forEach(unit => {
           switch (unit.name) {
-            case 'Mile':
+            case "Mile":
               mile = unit;
               break;
-            case 'Game':
+            case "Game":
               game = unit;
               break;
-            case 'Feet':
+            case "Feet":
               feet = unit;
               break;
-            case 'Meter':
+            case "Meter":
               meter = unit;
               break;
-            case 'Minute':
+            case "Minute":
               minute = unit;
               break;
-            case 'Hour':
+            case "Hour":
               hour = unit;
               break;
-            case 'Hole':
+            case "Hole":
               hole = unit;
               break;
-            case 'Day':
+            case "Day":
               day = unit;
               break;
-            case 'Jump':
+            case "Jump":
               jump = unit;
               break;
             default:
@@ -349,64 +355,64 @@ function assignActivities() {
       .then(activities => {
         activities.forEach(activity => {
           switch (activity.name) {
-            case 'Jump roping':
+            case "Jump roping":
               jumpRoping = activity;
               break;
-            case 'Biking(<5 min pace)':
+            case "Biking(<5 min pace)":
               bikingLess5 = activity;
               break;
-            case 'Biking(>5 min pace)':
+            case "Biking(>5 min pace)":
               bikingMore5 = activity;
               break;
-            case 'Biking(elevation)':
+            case "Biking(elevation)":
               bikingElevation = activity;
               break;
-            case 'Elliptical':
+            case "Elliptical":
               elliptical = activity;
               break;
-            case 'Bowling':
+            case "Bowling":
               bowling = activity;
               break;
-            case 'Hiking':
+            case "Hiking":
               hiking = activity;
               break;
-            case 'Run/walk(10-15 min pace)':
+            case "Run/walk(10-15 min pace)":
               runAndWalk = activity;
               break;
-            case 'Hiking(elevation)':
+            case "Hiking(elevation)":
               hikingElevation = activity;
               break;
-            case 'Rowing':
+            case "Rowing":
               rowing = activity;
               break;
-            case 'Weightlifting':
+            case "Weightlifting":
               weightlifting = activity;
               break;
-            case 'Swimming':
+            case "Swimming":
               swimming = activity;
               break;
-            case 'Abs':
+            case "Abs":
               abs = activity;
               break;
-            case 'Running(<10 min pace)':
+            case "Running(<10 min pace)":
               runningLess10 = activity;
               break;
-            case 'Sports game':
+            case "Sports game":
               sportsGame = activity;
               break;
-            case 'Fitness class':
+            case "Fitness class":
               fitnessClass = activity;
               break;
-            case 'Golf':
+            case "Golf":
               golf = activity;
               break;
-            case 'Intense workout':
+            case "Intense workout":
               intenseWorkout = activity;
               break;
-            case 'Surfing':
+            case "Surfing":
               surfing = activity;
               break;
-            case 'Snowboarding':
+            case "Snowboarding":
               snowboarding = activity;
               break;
             default:
@@ -447,576 +453,576 @@ removeModelObjs(Family)
   .then(() => {
     users = [
       new User({
-        email: 'edwardchow@gmail.com',
+        email: "edwardchow@gmail.com",
         name: {
-          first: 'Edward',
-          last: 'Chow',
-          nickname: 'EdwardChow'
+          first: "Edward",
+          last: "Chow",
+          nickname: "EdwardChow"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 100
       }),
       new User({
-        email: 'michaelwen@gmail.com',
+        email: "michaelwen@gmail.com",
         name: {
-          first: 'Michael',
-          last: 'Wen',
-          nickname: 'MichaelWen'
+          first: "Michael",
+          last: "Wen",
+          nickname: "MichaelWen"
         },
-        password: '123456',
+        password: "123456",
         family: topaz,
         lifetimePoints: 50
       }),
       new User({
-        email: 'adamwhitescarver@gmail.com',
+        email: "adamwhitescarver@gmail.com",
         name: {
-          first: 'Adam',
-          last: 'White',
-          nickname: 'AdamWhitescarver'
+          first: "Adam",
+          last: "White",
+          nickname: "AdamWhitescarver"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 3000
       }),
       new User({
-        email: 'steventrinh@gmail.com',
+        email: "steventrinh@gmail.com",
         name: {
-          first: 'Steven',
-          last: 'Trinh',
-          nickname: 'StevenTrinh'
+          first: "Steven",
+          last: "Trinh",
+          nickname: "StevenTrinh"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 2500
       }),
       new User({
-        email: 'callydai@gmail.com',
+        email: "callydai@gmail.com",
         name: {
-          first: 'Cally',
-          last: 'Dai',
-          nickname: 'CallyDai'
+          first: "Cally",
+          last: "Dai",
+          nickname: "CallyDai"
         },
-        password: '123456',
+        password: "123456",
         family: topaz,
         lifetimePoints: 800
       }),
       new User({
-        email: 'brittanyyoung@gmail.com',
+        email: "brittanyyoung@gmail.com",
         name: {
-          first: 'Brittany',
-          last: 'Young',
-          nickname: 'BrittanyYoung'
+          first: "Brittany",
+          last: "Young",
+          nickname: "BrittanyYoung"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 20
       }),
       new User({
-        email: 'patricklai@gmail.com',
+        email: "patricklai@gmail.com",
         name: {
-          first: 'Patrick',
-          last: 'Lai',
-          nickname: 'PatrickLai'
+          first: "Patrick",
+          last: "Lai",
+          nickname: "PatrickLai"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 45
       }),
       new User({
-        email: 'amandagieg@gmail.com',
+        email: "amandagieg@gmail.com",
         name: {
-          first: 'Amanda',
-          last: 'Gieg',
-          nickname: 'AmandaGieg'
+          first: "Amanda",
+          last: "Gieg",
+          nickname: "AmandaGieg"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 395
       }),
       new User({
-        email: 'shannonlee@gmail.com',
+        email: "shannonlee@gmail.com",
         name: {
-          first: 'Shannon',
-          last: 'Lee',
-          nickname: 'ShannonLee'
+          first: "Shannon",
+          last: "Lee",
+          nickname: "ShannonLee"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 298
       }),
       new User({
-        email: 'stephenlee@gmail.com',
+        email: "stephenlee@gmail.com",
         name: {
-          first: 'Stephen',
-          last: 'Lee',
-          nickname: 'StephenLee'
+          first: "Stephen",
+          last: "Lee",
+          nickname: "StephenLee"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 400
       }),
       new User({
-        email: 'kevinau@gmail.com',
+        email: "kevinau@gmail.com",
         name: {
-          first: 'Kevin',
-          last: 'Au',
-          nickname: 'KevinAu'
+          first: "Kevin",
+          last: "Au",
+          nickname: "KevinAu"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 50
       }),
       new User({
-        email: 'raigovind93@gmail.com',
+        email: "raigovind93@gmail.com",
         name: {
-          first: 'Govind',
-          last: 'Rai',
-          nickname: 'TBE Govind'
+          first: "Govind",
+          last: "Rai",
+          nickname: "TBE Govind"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 100,
         admin: true
       }),
       new User({
-        email: 'vilde@vevatne.no',
+        email: "vilde@vevatne.no",
         name: {
-          first: 'Vilde',
-          last: 'Vevatne',
-          nickname: 'Jinese'
+          first: "Vilde",
+          last: "Vevatne",
+          nickname: "Jinese"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 200,
         admin: true
       }),
       new User({
-        email: 'owenwilson@gmail.com',
+        email: "owenwilson@gmail.com",
         name: {
-          first: 'Owen',
-          last: 'Wilson',
-          nickname: 'Duuh'
+          first: "Owen",
+          last: "Wilson",
+          nickname: "Duuh"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 500
       }),
       new User({
-        email: 'michaelphelps@gmail.com',
+        email: "michaelphelps@gmail.com",
         name: {
-          first: 'Michael',
-          last: 'Phelps',
-          nickname: 'Swimmer'
+          first: "Michael",
+          last: "Phelps",
+          nickname: "Swimmer"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 5000
       }),
       new User({
-        email: 'barchobama@gmail.com',
+        email: "barchobama@gmail.com",
         name: {
-          first: 'Barack',
-          last: 'Obama',
-          nickname: 'President'
+          first: "Barack",
+          last: "Obama",
+          nickname: "President"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 50000
       }),
       new User({
-        email: 'ruthjohnson@gmail.com',
+        email: "ruthjohnson@gmail.com",
         name: {
-          first: 'Ruth',
-          last: 'Johnson',
-          nickname: 'Woman'
+          first: "Ruth",
+          last: "Johnson",
+          nickname: "Woman"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 50
       }),
       new User({
-        email: 'caaarz@gmail.com',
+        email: "caaarz@gmail.com",
         name: {
-          first: 'C',
-          last: 'Arz',
-          nickname: 'Car-lover'
+          first: "C",
+          last: "Arz",
+          nickname: "Car-lover"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 5
       }),
       new User({
-        email: 'tragedy@gmail.com',
+        email: "tragedy@gmail.com",
         name: {
-          first: 'T',
-          last: 'Ragedy',
-          nickname: 'Sad'
+          first: "T",
+          last: "Ragedy",
+          nickname: "Sad"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 0
       }),
       new User({
-        email: 'cornmuffins@gmail.com',
+        email: "cornmuffins@gmail.com",
         name: {
-          first: 'Corn',
-          last: 'Muffin',
-          nickname: 'Eat me'
+          first: "Corn",
+          last: "Muffin",
+          nickname: "Eat me"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 500
       }),
       new User({
-        email: 'tracylam@gmail.com',
+        email: "tracylam@gmail.com",
         name: {
-          first: 'Tracy',
-          last: 'Lam',
-          nickname: 'TracyLam'
+          first: "Tracy",
+          last: "Lam",
+          nickname: "TracyLam"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 20
       }),
       new User({
-        email: 'michaelho@gmail.com',
+        email: "michaelho@gmail.com",
         name: {
-          first: 'Michael',
-          last: 'Ho',
-          nickname: 'MichaelHo'
+          first: "Michael",
+          last: "Ho",
+          nickname: "MichaelHo"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 20
       }),
       new User({
-        email: 'staceyli@gmail.com',
+        email: "staceyli@gmail.com",
         name: {
-          first: 'Stacey',
-          last: 'Li',
-          nickname: 'StaceyLi'
+          first: "Stacey",
+          last: "Li",
+          nickname: "StaceyLi"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 20
       }),
       new User({
-        email: 'andrewkuo@gmail.com',
+        email: "andrewkuo@gmail.com",
         name: {
-          first: 'Andrew',
-          last: 'Kuo',
-          nickname: 'J'
+          first: "Andrew",
+          last: "Kuo",
+          nickname: "J"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 20
       }),
       new User({
-        email: 'jaytsui@gmail.com',
+        email: "jaytsui@gmail.com",
         name: {
-          first: 'Jay',
-          last: 'Tsui',
-          nickname: 'Jay’Tsu'
+          first: "Jay",
+          last: "Tsui",
+          nickname: "Jay’Tsu"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 200
       }),
       new User({
-        email: 'inicoperez@gmail.com',
+        email: "inicoperez@gmail.com",
         name: {
-          first: 'Nico',
-          last: 'Perez',
-          nickname: 'Nico’Pere'
+          first: "Nico",
+          last: "Perez",
+          nickname: "Nico’Pere"
         },
-        password: '123456',
+        password: "123456",
         family: iolite,
         lifetimePoints: 200
       }),
       new User({
-        email: 'ireneear@gmail.com',
+        email: "ireneear@gmail.com",
         name: {
-          first: 'Irene',
-          last: 'Ear',
-          nickname: 'IreneEar'
+          first: "Irene",
+          last: "Ear",
+          nickname: "IreneEar"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 200
       }),
       new User({
-        email: 'parthdhingreja@gmail.com',
+        email: "parthdhingreja@gmail.com",
         name: {
-          first: 'Parth',
-          last: 'TDhi',
-          nickname: 'PT'
+          first: "Parth",
+          last: "TDhi",
+          nickname: "PT"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 200
       }),
       new User({
-        email: 'trinhtruong@gmail.com',
+        email: "trinhtruong@gmail.com",
         name: {
-          first: 'Trinh',
-          last: 'Truong',
-          nickname: 'TT'
+          first: "Trinh",
+          last: "Truong",
+          nickname: "TT"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'christinatruong@gmail.com',
+        email: "christinatruong@gmail.com",
         name: {
-          first: 'Christina',
-          last: 'Truong',
-          nickname: 'CT'
+          first: "Christina",
+          last: "Truong",
+          nickname: "CT"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'richardperez@gmail.com',
+        email: "richardperez@gmail.com",
         name: {
-          first: 'Richard',
-          last: 'Perez',
-          nickname: 'rP'
+          first: "Richard",
+          last: "Perez",
+          nickname: "rP"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'vivianmai@gmail.com',
+        email: "vivianmai@gmail.com",
         name: {
-          first: 'Vivian',
-          last: 'Mai',
-          nickname: 'VVVV'
+          first: "Vivian",
+          last: "Mai",
+          nickname: "VVVV"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 200
       }),
       new User({
-        email: 'henryhe@gmail.com',
+        email: "henryhe@gmail.com",
         name: {
-          first: 'Henry',
-          last: 'He',
-          nickname: 'HH'
+          first: "Henry",
+          last: "He",
+          nickname: "HH"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'annatran@gmail.com',
+        email: "annatran@gmail.com",
         name: {
-          first: 'Anna',
-          last: 'Tran',
-          nickname: 'Anna'
+          first: "Anna",
+          last: "Tran",
+          nickname: "Anna"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'ryanteo@gmail.com',
+        email: "ryanteo@gmail.com",
         name: {
-          first: 'Ryan',
-          last: 'Teo',
-          nickname: 'Win'
+          first: "Ryan",
+          last: "Teo",
+          nickname: "Win"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 200
       }),
       new User({
-        email: 'vinayakdhingreja@gmail.com',
+        email: "vinayakdhingreja@gmail.com",
         name: {
-          first: 'Vinayak',
-          last: 'Dhir',
-          nickname: 'Win'
+          first: "Vinayak",
+          last: "Dhir",
+          nickname: "Win"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'aileenju@gmail.com',
+        email: "aileenju@gmail.com",
         name: {
-          first: 'Aileen',
-          last: 'Ju',
-          nickname: 'AJ'
+          first: "Aileen",
+          last: "Ju",
+          nickname: "AJ"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'ivanwoo@gmail.com',
+        email: "ivanwoo@gmail.com",
         name: {
-          first: 'Ivan',
-          last: 'Woo',
-          nickname: 'IvanW'
+          first: "Ivan",
+          last: "Woo",
+          nickname: "IvanW"
         },
-        password: '123456',
+        password: "123456",
         family: emerald,
         lifetimePoints: 200
       }),
       new User({
-        email: 'sophiaduong@gmail.com',
+        email: "sophiaduong@gmail.com",
         name: {
-          first: 'Sophia',
-          last: 'Duong',
-          nickname: 'SD'
+          first: "Sophia",
+          last: "Duong",
+          nickname: "SD"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'harrisonhuang@gmail.com',
+        email: "harrisonhuang@gmail.com",
         name: {
-          first: 'Harrison',
-          last: 'Huang',
-          nickname: 'HH'
+          first: "Harrison",
+          last: "Huang",
+          nickname: "HH"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 200
       }),
       new User({
-        email: 'emilyrong@gmail.com',
+        email: "emilyrong@gmail.com",
         name: {
-          first: 'Emily',
-          last: 'Rong',
-          nickname: 'ER'
+          first: "Emily",
+          last: "Rong",
+          nickname: "ER"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'irischan@gmail.com',
+        email: "irischan@gmail.com",
         name: {
-          first: 'Iris',
-          last: 'Chan',
-          nickname: 'IC'
+          first: "Iris",
+          last: "Chan",
+          nickname: "IC"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'michellele@gmail.com',
+        email: "michellele@gmail.com",
         name: {
-          first: 'Michelle',
-          last: 'Le',
-          nickname: 'MLe'
+          first: "Michelle",
+          last: "Le",
+          nickname: "MLe"
         },
-        password: '123456',
+        password: "123456",
         family: ruby,
         lifetimePoints: 200
       }),
       new User({
-        email: 'jackiesiu@gmail.com',
+        email: "jackiesiu@gmail.com",
         name: {
-          first: 'Jackie',
-          last: 'Siu',
-          nickname: 'JS'
+          first: "Jackie",
+          last: "Siu",
+          nickname: "JS"
         },
-        password: '123456',
+        password: "123456",
         family: sunstone,
         lifetimePoints: 200
       }),
       new User({
-        email: 'scotthenry@gmail.com',
+        email: "scotthenry@gmail.com",
         name: {
-          first: 'Scott',
-          last: 'Henry',
-          nickname: 'SH'
+          first: "Scott",
+          last: "Henry",
+          nickname: "SH"
         },
-        password: '123456',
+        password: "123456",
         family: sapphire,
         lifetimePoints: 200
       }),
       new User({
-        email: 'artreyes@gmail.com',
+        email: "artreyes@gmail.com",
         name: {
-          first: 'Art',
-          last: 'Reye',
-          nickname: 'AR'
+          first: "Art",
+          last: "Reye",
+          nickname: "AR"
         },
-        password: '123456',
+        password: "123456",
         family: alexandrite,
         lifetimePoints: 200
       }),
       new User({
-        email: 'eliselin@gmail.com',
+        email: "eliselin@gmail.com",
         name: {
-          first: 'Elise',
-          last: 'Lin',
-          nickname: 'EL'
+          first: "Elise",
+          last: "Lin",
+          nickname: "EL"
         },
-        password: '123456',
+        password: "123456",
         family: alexandrite,
         lifetimePoints: 200
       }),
       new User({
-        email: 'calvinchan@gmail.com',
+        email: "calvinchan@gmail.com",
         name: {
-          first: 'Calvin',
-          last: 'Chan',
-          nickname: 'CC-bro'
+          first: "Calvin",
+          last: "Chan",
+          nickname: "CC-bro"
         },
-        password: '123456',
+        password: "123456",
         family: alexandrite,
         lifetimePoints: 200
       }),
       new User({
-        email: 'kurtkline@gmail.com',
+        email: "kurtkline@gmail.com",
         name: {
-          first: 'Kurt',
-          last: 'Kline',
-          nickname: 'KK'
+          first: "Kurt",
+          last: "Kline",
+          nickname: "KK"
         },
-        password: '123456',
+        password: "123456",
         family: alexandrite,
         lifetimePoints: 200
       }),
       new User({
-        email: 'shoumyodewan@gmail.com',
+        email: "shoumyodewan@gmail.com",
         name: {
-          first: 'Shoumyo',
-          last: 'Dewan',
-          nickname: 'SD'
+          first: "Shoumyo",
+          last: "Dewan",
+          nickname: "SD"
         },
-        password: '123456',
+        password: "123456",
         family: topaz,
         lifetimePoints: 200
       }),
       new User({
-        email: 'andypark@gmail.com',
+        email: "andypark@gmail.com",
         name: {
-          first: 'Andy',
-          last: 'Park',
-          nickname: 'Ape'
+          first: "Andy",
+          last: "Park",
+          nickname: "Ape"
         },
-        password: '123456',
+        password: "123456",
         family: topaz,
         lifetimePoints: 200
       }),
       new User({
-        email: 'parthdhingreja@gmail.com',
+        email: "parthdhingreja@gmail.com",
         name: {
-          first: 'Parth',
-          last: 'Dhirngr',
-          nickname: 'PDhir'
+          first: "Parth",
+          last: "Dhirngr",
+          nickname: "PDhir"
         },
-        password: '123456',
+        password: "123456",
         family: alexandrite,
         lifetimePoints: 200
       })
@@ -1033,128 +1039,130 @@ removeModelObjs(Family)
     // debugger;
     var activities = [
       new Activity({
-        name: 'Jump roping',
+        name: "Jump roping",
         points: 1,
         scale: 150,
         unit: jump
       }),
       new Activity({
-        name: 'Biking(<5 min pace)',
+        name: "Biking(<5 min pace)",
         points: 2,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Biking(>5 min pace)',
+        name: "Biking(>5 min pace)",
         points: 1,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Biking(elevation)',
+        name: "Biking(elevation)",
         points: 2,
         scale: 100,
         unit: feet
       }),
       new Activity({
-        name: 'Elliptical',
+        name: "Elliptical",
         points: 2,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Bowling',
+        name: "Bowling",
         points: 2,
         scale: 1,
         unit: game
       }),
       new Activity({
-        name: 'Hiking',
-        description: 'outdoors on trail',
+        name: "Hiking",
+        description: "outdoors on trail",
         points: 4,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Run/walk(10-15 min pace)',
+        name: "Run/walk(10-15 min pace)",
         points: 3,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Hiking(elevation)',
-        description: 'after initial 1000ft.',
+        name: "Hiking(elevation)",
+        description: "after initial 1000ft.",
         points: 1.5,
         scale: 100,
         unit: feet
       }),
       new Activity({
-        name: 'Rowing',
+        name: "Rowing",
         points: 4,
         scale: 1500,
         unit: meter
       }),
       new Activity({
-        name: 'Weightlifting',
-        description: 'body weight exercises like pushups, pullups etc. included',
+        name: "Weightlifting",
+        description:
+          "body weight exercises like pushups, pullups etc. included",
         points: 4,
         scale: 15,
         unit: minute
       }),
       new Activity({
-        name: 'Swimming',
+        name: "Swimming",
         points: 4,
         scale: 15,
         unit: minute
       }),
       new Activity({
-        name: 'Abs',
-        description: 'not in class',
+        name: "Abs",
+        description: "not in class",
         points: 4,
         scale: 15,
         unit: minute
       }),
       new Activity({
-        name: 'Running(<10 min pace)',
+        name: "Running(<10 min pace)",
         points: 4,
         scale: 1,
         unit: mile
       }),
       new Activity({
-        name: 'Sports game',
-        description: 'basketball, volleyball, badminton, etc. (actual game, not just warming up)',
+        name: "Sports game",
+        description:
+          "basketball, volleyball, badminton, etc. (actual game, not just warming up)",
         points: 6,
         scale: 30,
         unit: minute
       }),
       new Activity({
-        name: 'Fitness class',
-        description: 'pilates, yoga, zumba, rock climbing, martial arts etc.',
+        name: "Fitness class",
+        description: "pilates, yoga, zumba, rock climbing, martial arts etc.",
         points: 8,
         scale: 1,
         unit: hour
       }),
       new Activity({
-        name: 'Golf',
+        name: "Golf",
         points: 12,
         scale: 9,
         unit: hole
       }),
       new Activity({
-        name: 'Intense workout',
-        description: 'p90x, parkour, cycling class, crossfit',
+        name: "Intense workout",
+        description: "p90x, parkour, cycling class, crossfit",
         points: 12,
         scale: 30,
         unit: minute
       }),
       new Activity({
-        name: 'Surfing',
+        name: "Surfing",
         points: 12,
         scale: 1,
         unit: hour
       }),
       new Activity({
-        name: 'Snowboarding',
+        name: "Snowboarding",
         points: 15,
         scale: 0.5,
         unit: day
@@ -1189,7 +1197,7 @@ removeModelObjs(Family)
     return createObjs(participations);
   })
   .then(() => {
-    console.log('Finished Seeding');
+    console.log("Finished Seeding");
     // process.exit();
   })
   .catch(e => console.log(e));
