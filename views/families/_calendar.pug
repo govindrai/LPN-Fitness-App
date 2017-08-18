@@ -1,14 +1,34 @@
+//- div#calendarHead
+//-   div#calendar
+//-     div#weekdays
+//-       div MON
+//-       div TUE
+//-       div WED
+//-       div THU
+//-       div.currentDate FRI
+//-       div SAT
+//-       div SUN
+//-     div#dates
+//-       include ./_calendar_dates
+//- hr
+//- div#points-body
+
+mixin weekdays(days, dates)
+  - for (var x = 0; x < 7; x++)
+    - var id = ""
+    if (x===0)
+      - id = "monday"
+    else if (x===6)
+      - id = "sunday"
+    div.weekday
+      div.day= days[x]
+      div.date(id=id data-date=dates[x])= dates[x].getDate()
+
+
 div#calendarHead
   div#calendar
     div#weekdays
-      div MON
-      div TUE
-      div WED
-      div THU
-      div.currentDate FRI
-      div SAT
-      div SUN
-    div#dates
-      include ./_calendar_dates
+      +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
+
 hr
 div#points-body

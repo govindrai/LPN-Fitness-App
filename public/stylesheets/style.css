@@ -81,25 +81,26 @@ input, select {
   color: #a0a3a8; }
   #calendar .currentDate {
     color: #f83b54; }
-  #calendar #dates div {
+  #calendar .date {
     font-size: 24px;
     font-weight: 700;
     line-height: 1.5;
     position: relative; }
-  #calendar #dates div.currentDate::after {
+  #calendar .currentDate::after {
     content: '';
     position: absolute;
-    top: 39px;
-    left: 8px;
-    width: 50%;
+    left: 0px;
+    width: 100%;
     background-color: #f83b54;
     border: 2.5px solid #f83b54; }
 
-#weekdays, #dates {
-  display: flex; }
-
-#weekdays div, #dates div {
-  width: 14%; }
+#weekdays {
+  display: flex;
+  justify-content: space-between; }
+  #weekdays .weekday {
+    position: relative; }
+    #weekdays .weekday div {
+      text-align: center; }
 
 #mobile {
   text-align: right; }

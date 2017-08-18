@@ -98,28 +98,31 @@ input, select
   & .currentDate
     color: $ruby
 
-  #dates
-    div
-      font-size: 24px
-      font-weight: 700
-      line-height: 1.5
-      position: relative
+  .date
+    font-size: 24px
+    font-weight: 700
+    line-height: 1.5
+    position: relative
 
-    div.currentDate::after
-        content: ''
-        position: absolute
-        top: 39px
-        left: 8px
-        width: 50%
-        background-color: $ruby
-        border: 2.5px solid $ruby
+  .currentDate::after
+    content: ''
+    position: absolute
+    left: 0px
+    width: 100%
+    background-color: $ruby
+    border: 2.5px solid $ruby
 
 
-#weekdays, #dates
+#weekdays
   display: flex
+  justify-content: space-between
 
-#weekdays div, #dates div
-  width: 14%
+  .weekday
+    position: relative
+
+    div
+      text-align: center
+
 
 #mobile
   text-align: right
