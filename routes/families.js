@@ -10,10 +10,11 @@ const Family = require("./../models/family"),
 const router = express.Router();
 
 router.get("/:familyName", (req, res) => {
-  let family,
+  let user = res.locals.user,
+    family,
     versingFamily,
-    familyParticipations,
-    versingFamilyParticipations,
+    familyParticipants,
+    versingFamilyParticipants,
     totalPoints,
     versingTotalPoints,
     addPointsButtonDate,
@@ -24,7 +25,6 @@ router.get("/:familyName", (req, res) => {
     currentChallenge = res.locals.currentChallenge,
     today = getToday();
 
-  console.log("currentChallenge", currentChallenge);
   dates = calculateDates(req.query.weekInfo);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
@@ -39,37 +39,41 @@ router.get("/:familyName", (req, res) => {
         currentChallenge,
         family.name
       );
-      return Participation.setUserParticipationForChallenges(res.locals.user, [
-        currentChallenge
-      ]);
-    })
-    // then check to see if the user is participating in the current challenge
-    .then(() => {
-      return Participation.getParticipationForChallengeByFamily(
+      // then get all challenge participants in family
+      return Participation.getChallengeParticipantsByFamily(
         currentChallenge._id,
         family._id
       );
     })
-    // then get all participants from the family in the current challenge
-    .then(familyParticipationsArray => {
-      familyParticipations = familyParticipationsArray;
+    .then(familyParticipantsArray => {
+      familyParticipants = familyParticipantsArray;
+      // check if user is participating in the challenge
+      user.participating = checkUserParticipation(familyParticipants);
+      // then, if versingFamily, get all challenge participants in versing family
       if (versingFamily) {
-        return Participation.getParticipationForChallengeByFamily(
+        return Participation.getChallengeParticipantsByFamily(
           currentChallenge._id,
           versingFamily._id
         );
       }
     })
-    // then get all participants from versing family in the current challenge
-    .then(versingFamilyParticipationsArray => {
+    .then(versingFamilyParticipantsArray => {
       if (versingFamily) {
-        versingFamilyParticipations = versingFamilyParticipationsArray;
+        versingFamilyParticipants = versingFamilyParticipantsArray;
       }
       // the date that will be set on the add points button which will be used to determine which day the activity occurred
-      if (requestedWeek == currentWeek) {
+      // REFACTOR STARTING HERE
+      function calculateAddPointsButtonDate(
+        requestedWeek,
+        currentWeek,
+        today,
+        direction,
+        dates
+      ) {}
+      if (requestedWeek === currentWeek) {
         addPointsButtonDate = getToday();
       } else {
-        if (req.query.direction == "previous") {
+        if (req.query.direction === "previous") {
           addPointsButtonDate = dates[6];
         } else {
           addPointsButtonDate = dates[0];
@@ -87,12 +91,9 @@ router.get("/:familyName", (req, res) => {
         displayAddPointsButton = true;
       }
 
-      var user =
-        req.params.familyName == res.locals.user.family.name
-          ? res.locals.user
-          : undefined;
+      var user = req.params.familyName == user.family.name ? user : undefined;
       return Point.getPointsForParticipationsByDay(
-        familyParticipations,
+        familyParticipants,
         addPointsButtonDate,
         user
       );
@@ -100,7 +101,7 @@ router.get("/:familyName", (req, res) => {
     // then get a list of all points added for each participating family member in the current challenge
     .then(() => {
       return Point.getTotalPointsForParticipationsByWeek(
-        familyParticipations,
+        familyParticipants,
         dates[0],
         dates[6]
       );
@@ -112,10 +113,10 @@ router.get("/:familyName", (req, res) => {
       } else {
         family.totalPoints = calculatePoints(
           totalPointsForWeek,
-          familyParticipations.length
+          familyParticipants.length
         );
         return Point.getTotalPointsForParticipationsByWeek(
-          versingFamilyParticipations,
+          versingFamilyParticipants,
           dates[0],
           dates[6]
         );
@@ -133,14 +134,14 @@ router.get("/:familyName", (req, res) => {
       } else {
         versingFamily.totalPoints = calculatePoints(
           totalPointsForWeek,
-          versingFamilyParticipations.length
+          versingFamilyParticipants.length
         );
         family.pointsNeeded = calculatePointsNeededToWin(
           family.totalPoints,
-          familyParticipations.length,
+          familyParticipants.length,
           versingFamily.totalPoints
         );
-        familyParticipations = familyParticipations.sort(
+        familyParticipants = familyParticipants.sort(
           (a, b) => b.totalPoints - a.totalPoints
         );
       }
@@ -162,7 +163,7 @@ router.get("/:familyName", (req, res) => {
         dates,
         family,
         versingFamily,
-        familyParticipations,
+        familyParticipants,
         showPrevious,
         showNext,
         addPointsButtonDate,
@@ -179,7 +180,7 @@ router.get("/:familyName", (req, res) => {
 });
 
 router.get("/:familyName/points", (req, res) => {
-  let family, familyParticipations, displayAddPointsButton;
+  let family, familyParticipants, displayAddPointsButton;
   const date = new Date(req.query.date);
   // current week is the week that it currently is according to today's date
   currentWeek = calculateWeekNumber(currentChallenge.date.end, getToday());
@@ -188,29 +189,26 @@ router.get("/:familyName/points", (req, res) => {
 
   Family.findOne({ name: req.params.familyName })
     .then(family => {
-      return Participation.getParticipationForChallengeByFamily(
+      return Participation.getChallengeParticipantsByFamily(
         currentChallenge._id,
         family._id
       );
     })
-    .then(familyParticipationsArray => {
-      familyParticipations = familyParticipationsArray;
+    .then(familyParticipantsArray => {
+      familyParticipants = familyParticipantsArray;
 
       displayAddPointsButton = date > getToday() ? false : true;
       addPointsButtonDate = date;
-      var user =
-        req.params.familyName == res.locals.user.family.name
-          ? res.locals.user
-          : undefined;
+      var user = req.params.familyName == user.family.name ? user : undefined;
       return Point.getPointsForParticipationsByDay(
-        familyParticipations,
+        familyParticipants,
         addPointsButtonDate,
         user
       );
     })
     .then(() => {
       res.render("families/_daily_points", {
-        familyParticipations,
+        familyParticipants,
         displayAddPointsButton
       });
     })
@@ -285,6 +283,13 @@ function determineVersingFamily(
       .versingFamily;
   }
 }
+
+function checkUserParticipation(familyParticipants) {
+  familyParticipants.find(
+    participant => participant._id.toString() === user._id.toString()
+  );
+}
+
 function showPreviousWeek(challengeStartDate, monday) {
   return challengeStartDate.toString() != monday.toString();
 }
