@@ -1,20 +1,36 @@
+-
+  const familyColors = { Topaz: "#f2cd46",
+  Sunstone: "#faa152",
+  Ruby: "#f83b54",
+  Alexandrite: "#cb51d7",
+  Iolite: "#6456f8",
+  Sapphire: "#3b8df8",
+  Emerald: "#24ab60",
+  Bye: "brown"
+  };
+  const statusColors = {
+    winning: "#0b8c0b",
+    losing: "#d92b3a",
+    tied: "brown"
+  };
+
 .col-12.switch-weeks
   if showPrevious
     #previous.change-week  &lt; Previous Week
   if showNext
     #next.change-week Next Week &gt;
 
-#summary.col-12
+#summary.col-12(style=`color: ${familyColors[family.name]}`)
   #familyName= family.name
   #totalPoints= family.totalPoints
 
-#competitorSummary.col-12 Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[span#versingFamily= versingFamily.name]
+#competitorSummary.col-12 Week #[span.weekNumber= currentChallenge.weekNumber] vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
 
 hr
 
 #weeklyStatus.col-12
   div Opponent score: #[span= versingFamily.totalPoints]
-  div Status: #[span.red= family.pointsNeeded]
+  div Status: #[span(style=`color: ${statusColors[family.pointsNeeded.status]}`)= family.pointsNeeded.message]
   div Time left: #[span#timeRemaining= timeRemaining]
 
 .clear
