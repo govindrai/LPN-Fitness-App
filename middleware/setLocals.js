@@ -14,9 +14,9 @@ module.exports = function setLocals(req, res, next) {
       Bye: "brown"
     };
     res.locals.statusColors = {
-      winning: "#0b8c0b",
-      losing: "#d92b3a",
-      tied: "brown"
+      Winning: "#0b8c0b",
+      Losing: "#d92b3a",
+      Tied: "brown"
     };
     res.locals.user
       .getRegisterableChallengesCount()

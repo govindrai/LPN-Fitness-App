@@ -6,15 +6,15 @@
 
 #summary.col-12(style=`color: ${familyColors[family.name]}`)
   #familyName= family.name
-  #totalPoints= family.totalPoints
+  #totalPoints= family.teamScore
 
-#competitorSummary.col-12 Week #[span.weekNumber= currentChallenge.weekNumber] vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
+#competitorSummary.col-12 Week #[span.weekNumber= requestedWeek] vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
 
 hr
 
 #weeklyStatus.col-12
-  div Opponent score: #[span= versingFamily.totalPoints]
-  div Status: #[span(style=`color: ${statusColors[family.pointsNeeded.status]}`)= family.pointsNeeded.message]
+  div Opponent score: #[span= versingFamily.teamScore]
+  div Status: #[span(style=`color: ${statusColors[family.pointsNeededToWin.status]}`)= family.pointsNeededToWin.message]
   div Time left: #[span#timeRemaining= timeRemaining]
 
 .clear

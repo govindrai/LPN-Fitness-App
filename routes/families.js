@@ -13,8 +13,8 @@ router.get("/:familyName", (req, res) => {
   let user = res.locals.user,
     family,
     versingFamily,
-    familyParticipants,
-    versingFamilyParticipants,
+    familyParticipations,
+    versingFamilyParticipations,
     totalPoints,
     versingTotalPoints,
     defaultShowDate,
@@ -48,10 +48,10 @@ router.get("/:familyName", (req, res) => {
         family._id
       );
     })
-    .then(familyParticipantsArray => {
-      familyParticipants = familyParticipantsArray;
+    .then(familyParticipationsArray => {
+      familyParticipations = familyParticipationsArray;
       // check if user is participating in the challenge
-      user.isParticipating = checkUserParticipation(familyParticipants, user);
+      user.isParticipating = checkUserParticipation(familyParticipations, user);
       // then, if versingFamily, get all challenge participants in versing family
       if (versingFamily) {
         return Participation.getChallengeParticipantsByFamily(
@@ -60,9 +60,9 @@ router.get("/:familyName", (req, res) => {
         );
       }
     })
-    .then(versingFamilyParticipantsArray => {
+    .then(versingFamilyParticipationsArray => {
       if (versingFamily) {
-        versingFamilyParticipants = versingFamilyParticipantsArray;
+        versingFamilyParticipations = versingFamilyParticipationsArray;
       }
 
       // determine selected calendar date when user accesses family page
@@ -91,7 +91,7 @@ router.get("/:familyName", (req, res) => {
       // if it is a future week, points will not get calculated
       // but ordering may change if user is part of family
       return Point.calculateParticipantPointsByDay(
-        familyParticipants,
+        familyParticipations,
         defaultShowDate,
         family.name === user.family.name ? user : undefined,
         isfutureWeek
@@ -101,7 +101,7 @@ router.get("/:familyName", (req, res) => {
       // then, calculate points for the family for the entire week
       // if it is a future week, points will not get calculated
       return Point.calculatePointsForWeek(
-        familyParticipants,
+        familyParticipations,
         dates[0],
         dates[6],
         isFutureWeek
@@ -112,10 +112,8 @@ router.get("/:familyName", (req, res) => {
       family.teamScore = !versingFamily
         ? "N/A"
         : calculateTeamScore(
-            family,
-            versingFamily,
-            totalPoints,
-            numOfParticipants
+            totalFamilyPointsForWeek,
+            familyParticipations.length
           );
     })
     .then(() => {
@@ -123,7 +121,7 @@ router.get("/:familyName", (req, res) => {
       // if it is a future week, points will not get calculated
       if (versingFamily) {
         return Point.calculatePointsForWeek(
-          versingFamilyParticipants,
+          versingFamilyParticipations,
           dates[0],
           dates[6],
           isFutureWeek
@@ -137,17 +135,17 @@ router.get("/:familyName", (req, res) => {
           name: "TBD, check rankings for likelihood of making it to playoffs",
           teamScore: "N/A"
         };
-        family.pointsNeeded = { status: "N/A", message: "N/A" };
+        family.pointsNeededToWin = { status: "N/A", message: "N/A" };
       } else {
         versingFamily.teamScore = calculateTeamScore(
           totalVersingFamilyPointsForWeek,
-          versingFamilyParticipants.length
+          versingFamilyParticipations.length
         );
         family.pointsNeededToWin = calculatePointsNeededToWin(
           family.teamScore,
-          familyParticipants.length,
+          familyParticipations.length,
           versingFamily.teamScore,
-          versingFamilyParticipants.length
+          versingFamilyParticipations.length
         );
       }
       // check whether or not to show next/previous week buttons
@@ -165,9 +163,10 @@ router.get("/:familyName", (req, res) => {
         // currentChallenge: currentChallenge,
         timeRemaining,
         dates,
+        requestedWeek,
         family,
         versingFamily,
-        familyParticipants,
+        familyParticipations,
         showPrevious,
         showNext,
         addPointsButtonDate,
@@ -184,7 +183,7 @@ router.get("/:familyName", (req, res) => {
 });
 
 router.get("/:familyName/points", (req, res) => {
-  let family, familyParticipants, displayAddPointsButton;
+  let family, familyParticipations, displayAddPointsButton;
   const date = new Date(req.query.date);
   // current week is the week that it currently is according to today's date
   currentWeek = calculateWeekNumber(currentChallenge.date.end, getToday());
@@ -198,21 +197,21 @@ router.get("/:familyName/points", (req, res) => {
         family._id
       );
     })
-    .then(familyParticipantsArray => {
-      familyParticipants = familyParticipantsArray;
+    .then(familyParticipationsArray => {
+      familyParticipations = familyParticipationsArray;
 
       displayAddPointsButton = date > getToday() ? false : true;
       addPointsButtonDate = date;
       var user = req.params.familyName == user.family.name ? user : undefined;
       return Point.calculateParticipantPointsByDay(
-        familyParticipants,
+        familyParticipations,
         addPointsButtonDate,
         user
       );
     })
     .then(() => {
       res.render("families/_daily_points", {
-        familyParticipants,
+        familyParticipations,
         displayAddPointsButton
       });
     })
@@ -288,8 +287,8 @@ function determineVersingFamily(
   }
 }
 
-function checkUserParticipation(familyParticipants, user) {
-  familyParticipants.find(
+function checkUserParticipation(familyParticipations, user) {
+  familyParticipations.find(
     participant => participant._id.toString() === user._id.toString()
   );
 }
@@ -370,23 +369,34 @@ function calculateTeamScore(totalScore, numOfParticipants) {
   return (totalScore / numOfParticipants).toFixed(2);
 }
 
-function calculateTeamScore(totalScore, numOfParticipants) {}
-
 function calculatePointsNeededToWin(
   familyTeamScore,
-  numOfFamilyParticipants,
-  versingTeamScore,
-  numOfVersingFamilyParticipants
+  numOfFamilyParticipations,
+  versingFamilyTeamScore,
+  numOfVersingFamilyParticipations
 ) {
-  numOfParticipants = numOfParticipants >= 5 ? numOfParticipants : 5;
-  var deficientPoints = versingFamilyTotalPoints - familyTotalPoints;
-  return deficientPoints <= 0
-    ? { status: "winning", message: `winning by x # of points` }
-    : {
-        status: "losing",
-        message: `need ${numOfParticipants *
-          deficientPoints} total points to tie`
-      };
+  numOfFamilyParticipations =
+    numOfFamilyParticipations >= 5 ? numOfFamilyParticipations : 5;
+  numOfVersingFamilyParticipations =
+    numOfVersingFamilyParticipations >= 5
+      ? numOfVersingFamilyParticipations
+      : 5;
+
+  let status, message;
+
+  if (familyTeamScore > versingFamilyTeamScore) {
+    status = message = "Winning";
+  } else if (familyTeamScore < versingFamilyTeamScore) {
+    status = "Losing";
+    const pointsAcquired = familyTeamScore * numOfFamilyParticipations;
+    const pointsNeededToTie =
+      versingFamilyTeamScore * numOfFamilyParticipations;
+    const pointsNeededToWin = pointsNeededToTie - pointsAcquired;
+    message = `Need ${pointsNeededToWin} points to tie`;
+  } else {
+    status = message = "Tied";
+  }
+  return { status, message };
 }
 
 function getToday() {
