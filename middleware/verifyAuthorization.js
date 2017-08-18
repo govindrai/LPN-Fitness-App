@@ -1,9 +1,8 @@
 // Models
-var User = require("./../models/user"),
-  Challenge = require("./../models/challenge");
+const User = require("./../models/user");
 
 // check if the user is logged in
-function verifyAuthorization(req, res, next) {
+module.exports = function verifyAuthorization(req, res, next) {
   const exemptPaths = ["/login", "/register"];
   if (exemptPaths.includes(req.path)) return next();
   // if x-auth key doesn't exist in session object
@@ -21,6 +20,4 @@ function verifyAuthorization(req, res, next) {
       return next();
     })
     .catch(e => console.log(e));
-}
-
-module.exports = verifyAuthorization;
+};
