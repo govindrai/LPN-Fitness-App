@@ -28,5 +28,7 @@ module.exports = function setLocals(req, res, next) {
         res.locals.currentChallenge = currentChallenge;
         return next();
       });
+  } else {
+    return next();
   }
 };
