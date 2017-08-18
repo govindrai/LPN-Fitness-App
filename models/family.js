@@ -1,4 +1,4 @@
-var mongoose = require('mongoose'),
+var mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 var familySchema = new mongoose.Schema({
@@ -10,7 +10,7 @@ var familySchema = new mongoose.Schema({
   motto: {
     type: String,
     required: true,
-    default: 'We are too cool for a motto.'
+    default: "We are too cool for a motto."
   },
   challengesWon: {
     type: Number,
@@ -22,7 +22,7 @@ var familySchema = new mongoose.Schema({
   },
   winner: {
     type: String,
-    default: 'TBD'
+    default: "TBD"
   }
 });
 
@@ -36,6 +36,6 @@ familySchema.methods.increasePlayoffsReached = function() {
   return this.save();
 };
 
-var Family = mongoose.model('Family', familySchema);
+var Family = mongoose.model("Family", familySchema);
 
 module.exports = Family;
