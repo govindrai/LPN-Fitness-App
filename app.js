@@ -32,6 +32,8 @@ var Family = require("./models/family"),
 
 // Middleware
 var verifyAuthorization = require("./middleware/verifyAuthorization");
+var sendToHome = require("./middleware/sendToHome");
+var setLocals = require("./middleware/setLocals");
 
 // Create Express App
 var app = express();
@@ -80,7 +82,7 @@ app.use(
   express.static(path.join(__dirname, "/node_modules/typeahead.js/dist/"))
 );
 
-app.use(verifyAuthorization);
+app.use(verifyAuthorization, sendToHome, setLocals);
 app.use("/", index);
 app.use("/users", users);
 app.use("/families", families);
