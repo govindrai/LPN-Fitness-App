@@ -18,6 +18,15 @@ module.exports = function setLocals(req, res, next) {
       Losing: "#d92b3a",
       Tied: "brown"
     };
+    res.locals.gradients = {
+      Topaz: "linear-gradient(135deg, #fbf0c7, #fad0ad)",
+      Sunstone: "linear-gradient(135deg, #fde2cb, #fdbbb1)",
+      Ruby: "linear-gradient(135deg, #fcc4cb, #fdacd0)",
+      Alexandrite: "linear-gradient(135deg, #f3d6f2, #d8b1f3)",
+      Iolite: "linear-gradient(135deg, #dfd9fd, #b3c6fd)",
+      Sapphire: "linear-gradient(135deg, #c4dcfc, #aceafd)",
+      Emerald: "linear-gradient(135deg, #bde5cf, #a8e6af)"
+    };
     res.locals.user
       .getRegisterableChallengesCount()
       .then(challengeCount => {

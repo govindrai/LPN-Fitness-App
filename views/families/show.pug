@@ -11,13 +11,16 @@ block content
 append footer-scripts
   script.
     function updatePoints(e) {
+    console.log(e.currentTarget);
+      //- debugger;
       $.ajax({
         url: window.location.pathname + "/points",
-        data: "date=" + $(this).data('date')
+        data: "date=" + $(e.currentTarget).find(".date").data("date")
       })
       .done(res => $("#dailyPoints").replaceWith(res))
-      .fail(() => console.log("updatePoints failed"));
+      .fail(e => console.log("updatePoints failed"));
     }
+
 
     function updateShow(e) {
       const data = {
@@ -173,7 +176,7 @@ append footer-scripts
     });
 
     $('body').on('click', '.change-week', updateShow);
-    $('body').on('click', '#dates div', updatePoints);
+    $('body').on('click', '.updatePoints', updatePoints);
     $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#addPoints', addPoints);
     $('body').on('keyup', '.num-of-units', calculatePoints);

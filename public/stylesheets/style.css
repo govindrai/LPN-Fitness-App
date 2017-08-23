@@ -51,14 +51,10 @@ body {
   font: 14px "Open Sans", sans-serif;
   max-width: 400px; }
 
-a {
-  color: #00B7FF; }
-
 input, select {
   display: block; }
 
 #backgroundGradient {
-  background: linear-gradient(135deg, #fbf0c7, #fad0ad);
   padding: 32px 15px; }
   #backgroundGradient #scoreboard {
     padding: 15px 0;
@@ -79,34 +75,31 @@ input, select {
   justify-content: space-between;
   text-align: center;
   color: #a0a3a8; }
-  #calendar .currentDate {
-    color: #f83b54; }
   #calendar .date {
     font-size: 24px;
     font-weight: 700;
     line-height: 1.5;
     position: relative; }
-  #calendar .currentDate::after {
-    content: '';
-    position: absolute;
-    left: 0px;
-    width: 100%;
-    background-color: #f83b54;
-    border: 2.5px solid #f83b54; }
 
 #weekdays {
   display: flex;
   justify-content: space-between; }
   #weekdays .weekday {
     position: relative; }
-    #weekdays .weekday div {
-      text-align: center; }
+    #weekdays .weekday .day {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.54; }
+
+.updatePoints {
+  cursor: pointer; }
 
 #mobile {
   text-align: right; }
 
 #hamburger {
-  font-size: 36px; }
+  font-size: 36px;
+  color: #6b6d70; }
 
 .switch-weeks {
   display: flex;
@@ -191,25 +184,34 @@ hr {
   font-size: 24px;
   font-weight: 700;
   line-height: 1.5;
-  color: #a0a3a8; }
+  color: #a0a3a8;
+  margin-bottom: 16px; }
   #competitorSummary #versingFamily {
     color: #6456f8; }
 
-#weeklyStatus div {
-  font-size: 16px;
-  line-height: 1.5;
-  color: #353738;
-  margin-bottom: 12px; }
+#weeklyStatus {
+  margin-bottom: 32px; }
+  #weeklyStatus div {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #353738;
+    margin-bottom: 12px; }
+    #weeklyStatus div:last-child {
+      margin-bottom: 0; }
+  #weeklyStatus span {
+    display: inline-block;
+    margin-left: 16px;
+    font-weight: 700;
+    color: #353738;
+    text-transform: uppercase; }
+    #weeklyStatus span.red {
+      color: red; }
+    #weeklyStatus span.green {
+      color: green; }
 
-#weeklyStatus span {
-  display: inline-block;
-  margin-left: 16px;
-  font-weight: 700;
-  color: #353738;
-  text-transform: uppercase; }
-  #weeklyStatus span.red {
-    color: red; }
-  #weeklyStatus span.green {
-    color: green; }
+#border {
+  height: 1px;
+  background: #dadde0;
+  margin-bottom: 16px; }
 
 /*# sourceMappingURL=style.css.map */

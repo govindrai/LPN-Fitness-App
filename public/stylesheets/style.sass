@@ -1,26 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i')
 
 $opensans: "Open Sans", sans-serif
-$topaz: #f2cd46
-$sunstone: #faa152
-$ruby: #f83b54
-$alexandrite: #cb51d7
-$iolite: #6456f8
-$sapphire: #3b8df8
-$emerald: #24ab60
 
 $error: #d92b3a
 $success: #0b8c0b
 $grey: #a0a3a8
 $scoreboardBorder: #dadde0
-
-$topaz-gradient: linear-gradient(135deg, #fbf0c7, #fad0ad)
-$sunstone-gradient: linear-gradient(135deg, #fde2cb, #fdbbb1)
-$ruby-gradient: linear-gradient(135deg, #fcc4cb, #fdacd0)
-$alexandrite-gradient: linear-gradient(135deg, #f3d6f2, #d8b1f3)
-$iolite-gradient: linear-gradient(135deg, #dfd9fd, #b3c6fd)
-$sapphire-gradient: linear-gradient(135deg, #c4dcfc, #aceafd)
-$emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 *
   box-sizing: border-box
@@ -65,14 +50,10 @@ body
   font: 14px $opensans
   max-width: 400px
 
-a
-  color: #00B7FF
-
 input, select
   display: block
 
 #backgroundGradient
-  background: $topaz-gradient
   padding: 32px 15px
 
   #scoreboard
@@ -95,23 +76,13 @@ input, select
   justify-content: space-between
   text-align: center
   color: $grey
-  & .currentDate
-    color: $ruby
 
   .date
     font-size: 24px
     font-weight: 700
     line-height: 1.5
     position: relative
-
-  .currentDate::after
-    content: ''
-    position: absolute
-    left: 0px
-    width: 100%
-    background-color: $ruby
-    border: 2.5px solid $ruby
-
+    padding-bottom 20px
 
 #weekdays
   display: flex
@@ -120,15 +91,20 @@ input, select
   .weekday
     position: relative
 
-    div
-      text-align: center
+    .day
+      font-size: 13px
+      font-weight: 600
+      line-height: 1.54
 
+.updatePoints
+  cursor: pointer
 
 #mobile
   text-align: right
 
 #hamburger
   font-size: 36px
+  color: #6b6d70
 
 .switch-weeks
   display: flex
@@ -217,16 +193,21 @@ hr
   font-weight: 700
   line-height: 1.5
   color: #a0a3a8
+  margin-bottom: 16px
 
   #versingFamily
     color: #6456f8
 
 #weeklyStatus
+  margin-bottom: 32px
+
   div
     font-size: 16px
     line-height: 1.5
     color: #353738
     margin-bottom: 12px
+    &:last-child
+      margin-bottom: 0
 
   span
     display: inline-block
@@ -239,4 +220,7 @@ hr
     &.green
       color: green
 
-
+#border
+  height: 1px
+  background: #dadde0
+  margin-bottom: 16px

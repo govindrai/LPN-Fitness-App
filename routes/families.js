@@ -24,13 +24,19 @@ router.get("/:familyName", (req, res) => {
     currentWeek,
     requestedWeek,
     isFutureWeek,
+    timeRemaining,
+    showPrevious,
+    showNext,
     currentChallenge = res.locals.currentChallenge,
     today = getToday();
 
   dates = calculateDates(req.query.weekInfo);
+  timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
   isfutureWeek = requestedWeek > currentWeek;
+  showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
+  showNext = showNextWeek(currentChallenge.date.start, dates[6]);
 
   // Find the family who's page has been requested
   Family.findOne({ name: req.params.familyName })
@@ -148,19 +154,8 @@ router.get("/:familyName", (req, res) => {
           versingFamilyParticipations.length
         );
       }
-      // check whether or not to show next/previous week buttons
-      var showPrevious = showPreviousWeek(
-          currentChallenge.date.start,
-          dates[0]
-        ),
-        showNext = showNextWeek(currentChallenge.date.start, dates[6]);
-
-      let nextMonday = new Date(dates[6]);
-      nextMonday.setDate(nextMonday.getDate() + 1);
-      const timeRemaining = getTimeRemaining(nextMonday);
 
       const options = {
-        // currentChallenge: currentChallenge,
         timeRemaining,
         dates,
         requestedWeek,
@@ -169,15 +164,13 @@ router.get("/:familyName", (req, res) => {
         familyParticipations,
         showPrevious,
         showNext,
+        defaultShowDate,
         addPointsButtonDate,
         displayAddPointsButton
       };
 
-      if (req.xhr) {
-        res.render("families/_show_body", options);
-      } else {
-        res.render("families/show", options);
-      }
+      const view = req.xhr ? "families/_show_body" : "families/show";
+      return res.render(view, options);
     })
     .catch(e => console.log(e));
 });
@@ -334,10 +327,12 @@ function calculateAddPointsButtonDate(
   if (requestedWeek < currentWeek) return false;
 }
 
+// returns true if the start date does not equal Monday of requested week
 function showPreviousWeek(challengeStartDate, monday) {
   return challengeStartDate.toString() != monday.toString();
 }
 
+// returns true if the end date does not equal the Sunday of requested week
 function showNextWeek(challengeEndDate, sunday) {
   var dateAfterSunday = new Date(sunday.getTime());
   dateAfterSunday.setDate(sunday.getDate() + 1);
@@ -385,27 +380,32 @@ function calculatePointsNeededToWin(
   let status, message;
 
   if (familyTeamScore > versingFamilyTeamScore) {
-    status = message = "Winning";
+    status = "Winning";
+    message = "🔥🔥🔥   Winning   🔥🔥🔥";
   } else if (familyTeamScore < versingFamilyTeamScore) {
     status = "Losing";
     const pointsAcquired = familyTeamScore * numOfFamilyParticipations;
     const pointsNeededToTie =
       versingFamilyTeamScore * numOfFamilyParticipations;
     const pointsNeededToWin = pointsNeededToTie - pointsAcquired;
-    message = `Need ${pointsNeededToWin} points to tie`;
+    message = `😭😭👎   Need ${pointsNeededToWin} points to tie`;
   } else {
-    status = message = "Tied";
+    status = "Tied";
+    message = "😅   Tied";
   }
-  return { status, message };
+  return {
+    status,
+    message
+  };
 }
-
 function getToday() {
   var date = new Date();
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function getTimeRemaining(endOfWeek) {
-  const total = Date.parse(endOfWeek) - Date.parse(new Date()),
+} // Subtracts the time between Monday at 12AM and now // and converts it to days/hours/minutes
+function getTimeRemainingInWeek(endOfWeek) {
+  let nextMonday = new Date(endOfWeek);
+  nextMonday.setDate(nextMonday.getDate() + 1);
+  const total = Date.parse(nextMonday) - Date.parse(new Date()),
     days = Math.floor(total / (1000 * 60 * 60 * 24)),
     hours = Math.floor(total / (1000 * 60 * 60) % 24),
     minutes = Math.floor(total / 1000 / 60 % 60);

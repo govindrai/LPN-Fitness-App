@@ -1,29 +1,19 @@
-//- div#calendarHead
-//-   div#calendar
-//-     div#weekdays
-//-       div MON
-//-       div TUE
-//-       div WED
-//-       div THU
-//-       div.currentDate FRI
-//-       div SAT
-//-       div SUN
-//-     div#dates
-//-       include ./_calendar_dates
-//- hr
-//- div#points-body
-
 mixin weekdays(days, dates)
+  - var defaultShowDateString = defaultShowDate.toString()
   - for (var x = 0; x < 7; x++)
-    - var id = ""
+    - var id = ""; var className = ""; var style = ""; var borderStyle = ""
     if (x===0)
       - id = "monday"
     else if (x===6)
       - id = "sunday"
-    div.weekday
-      div.day= days[x]
-      div.date(id=id data-date=dates[x])= dates[x].getDate()
-
+    if (defaultShowDateString === dates[x].toString())
+      - className = "currentDate"
+      - style = `color:${familyColors[family.name]}`
+      - borderStyle = `border-bottom: 5px solid ${familyColors[family.name]}`
+    a.updatePoints
+      div(class=`weekday ${className}` style=style)
+        div.day= days[x]
+        div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
 
 div#calendarHead
   div#calendar
