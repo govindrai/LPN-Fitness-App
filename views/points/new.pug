@@ -1,7 +1,16 @@
-h1 Add Points
-form#add-points(action="/points" method="POST")
-	input(type="hidden", name="participation", value=participationId)
-	input(type="hidden", name="date", value=date)
-	div
-		label#activity-name Activity Name
-		input(id="typeahead" type="text")
+- var weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+- var weekday = weekdays[addPointsButtonDate.getDay() - 1]
+- var month = addPointsButtonDate.getMonth() + 1
+- var date = addPointsButtonDate.getDate()
+
+#add-points-container.col-12
+  nav#mobile.col-12
+      #hamburger  &#10005;
+
+  .subtitle #{weekday}, #{month}/#{date}
+  form#add-points(action="/points" method="POST")
+    input(type="hidden", name="participation", value=participationId)
+    input(type="hidden", name="date", value=date)
+    div
+      label#activity-name Activity Name
+      input(id="typeahead" type="text")

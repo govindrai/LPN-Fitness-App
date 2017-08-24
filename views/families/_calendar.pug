@@ -20,5 +20,41 @@ div#calendarHead
     div#weekdays
       +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
 
-hr
-div#points-body
+#border
+
+div#dailyPoints.col-12
+  //- div#selectedDate= "SELECTED DATE = " + addPointsButtonDate
+  each participation in familyParticipations
+    .participant
+      .left-column
+        .nickname= participation.user.name.nickname
+        .realname= participation.user.fullName
+      //- p= "Lifetime Points: " + participation.user.lifetimePoints
+      //- p= `Points For Week: ${participation.totalPoints}`
+      .right-column
+        if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalPoints === 0
+          #addPoints(data-date=addPointsButtonDate) +
+        else
+          if participation.totalDailyPoints === 0
+            .total-points &#8213;
+          else
+            .total-points= participation.totalDailyPoints
+
+      if participation.points.length > 0
+        table
+          thead
+            tr
+              td Activity
+              td Number of
+              td Units
+              td Calculated Points
+          tbody
+          each point in participation.points
+            tr(data-point=point._id)
+              td= point.activity.name
+              td= point.numOfUnits
+              td= point.activity.unit.name
+              td= point.calculatedPoints
+              td #[button.delete-point Delete]
+
+<div style="clear:both"></div>

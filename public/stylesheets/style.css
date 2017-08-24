@@ -46,13 +46,54 @@
 .clear {
   clear: both; }
 
+a {
+  text-decoration: none;
+  color: blue; }
+  a:visited {
+    color: blue; }
+  a:hover {
+    color: red; }
+
 body {
   margin: auto;
   font: 14px "Open Sans", sans-serif;
-  max-width: 400px; }
+  max-width: 400px;
+  position: relative; }
 
 input, select {
   display: block; }
+
+nav {
+  margin: 10px auto 20px auto; }
+  nav.mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; }
+    nav.mobile #hamburger {
+      font-size: 36px;
+      color: #6B6D70; }
+    nav.mobile .logo {
+      margin-bottom: 0; }
+
+.title {
+  font-size: 36px;
+  color: #6B6D70;
+  font-weight: bold;
+  margin-bottom: 24px;
+  margin-left: 0; }
+
+.subtitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #a0a3a8;
+  margin-bottom: 33px; }
+
+.message {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5;
+  color: #353738; }
 
 #backgroundGradient {
   padding: 32px 15px; }
@@ -75,31 +116,67 @@ input, select {
   justify-content: space-between;
   text-align: center;
   color: #a0a3a8; }
-  #calendar .date {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.5;
-    position: relative; }
-
-#weekdays {
-  display: flex;
-  justify-content: space-between; }
-  #weekdays .weekday {
-    position: relative; }
-    #weekdays .weekday .day {
-      font-size: 13px;
-      font-weight: 600;
-      line-height: 1.54; }
+  #calendar #weekdays {
+    display: flex;
+    justify-content: space-between; }
+    #calendar #weekdays .weekday {
+      position: relative; }
+      #calendar #weekdays .weekday .day {
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.54; }
+      #calendar #weekdays .weekday .date {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        position: relative; }
 
 .updatePoints {
   cursor: pointer; }
 
-#mobile {
-  text-align: right; }
-
-#hamburger {
-  font-size: 36px;
-  color: #6b6d70; }
+#dailyPoints .participant {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #dadde0;
+  padding-bottom: 16px;
+  align-items: center;
+  margin-bottom: 16px; }
+  #dailyPoints .participant:last-child {
+    border: none;
+    margin: 0;
+    padding-bottom: 0; }
+  #dailyPoints .participant .left-column {
+    text-align: left; }
+  #dailyPoints .participant .right-column {
+    text-align: right; }
+    #dailyPoints .participant .right-column #addPoints {
+      font-size: 50px;
+      line-height: 56px;
+      text-align: center;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      background-color: #f2cd46;
+      border: none;
+      color: white;
+      padding: 0;
+      margin: 0;
+      cursor: pointer; }
+  #dailyPoints .participant .realname {
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.43;
+    color: #a0a3a8;
+    text-transform: uppercase; }
+  #dailyPoints .participant .nickname {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #353738; }
+  #dailyPoints .participant .total-points {
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1.38;
+    color: #6B6D70; }
 
 .switch-weeks {
   display: flex;
@@ -125,17 +202,17 @@ input, select {
   color: #a0a3a8;
   margin-bottom: 4px; }
 
-#signupForm label {
+form label {
   display: block;
   font-family: "Open Sans", sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.43;
-  color: #6b6d70;
+  color: #6B6D70;
   text-transform: uppercase;
   margin-bottom: 8px; }
 
-#signupForm input, #signupForm select {
+form input, form select {
   width: 100%;
   height: 56px;
   background-color: #ffffff;
@@ -145,11 +222,11 @@ input, select {
   padding: 0 16px;
   text-transform: none; }
 
-#signupForm input::placeholder {
+form input::placeholder {
   font-style: italic;
   color: #a0a3a8; }
 
-#signupForm #greyButton {
+form .grey-button {
   width: 200px;
   height: 56px;
   background-color: #b1b4ba;
@@ -158,9 +235,9 @@ input, select {
   margin: 48px auto;
   font-size: 20px;
   font-weight: 700; }
-  #signupForm #greyButton:active {
+  form .grey-button:active {
     box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2); }
-  #signupForm #greyButton:hover {
+  form .grey-button:hover {
     opacity: 0.7; }
 
 #subHeading {
@@ -190,28 +267,32 @@ hr {
     color: #6456f8; }
 
 #weeklyStatus {
-  margin-bottom: 32px; }
+  margin-bottom: 32px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #353738; }
   #weeklyStatus div {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #353738;
     margin-bottom: 12px; }
     #weeklyStatus div:last-child {
       margin-bottom: 0; }
   #weeklyStatus span {
-    display: inline-block;
     margin-left: 16px;
     font-weight: 700;
     color: #353738;
     text-transform: uppercase; }
-    #weeklyStatus span.red {
-      color: red; }
-    #weeklyStatus span.green {
-      color: green; }
 
 #border {
   height: 1px;
   background: #dadde0;
   margin-bottom: 16px; }
+
+#add-points-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  background: white; }
 
 /*# sourceMappingURL=style.css.map */

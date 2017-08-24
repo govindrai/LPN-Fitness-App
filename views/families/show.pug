@@ -11,16 +11,13 @@ block content
 append footer-scripts
   script.
     function updatePoints(e) {
-    console.log(e.currentTarget);
-      //- debugger;
       $.ajax({
         url: window.location.pathname + "/points",
         data: "date=" + $(e.currentTarget).find(".date").data("date")
       })
-      .done(res => $("#dailyPoints").replaceWith(res))
+      .done(res => $("#calendarHead").replaceWith(res))
       .fail(e => console.log("updatePoints failed"));
     }
-
 
     function updateShow(e) {
       const data = {

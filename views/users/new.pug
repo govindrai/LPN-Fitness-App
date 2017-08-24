@@ -1,26 +1,25 @@
-h1#subHeading Register
+.col-12
+  .title Register
 
-hr
-
-form#signupForm(action='/register' method='POST')
-  label First Name
-  input(name='name.first' type='text' value=user.name.first placeholder="Lambda" required)
-  label Last Name
-  input(name='name.last' type='text' value=user.name.last placeholder="Phinu"
-  required)
-  label Nickname
-  input(name='name.nickname' type='text' value=user.name.nickname placeholder="MR BIG MUSCLES 🔥")
-  if errors && errors.email
-    p= errors.email.message
-  label Email
-  input(name='email' type='email' value=user.email required)
-  if errors && errors.family
-    p= errors.family.message
-  label Family
-  select(name="family")
-    option Choose one
-    each family in families
-      option(value={id: family._id, name: family.name})= family.name
-  label Password
-  input(name='password' type='password' required)
-  input#greyButton(type='submit' value='Join')
+  form#signupForm(action='/register' method='POST')
+    label First Name
+    input(name='name.first' type='text' value=user.name.first placeholder="Lambda" required)
+    label Last Name
+    input(name='name.last' type='text' value=user.name.last placeholder="Phinu"
+    required)
+    label Nickname
+    input(name='name.nickname' type='text' value=user.name.nickname placeholder="MR BIG MUSCLES 🔥")
+    if errors && errors.email
+      p= errors.email.message
+    label Email
+    input(name='email' type='email' value=user.email required)
+    if errors && errors.family
+      p= errors.family.message
+    label Family
+    select(name="family")
+      option Choose one
+      each family in families
+        option(value={id: family._id, name: family.name})= family.name
+    label Password
+    input(name='password' type='password' required)
+    input.grey-button(type='submit' value='Join')

@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i')
 
 $opensans: "Open Sans", sans-serif
-
 $error: #d92b3a
 $success: #0b8c0b
-$grey: #a0a3a8
+$light-grey: #a0a3a8
+$dark-grey: #6B6D70
+$black: #353738
 $scoreboardBorder: #dadde0
 
 *
@@ -41,17 +42,60 @@ $scoreboardBorder: #dadde0
 .col-12
   width: 100%
 
-
 .clear
   clear: both
+
+a
+  text-decoration: none
+  color: blue
+  &:visited
+    color: blue
+  &:hover
+    color: red
+
 
 body
   margin: auto
   font: 14px $opensans
   max-width: 400px
+  position: relative
 
 input, select
   display: block
+
+nav
+  margin: 10px auto 20px auto
+  &.mobile
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+    #hamburger
+      font-size: 36px
+      color: $dark-grey
+
+    .logo
+      margin-bottom: 0
+
+.title
+  font-size: 36px
+  color: $dark-grey
+  font-weight: bold
+  margin-bottom: 24px
+  margin-left: 0
+
+.subtitle
+  font-size: 24px
+  font-weight: bold
+  color: $light-grey
+  margin-bottom: 33px
+
+.message
+  text-align: center
+  font-size: 16px
+  font-weight: bold
+  line-height: 1.5
+  color: $black
 
 #backgroundGradient
   padding: 32px 15px
@@ -75,36 +119,78 @@ input, select
   flex-direction: column
   justify-content: space-between
   text-align: center
-  color: $grey
+  color: $light-grey
 
-  .date
-    font-size: 24px
-    font-weight: 700
-    line-height: 1.5
-    position: relative
-    padding-bottom 20px
+  #weekdays
+    display: flex
+    justify-content: space-between
 
-#weekdays
-  display: flex
-  justify-content: space-between
+    .weekday
+      position: relative
 
-  .weekday
-    position: relative
+      .day
+        font-size: 13px
+        font-weight: 600
+        line-height: 1.54
 
-    .day
-      font-size: 13px
-      font-weight: 600
-      line-height: 1.54
+      .date
+        font-size: 24px
+        font-weight: 700
+        line-height: 1.5
+        position: relative
+        padding-bottom 20px
 
 .updatePoints
   cursor: pointer
 
-#mobile
-  text-align: right
+#dailyPoints
+  .participant
+    display: flex
+    justify-content: space-between
+    border-bottom: 1px solid #dadde0
+    padding-bottom: 16px
+    align-items: center
+    margin-bottom: 16px
+    &:last-child
+      border: none
+      margin: 0
+      padding-bottom: 0
 
-#hamburger
-  font-size: 36px
-  color: #6b6d70
+    .left-column
+      text-align: left
+    .right-column
+      text-align: right
+      #addPoints
+        font-size: 50px
+        line-height: 56px
+        text-align: center
+        border-radius: 50%
+        width: 56px
+        height: 56px
+        background-color: #f2cd46
+        border: none
+        color: white
+        padding: 0
+        margin: 0
+        cursor: pointer
+
+    .realname
+      font-size: 14px
+      font-style: italic
+      line-height: 1.43
+      color: $light-grey
+      text-transform: uppercase
+
+    .nickname
+      font-size: 20px
+      line-height: 1.8
+      color: $black
+
+    .total-points
+      font-size: 32px
+      font-weight: 300
+      line-height: 1.38
+      color: $dark-grey
 
 .switch-weeks
   display: flex
@@ -118,7 +204,7 @@ input, select
   font-style: italic;
   line-height: 1.43;
   text-align: left;
-  color: $grey;
+  color: $light-grey;
 
 .change-week:hover
   text-decoration: underline
@@ -127,18 +213,17 @@ input, select
   font-family: $opensans
   font-size: 24px
   line-height: 1.5
-  color: $grey
+  color: $light-grey
   margin-bottom: 4px
 
-#signupForm
-
+form
   label
     display: block
     font-family: $opensans
     font-size: 14px
     font-weight: 600
     line-height: 1.43
-    color: #6b6d70
+    color: $dark-grey
     text-transform: uppercase
     margin-bottom: 8px
 
@@ -146,7 +231,7 @@ input, select
     width: 100%
     height: 56px
     background-color: #ffffff
-    border: solid 1px $grey
+    border: solid 1px $light-grey
     margin-bottom: 16px
     font-size: 16px
     padding: 0 16px
@@ -154,9 +239,9 @@ input, select
 
   input::placeholder
     font-style: italic
-    color: $grey
+    color: $light-grey
 
-  #greyButton
+  .grey-button
     width: 200px
     height: 56px
     background-color: #b1b4ba
@@ -200,27 +285,31 @@ hr
 
 #weeklyStatus
   margin-bottom: 32px
+  font-size: 16px
+  line-height: 1.5
+  color: $black
 
   div
-    font-size: 16px
-    line-height: 1.5
-    color: #353738
     margin-bottom: 12px
     &:last-child
       margin-bottom: 0
 
   span
-    display: inline-block
     margin-left: 16px
     font-weight: 700
-    color: #353738
+    color: $black
     text-transform: uppercase
-    &.red
-      color: red
-    &.green
-      color: green
 
 #border
   height: 1px
   background: #dadde0
   margin-bottom: 16px
+
+#add-points-container
+  position: absolute
+  width: 100%
+  height: 100%
+  z-index: 5
+  top: 0
+  left: 0
+  background: white
