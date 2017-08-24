@@ -48,22 +48,15 @@ append footer-scripts
       request.fail(res => console.log(res));
     }
 
-    function addPoints(e) {
-      var date = $(this).data('date');
+    function showAddPointsModal() {
 
-      var request = $.ajax({
-        type: 'GET',
-        data: {date},
-        url: '/points/new'
-      })
+      $("#add-points-container").css("display", "flex")
+      getActivities();
+      $('#typeahead').bind('typeahead:select', getActivityData);
+    }
 
-      request.done(res => {
-        $('#pointsBody').replaceWith(res);
-        getActivities();
-        $('#typeahead').bind('typeahead:select', getActivityData);
-      });
-
-      request.fail(e => console.log(e))
+    function hideAddPointsModal() {
+      $("#add-points-container").css("display", "none")
     }
 
     var typeaheadElements;
@@ -88,6 +81,7 @@ append footer-scripts
           name: 'my-dataset',
           source: activitiesFn
         });
+        $(".twitter-typeahead").css("display", "block");
       });
     }
 
@@ -112,7 +106,7 @@ append footer-scripts
       });
 
       request.fail(res => {
-        console.log("FAIL", res)
+        console.log("FAIL in get activity data", res)
       });
     }
 
@@ -175,6 +169,8 @@ append footer-scripts
     $('body').on('click', '.change-week', updateShow);
     $('body').on('click', '.updatePoints', updatePoints);
     $('body').on('click', '.delete-point', deletePoint);
-    $('body').on('click', '#addPoints', addPoints);
+    $('body').on('click', '#add-points-button', showAddPointsModal);
+    $('body').on('click', '#x-button', hideAddPointsModal);
+
     $('body').on('keyup', '.num-of-units', calculatePoints);
     $('body').on('click', '#add-activity button', addMoreActivities);

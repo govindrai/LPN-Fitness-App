@@ -33,7 +33,7 @@ div#dailyPoints.col-12
       //- p= `Points For Week: ${participation.totalPoints}`
       .right-column
         if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalPoints === 0
-          #addPoints(data-date=addPointsButtonDate) +
+          #add-points-button(data-date=addPointsButtonDate) +
         else
           if participation.totalDailyPoints === 0
             .total-points &#8213;

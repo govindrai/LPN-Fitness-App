@@ -71,12 +71,14 @@ nav
     justify-content: space-between
     align-items: center
 
-    #hamburger
+    .hamburger
       font-size: 36px
       color: $dark-grey
+      text-align: right
 
     .logo
       margin-bottom: 0
+
 
 .title
   font-size: 36px
@@ -161,7 +163,7 @@ nav
       text-align: left
     .right-column
       text-align: right
-      #addPoints
+      #add-points-button
         font-size: 50px
         line-height: 56px
         text-align: center
@@ -192,6 +194,9 @@ nav
       font-weight: 300
       line-height: 1.38
       color: $dark-grey
+
+#add-points-container
+  display: none
 
 .switch-weeks
   display: flex
@@ -307,10 +312,21 @@ hr
   margin-bottom: 16px
 
 #add-points-container
-  position: absolute
-  width: 100%
+  position: fixed
+  background: rgba(1,1,1,.7)
+  top: 0
+  left: 50%
+  transform: translate(-50%, 0)
+  width: 400px
   height: 100%
   z-index: 5
-  top: 0
-  left: 0
-  background: white
+  display: none
+  align-items: center
+  div.col-12
+    width: 380px
+    border-radius: 3px
+    margin: auto
+    background: white
+
+.twitter-typeahead
+  display: block
