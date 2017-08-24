@@ -9,17 +9,17 @@ var User = require("./../models/user"),
 var router = express.Router();
 
 // GET Root (registration form)
-router.get("/", (req, res) => {
+router.get("/register", (req, res) => {
   // Need families for registration form
   Family.find()
     .then(families => {
-      res.render("index", { families, user: new User() });
+      res.render("users/new", { families, user: new User() });
     })
     .catch(e => console.log(e));
 });
 
 // GET login form
-router.get("/login", (req, res) => res.render("sessions/login"));
+router.get("/", (req, res) => res.render("sessions/login"));
 
 // POST login form data
 router.post("/login", (req, res) => {

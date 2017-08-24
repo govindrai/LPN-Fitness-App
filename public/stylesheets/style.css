@@ -58,7 +58,8 @@ body {
   margin: auto;
   font: 14px "Open Sans", sans-serif;
   max-width: 400px;
-  position: relative; }
+  position: relative;
+  padding-bottom: 20px; }
 
 input, select {
   display: block; }
