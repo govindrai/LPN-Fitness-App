@@ -121,6 +121,8 @@ nav {
   #calendar #weekdays {
     display: flex;
     justify-content: space-between; }
+    #calendar #weekdays .updatePoints {
+      color: #a0a3a8; }
     #calendar #weekdays .weekday {
       position: relative; }
       #calendar #weekdays .weekday .day {
@@ -195,7 +197,8 @@ nav {
   font-style: italic;
   line-height: 1.43;
   text-align: left;
-  color: #a0a3a8; }
+  color: #a0a3a8;
+  cursor: pointer; }
 
 .change-week:hover {
   text-decoration: underline; }

@@ -39,8 +39,7 @@ div#dailyPoints.col-12
             .total-points &#8213;
           else
             .total-points= participation.totalDailyPoints
-
-      if participation.points.length > 0
+      if !isFutureWeek && participation.points.length > 0
         table
           thead
             tr

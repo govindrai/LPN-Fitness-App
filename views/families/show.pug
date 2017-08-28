@@ -20,13 +20,16 @@ append footer-scripts
     }
 
     function updateShow(e) {
-      const data = {
+      const weekInfo = {
         direction: $(this).attr('id'),
         sunday: $('#sunday').data('date'),
         monday: $('#monday').data('date')
       }
 
-      $.ajax({url: window.location.pathname, data})
+      $.ajax({
+        url: window.location.pathname,
+        data: {weekInfo}
+      })
       .done(res => $("#showBody").html(res))
       .fail(() => console.log("Getting Calendar Head failed"));
     }

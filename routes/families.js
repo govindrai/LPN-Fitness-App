@@ -23,22 +23,32 @@ router.get("/:familyName", (req, res) => {
     currentWeek,
     requestedWeek,
     isFutureWeek,
+    isCurrentWeek,
     timeRemaining,
     showPrevious,
     showNext,
+    nextVersingFamilyName,
+    { familyName } = req.params,
+    weekInfo = req.query.weekInfo,
     currentChallenge = res.locals.currentChallenge,
     today = getToday();
 
-  dates = calculateDates(req.query.weekInfo);
+  dates = calculateDates(weekInfo);
   timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
-  isfutureWeek = requestedWeek > currentWeek;
+  isFutureWeek = requestedWeek > currentWeek;
+  isCurrentWeek = requestedWeek === currentWeek;
   showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
-  showNext = showNextWeek(currentChallenge.date.start, dates[6]);
+  showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
+  if (isCurrentWeek) {
+    nextVersingFamilyName =
+      currentChallenge.schedule["week" + (currentWeek + 1)][familyName]
+        .versingFamily.name;
+  }
 
   // Find the family who's page has been requested
-  Family.findOne({ name: req.params.familyName })
+  Family.findOne({ name: familyName })
     .then(familyObj => {
       family = familyObj;
       versingFamily = determineVersingFamily(
@@ -76,7 +86,7 @@ router.get("/:familyName", (req, res) => {
         requestedWeek,
         currentWeek,
         today,
-        req.query.direction,
+        weekInfo,
         dates
       );
 
@@ -99,7 +109,7 @@ router.get("/:familyName", (req, res) => {
         familyParticipations,
         defaultShowDate,
         family.name === user.family.name ? user : undefined,
-        isfutureWeek
+        isFutureWeek
       );
     })
     .then(() => {
@@ -114,12 +124,10 @@ router.get("/:familyName", (req, res) => {
     })
     .then(totalFamilyPointsForWeek => {
       // then calculate the team score based on the total points
-      family.teamScore = !versingFamily
-        ? "N/A"
-        : calculateTeamScore(
-            totalFamilyPointsForWeek,
-            familyParticipations.length
-          );
+      family.teamScore = calculateTeamScore(
+        totalFamilyPointsForWeek,
+        familyParticipations.length
+      );
     })
     .then(() => {
       // then, calculate points for the versingFamily for the entire week
@@ -155,6 +163,7 @@ router.get("/:familyName", (req, res) => {
       }
 
       const options = {
+        isFutureWeek,
         timeRemaining,
         dates,
         requestedWeek,
@@ -163,6 +172,7 @@ router.get("/:familyName", (req, res) => {
         familyParticipations,
         showPrevious,
         showNext,
+        nextVersingFamilyName,
         defaultShowDate,
         addPointsButtonDate
       };
@@ -182,15 +192,16 @@ router.get("/:familyName/points", (req, res) => {
     addPointsButtonDate,
     isFutureWeek,
     user = res.locals.user,
+    { familyName } = req.params,
     currentChallenge = res.locals.currentChallenge,
     today = getToday(),
     date = new Date(req.query.date);
 
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, date);
-  isfutureWeek = requestedWeek > currentWeek;
+  isFutureWeek = requestedWeek > currentWeek;
 
-  Family.findOne({ name: req.params.familyName })
+  Family.findOne({ name: familyName })
     .then(familyObj => {
       family = familyObj;
       return Participation.getChallengeParticipantsByFamily(
@@ -218,11 +229,12 @@ router.get("/:familyName/points", (req, res) => {
         familyParticipations,
         addPointsButtonDate,
         family.name === user.family.name ? user : undefined,
-        isfutureWeek
+        isFutureWeek
       );
     })
     .then(() => {
       res.render("families/_calendar", {
+        isFutureWeek,
         family,
         defaultShowDate,
         dates: calculateDates(),
@@ -315,11 +327,11 @@ function calculateDefaultShowDate(
   requestedWeek,
   currentWeek,
   today,
-  direction,
+  weekInfo,
   dates
 ) {
   if (requestedWeek === currentWeek) return today;
-  return direction === "previous" ? dates[6] : dates[0];
+  return weekInfo.direction === "previous" ? dates[6] : dates[0];
 }
 
 // determines the date for the addpointsbutton
@@ -355,7 +367,8 @@ function showPreviousWeek(challengeStartDate, monday) {
 }
 
 // returns true if the end date does not equal the Sunday of requested week
-function showNextWeek(challengeEndDate, sunday) {
+function showNextWeek(challengeEndDate, sunday, isCurrentWeek) {
+  if (isCurrentWeek) return false;
   var dateAfterSunday = new Date(sunday.getTime());
   dateAfterSunday.setDate(sunday.getDate() + 1);
   return challengeEndDate.toString() != dateAfterSunday.toString();

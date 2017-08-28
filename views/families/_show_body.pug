@@ -1,8 +1,12 @@
 .col-12.switch-weeks
-  if showPrevious
-    #previous.change-week  &lt; Previous Week
-  if showNext
-    #next.change-week Next Week &gt;
+  div
+    if showPrevious
+      #previous.change-week  &lt; Previous Week
+  div
+    if showNext
+      #next.change-week Next Week &gt;
+    else
+      .change-week Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
 
 #summary.col-12
   .title(style=`color: ${familyColors[family.name]}`)= family.name
