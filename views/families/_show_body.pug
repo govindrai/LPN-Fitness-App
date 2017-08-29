@@ -6,7 +6,7 @@
     if showNext
       #next.change-week Next Week &gt;
     else
-      .change-week Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
+      | Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
 
 #summary.col-12
   .title(style=`color: ${familyColors[family.name]}`)= family.name
@@ -36,8 +36,7 @@ if currentChallenge
   //-     p= 'Status: not participating'
   //-     a(href='/challenges') See upcoming challenges
   #backgroundGradient(style=`background: ${gradients[family.name]}`)
-    #scoreboard
-      include ./_calendar
+    include ./_calendar
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
 

@@ -14,46 +14,48 @@ mixin weekdays(days, dates)
       div(class=`weekday ${className}` style=style)
         div.day= days[x]
         div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
+#scoreboard
+  div#calendarHead
+    div#calendar
+      div#weekdays
+        +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
 
-div#calendarHead
-  div#calendar
-    div#weekdays
-      +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
+  #border
 
-#border
-
-div#dailyPoints.col-12
-  //- div#selectedDate= "SELECTED DATE = " + addPointsButtonDate
-  each participation in familyParticipations
-    .participant
-      .left-column
-        .nickname= participation.user.name.nickname
-        .realname= participation.user.fullName
-      //- p= "Lifetime Points: " + participation.user.lifetimePoints
-      //- p= `Points For Week: ${participation.totalPoints}`
-      .right-column
-        if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalPoints === 0
-          #add-points-button(data-date=addPointsButtonDate) +
-        else
-          if participation.totalDailyPoints === 0
-            .total-points &#8213;
+  div#dailyPoints.col-12
+    //- div#selectedDate= "SELECTED DATE = " + addPointsButtonDate
+    each participation in familyParticipations
+      .participant
+        .left-column
+          .nickname= participation.user.name.nickname
+          .realname= participation.user.fullName
+        //- p= "Lifetime Points: " + participation.user.lifetimePoints
+        //- p= `Points For Week: ${participation.totalPoints}`
+        .right-column
+          = addPointsButtonDate
+          = participation.totalDailyPoints
+          if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
+            #add-points-button(data-date=addPointsButtonDate) +
           else
-            .total-points= participation.totalDailyPoints
-      if !isFutureWeek && participation.points.length > 0
-        table
-          thead
-            tr
-              td Activity
-              td Number of
-              td Units
-              td Calculated Points
-          tbody
-          each point in participation.points
-            tr(data-point=point._id)
-              td= point.activity.name
-              td= point.numOfUnits
-              td= point.activity.unit.name
-              td= point.calculatedPoints
-              td #[button.delete-point Delete]
+            if participation.totalDailyPoints === 0
+              .total-points &#8213;
+            else
+              .total-points= participation.totalDailyPoints
+        if !isFutureWeek && participation.points.length > 0
+          table
+            thead
+              tr
+                td Activity
+                td Number of
+                td Units
+                td Calculated Points
+            tbody
+            each point in participation.points
+              tr(data-point=point._id)
+                td= point.activity.name
+                td= point.numOfUnits
+                td= point.activity.unit.name
+                td= point.calculatedPoints
+                td #[button.delete-point Delete]
 
-<div style="clear:both"></div>
+  <div style="clear:both"></div>

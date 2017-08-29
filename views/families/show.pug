@@ -13,9 +13,9 @@ append footer-scripts
     function updatePoints(e) {
       $.ajax({
         url: window.location.pathname + "/points",
-        data: "date=" + $(e.currentTarget).find(".date").data("date")
+        data: {weekInfo: {date: $(e.currentTarget).find(".date").data("date"), monday: $("#monday").data("date"), direction: "none"}}
       })
-      .done(res => $("#calendarHead").replaceWith(res))
+      .done(res => $("#scoreboard").replaceWith(res))
       .fail(e => console.log("updatePoints failed"));
     }
 

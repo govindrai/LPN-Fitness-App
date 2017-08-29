@@ -15,7 +15,6 @@ router.get("/:familyName", (req, res) => {
     versingFamily,
     familyParticipations,
     versingFamilyParticipations,
-    totalPoints,
     versingTotalPoints,
     defaultShowDate,
     addPointsButtonDate,
@@ -41,6 +40,7 @@ router.get("/:familyName", (req, res) => {
   isCurrentWeek = requestedWeek === currentWeek;
   showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
   showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
+
   if (isCurrentWeek) {
     nextVersingFamilyName =
       currentChallenge.schedule["week" + (currentWeek + 1)][familyName]
@@ -191,14 +191,16 @@ router.get("/:familyName/points", (req, res) => {
     defaultShowDate,
     addPointsButtonDate,
     isFutureWeek,
+    dates,
     user = res.locals.user,
     { familyName } = req.params,
     currentChallenge = res.locals.currentChallenge,
     today = getToday(),
-    date = new Date(req.query.date);
+    { weekInfo } = req.query;
 
+  dates = calculateDates(weekInfo);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
-  requestedWeek = calculateWeekNumber(currentChallenge.date.end, date);
+  requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
   isFutureWeek = requestedWeek > currentWeek;
 
   Family.findOne({ name: familyName })
@@ -212,7 +214,7 @@ router.get("/:familyName/points", (req, res) => {
     .then(familyParticipationsArray => {
       familyParticipations = familyParticipationsArray;
 
-      defaultShowDate = date;
+      defaultShowDate = new Date(weekInfo.date);
 
       if (!isFutureWeek) {
         // determine if the points button should show and if so the date
@@ -225,9 +227,11 @@ router.get("/:familyName/points", (req, res) => {
         );
       }
 
+      console.log("addPointsButtonDate", addPointsButtonDate);
+
       return Point.calculateParticipantPointsByDay(
         familyParticipations,
-        addPointsButtonDate,
+        defaultShowDate,
         family.name === user.family.name ? user : undefined,
         isFutureWeek
       );
@@ -237,7 +241,7 @@ router.get("/:familyName/points", (req, res) => {
         isFutureWeek,
         family,
         defaultShowDate,
-        dates: calculateDates(),
+        dates,
         familyParticipations,
         addPointsButtonDate
       });
@@ -276,7 +280,9 @@ module.exports = router;
 function calculateDates(weekInfo) {
   var startDate;
   if (weekInfo) {
-    if (weekInfo.direction == "previous") {
+    if (weekInfo.direction === "none") {
+      startDate = new Date(weekInfo.monday);
+    } else if (weekInfo.direction === "previous") {
       startDate = new Date(weekInfo.monday);
       startDate.setDate(startDate.getDate() - 7);
     } else {
@@ -341,24 +347,24 @@ function calculateAddPointsButtonDate(
   today,
   defaultShowDate
 ) {
-  // if requested week is the current week,
-  // addpointsbutton should have the default date (today)
-  if (requestedWeek == currentWeek) return defaultShowDate;
+  // if the requested date is today, then return today's date
+  if (today.toString() === defaultShowDate.toString()) return defaultShowDate;
 
-  // if the default show date is greater than today's date,
-  // users cannot add points for future dates
-  if (defaultShowDate > today) return false;
-
-  // if requesting the previous week and it's already past 12pm on monday,
-  // don't display addpointsbutton otherwise display button with sunday's date
+  // if
+  // 1) requesting the previous week
+  // 2) date requested is sunday
+  // 3) the current date is a monday and before 12pm
+  // display addpointsbutton with sunday's date
   const previousWeek = currentWeek - 1;
-  if (requestedWeek == previousWeek && defaultShowDate.getDay() === 6) {
-    if (today.getHours() >= 12 && today.getMilliseconds() > 0) return false;
-    return defaultShowDate;
+  if (requestedWeek === previousWeek && defaultShowDate.getDay() === 7) {
+    if (today.getDay() === 1) {
+      middayMonday = new Date(today);
+      middayMonday.setHours(12, 0, 0, 0);
+      if (new Date() < middayMonday) return defaultShowDate;
+    }
   }
 
-  // if it's any other past week, don't display the add points button
-  if (requestedWeek < currentWeek) return false;
+  return false;
 }
 
 // returns true if the start date does not equal Monday of requested week
@@ -432,10 +438,11 @@ function calculatePointsNeededToWin(
     status,
     message
   };
-}
+} // gets the beginning of the day
 function getToday() {
-  var date = new Date();
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
 } // Subtracts the time between Monday at 12AM and now // and converts it to days/hours/minutes
 function getTimeRemainingInWeek(endOfWeek) {
   let nextMonday = new Date(endOfWeek);

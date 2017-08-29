@@ -200,9 +200,6 @@ nav {
   color: #a0a3a8;
   cursor: pointer; }
 
-.change-week:hover {
-  text-decoration: underline; }
-
 #heading {
   font-family: "Open Sans", sans-serif;
   font-size: 24px;
