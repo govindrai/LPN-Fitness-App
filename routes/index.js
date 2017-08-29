@@ -10,8 +10,9 @@ var router = express.Router();
 
 // GET Root (registration form)
 router.get("/register", (req, res) => {
-  // Need families for registration form
+  // Need families for registration form (not equal to by (ne));
   Family.find()
+    .ne("name", "Bye")
     .then(families => {
       res.render("users/new", { families, user: new User() });
     })

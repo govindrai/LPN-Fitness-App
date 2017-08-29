@@ -64,20 +64,31 @@ body
 input, select
   display: block
 
+nav#mobile-open
+  display: none
+  position: fixed
+  z-index: 5
+  background: white
+  width: 100vw
+  height: 100vh
+  #nav-links
+    margin-top: 24px
+    a
+      display: block
+
+
 nav
-  margin: 10px auto 20px auto
+  padding: 10px 0 20px 0
   &.mobile
+    // display: none
     display: flex
     justify-content: space-between
     align-items: center
 
-    .hamburger
-      font-size: 36px
-      color: $dark-grey
-      text-align: right
-
-    .logo
-      margin-bottom: 0
+.hamburger
+  font-size: 36px
+  color: $dark-grey
+  text-align: right
 
 
 .title
@@ -92,6 +103,8 @@ nav
   font-weight: bold
   color: $light-grey
   margin-bottom: 33px
+  &.logo
+    margin-bottom: 0
 
 .message
   text-align: center

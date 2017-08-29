@@ -13,27 +13,27 @@ html
     nav.col-12.mobile
       .subtitle.logo LPN Fitness
       .hamburger &#9776;
-    //- nav
-    //-   div#logo.col-3 LPN Fitness Challenge
-    //-   div#navLinks.col-9
-    //-     if !loggedIn
-    //-       a(href="/") Home
-    //-       a(href="/login") Login
-    //-     else
-    //-       a(href=home) Home
-    //-       - var families = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
-    //-       div#subMenu
-    //-         a(href="#") Families &darr;
-    //-         nav#dropDown
-    //-           each family in families
-    //-             a(href="/families/" + family)= family
-    //-       a(href="/challenges")= `Challenges (${challengeCount})`
-    //-       a(href="/activities") Activities
-    //-       a(href="/schedule") Schedule
-    //-       a(href="/standings") Standings
-    //-       a(href="/rules") Rules
-    //-       a(href="/account") Account
-    //-       a(href="/logout") Logout
+    nav#mobile-open
+      #x-button.hamburger &#10005;
+      #nav-links
+        if !loggedIn
+          a(href="/") Home
+          a(href="/login") Login
+        else
+          a(href=home) Home
+          - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
+          div#subMenu
+            a(href="#") Families &darr;
+            nav#dropDown
+              each familyName in familyNames
+                a(href="/families/" + familyName)= familyName
+          a(href="/challenges")= `Challenges (${challengeCount})`
+          a(href="/activities") Activities
+          a(href="/schedule") Schedule
+          a(href="/standings") Standings
+          a(href="/rules") Rules
+          a(href="/account") Account
+          a(href="/logout") Logout
 
     block content
 

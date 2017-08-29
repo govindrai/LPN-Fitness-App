@@ -32,8 +32,6 @@ mixin weekdays(days, dates)
         //- p= "Lifetime Points: " + participation.user.lifetimePoints
         //- p= `Points For Week: ${participation.totalPoints}`
         .right-column
-          = addPointsButtonDate
-          = participation.totalDailyPoints
           if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
             #add-points-button(data-date=addPointsButtonDate) +
           else

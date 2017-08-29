@@ -64,18 +64,29 @@ body {
 input, select {
   display: block; }
 
+nav#mobile-open {
+  display: none;
+  position: fixed;
+  z-index: 5;
+  background: white;
+  width: 100vw;
+  height: 100vh; }
+  nav#mobile-open #nav-links {
+    margin-top: 24px; }
+    nav#mobile-open #nav-links a {
+      display: block; }
+
 nav {
-  margin: 10px auto 20px auto; }
+  padding: 10px 0 20px 0; }
   nav.mobile {
     display: flex;
     justify-content: space-between;
     align-items: center; }
-    nav.mobile .hamburger {
-      font-size: 36px;
-      color: #6B6D70;
-      text-align: right; }
-    nav.mobile .logo {
-      margin-bottom: 0; }
+
+.hamburger {
+  font-size: 36px;
+  color: #6B6D70;
+  text-align: right; }
 
 .title {
   font-size: 36px;
@@ -89,6 +100,8 @@ nav {
   font-weight: bold;
   color: #a0a3a8;
   margin-bottom: 33px; }
+  .subtitle.logo {
+    margin-bottom: 0; }
 
 .message {
   text-align: center;
