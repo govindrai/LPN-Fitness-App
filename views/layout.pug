@@ -1,3 +1,15 @@
+mixin link(href, name)
+  - let style;
+  if (path === href)
+    if (user)
+      if (familyColors[name])
+        - style = `color: ${familyColors[name]}`
+      else
+        - style = `color: ${familyColors[user.family.name]}`
+    else
+      - style = "text-decoration: underline"
+  a(href=href style=style)!= name
+
 doctype html
 html
   head
@@ -10,30 +22,27 @@ html
       script(src="/javascripts/main.js")
 
   body
-    nav.col-12.mobile
-      .subtitle.logo LPN Fitness
-      .hamburger &#9776;
-    nav#mobile-open
-      #x-button.hamburger &#10005;
-      #nav-links
-        if !loggedIn
-          a(href="/") Home
-          a(href="/login") Login
+    nav.col-12
+      .top
+        .subtitle.logo LPN Fitness
+        .hamburger &#9776;
+      .nav-links
+        if !user
+          +link("/", "Home")
         else
-          a(href=home) Home
+          +link(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
-          div#subMenu
-            a(href="#") Families &darr;
-            nav#dropDown
-              each familyName in familyNames
-                a(href="/families/" + familyName)= familyName
-          a(href="/challenges")= `Challenges (${challengeCount})`
-          a(href="/activities") Activities
-          a(href="/schedule") Schedule
-          a(href="/standings") Standings
-          a(href="/rules") Rules
-          a(href="/account") Account
-          a(href="/logout") Logout
+          +link("#", "Families <span class='down-arrow'>&#9660;</span>")
+          .drop-down
+            each familyName in familyNames
+              +link(`/families/${familyName}`, familyName)
+          +link("/challenges", `Challenges (${challengeCount})`)
+          +link("/activities", "Activities")
+          +link("/schedule", "Schedule")
+          +link("/standings", "Standings")
+          +link("/rules", "Rules")
+          +link("/account", "Account")
+          +link("/logout", "Logout")
 
     block content
 
@@ -48,4 +57,16 @@ html
           () => {
             $("#dropDown").slideToggle();
           });
+        })
+
+        let isNavShowing = false
+
+        $('body').on('click', '.hamburger', function(e) {
+          isNavShowing = !isNavShowing
+          if (isNavShowing)  {
+            $(e.target).html("&#10005;");
+          } else {
+            $(e.target).html("&#9776;")
+          }
+          $('.nav-links').toggle(isNavShowing)
         })

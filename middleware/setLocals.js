@@ -2,6 +2,7 @@
 const Challenge = require("./../models/challenge");
 
 module.exports = function setLocals(req, res, next) {
+  res.locals.path = req.path;
   if (res.locals.user) {
     res.locals.familyColors = {
       Topaz: "#f2cd46",

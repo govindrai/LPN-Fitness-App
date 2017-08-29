@@ -64,31 +64,45 @@ body
 input, select
   display: block
 
-nav#mobile-open
-  display: none
-  position: fixed
-  z-index: 5
-  background: white
-  width: 100vw
-  height: 100vh
-  #nav-links
-    margin-top: 24px
-    a
-      display: block
+
 
 
 nav
-  padding: 10px 0 20px 0
-  &.mobile
-    // display: none
+
+  .top
+    padding-top: 10px
+    padding-bottom: 20px
     display: flex
     justify-content: space-between
     align-items: center
+
+
+  .nav-links
+    display: none
+    height: 100vh
+    margin-left: 49px
+    margin-top: 24px
+    a
+      display: block
+      font-size: 24px
+      color: $dark-grey
+      margin-bottom: 16px
+      text-transform: uppercase
+      font-weight: 600
+    .drop-down
+
+      a
+        color: $light-grey
+        margin-left: 49px
+
+
+
 
 .hamburger
   font-size: 36px
   color: $dark-grey
   text-align: right
+  cursor: pointer
 
 
 .title
@@ -344,3 +358,8 @@ hr
 
 .twitter-typeahead
   display: block
+
+.down-arrow
+  font-size: 12px
+  line-height: 24px
+  vertical-align: middle

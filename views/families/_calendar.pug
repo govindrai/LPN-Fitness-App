@@ -14,6 +14,7 @@ mixin weekdays(days, dates)
       div(class=`weekday ${className}` style=style)
         div.day= days[x]
         div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
+
 #scoreboard
   div#calendarHead
     div#calendar

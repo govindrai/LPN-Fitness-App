@@ -64,29 +64,34 @@ body {
 input, select {
   display: block; }
 
-nav#mobile-open {
-  display: none;
-  position: fixed;
-  z-index: 5;
-  background: white;
-  width: 100vw;
-  height: 100vh; }
-  nav#mobile-open #nav-links {
-    margin-top: 24px; }
-    nav#mobile-open #nav-links a {
-      display: block; }
+nav .top {
+  padding-top: 10px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; }
 
-nav {
-  padding: 10px 0 20px 0; }
-  nav.mobile {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; }
+nav .nav-links {
+  display: none;
+  height: 100vh;
+  margin-left: 49px;
+  margin-top: 24px; }
+  nav .nav-links a {
+    display: block;
+    font-size: 24px;
+    color: #6B6D70;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    font-weight: 600; }
+  nav .nav-links .drop-down a {
+    color: #a0a3a8;
+    margin-left: 49px; }
 
 .hamburger {
   font-size: 36px;
   color: #6B6D70;
-  text-align: right; }
+  text-align: right;
+  cursor: pointer; }
 
 .title {
   font-size: 36px;
@@ -323,5 +328,10 @@ hr {
 
 .twitter-typeahead {
   display: block; }
+
+.down-arrow {
+  font-size: 12px;
+  line-height: 24px;
+  vertical-align: middle; }
 
 /*# sourceMappingURL=style.css.map */
