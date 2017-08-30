@@ -64,9 +64,6 @@ body
 input, select
   display: block
 
-
-
-
 nav
 
   .top
@@ -95,9 +92,6 @@ nav
         color: $light-grey
         margin-left: 49px
 
-
-
-
 .hamburger
   font-size: 36px
   color: $dark-grey
@@ -117,6 +111,8 @@ nav
   font-weight: bold
   color: $light-grey
   margin-bottom: 16px
+  &.logo
+    margin-bottom: 0
 
 .message
   text-align: center
@@ -395,3 +391,25 @@ hr
       background-color: $success
     &.grey
       background-color: $light-grey
+
+// Styles for /activities
+
+.activity
+  margin-bottom: 16px
+  .activity-name
+    font-size: 16px
+    line-height: 1.5
+    color: $black
+    margin-bottom: 4px
+  .activity-description
+    font-size: 14px
+    font-style: italic
+    line-height: 1.43
+    color: $light-grey
+
+// Styles for /rules
+
+.rules
+  font-size: 16px
+  color: $black
+  line-height: 1.5

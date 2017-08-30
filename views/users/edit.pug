@@ -1,10 +1,12 @@
 include ../layout.pug
 
-include ../account/_account_nav
+block content
+	.col-12
+		include ../account/_account_nav
 
-h1 My Profile
+		.title My Profile
 
-include ./_edit_form
+		include ./_edit_form
 
 append footer-scripts
 	script.

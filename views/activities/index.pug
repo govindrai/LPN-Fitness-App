@@ -1,18 +1,9 @@
 extends ../layout
 
 block content
-	h2 All Activities
-
-	table
-			thead
-				tr
-					td Name
-					td Points
-					td Description
-			tbody
-			each activity in activities
-				tr
-					td= activity.name
-					td= activity.points + " points " + " for every " + activity.scale + " " + activity.unit.name
-					if activity.description != undefined
-					td= activity.description
+	.col-12
+		.title Activities
+		each activity in activities
+			.activity
+				.activity-name= activity.name
+				.activity-description= `${activity.description}, ${activity.points} points for every ${activity.scale} ${activity.unit.name}`

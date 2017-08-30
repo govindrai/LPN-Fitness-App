@@ -107,6 +107,8 @@ nav .nav-links {
   font-weight: bold;
   color: #a0a3a8;
   margin-bottom: 16px; }
+  .subtitle.logo {
+    margin-bottom: 0; }
 
 .message {
   text-align: center;
@@ -363,5 +365,23 @@ hr {
       background-color: #0b8c0b; }
     .challenge .participation-status.grey {
       background-color: #a0a3a8; }
+
+.activity {
+  margin-bottom: 16px; }
+  .activity .activity-name {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #353738;
+    margin-bottom: 4px; }
+  .activity .activity-description {
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.43;
+    color: #a0a3a8; }
+
+.rules {
+  font-size: 16px;
+  color: #353738;
+  line-height: 1.5; }
 
 /*# sourceMappingURL=style.css.map */

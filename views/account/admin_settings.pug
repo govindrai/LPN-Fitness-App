@@ -1,44 +1,45 @@
 include ../layout.pug
 
 block content
-	include ./_account_nav
-	h1 Admin Settings
+	.col-12
+		include ./_account_nav
+		h1 Admin Settings
 
-	h2 All Admins
+		h2 All Admins
 
-	table#admins
-			thead
-				tr
-					td First Name
-					td Last Name
-					td Email
-					td Remove Admin Access
-			tbody
-			each admin in admins
-				tr
-					td= admin.name.first
-					td= admin.name.last
-					td= admin.email
-					td
-						input(type="checkbox" name="admin" data-user=`${admin._id}`)
+		table#admins
+				thead
+					tr
+						td First Name
+						td Last Name
+						td Email
+						td Remove Admin Access
+				tbody
+				each admin in admins
+					tr
+						td= admin.name.first
+						td= admin.name.last
+						td= admin.email
+						td
+							input(type="checkbox" name="admin" data-user=`${admin._id}`)
 
-	h2 All Users
+		h2 All Users
 
-	table#nonAdmins
-			thead
-				tr
-					td First Name
-					td Last Name
-					td Email
-					td Add Admin Access
-			tbody
-			each nonAdmin in nonAdmins
-				tr
-					td= nonAdmin.name.first
-					td= nonAdmin.name.last
-					td= nonAdmin.email
-					td
-						input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
+		table#nonAdmins
+				thead
+					tr
+						td First Name
+						td Last Name
+						td Email
+						td Add Admin Access
+				tbody
+				each nonAdmin in nonAdmins
+					tr
+						td= nonAdmin.name.first
+						td= nonAdmin.name.last
+						td= nonAdmin.email
+						td
+							input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
 
 append footer-scripts
 	script.
