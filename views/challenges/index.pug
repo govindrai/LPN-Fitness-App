@@ -1,77 +1,80 @@
+mixin printChallenges(challenges, challengeType)
+  each challenge in challenges
+    .challenge
+      p= challenge.name
+      p #{challenge.date.start.toLocaleDateString()} - #{challenge.date.end.toLocaleDateString()}
+      if challenge.winner != null
+        p= "Winner: " + challenge.winner.name
+      - let status
+      if challengeType === "current"
+        - status = challenge.participation ? {message: "Participating", color: "green"} : {message: "Not Participating", color: "grey"}
+      else if challengeType === "future"
+        if challenge.participation
+          - status = { message: "Signed Up", color: "green" }
+        else
+          form.participate(action='/participations' method='POST')
+            input(name="_id" type="hidden" value=challenge._id)
+            input(type='submit' value='Sign Up')
+      else
+        - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
+      span.participation-status(class=status.color)= status.message
+
 include ../layout.pug
 
-if user.admin
-  a(href="/challenges/new") Create New Challenge
+.col-12
+  .title Challenges
 
-h2 Current Challenge
-if currentChallenge
-  - var challenge = currentChallenge
-  p= "Name: " + challenge.name
-  p= "Start Date: " + challenge.date.start
-  p= "End Date: " + challenge.date.end
-  if challenge.winner != null
-    p= "Winner: " + challenge.winner.name
-  if challenge.participation
-    p= "Participating"
-  else
-    p= "Not Participating"
-else
-  h3 There are no current challenges :( Contact your challenge administrator and request one!
+  if user.admin
+    .center
+      button.grey-button.add-challenge(href="/challenges/new") Create Challenge
 
-h2 Future Challenges
-if futureChallenges.length > 0
-  each challenge in futureChallenges
-    p= "Name: " + challenge.name
-    p= "Start Date: " + challenge.date.start
-    p= "End Date: " + challenge.date.end
-    if challenge.winner != null
-      p= "Winner: " + challenge.winner.name
-    if challenge.participation
-      p= "Signed Up"
+  .subtitle Current Challenge
+  .current-challenge
+    if currentChallenge
+      +printChallenges([currentChallenge], "current")
     else
-      form.participate(action='/participations' method='POST')
-        input(name="_id" type="hidden" value=challenge._id)
-        input(type='submit' value='Sign Up')
-else
-  h3 There aren't any scheduled challenges. Contact your program administrator and request one!
+      h3 There are no current challenges :( Contact your challenge administrator and request one!
 
-
-h2 Past Challenges
-if pastChallenges.length > 0
-  each challenge in pastChallenges
-    p= "Name: " + challenge.name
-    p= "Start Date: " + challenge.date.start
-    p= "End Date: " + challenge.date.end
-    if challenge.winner != null
-      p= "Winner: " + challenge.winner.name
-    if challenge.participating
-      p= "Participated"
+  .subtitle.toggle-future-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
+  .future-challenges
+    if futureChallenges.length > 0
+      +printChallenges(futureChallenges, "future")
     else
-      p= "Did not Participate"
-else
-  h3 This will fill up as soon as your organization starts competing!
+      h3 There aren't any scheduled challenges. Contact your program administrator and request one!
 
-script.
-  $(document).ready(function() {
-    $('body').on('submit', '.participate', addParticipation);
-  });
 
-  function addParticipation(e) {
-    e.preventDefault();
-    var form = $(this);
-    var data = form.serialize();
+  .subtitle.toggle-past-challenges Past Challenges #[span(class='down-arrow') &#9660;]
+  .past-challenges
+    if pastChallenges.length > 0
+      +printChallenges(pastChallenges, "past")
+    else
+      h3 This will fill up as soon as your organization starts competing!
 
-    var request = $.ajax({
-      url: "/participations",
-      type: "POST",
-      data
-    })
-
-    request.done(function(res) {
-      form.replaceWith("Signed Up");
+append footer-scripts
+  script.
+    $(document).ready(function() {
+      $('body').on('submit', '.participate', addParticipation);
     });
 
-    request.fail(function(res) {
-      console.log("Failed", res);
-    })
-  };
+    function addParticipation(e) {
+      e.preventDefault();
+      var form = $(this);
+      var data = form.serialize();
+
+      var request = $.ajax({
+        url: "/participations",
+        type: "POST",
+        data
+      })
+
+      request.done(function(res) {
+        form.replaceWith("Signed Up");
+      });
+
+      request.fail(function(res) {
+        console.log("Failed", res);
+      })
+    };
+
+    $('body').on('click', '.subtitle.toggle-past-challenges', () => $('.past-challenges').slideToggle());
+    $('body').on('click', '.subtitle.toggle-future-challenges', () => $('.future-challenges').slideToggle());
