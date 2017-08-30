@@ -72,10 +72,24 @@ nav .top {
   align-items: center; }
 
 nav .nav-links {
-  display: none;
-  height: 100vh;
-  margin-left: 49px;
-  margin-top: 24px; }
+  opacity: 0;
+  top: -400px;
+  position: fixed;
+  padding: 24px 49px;
+  background: white;
+  z-index: 5;
+  margin: 15px;
+  width: 340px;
+  border-radius: 5px;
+  border: 1px solid #6B6D70; }
+  nav .nav-links.move-nav-down {
+    animation-name: move-nav-down;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  nav .nav-links.move-nav-up {
+    animation-name: move-nav-up;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
   nav .nav-links a {
     display: block;
     font-size: 24px;
@@ -383,5 +397,139 @@ hr {
   font-size: 16px;
   color: #353738;
   line-height: 1.5; }
+
+.hamburger-button .x-line {
+  display: none; }
+
+.hamburger-button .line, .hamburger-button .x-line {
+  position: relative;
+  height: 4px;
+  background: #353738;
+  width: 28px; }
+
+.hamburger-button .x-line:nth-child(4) {
+  top: 4px;
+  transform: rotate(-45deg); }
+
+.hamburger-button .x-line:nth-child(5) {
+  background-color: transparent; }
+
+.hamburger-button .x-line:nth-child(6) {
+  top: -4px;
+  transform: rotate(45deg); }
+
+.hamburger-button.animate-x .line:first-child {
+  animation-name: movedown;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button.animate-x .line:nth-child(2) {
+  animation-name: middlerotate;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button.animate-x .line:nth-child(3) {
+  animation-name: moveup;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button.animate-x-reverse .line:first-child {
+  animation-name: movedown-reverse;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button.animate-x-reverse .line:nth-child(2) {
+  animation-name: middlerotate-reverse;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button.animate-x-reverse .line:nth-child(3) {
+  animation-name: moveup-reverse;
+  animation-duration: 1s;
+  animation-fill-mode: forwards; }
+
+.hamburger-button .line:not(:first-child) {
+  margin-top: 5px; }
+
+@keyframes movedown {
+  0% {
+    top: 0; }
+  50% {
+    top: 9px; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    top: 9px;
+    transform: rotate(-45deg); } }
+
+@keyframes moveup {
+  0% {
+    top: 0px; }
+  50% {
+    top: -9px; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    top: -9px;
+    transform: rotate(45deg); } }
+
+@keyframes movedown-reverse {
+  100% {
+    top: 0; }
+  51% {
+    top: 9px; }
+  50% {
+    transform: rotate(45deg); }
+  0% {
+    top: 9px;
+    transform: rotate(-45deg); } }
+
+@keyframes moveup-reverse {
+  0% {
+    top: -9px;
+    transform: rotate(45deg); }
+  50% {
+    top: -9px;
+    transform: rotate(45deg); }
+  51% {
+    top: -9px; }
+  100% {
+    top: 0px; } }
+
+@keyframes middlerotate {
+  0% {
+    top: 0; }
+  50% {
+    top: 0; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    transform: rotate(45deg); } }
+
+@keyframes middlerotate-reverse {
+  0% {
+    transform: rotate(45deg); }
+  50% {
+    transform: rotate(45deg); }
+  51% {
+    top: 0; }
+  100% {
+    top: 0; } }
+
+@keyframes move-nav-down {
+  0% {
+    opacity: 0;
+    top: -400px; }
+  100% {
+    opacity: 1;
+    top: 63px; } }
+
+@keyframes move-nav-up {
+  0% {
+    opacity: 1;
+    top: 63px; }
+  100% {
+    opacity: 0;
+    top: -400px; } }
 
 /*# sourceMappingURL=style.css.map */
