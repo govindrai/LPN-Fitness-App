@@ -8,7 +8,7 @@ mixin link(href, name)
         - style = `color: ${familyColors[user.family.name]}`
     else
       - style = "text-decoration: underline"
-  a(href=href style=style)!= name
+  a(class!=attributes.class href=href style=style)!= name
 
 doctype html
 html
@@ -32,8 +32,8 @@ html
         else
           +link(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
-          +link("#", "Families <span class='down-arrow'>&#9660;</span>")
-          .drop-down
+          +link("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
+          .drop-down-links
             each familyName in familyNames
               +link(`/families/${familyName}`, familyName)
           +link("/challenges", `Challenges (${challengeCount})`)
@@ -59,8 +59,9 @@ html
           });
         })
 
-        let isNavShowing = false
+        $('body').on('click', '.drop-down', (e) => $('.drop-down-links').slideToggle());
 
+        let isNavShowing = false
         $('body').on('click', '.hamburger', function(e) {
           isNavShowing = !isNavShowing
           if (isNavShowing)  {
@@ -69,4 +70,4 @@ html
             $(e.target).html("&#9776;")
           }
           $('.nav-links').toggle(isNavShowing)
-        })
+        });
