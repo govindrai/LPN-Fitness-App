@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 mongoose.set("debug", true);
 
 mongoose.connect(MONGO_URL, { useMongoClient: true }, error => {
-  if (error) console.log("There was an error: ", error);
+  if (error) return console.log("There was an error: ", error);
   console.log("Successfully connected to LPN");
   console.log(mongoose.modelNames());
 });

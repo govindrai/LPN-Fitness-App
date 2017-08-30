@@ -1,3 +1,15 @@
+mixin link(href, name)
+  - let style;
+  if (path === href)
+    if (user)
+      if (familyColors[name])
+        - style = `color: ${familyColors[name]}`
+      else
+        - style = `color: ${familyColors[user.family.name]}`
+    else
+      - style = "text-decoration: underline"
+  a(class!=attributes.class href=href style=style)!= name
+
 doctype html
 html
   head
@@ -10,29 +22,27 @@ html
       script(src="/javascripts/main.js")
 
   body
-    nav#mobile.col-12
-      #hamburger &#9776;
-    //- nav
-      //- div#logo.col-3 LPN Fitness Challenge
-      //- div#navLinks.col-9
-        //- if !loggedIn
-        //-   a(href="/") Home
-        //-   a(href="/login") Login
-        //- else
-        //-   a(href=home) Home
-        //-   - var families = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
-        //-   div#subMenu
-        //-     a(href="#") Families &darr;
-        //-     nav#dropDown
-        //-       each family in families
-        //-         a(href="/families/" + family)= family
-        //-   a(href="/challenges")= `Challenges (${challengeCount})`
-        //-   a(href="/activities") Activities
-        //-   a(href="/schedule") Schedule
-        //-   a(href="/standings") Standings
-        //-   a(href="/rules") Rules
-        //-   a(href="/account") Account
-        //-   a(href="/logout") Logout
+    nav.col-12
+      .top
+        .subtitle.logo LPN Fitness
+        .hamburger &#9776;
+      .nav-links
+        if !user
+          +link("/", "Home")
+        else
+          +link(home, "Home")
+          - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
+          +link("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
+          .drop-down-links
+            each familyName in familyNames
+              +link(`/families/${familyName}`, familyName)
+          +link("/challenges", `Challenges (${challengeCount})`)
+          +link("/activities", "Activities")
+          +link("/schedule", "Schedule")
+          +link("/standings", "Standings")
+          +link("/rules", "Rules")
+          +link("/account", "Account")
+          +link("/logout", "Logout")
 
     block content
 
@@ -48,3 +58,16 @@ html
             $("#dropDown").slideToggle();
           });
         })
+
+        $('body').on('click', '.drop-down', (e) => $('.drop-down-links').slideToggle());
+
+        let isNavShowing = false
+        $('body').on('click', '.hamburger', function(e) {
+          isNavShowing = !isNavShowing
+          if (isNavShowing)  {
+            $(e.target).html("&#10005;");
+          } else {
+            $(e.target).html("&#9776;")
+          }
+          $('.nav-links').toggle(isNavShowing)
+        });

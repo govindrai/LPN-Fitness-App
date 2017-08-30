@@ -9,17 +9,18 @@ var User = require("./../models/user"),
 var router = express.Router();
 
 // GET Root (registration form)
-router.get("/", (req, res) => {
-  // Need families for registration form
+router.get("/register", (req, res) => {
+  // Need families for registration form (not equal to by (ne));
   Family.find()
+    .ne("name", "Bye")
     .then(families => {
-      res.render("index", { families, user: new User() });
+      res.render("users/new", { families, user: new User() });
     })
     .catch(e => console.log(e));
 });
 
 // GET login form
-router.get("/login", (req, res) => res.render("sessions/login"));
+router.get("/", (req, res) => res.render("sessions/login"));
 
 // POST login form data
 router.post("/login", (req, res) => {
@@ -37,14 +38,14 @@ router.post("/login", (req, res) => {
     })
     .then(() => {
       req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
-      res.redirect(`/families/${user.family.name}`);
+      res.redirect("/");
     })
     .catch(error => res.render("sessions/login", { error }));
 });
 
 // Register
 router.post("/register", (req, res) => {
-  var body = _.pick(req.body, [
+  const body = _.pick(req.body, [
     "name.first",
     "name.last",
     "name.nickname",
@@ -53,6 +54,10 @@ router.post("/register", (req, res) => {
     "password"
   ]);
 
+  const family = JSON.parse(req.body.family);
+  const familyName = family.name;
+  body.family = family.id;
+
   var user = new User(body);
 
   user
@@ -60,12 +65,9 @@ router.post("/register", (req, res) => {
     .then(() => {
       return user.generateAuthorizationToken();
     })
-    .then(() => {
-      return user.populate("family").execPopulate();
-    })
-    .then(() => {
+    .then(user => {
       req.session["x-auth"] = user.tokens[0].token;
-      res.redirect(`/families/${user.family.name}`);
+      res.redirect(`/families/${familyName}`);
     })
     .catch(e => {
       if (body.family === "Please Select") {

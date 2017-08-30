@@ -1,26 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i')
 
 $opensans: "Open Sans", sans-serif
-$topaz: #f2cd46
-$sunstone: #faa152
-$ruby: #f83b54
-$alexandrite: #cb51d7
-$iolite: #6456f8
-$sapphire: #3b8df8
-$emerald: #24ab60
-
 $error: #d92b3a
 $success: #0b8c0b
-$grey: #a0a3a8
+$light-grey: #a0a3a8
+$dark-grey: #6B6D70
+$black: #353738
 $scoreboardBorder: #dadde0
-
-$topaz-gradient: linear-gradient(135deg, #fbf0c7, #fad0ad)
-$sunstone-gradient: linear-gradient(135deg, #fde2cb, #fdbbb1)
-$ruby-gradient: linear-gradient(135deg, #fcc4cb, #fdacd0)
-$alexandrite-gradient: linear-gradient(135deg, #f3d6f2, #d8b1f3)
-$iolite-gradient: linear-gradient(135deg, #dfd9fd, #b3c6fd)
-$sapphire-gradient: linear-gradient(135deg, #c4dcfc, #aceafd)
-$emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 
 *
   box-sizing: border-box
@@ -56,23 +42,86 @@ $emerald-gradient: linear-gradient(135deg, #bde5cf, #a8e6af)
 .col-12
   width: 100%
 
-
 .clear
   clear: both
+
+a
+  text-decoration: none
+  color: blue
+  &:visited
+    color: blue
+  &:hover
+    color: red
+
 
 body
   margin: auto
   font: 14px $opensans
   max-width: 400px
-
-a
-  color: #00B7FF
+  position: relative
+  padding-bottom: 20px
 
 input, select
   display: block
 
+nav
+
+  .top
+    padding-top: 10px
+    padding-bottom: 20px
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+
+  .nav-links
+    display: none
+    height: 100vh
+    margin-left: 49px
+    margin-top: 24px
+    a
+      display: block
+      font-size: 24px
+      color: $dark-grey
+      margin-bottom: 16px
+      text-transform: uppercase
+      font-weight: 600
+    .drop-down-links
+      display: none
+      a
+        color: $light-grey
+        margin-left: 49px
+
+.hamburger
+  font-size: 36px
+  color: $dark-grey
+  text-align: right
+  cursor: pointer
+
+
+.title
+  font-size: 36px
+  color: $dark-grey
+  font-weight: bold
+  margin-bottom: 24px
+  margin-left: 0
+
+.subtitle
+  font-size: 24px
+  font-weight: bold
+  color: $light-grey
+  margin-bottom: 16px
+  &.logo
+    margin-bottom: 0
+
+.message
+  text-align: center
+  font-size: 16px
+  font-weight: bold
+  line-height: 1.5
+  color: $black
+
 #backgroundGradient
-  background: $topaz-gradient
   padding: 32px 15px
 
   #scoreboard
@@ -94,38 +143,84 @@ input, select
   flex-direction: column
   justify-content: space-between
   text-align: center
-  color: $grey
-  & .currentDate
-    color: $ruby
+  color: $light-grey
 
-  #dates
-    div
-      font-size: 24px
-      font-weight: 700
-      line-height: 1.5
+  #weekdays
+    display: flex
+    justify-content: space-between
+
+    .updatePoints
+      color: $light-grey
+
+    .weekday
       position: relative
 
-    div.currentDate::after
-        content: ''
-        position: absolute
-        top: 39px
-        left: 8px
-        width: 50%
-        background-color: $ruby
-        border: 2.5px solid $ruby
+      .day
+        font-size: 13px
+        font-weight: 600
+        line-height: 1.54
 
+      .date
+        font-size: 24px
+        font-weight: 700
+        line-height: 1.5
+        position: relative
+        padding-bottom 20px
 
-#weekdays, #dates
-  display: flex
+.updatePoints
+  cursor: pointer
 
-#weekdays div, #dates div
-  width: 14%
+#dailyPoints
+  .participant
+    display: flex
+    justify-content: space-between
+    border-bottom: 1px solid #dadde0
+    padding-bottom: 16px
+    align-items: center
+    margin-bottom: 16px
+    &:last-child
+      border: none
+      margin: 0
+      padding-bottom: 0
 
-#mobile
-  text-align: right
+    .left-column
+      text-align: left
+    .right-column
+      text-align: right
+      #add-points-button
+        font-size: 50px
+        line-height: 56px
+        text-align: center
+        border-radius: 50%
+        width: 56px
+        height: 56px
+        background-color: #f2cd46
+        border: none
+        color: white
+        padding: 0
+        margin: 0
+        cursor: pointer
 
-#hamburger
-  font-size: 36px
+    .realname
+      font-size: 14px
+      font-style: italic
+      line-height: 1.43
+      color: $light-grey
+      text-transform: uppercase
+
+    .nickname
+      font-size: 20px
+      line-height: 1.8
+      color: $black
+
+    .total-points
+      font-size: 32px
+      font-weight: 300
+      line-height: 1.38
+      color: $dark-grey
+
+#add-points-container
+  display: none
 
 .switch-weeks
   display: flex
@@ -139,27 +234,24 @@ input, select
   font-style: italic;
   line-height: 1.43;
   text-align: left;
-  color: $grey;
-
-.change-week:hover
-  text-decoration: underline
+  color: $light-grey;
+  cursor: pointer
 
 #heading
   font-family: $opensans
   font-size: 24px
   line-height: 1.5
-  color: $grey
+  color: $light-grey
   margin-bottom: 4px
 
-#signupForm
-
+form
   label
     display: block
     font-family: $opensans
     font-size: 14px
     font-weight: 600
     line-height: 1.43
-    color: #6b6d70
+    color: $dark-grey
     text-transform: uppercase
     margin-bottom: 8px
 
@@ -167,7 +259,7 @@ input, select
     width: 100%
     height: 56px
     background-color: #ffffff
-    border: solid 1px $grey
+    border: solid 1px $light-grey
     margin-bottom: 16px
     font-size: 16px
     padding: 0 16px
@@ -175,21 +267,27 @@ input, select
 
   input::placeholder
     font-style: italic
-    color: $grey
+    color: $light-grey
 
-  #greyButton
-    width: 200px
-    height: 56px
-    background-color: #b1b4ba
-    color: white
-    text-transform: uppercase
-    margin: 48px auto
-    font-size: 20px
-    font-weight: 700
-    &:active
-      box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2)
-    &:hover
-      opacity: 0.7
+.grey-button
+  height: 56px
+  background-color: #b1b4ba
+  color: white
+  text-transform: uppercase
+  margin: 48px auto
+  font-size: 20px
+  font-weight: 700
+  padding: 0 20px
+  cursor: pointer
+
+  &:active
+    box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2)
+  &:hover
+    opacity: 0.7
+
+  &.add-challenge
+    margin: 0 auto 24px auto
+
 
 #subHeading
   font-size: 20px
@@ -208,33 +306,110 @@ hr
     font-size: 36px
     font-weight: 700
     line-height: 1.44
-    color: #f2cd46
 
 #competitorSummary
   font-size: 24px
   font-weight: 700
   line-height: 1.5
   color: #a0a3a8
+  margin-bottom: 16px
 
   #versingFamily
     color: #6456f8
 
 #weeklyStatus
+  margin-bottom: 32px
+  font-size: 16px
+  line-height: 1.5
+  color: $black
+
   div
-    font-size: 16px
-    line-height: 1.5
-    color: #353738
     margin-bottom: 12px
+    &:last-child
+      margin-bottom: 0
 
   span
-    display: inline-block
     margin-left: 16px
     font-weight: 700
-    color: #353738
+    color: $black
     text-transform: uppercase
-    &.red
-      color: red
+
+#border
+  height: 1px
+  background: #dadde0
+  margin-bottom: 16px
+
+#add-points-container
+  position: fixed
+  background: rgba(1,1,1,.7)
+  top: 0
+  left: 50%
+  transform: translate(-50%, 0)
+  width: 400px
+  height: 100%
+  z-index: 5
+  display: none
+  align-items: center
+  div.col-12
+    width: 380px
+    border-radius: 3px
+    margin: auto
+    background: white
+
+.twitter-typeahead
+  display: block
+
+.down-arrow
+  font-size: 12px
+  line-height: 24px
+  vertical-align: middle
+
+.center
+  text-align: center
+
+.subtitle.toggle-past-challenges, .subtitle.toggle-future-challenges
+  cursor: pointer
+
+.past-challenges, .future-challenges
+  display: none
+
+.challenge
+  font-size: 14px
+  margin-bottom: 16px
+  color: $black
+  padding-bottom: 20px
+  border-bottom: 1px solid $black
+  &:only-child
+    border-bottom: none
+
+  .participation-status
+    border-radius: 4px
+    color: white
+    text-transform: uppercase
+    padding: 6px
     &.green
-      color: green
+      background-color: $success
+    &.grey
+      background-color: $light-grey
 
+// Styles for /activities
 
+.activity
+  margin-bottom: 16px
+  .activity-name
+    font-size: 16px
+    line-height: 1.5
+    color: $black
+    margin-bottom: 4px
+  .activity-description
+    font-size: 14px
+    font-style: italic
+    line-height: 1.43
+    color: $light-grey
+
+// Styles for /rules
+
+.rules
+  font-size: 16px
+  color: $black
+  line-height: 1.5

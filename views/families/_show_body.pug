@@ -1,21 +1,29 @@
 .col-12.switch-weeks
-  if showPrevious
-    #previous.change-week  &lt; Previous Week
-  if showNext
-    #next.change-week Next Week &gt;
+  div
+    if showPrevious
+      #previous.change-week  &lt; Previous Week
+  div
+    if showNext
+      #next.change-week Next Week &gt;
+    else
+      | Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
 
 #summary.col-12
-  #familyName= family.name
-  #totalPoints= family.totalPoints
+  .title(style=`color: ${familyColors[family.name]}`)= family.name
+  .title(style=`color: ${familyColors[family.name]}`)= family.teamScore
 
-#competitorSummary.col-12 Week #[span.weekNumber= currentChallenge.weekNumber]: vs #[span#versingFamily= versingFamily.name]
+#competitorSummary.col-12 Week #[span.weekNumber= requestedWeek]: vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
 
-hr
+.col-12
+  #border
 
 #weeklyStatus.col-12
-  div Opponent score: #[span= versingFamily.totalPoints]
-  div Status: #[span.red= family.pointsNeeded]
-  div Time left: #[span#timeRemaining= timeRemaining]
+  div Opponent score:
+    span= versingFamily.teamScore
+  div Status:
+    span(style=`color: ${statusColors[family.pointsNeededToWin.status]}`)= family.pointsNeededToWin.message
+  div Time left:
+    span#timeRemaining= timeRemaining
 
 .clear
 
@@ -27,12 +35,13 @@ if currentChallenge
   //-   else
   //-     p= 'Status: not participating'
   //-     a(href='/challenges') See upcoming challenges
-  #backgroundGradient
-    #scoreboard
-      include ./_calendar
-      include ./_daily_points
+  #backgroundGradient(style=`background: ${gradients[family.name]}`)
+    include ./_calendar
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
 
+if addPointsButtonDate
+  include ../points/new
 
-h2= "Motto: " + family.motto
+//- Uncomment ask cally where to put family motto
+//- h2= "Motto: " + family.motto

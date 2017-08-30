@@ -1,14 +1,14 @@
-var mongoose = require('mongoose'),
+var mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 var pointSchema = new Schema({
   participation: {
     type: Schema.Types.ObjectId,
-    ref: 'Participation'
+    ref: "Participation"
   },
   activity: {
     type: Schema.Types.ObjectId,
-    ref: 'Activity',
+    ref: "Activity",
     required: true
   },
   date: {
@@ -29,27 +29,47 @@ pointSchema.methods.getUnitName = function() {
   return this.activity.unit.name;
 };
 
-pointSchema.statics.getPointsForParticipationsByDay = (participations, date, user) => {
+// For each participant, find all point entries for requested date
+// total those points, sort the participants by most points entered
+// then if the user who requested this page is in the family, move that
+// user to the top of the participants
+pointSchema.statics.calculateParticipantPointsByDay = (
+  participations,
+  date,
+  user,
+  isFutureWeek
+) => {
+  if (isFutureWeek) return moveUserToTop(participations, user);
   return Promise.all(
     participations.map(participation => {
-      return Point.find({ participation, date }).populate({ path: 'activity', populate: { path: 'unit' } });
+      return Point.find({ participation, date }).populate({
+        path: "activity",
+        populate: { path: "unit" }
+      });
     })
   ).then(pointsArray => {
     participations.forEach((participation, index) => {
       participation.points = pointsArray[index];
-      participation.totalDailyPoints = participation.points.reduce((total, point) => total + point.calculatedPoints, 0);
+      participation.totalDailyPoints = participation.points.reduce(
+        (total, point) => total + point.calculatedPoints,
+        0
+      );
     });
 
     participations.sort((a, b) => b.totalDailyPoints - a.totalDailyPoints);
 
-    if (user !== undefined) {
-      var currentUserIndex = participations.findIndex(
-        participation => participation.user._id.toString() == user._id.toString()
-      );
-      participations.unshift(participations.splice(currentUserIndex, 1)[0]);
-    }
+    moveUserToTop(participations, user);
   });
 };
+
+function moveUserToTop(participations, user) {
+  if (user !== undefined) {
+    var currentUserIndex = participations.findIndex(
+      participation => participation.user._id.toString() == user._id.toString()
+    );
+    participations.unshift(participations.splice(currentUserIndex, 1)[0]);
+  }
+}
 
 // gets the total points for each participation object
 // and sets the total points to the participation obj's totalPoints property
@@ -58,13 +78,15 @@ pointSchema.statics.getTotalPointsForParticipationsByChallenge = participations 
     participations.map(participation => {
       return Point.aggregate([
         { $match: { participation: participation._id } },
-        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
+        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
       ]);
     })
   )
     .then(totalPointObjs => {
       totalPointObjs.forEach((totalPointObj, index) => {
-        participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+        participations[index].totalPoints = totalPointObj[0]
+          ? totalPointObj[0].total
+          : 0;
       });
     })
     .then(() => {
@@ -72,31 +94,51 @@ pointSchema.statics.getTotalPointsForParticipationsByChallenge = participations 
     });
 };
 
-pointSchema.statics.getTotalPointsForParticipationsByWeek = (participations, weekStart, weekEnd) => {
+pointSchema.statics.calculatePointsForWeek = (
+  participations,
+  weekStart,
+  weekEnd,
+  isFutureWeek
+) => {
+  if (isFutureWeek) return 0;
   return Promise.all(
     participations.map(participation => {
       return Point.aggregate([
-        { $match: { $and: [{ participation: participation._id }, { date: { $gt: weekStart, $lt: weekEnd } }] } },
-        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
+        {
+          $match: {
+            $and: [
+              { participation: participation._id },
+              { date: { $gt: weekStart, $lt: weekEnd } }
+            ]
+          }
+        },
+        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
       ]);
     })
   )
     .then(totalPointObjs => {
       totalPointObjs.forEach((totalPointObj, index) => {
-        participations[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+        participations[index].totalPoints = totalPointObj[0]
+          ? totalPointObj[0].total
+          : 0;
       });
     })
     .then(() => {
-      return participations.reduce((total, participation) => total + participation.totalPoints, 0);
+      return participations.reduce(
+        (total, participation) => total + participation.totalPoints,
+        0
+      );
     });
 };
 
 pointSchema.statics.getTotalPointsForDay = (participations, date) => {
   participations.forEach(participation => {
-    participation.totalDailyPoints = participation.points.reduce((total, point) => total + point.calculatedPoints);
+    participation.totalDailyPoints = participation.points.reduce(
+      (total, point) => total + point.calculatedPoints
+    );
   });
 };
 
-var Point = mongoose.model('Point', pointSchema);
+var Point = mongoose.model("Point", pointSchema);
 
 module.exports = Point;
