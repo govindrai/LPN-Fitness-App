@@ -3,16 +3,27 @@
 - var month = addPointsButtonDate.getMonth() + 1
 - var date = addPointsButtonDate.getDate()
 
-#add-points-container
-  .col-12
-    nav.mobile
-      .logo
-      #x-button.hamburger &#10005;
+#add-points-container.col-12
+  #x-button.hamburger &#10005;
 
-    .subtitle #{weekday}, #{month}/#{date}
-    form#add-points(action="/points" method="POST")
-      input(type="hidden" name="participation" value=participationId)
-      input(type="hidden", name="date", value=date)
-      div
-        label#activity-name Activity Name
-        input(id="typeahead" placeholder="search activities..." type="text")
+  .subtitle #{weekday}, #{month}/#{date}
+
+  .border
+
+  form#add-points(action="/points" method="POST")
+    input(type="hidden" name="participation" value=participationId)
+    input(type="hidden", name="date", value=date)
+
+    //- this is where all point entries will appear
+    .point-entries
+
+    div
+      label#activity-name Add Activity
+      input#typeahead(type="text")
+
+    div
+      label Point Calculator:
+      div #[span#totalPointsDisplay 0] Points
+      input#totalPoints(type="hidden" name="totalPoints" value="0")
+
+    input(type='submit' value='Add Points')

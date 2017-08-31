@@ -51,15 +51,19 @@ append footer-scripts
       request.fail(res => console.log(res));
     }
 
+    function removePointEntry(e) {
+      $(e.target).parent().remove();
+    }
+
     function showAddPointsModal() {
 
-      $("#add-points-container").css("display", "flex")
+      $("#add-points-container").toggle()
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
     }
 
     function hideAddPointsModal() {
-      $("#add-points-container").css("display", "none")
+      $("#add-points-container").toggle()
     }
 
     var typeaheadElements;
@@ -88,16 +92,17 @@ append footer-scripts
       });
     }
 
+    /* gets information about an selected activity  */
     function getActivityData(ev, suggestion) {
       var request = $.ajax({
         url: '/activities/' + suggestion,
-        data: partial == true ? "partial=true" : "partial=false"
+        data: partial ? "partial=true" : "partial=false"
       });
 
       request.done(res => {
         typeaheadElements = $('#typeahead').parent().parent();
         $('#typeahead').typeahead('val', '');
-        typeaheadElements.hide();
+        //- typeaheadElements.hide();
 
         if (!partial) {
           $("#add-points").prepend(res);
@@ -111,13 +116,6 @@ append footer-scripts
       request.fail(res => {
         console.log("FAIL in get activity data", res)
       });
-    }
-
-    function addMoreActivities(e) {
-      $('#activity-list').after(typeaheadElements);
-      typeaheadElements.show();
-      $("#add-activity").hide();
-      partial = true;
     }
 
     function sumArray(total, num) {
@@ -175,4 +173,4 @@ append footer-scripts
     $('body').on('click', '#add-points-button', showAddPointsModal);
     $('body').on('click', '#x-button', hideAddPointsModal);
     $('body').on('keyup', '.num-of-units', calculatePoints);
-    $('body').on('click', '#add-activity button', addMoreActivities);
+    $('body').on('click', ".trash", removePointEntry)
