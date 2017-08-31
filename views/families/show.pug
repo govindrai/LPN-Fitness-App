@@ -56,7 +56,6 @@ append footer-scripts
     }
 
     function showAddPointsModal() {
-
       $("#add-points-container").toggle()
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
@@ -65,9 +64,6 @@ append footer-scripts
     function hideAddPointsModal() {
       $("#add-points-container").toggle()
     }
-
-    var typeaheadElements;
-    var partial = false;
 
     function getActivities() {
       $.ajax({
@@ -95,22 +91,12 @@ append footer-scripts
     /* gets information about an selected activity  */
     function getActivityData(ev, suggestion) {
       var request = $.ajax({
-        url: '/activities/' + suggestion,
-        data: partial ? "partial=true" : "partial=false"
+        url: `/activities/${suggestion}`
       });
 
       request.done(res => {
-        typeaheadElements = $('#typeahead').parent().parent();
         $('#typeahead').typeahead('val', '');
-        //- typeaheadElements.hide();
-
-        if (!partial) {
-          $("#add-points").prepend(res);
-        } else {
-          $("#activity-list").append(res);
-          $("#add-activity").show();
-        }
-
+        $(".point-entries").append(res);
       });
 
       request.fail(res => {
@@ -118,33 +104,30 @@ append footer-scripts
       });
     }
 
-    function sumArray(total, num) {
-      return total + num;
-    }
+
 
     function calculatePoints(e) {
-      var activity = $(this).parent();
+      var pointsEntry = $(this).parent().parent();
 
-      var activityPoints = activity.find('.activity-points').text();
-      var activityPointsScale = activity.find('.activity-points-scale').text();
+      var activityPoints = pointsEntry.find('.activity-points').text();
+      var activityPointsScale = pointsEntry.find('.activity-points-scale').text();
 
       var numOfUnits = $(this).val();
 
       if (numOfUnits == "") {
-        activity.find('.calculatedPoints').val(0);
+        pointsEntry.find('input.calculated-points').val(0);
+        pointsEntry.find('div.calculated-points').text("0 POINTS")
       } else {
-        var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
-        activity.find('.calculatedPoints').val(calculation);
+        var calculation = ((parseFloat(activityPoints) / parseFloat(activityPointsScale)) * parseFloat(numOfUnits)).toFixed(2);
+        pointsEntry.find('input.calculated-points').val(calculation);
+        pointsEntry.find('div.calculated-points').text(calculation + " POINTS");
       }
 
-      var totalPoints = $(".calculatedPoints").map(function() {
-        return $(this).val() == "" ? 0 : parseInt($(this).val());
-      }).get();
 
-      totalPoints = totalPoints.reduce(sumArray);
+      const totalPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + $(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val()), 0).toFixed(2);
 
-      $("#totalPointsDisplay").text(totalPoints);
-      $("#totalPoints").val(totalPoints);
+      $("div.total-points").text("TOTAL = " + totalPoints + " POINTS");
+      $("input.total-points").val(totalPoints);
     }
 
     function getTimeRemaining(endOfWeek) {

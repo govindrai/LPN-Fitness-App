@@ -17,13 +17,12 @@
     //- this is where all point entries will appear
     .point-entries
 
-    div
-      label#activity-name Add Activity
-      input#typeahead(type="text")
+    .total-points(style=`color: ${familyColors[family.name]}`) TOTAL = 0 Points
+    input.total-points(type="hidden" name="totalPoints" value="0")
 
-    div
-      label Point Calculator:
-      div #[span#totalPointsDisplay 0] Points
-      input#totalPoints(type="hidden" name="totalPoints" value="0")
+    label#activity-name Add Activity
+    input#typeahead(type="text")
+
+
 
     input(type='submit' value='Add Points')

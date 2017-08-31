@@ -410,20 +410,20 @@ hr {
     .challenge .participation-status.grey {
       background-color: #a0a3a8; }
 
-.point-entry {
+.points-entry {
   padding: 16px;
   border-radius: 5px;
   background-color: #f0f4f8;
   position: relative;
   margin-bottom: 16px; }
-  .point-entry .trash {
+  .points-entry .trash {
     position: absolute;
     top: 15px;
     right: 15px;
     width: 24px; }
-  .point-entry .activity-name {
+  .points-entry .activity-name {
     margin-bottom: 12px; }
-  .point-entry .points-label {
+  .points-entry .entry-points-calculation {
     font-weight: bold;
     line-height: 1.5;
     text-align: right;
@@ -580,5 +580,13 @@ hr {
   100% {
     opacity: 0;
     top: -400px; } }
+
+.calculated-points, .total-points {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5;
+  text-align: right;
+  color: #353738;
+  margin-bottom: 16px; }
 
 /*# sourceMappingURL=style.css.map */

@@ -49,13 +49,10 @@ router.get("/:activityName", (req, res) => {
       .populate("unit")
       .then(activity => {
         res.send(
-          pug.renderFile(
-            process.env.PWD + "/views/points/" + "_point_entry.pug",
-            {
-              activity,
-              date: new Date()
-            }
-          )
+          pug.renderFile(process.env.PWD + "/views/points/_point_entry.pug", {
+            activity,
+            date: new Date()
+          })
         );
       })
       .catch(e => console.log(e));
