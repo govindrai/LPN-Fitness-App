@@ -10,6 +10,7 @@ block content
 
 append footer-scripts
   script.
+    /* switching days */
     function updatePoints(e) {
       $.ajax({
         url: window.location.pathname + "/points",
@@ -19,6 +20,7 @@ append footer-scripts
       .fail(e => console.log("updatePoints failed"));
     }
 
+    /* switching weeks */
     function updateShow(e) {
       const weekInfo = {
         direction: $(this).attr('id'),
@@ -34,25 +36,9 @@ append footer-scripts
       .fail(() => console.log("Getting Calendar Head failed"));
     }
 
-    function deletePoint(e) {
-      e.preventDefault();
-      var point = $(this).parent().parent();
-
-      var request = $.ajax({
-        type: 'POST',
-        url: '/points?_method=DELETE',
-        data: { point: point.data('point') }
-      });
-
-      request.done(res => {
-        point.remove();
-      });
-
-      request.fail(res => console.log(res));
-    }
-
     function removePointEntry(e) {
       $(e.target).parent().remove();
+      calculateTotalPoints();
     }
 
     function showAddPointsModal() {
@@ -104,9 +90,7 @@ append footer-scripts
       });
     }
 
-
-
-    function calculatePoints(e) {
+    function calculateEntryPoints(e) {
       var pointsEntry = $(this).parent().parent();
 
       var activityPoints = pointsEntry.find('.activity-points').text();
@@ -122,9 +106,11 @@ append footer-scripts
         pointsEntry.find('input.calculated-points').val(calculation);
         pointsEntry.find('div.calculated-points').text(calculation + " POINTS");
       }
+      calculateTotalPoints();
+    }
 
-
-      const totalPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + $(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val()), 0).toFixed(2);
+    function calculateTotalPoints() {
+       const totalPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + ($(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val())), 0).toFixed(2);
 
       $("div.total-points").text("TOTAL = " + totalPoints + " POINTS");
       $("input.total-points").val(totalPoints);
@@ -150,10 +136,25 @@ append footer-scripts
       initializeClock();
     });
 
+    function toggleParticipantPoints(e) {
+      $(this).find('.points-entries-summaries').slideToggle();
+    }
+
+    function editPoints(e) {
+      $.ajax({
+        url: "/points/"
+      })
+      showAddPointsModal();
+
+    }
+
+    $('body').on('click', '#edit-points', editPoints)
+
+
+    $('body').on('click', '.participant', toggleParticipantPoints)
     $('body').on('click', '.change-week', updateShow);
     $('body').on('click', '.updatePoints', updatePoints);
-    $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#add-points-button', showAddPointsModal);
     $('body').on('click', '#x-button', hideAddPointsModal);
-    $('body').on('keyup', '.num-of-units', calculatePoints);
+    $('body').on('keyup', '.num-of-units', calculateEntryPoints);
     $('body').on('click', ".trash", removePointEntry)

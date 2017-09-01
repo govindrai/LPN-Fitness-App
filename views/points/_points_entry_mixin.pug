@@ -1,0 +1,16 @@
+mixin pointsEntry(id, activity, numOfUnits, calculatedPoints)
+  .points-entry.col-12
+    input(type="hidden", name="point", value=id)
+    img.trash(src="/images/trash.png")
+
+    .activity
+      input(type="hidden", name="activity" , value=activity._id)
+      .activity-name= activity.name
+      .activity-description #{activity.description}, #[span.activity-points= activity.points] points for every #[span.activity-points-scale= activity.scale] #{activity.unit.name}
+
+    .fieldset
+      label(for="numOfUnits")= `${activity.unit.name}s`
+      input.num-of-units(type="text", name="numOfUnits" value=numOfUnits)
+
+    .calculated-points #{calculatedPoints} POINTS
+    input.calculated-points(type="hidden", name="calculatedPoints", value=calculatedPoints)

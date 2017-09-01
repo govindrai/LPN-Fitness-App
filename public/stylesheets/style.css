@@ -173,48 +173,71 @@ nav .nav-links {
   cursor: pointer; }
 
 #dailyPoints .participant {
-  display: flex;
-  justify-content: space-between;
   border-bottom: 1px solid #dadde0;
-  padding-bottom: 16px;
-  align-items: center;
-  margin-bottom: 16px; }
-  #dailyPoints .participant:last-child {
-    border: none;
-    margin: 0;
-    padding-bottom: 0; }
-  #dailyPoints .participant .left-column {
-    text-align: left; }
-  #dailyPoints .participant .right-column {
-    text-align: right; }
-    #dailyPoints .participant .right-column #add-points-button {
-      font-size: 50px;
-      line-height: 56px;
-      text-align: center;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      background-color: #f2cd46;
+  margin-bottom: 16px;
+  cursor: pointer; }
+  #dailyPoints .participant:not(:first-child) .points-entries-summaries {
+    display: none; }
+  #dailyPoints .participant .first-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; }
+    #dailyPoints .participant .first-row:last-child {
       border: none;
-      color: white;
-      padding: 0;
       margin: 0;
-      cursor: pointer; }
-  #dailyPoints .participant .realname {
-    font-size: 14px;
+      padding-bottom: 0; }
+    #dailyPoints .participant .first-row .left-column {
+      text-align: left; }
+    #dailyPoints .participant .first-row .right-column {
+      text-align: right; }
+      #dailyPoints .participant .first-row .right-column #add-points-button {
+        font-size: 50px;
+        line-height: 56px;
+        text-align: center;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        background-color: #f2cd46;
+        border: none;
+        color: white;
+        padding: 0;
+        margin: 0;
+        cursor: pointer; }
+    #dailyPoints .participant .first-row .realname {
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.43;
+      color: #a0a3a8;
+      text-transform: uppercase;
+      margin-bottom: 16px; }
+    #dailyPoints .participant .first-row .nickname {
+      font-size: 20px;
+      line-height: 1.8;
+      color: #353738; }
+    #dailyPoints .participant .first-row .total-points {
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.38;
+      color: #6B6D70; }
+
+#dailyPoints .points-entries-summaries {
+  margin-top: -4px; }
+  #dailyPoints .points-entries-summaries .points-entry-summary {
+    color: #353738;
+    font-weight: 300; }
+    #dailyPoints .points-entries-summaries .points-entry-summary .calculated-points-label {
+      font-weight: 600;
+      display: inline-block;
+      padding-right: 5px; }
+    #dailyPoints .points-entries-summaries .points-entry-summary:not(:last-child) {
+      margin-bottom: 6px; }
+    #dailyPoints .points-entries-summaries .points-entry-summary:last-child {
+      margin-bottom: 16px; }
+  #dailyPoints .points-entries-summaries #edit-points {
+    text-align: center;
+    margin: 12px auto 16px auto;
     font-style: italic;
-    line-height: 1.43;
-    color: #a0a3a8;
-    text-transform: uppercase; }
-  #dailyPoints .participant .nickname {
-    font-size: 20px;
-    line-height: 1.8;
-    color: #353738; }
-  #dailyPoints .participant .total-points {
-    font-size: 32px;
-    font-weight: 300;
-    line-height: 1.38;
-    color: #6B6D70; }
+    font-weight: 600; }
 
 .switch-weeks {
   display: flex;

@@ -49,7 +49,7 @@ router.get("/:activityName", (req, res) => {
       .populate("unit")
       .then(activity => {
         res.send(
-          pug.renderFile(process.env.PWD + "/views/points/_point_entry.pug", {
+          pug.renderFile(process.env.PWD + "/views/points/_points_entry.pug", {
             activity,
             date: new Date()
           })
