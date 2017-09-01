@@ -320,6 +320,8 @@ form
 
 .grey-button
   height: 56px
+  width: 200px
+  text-align: center
   background-color: #b1b4ba
   color: white
   text-transform: uppercase
@@ -509,12 +511,13 @@ hr
 
 // Hamburger Animation Styles
 .hamburger-button
+  cursor: pointer
   .x-line
     display: none
   .line, .x-line
     position: relative
     height: 4px
-    background: $black
+    background: $light-grey
     width: 28px
 
   .x-line:nth-child(4)
@@ -643,7 +646,7 @@ hr
     opacity: 0
     top: -400px
 
-.calculated-points, .total-points
+.calculated-points, .total-calculated-points
   font-size: 16px;
   font-weight: bold;
   line-height: 1.5;
@@ -651,4 +654,8 @@ hr
   color: $black
   margin-bottom: 16px
 
+.total-calculated-points
+  display: none
 
+#submit-points-button
+  display: none

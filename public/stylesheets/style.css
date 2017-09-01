@@ -301,6 +301,8 @@ form input::placeholder {
 
 .grey-button {
   height: 56px;
+  width: 200px;
+  text-align: center;
   background-color: #b1b4ba;
   color: white;
   text-transform: uppercase;
@@ -470,58 +472,49 @@ hr {
   color: #353738;
   line-height: 1.5; }
 
-.hamburger-button .x-line {
-  display: none; }
-
-.hamburger-button .line, .hamburger-button .x-line {
-  position: relative;
-  height: 4px;
-  background: #353738;
-  width: 28px; }
-
-.hamburger-button .x-line:nth-child(4) {
-  top: 4px;
-  transform: rotate(-45deg); }
-
-.hamburger-button .x-line:nth-child(5) {
-  background-color: transparent; }
-
-.hamburger-button .x-line:nth-child(6) {
-  top: -4px;
-  transform: rotate(45deg); }
-
-.hamburger-button.animate-x .line:first-child {
-  animation-name: movedown;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button.animate-x .line:nth-child(2) {
-  animation-name: middlerotate;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button.animate-x .line:nth-child(3) {
-  animation-name: moveup;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button.animate-x-reverse .line:first-child {
-  animation-name: movedown-reverse;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button.animate-x-reverse .line:nth-child(2) {
-  animation-name: middlerotate-reverse;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button.animate-x-reverse .line:nth-child(3) {
-  animation-name: moveup-reverse;
-  animation-duration: 1s;
-  animation-fill-mode: forwards; }
-
-.hamburger-button .line:not(:first-child) {
-  margin-top: 5px; }
+.hamburger-button {
+  cursor: pointer; }
+  .hamburger-button .x-line {
+    display: none; }
+  .hamburger-button .line, .hamburger-button .x-line {
+    position: relative;
+    height: 4px;
+    background: #a0a3a8;
+    width: 28px; }
+  .hamburger-button .x-line:nth-child(4) {
+    top: 4px;
+    transform: rotate(-45deg); }
+  .hamburger-button .x-line:nth-child(5) {
+    background-color: transparent; }
+  .hamburger-button .x-line:nth-child(6) {
+    top: -4px;
+    transform: rotate(45deg); }
+  .hamburger-button.animate-x .line:first-child {
+    animation-name: movedown;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x .line:nth-child(2) {
+    animation-name: middlerotate;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x .line:nth-child(3) {
+    animation-name: moveup;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:first-child {
+    animation-name: movedown-reverse;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:nth-child(2) {
+    animation-name: middlerotate-reverse;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:nth-child(3) {
+    animation-name: moveup-reverse;
+    animation-duration: 1s;
+    animation-fill-mode: forwards; }
+  .hamburger-button .line:not(:first-child) {
+    margin-top: 5px; }
 
 @keyframes movedown {
   0% {
@@ -604,12 +597,18 @@ hr {
     opacity: 0;
     top: -400px; } }
 
-.calculated-points, .total-points {
+.calculated-points, .total-calculated-points {
   font-size: 16px;
   font-weight: bold;
   line-height: 1.5;
   text-align: right;
   color: #353738;
   margin-bottom: 16px; }
+
+.total-calculated-points {
+  display: none; }
+
+#submit-points-button {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

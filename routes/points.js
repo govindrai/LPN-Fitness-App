@@ -1,8 +1,9 @@
 // Modules
-var express = require("express"),
+const express = require("express"),
   pug = require("pug"),
   path = require("path"),
-  _ = require("lodash");
+  _ = require("lodash"),
+  ObjectId = require("mongoose").Types.ObjectId;
 
 // Models
 var Activity = require("./../models/activity"),
@@ -47,12 +48,14 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  console.log();
   var points = [];
   if (typeof req.body.activity == "object") {
     var countOfActivities = req.body.activity.length;
 
     for (var i = 0; i < countOfActivities; i++) {
       points.push({
+        _id: req.body.point[i],
         participation: req.body.participation,
         user: res.locals.user._id,
         activity: req.body.activity[i],
@@ -63,8 +66,9 @@ router.post("/", (req, res) => {
     }
   } else {
     var body = _.pick(req.body, [
-      "activity",
+      "_id",
       "participation",
+      "activity",
       "numOfUnits",
       "calculatedPoints",
       "date"
@@ -73,7 +77,25 @@ router.post("/", (req, res) => {
     points.push(body);
   }
 
-  Point.insertMany(points)
+  existingPoints = points.filter(point => point._id);
+  newPoints = points.filter(point => {
+    if (!point._id) {
+      delete point._id;
+      return true;
+    }
+  });
+
+  console.log(existingPoints);
+  console.log(newPoints);
+
+  Promise.all(
+    existingPoints.map(existingPoint => {
+      console.log("EXISTING POINT");
+      console.log(existingPoint);
+      Point.findByIdAndUpdate(new ObjectId(existingPoint._id), existingPoint);
+    })
+  )
+    .then(() => Point.insertMany(newPoints))
     .then(() => {
       return User.update(
         { _id: res.locals.user._id },

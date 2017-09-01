@@ -35,7 +35,7 @@ mixin weekdays(days, dates)
           //- p= `Points For Week: ${participation.totalPoints}`
           .right-column
             if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
-              #add-points-button(data-date=addPointsButtonDate) +
+              #add-points-button(style=`background-color: ${familyColors[family.name]}` data-date=addPointsButtonDate) +
             else
               if participation.totalDailyPoints === 0
                 .total-points &#8213;

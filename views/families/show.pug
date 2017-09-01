@@ -41,7 +41,11 @@ append footer-scripts
       calculateTotalPoints();
     }
 
-    function showAddPointsModal() {
+    function showAddPointsModal(e) {
+      if ($(this).attr("id") === "edit-points") {
+        $(".total-calculated-points").css("display", "block");
+        $("#submit-points-button").css("display", "block");
+      }
       $("#add-points-container").toggle()
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
@@ -83,6 +87,8 @@ append footer-scripts
       request.done(res => {
         $('#typeahead').typeahead('val', '');
         $(".point-entries").append(res);
+        $("#submit-points-button").css("display", "block");
+        $(".total-calculated-points").css("display", "block");
       });
 
       request.fail(res => {
@@ -110,10 +116,10 @@ append footer-scripts
     }
 
     function calculateTotalPoints() {
-       const totalPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + ($(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val())), 0).toFixed(2);
+       const totalCalculatedPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + ($(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val())), 0).toFixed(2);
 
-      $("div.total-points").text("TOTAL = " + totalPoints + " POINTS");
-      $("input.total-points").val(totalPoints);
+      $("div.total-calculated-points").text("TOTAL = " + totalCalculatedPoints + " POINTS");
+      $("input.total-calculated-points").val(totalCalculatedPoints);
     }
 
     function getTimeRemaining(endOfWeek) {
@@ -140,21 +146,11 @@ append footer-scripts
       $(this).find('.points-entries-summaries').slideToggle();
     }
 
-    function editPoints(e) {
-      $.ajax({
-        url: "/points/"
-      })
-      showAddPointsModal();
-
-    }
-
-    $('body').on('click', '#edit-points', editPoints)
-
-
     $('body').on('click', '.participant', toggleParticipantPoints)
     $('body').on('click', '.change-week', updateShow);
     $('body').on('click', '.updatePoints', updatePoints);
     $('body').on('click', '#add-points-button', showAddPointsModal);
+    $('body').on('click', '#edit-points', showAddPointsModal)
     $('body').on('click', '#x-button', hideAddPointsModal);
     $('body').on('keyup', '.num-of-units', calculateEntryPoints);
     $('body').on('click', ".trash", removePointEntry)

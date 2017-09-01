@@ -21,12 +21,14 @@ include _points_entry_mixin
       each point in familyParticipations[0].points
         +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints)
 
-    .total-points(style=`color: ${familyColors[family.name]}`) TOTAL = #{familyParticipations[0].totalPoints} Points
-    input.total-points(type="hidden" name="totalPoints" value=familyParticipations[0].totalPoints)
+    .total-calculated-points(style=`color: ${familyColors[family.name]}`) TOTAL = #{familyParticipations[0].totalPoints} Points
+    input.total-calculated-points(type="hidden" name="totalPoints" value=familyParticipations[0].totalPoints)
+
 
     label#activity-name Add Activity
     input#typeahead(type="text")
 
+    .center
+      button#submit-points-button.grey-button(style=`background-color: ${familyColors[family.name]}` type='submit') Save
 
 
-    input(type='submit' value='Add Points')
