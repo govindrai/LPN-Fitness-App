@@ -242,7 +242,7 @@ router.get("/:familyName/points", (req, res) => {
       );
     })
     .then(() => {
-      res.render("families/_calendar", {
+      res.render("families/_scoreboard", {
         isFutureWeek,
         family,
         defaultShowDate,

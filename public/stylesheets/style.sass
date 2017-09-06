@@ -12,6 +12,13 @@ $scoreboardBorder: #dadde0
   box-sizing: border-box
   outline: none
 
+.error
+  background: $error
+  color: white
+  font-style: italic
+  font-weight: 600
+  padding: 15px
+
 [class*="col-"]
   float: left
   padding: 0 15px
@@ -51,7 +58,7 @@ a
   &:visited
     color: blue
   &:hover
-    color: red
+    text-decoration: underline
 
 
 body
@@ -63,11 +70,11 @@ body
 
 input, select, textarea
   display: block
-  // -webkit-appearance: none
-  // -webkit-border-radius: 0
+  &:focus
+    border: none
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3)
 
 nav
-
   .top
     padding-top: 10px
     padding-bottom: 20px
@@ -78,7 +85,7 @@ nav
   .nav-links
     opacity: 0
     top: -400px
-    position: fixed
+    position: absolute
     padding: 24px 49px
     background: white
     z-index: 5
@@ -102,6 +109,9 @@ nav
       margin-bottom: 16px
       text-transform: uppercase
       font-weight: 600
+      &:only-child
+        margin-bottom: 0
+
     .drop-down-links
       display: none
       a
@@ -152,6 +162,7 @@ nav
 
 #calendarHead
   padding-bottom: 28px
+  border-bottom: 1px solid $scoreboardBorder
 
 #calendar
   padding: 0 15px
@@ -170,6 +181,14 @@ nav
 
     .weekday
       position: relative
+      &.current-date::after
+        position: absolute
+        content: ">"
+        transform: rotate(-90deg)
+        bottom: 2px
+        left: 0
+        font-size: 30px
+
 
       .day
         font-size: 13px
@@ -183,26 +202,26 @@ nav
         position: relative
         padding-bottom 20px
 
+
+
 .updatePoints
   cursor: pointer
 
 #dailyPoints
   .participant
     border-bottom: 1px solid #dadde0
-    margin-bottom: 16px
+    margin: 16px 0
     cursor: pointer
     &:not(:first-child) .points-entries-summaries
       display: none
+    &:last-child
+      border: none
+      margin: 0
+      padding-bottom: 0
 
     .first-row
       display: flex
       justify-content: space-between
-      align-items: center
-      &:last-child
-        border: none
-        margin: 0
-        padding-bottom: 0
-
       .left-column
         text-align: left
       .right-column
@@ -397,7 +416,7 @@ hr
 #add-points-container
   display: none
   padding: 10px 15px
-  position: fixed
+  position: absolute
   background: rgba(1,1,1,.7)
   top: 0
   width: 400px
@@ -663,3 +682,9 @@ hr
 
 #submit-points-button
   display: none
+  // position: absolute
+  // bottom: 0
+  // left: 50%
+  // transform: translate(-50%, 0)
+  // margin-bottom: 32px
+  // margin-top: 24px

@@ -30,7 +30,7 @@ html
           .line
           .line
       .nav-links
-        if !user
+        if !isLoggedIn
           +link("/", "Home")
         else
           +link(home, "Home")

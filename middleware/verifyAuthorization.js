@@ -16,6 +16,7 @@ module.exports = function verifyAuthorization(req, res, next) {
     .then(user => {
       if (!user) return res.status(404).send("UNAUTHORIZED.");
       res.locals.user = user;
+      res.locals.isLoggedIn = true;
       return next();
     })
     .catch(e => console.log(e));

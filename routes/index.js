@@ -40,7 +40,9 @@ router.post("/login", (req, res) => {
       req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
       res.redirect("/");
     })
-    .catch(error => res.render("sessions/login", { error }));
+    .catch(error =>
+      res.render("sessions/login", { error, email: req.body.email })
+    );
 });
 
 // Register

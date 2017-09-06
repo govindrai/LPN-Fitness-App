@@ -7,7 +7,7 @@ mixin weekdays(days, dates)
     else if (x===6)
       - id = "sunday"
     if (defaultShowDateString === dates[x].toString())
-      - className = "currentDate"
+      - className = "current-date"
       - style = `color:${familyColors[family.name]}`
       - borderStyle = `border-bottom: 5px solid ${familyColors[family.name]}`
     a.updatePoints

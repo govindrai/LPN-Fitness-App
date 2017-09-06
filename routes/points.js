@@ -48,7 +48,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log();
   var points = [];
   if (typeof req.body.activity == "object") {
     var countOfActivities = req.body.activity.length;
@@ -85,22 +84,20 @@ router.post("/", (req, res) => {
     }
   });
 
-  console.log(existingPoints);
-  console.log(newPoints);
-
+  let oldPoints = 0;
   Promise.all(
     existingPoints.map(existingPoint => {
-      console.log("EXISTING POINT");
-      console.log(existingPoint);
-      Point.findByIdAndUpdate(new ObjectId(existingPoint._id), existingPoint);
+      return Point.findByIdAndUpdate(existingPoint._id, existingPoint).then(
+        oldUpdatedPoint => (oldPoints += oldUpdatedPoint.calculatedPoints)
+      );
     })
   )
     .then(() => Point.insertMany(newPoints))
     .then(() => {
-      return User.update(
-        { _id: res.locals.user._id },
-        { $inc: { lifetimePoints: req.body.totalPoints } }
-      );
+      totalPoints = req.body.totalPoints - oldPoints;
+      return res.locals.user.update({
+        $inc: { lifetimePoints: totalPoints }
+      });
     })
     .then(() => {
       res.redirect(res.locals.home);

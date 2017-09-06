@@ -3,6 +3,13 @@
   box-sizing: border-box;
   outline: none; }
 
+.error {
+  background: #d92b3a;
+  color: white;
+  font-style: italic;
+  font-weight: 600;
+  padding: 15px; }
+
 [class*="col-"] {
   float: left;
   padding: 0 15px; }
@@ -52,7 +59,7 @@ a {
   a:visited {
     color: blue; }
   a:hover {
-    color: red; }
+    text-decoration: underline; }
 
 body {
   margin: auto;
@@ -63,6 +70,9 @@ body {
 
 input, select, textarea {
   display: block; }
+  input:focus, select:focus, textarea:focus {
+    border: none;
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3); }
 
 nav .top {
   padding-top: 10px;
@@ -74,7 +84,7 @@ nav .top {
 nav .nav-links {
   opacity: 0;
   top: -400px;
-  position: fixed;
+  position: absolute;
   padding: 24px 49px;
   background: white;
   z-index: 5;
@@ -97,6 +107,8 @@ nav .nav-links {
     margin-bottom: 16px;
     text-transform: uppercase;
     font-weight: 600; }
+    nav .nav-links a:only-child {
+      margin-bottom: 0; }
   nav .nav-links .drop-down-links {
     display: none; }
     nav .nav-links .drop-down-links a {
@@ -143,7 +155,8 @@ nav .nav-links {
     margin: 0; }
 
 #calendarHead {
-  padding-bottom: 28px; }
+  padding-bottom: 28px;
+  border-bottom: 1px solid #dadde0; }
 
 #calendar {
   padding: 0 15px;
@@ -159,6 +172,13 @@ nav .nav-links {
       color: #a0a3a8; }
     #calendar #weekdays .weekday {
       position: relative; }
+      #calendar #weekdays .weekday.current-date::after {
+        position: absolute;
+        content: ">";
+        transform: rotate(-90deg);
+        bottom: 2px;
+        left: 0;
+        font-size: 30px; }
       #calendar #weekdays .weekday .day {
         font-size: 13px;
         font-weight: 600;
@@ -174,18 +194,17 @@ nav .nav-links {
 
 #dailyPoints .participant {
   border-bottom: 1px solid #dadde0;
-  margin-bottom: 16px;
+  margin: 16px 0;
   cursor: pointer; }
   #dailyPoints .participant:not(:first-child) .points-entries-summaries {
     display: none; }
+  #dailyPoints .participant:last-child {
+    border: none;
+    margin: 0;
+    padding-bottom: 0; }
   #dailyPoints .participant .first-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center; }
-    #dailyPoints .participant .first-row:last-child {
-      border: none;
-      margin: 0;
-      padding-bottom: 0; }
+    justify-content: space-between; }
     #dailyPoints .participant .first-row .left-column {
       text-align: left; }
     #dailyPoints .participant .first-row .right-column {
@@ -369,7 +388,7 @@ hr {
 #add-points-container {
   display: none;
   padding: 10px 15px;
-  position: fixed;
+  position: absolute;
   background: rgba(1, 1, 1, 0.7);
   top: 0;
   width: 400px;

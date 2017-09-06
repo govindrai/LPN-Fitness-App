@@ -44,7 +44,10 @@ append footer-scripts
     function showAddPointsModal(e) {
       if ($(this).attr("id") === "edit-points") {
         $(".total-calculated-points").css("display", "block");
-        $("#submit-points-button").css("display", "block");
+        calculateTotalPoints();
+      }
+      if ($(".point-entries").children.length > 0) {
+        $("#submit-points-button").css("display", "block")
       }
       $("#add-points-container").toggle()
       getActivities();

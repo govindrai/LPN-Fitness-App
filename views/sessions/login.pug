@@ -2,16 +2,15 @@ extends ../layout
 
 block content
   .col-12
-
     if error
-      p= error
-
+      p.error= error
     .title Login
     form(action='/login' method='POST')
       label Email
-      input(name='email' type='email' required)
+      input(name='email' type='email' required value=email)
       label Password
       input(name='password' type='password' required)
-      button.grey-button(type='submit' value='Sign In')
+      .center
+        button.grey-button(type='submit') Login
 
     .message Don't have an account? #[a(href="/register") Register]
