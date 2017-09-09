@@ -29,7 +29,8 @@ router.get("/admin-settings", isAdmin, function(req, res, next) {
       nonAdminss = nonAdmins;
       res.render("account/admin_settings", {
         admins: adminss,
-        nonAdmins: nonAdminss
+        nonAdmins: nonAdminss,
+        path: req.path
       });
     });
 });

@@ -1,13 +1,13 @@
 // Modules
-var express = require('express'),
+const express = require('express'),
   pug = require('pug'),
   path = require('path');
 
 // Models
-var User = require('./../models/user'),
+const User = require('./../models/user'),
   Family = require('./../models/family');
 
-var router = express.Router();
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -57,8 +57,9 @@ router.put('/edit', (req, res) => {
       .then(user => res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`))
       .catch(e => console.log(e));
   } else {
-    User.findOneAndUpdate({ _id: res.locals.user._id }, { $set: req.body }, { runValidators: true, new: true })
+    User.findOneAndUpdate({ _id: res.locals.user._id }, { $set: req.body }, {new: true })
       .then(user => {
+        console.log(user)
         res.send(
           pug.renderFile(path.join(__dirname, '../views/users/_edit_form.pug'), {
             message: 'Your profile has been updated!',
