@@ -21,28 +21,39 @@ var userSchema = new Schema({
     },
     nickname: {
       type: String,
-      minLength: 3,
       trim: true,
       default: null
     }
   },
   email: {
     type: String,
-    required: [true, "Email is Required"],
+    required: [true, "Email is required."],
     trim: true,
-    unique: true,
-    validate: {
-      validator: validator.isEmail,
-      message: "Please provide a valid email!"
-    }
+    validate: [
+      {
+        isAsync: true,
+        validator: validator.isEmail,
+        message: "Please provide a valid email address."
+      },
+      {
+        isAsync: true,
+        validator: (email, cb) => {
+          User.findOne({ email }).then(existingUser => {
+            cb(!existingUser, "Email address already exists.");
+          });
+        }
+      }
+    ]
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: [6, "Passwords must be at least 6 characters long."]
   },
   family: {
     type: Schema.Types.ObjectId,
-    ref: "Family"
+    ref: "Family",
+    required: true
   },
   lifetimePoints: {
     type: Number,
@@ -85,7 +96,6 @@ userSchema.pre("save", function(next) {
 
 userSchema.methods.generateAuthorizationToken = function() {
   var user = this;
-
   return new Promise((resolve, reject) => {
     var payload = { _id: user._id, access: "auth" };
     jwt.sign(payload, process.env.JWT_SECRET || "secret", (err, token) => {
@@ -94,7 +104,7 @@ userSchema.methods.generateAuthorizationToken = function() {
     });
   }).then(token => {
     user.tokens.push({ access: "auth", token });
-    return user.save();
+    return user.update({ $set: { tokens: user.tokens } });
   });
 };
 

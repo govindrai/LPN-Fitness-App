@@ -3,6 +3,17 @@
   box-sizing: border-box;
   outline: none; }
 
+.error, .success {
+  background: #d92b3a;
+  color: white;
+  font-style: italic;
+  font-weight: 600;
+  padding: 15px;
+  margin: 10px auto; }
+
+.success {
+  background: #0b8c0b; }
+
 [class*="col-"] {
   float: left;
   padding: 0 15px; }
@@ -52,7 +63,7 @@ a {
   a:visited {
     color: blue; }
   a:hover {
-    color: red; }
+    text-decoration: underline; }
 
 body {
   margin: auto;
@@ -61,8 +72,11 @@ body {
   position: relative;
   padding-bottom: 20px; }
 
-input, select {
+input, select, textarea {
   display: block; }
+  input:focus, select:focus, textarea:focus {
+    border: none;
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3); }
 
 nav .top {
   padding-top: 10px;
@@ -72,10 +86,24 @@ nav .top {
   align-items: center; }
 
 nav .nav-links {
-  display: none;
-  height: 100vh;
-  margin-left: 49px;
-  margin-top: 24px; }
+  opacity: 0;
+  top: -400px;
+  position: absolute;
+  padding: 24px 49px;
+  background: white;
+  z-index: 5;
+  margin: 15px;
+  width: 340px;
+  border-radius: 5px;
+  border: 1px solid #6B6D70; }
+  nav .nav-links.move-nav-down {
+    animation-name: move-nav-down;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  nav .nav-links.move-nav-up {
+    animation-name: move-nav-up;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
   nav .nav-links a {
     display: block;
     font-size: 24px;
@@ -83,6 +111,8 @@ nav .nav-links {
     margin-bottom: 16px;
     text-transform: uppercase;
     font-weight: 600; }
+    nav .nav-links a:only-child {
+      margin-bottom: 0; }
   nav .nav-links .drop-down-links {
     display: none; }
     nav .nav-links .drop-down-links a {
@@ -104,7 +134,7 @@ nav .nav-links {
 
 .subtitle {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 600;
   color: #a0a3a8;
   margin-bottom: 16px; }
   .subtitle.logo {
@@ -129,7 +159,8 @@ nav .nav-links {
     margin: 0; }
 
 #calendarHead {
-  padding-bottom: 28px; }
+  padding-bottom: 28px;
+  border-bottom: 1px solid #dadde0; }
 
 #calendar {
   padding: 0 15px;
@@ -145,6 +176,13 @@ nav .nav-links {
       color: #a0a3a8; }
     #calendar #weekdays .weekday {
       position: relative; }
+      #calendar #weekdays .weekday.current-date::after {
+        position: absolute;
+        content: ">";
+        transform: rotate(-90deg);
+        bottom: 2px;
+        left: 0;
+        font-size: 30px; }
       #calendar #weekdays .weekday .day {
         font-size: 13px;
         font-weight: 600;
@@ -159,51 +197,70 @@ nav .nav-links {
   cursor: pointer; }
 
 #dailyPoints .participant {
-  display: flex;
-  justify-content: space-between;
   border-bottom: 1px solid #dadde0;
-  padding-bottom: 16px;
-  align-items: center;
-  margin-bottom: 16px; }
+  margin: 16px 0;
+  cursor: pointer; }
+  #dailyPoints .participant:not(:first-child) .points-entries-summaries {
+    display: none; }
   #dailyPoints .participant:last-child {
     border: none;
     margin: 0;
     padding-bottom: 0; }
-  #dailyPoints .participant .left-column {
-    text-align: left; }
-  #dailyPoints .participant .right-column {
-    text-align: right; }
-    #dailyPoints .participant .right-column #add-points-button {
-      font-size: 50px;
-      line-height: 56px;
-      text-align: center;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      background-color: #f2cd46;
-      border: none;
-      color: white;
-      padding: 0;
-      margin: 0;
-      cursor: pointer; }
-  #dailyPoints .participant .realname {
-    font-size: 14px;
-    font-style: italic;
-    line-height: 1.43;
-    color: #a0a3a8;
-    text-transform: uppercase; }
-  #dailyPoints .participant .nickname {
-    font-size: 20px;
-    line-height: 1.8;
-    color: #353738; }
-  #dailyPoints .participant .total-points {
-    font-size: 32px;
-    font-weight: 300;
-    line-height: 1.38;
-    color: #6B6D70; }
+  #dailyPoints .participant .first-row {
+    display: flex;
+    justify-content: space-between; }
+    #dailyPoints .participant .first-row .left-column {
+      text-align: left; }
+    #dailyPoints .participant .first-row .right-column {
+      text-align: right; }
+      #dailyPoints .participant .first-row .right-column #add-points-button {
+        font-size: 50px;
+        line-height: 56px;
+        text-align: center;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        background-color: #f2cd46;
+        border: none;
+        color: white;
+        padding: 0;
+        margin: 0;
+        cursor: pointer; }
+    #dailyPoints .participant .first-row .realname {
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.43;
+      color: #a0a3a8;
+      text-transform: uppercase;
+      margin-bottom: 16px; }
+    #dailyPoints .participant .first-row .nickname {
+      font-size: 20px;
+      line-height: 1.8;
+      color: #353738; }
+    #dailyPoints .participant .first-row .total-points {
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.38;
+      color: #6B6D70; }
 
-#add-points-container {
-  display: none; }
+#dailyPoints .points-entries-summaries {
+  margin-top: -4px; }
+  #dailyPoints .points-entries-summaries .points-entry-summary {
+    color: #353738;
+    font-weight: 300; }
+    #dailyPoints .points-entries-summaries .points-entry-summary .calculated-points-label {
+      font-weight: 600;
+      display: inline-block;
+      padding-right: 5px; }
+    #dailyPoints .points-entries-summaries .points-entry-summary:not(:last-child) {
+      margin-bottom: 6px; }
+    #dailyPoints .points-entries-summaries .points-entry-summary:last-child {
+      margin-bottom: 16px; }
+  #dailyPoints .points-entries-summaries #edit-points {
+    text-align: center;
+    margin: 12px auto 16px auto;
+    font-style: italic;
+    font-weight: 600; }
 
 .switch-weeks {
   display: flex;
@@ -237,6 +294,20 @@ form label {
   text-transform: uppercase;
   margin-bottom: 8px; }
 
+form .fieldset {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-end; }
+  form .fieldset label {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.43;
+    color: #6b6d70; }
+  form .fieldset input {
+    width: 72px;
+    margin-right: 12px; }
+
 form input, form select {
   width: 100%;
   height: 56px;
@@ -253,6 +324,8 @@ form input::placeholder {
 
 .grey-button {
   height: 56px;
+  width: 200px;
+  text-align: center;
   background-color: #b1b4ba;
   color: white;
   text-transform: uppercase;
@@ -260,7 +333,9 @@ form input::placeholder {
   font-size: 20px;
   font-weight: 700;
   padding: 0 20px;
-  cursor: pointer; }
+  cursor: pointer;
+  border: none;
+  letter-spacing: 1.2px; }
   .grey-button:active {
     box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2); }
   .grey-button:hover {
@@ -309,30 +384,49 @@ hr {
     color: #353738;
     text-transform: uppercase; }
 
-#border {
+.border {
   height: 1px;
   background: #dadde0;
   margin-bottom: 16px; }
 
 #add-points-container {
-  position: fixed;
+  display: none;
+  padding: 10px 15px;
+  position: absolute;
   background: rgba(1, 1, 1, 0.7);
   top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
   width: 400px;
   height: 100%;
   z-index: 5;
-  display: none;
-  align-items: center; }
-  #add-points-container div.col-12 {
-    width: 380px;
-    border-radius: 3px;
-    margin: auto;
-    background: white; }
+  background: white; }
 
 .twitter-typeahead {
   display: block; }
+
+#typeahead {
+  background-image: url("/images/magnifying_glass.svg");
+  background-size: 36px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  text-indent: 40px; }
+  #typeahead:focus {
+    border: none;
+    box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3); }
+
+.tt-hint {
+  text-indent: 40px; }
+
+.tt-menu {
+  margin-top: -2px;
+  font-size: 16px;
+  background: white;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3); }
+  .tt-menu .tt-suggestion {
+    padding: 15px; }
+    .tt-menu .tt-suggestion:hover {
+      background-color: rgba(1, 1, 1, 0.3); }
 
 .down-arrow {
   font-size: 12px;
@@ -366,6 +460,25 @@ hr {
     .challenge .participation-status.grey {
       background-color: #a0a3a8; }
 
+.points-entry {
+  padding: 16px;
+  border-radius: 5px;
+  background-color: #f0f4f8;
+  position: relative;
+  margin-bottom: 16px; }
+  .points-entry .trash {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 24px; }
+  .points-entry .activity-name {
+    margin-bottom: 12px; }
+  .points-entry .entry-points-calculation {
+    font-weight: bold;
+    line-height: 1.5;
+    text-align: right;
+    color: #353738; }
+
 .activity {
   margin-bottom: 16px; }
   .activity .activity-name {
@@ -383,5 +496,152 @@ hr {
   font-size: 16px;
   color: #353738;
   line-height: 1.5; }
+
+.hamburger-button {
+  cursor: pointer; }
+  .hamburger-button .x-line {
+    display: none; }
+  .hamburger-button .line, .hamburger-button .x-line {
+    position: relative;
+    height: 4px;
+    background: #a0a3a8;
+    width: 28px; }
+  .hamburger-button .x-line:nth-child(4) {
+    top: 4px;
+    transform: rotate(-45deg); }
+  .hamburger-button .x-line:nth-child(5) {
+    background-color: transparent; }
+  .hamburger-button .x-line:nth-child(6) {
+    top: -4px;
+    transform: rotate(45deg); }
+  .hamburger-button.animate-x .line:first-child {
+    animation-name: movedown;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x .line:nth-child(2) {
+    animation-name: middlerotate;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x .line:nth-child(3) {
+    animation-name: moveup;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:first-child {
+    animation-name: movedown-reverse;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:nth-child(2) {
+    animation-name: middlerotate-reverse;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button.animate-x-reverse .line:nth-child(3) {
+    animation-name: moveup-reverse;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards; }
+  .hamburger-button .line:not(:first-child) {
+    margin-top: 5px; }
+
+@keyframes movedown {
+  0% {
+    top: 0; }
+  50% {
+    top: 9px; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    top: 9px;
+    transform: rotate(-45deg); } }
+
+@keyframes moveup {
+  0% {
+    top: 0px; }
+  50% {
+    top: -9px; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    top: -9px;
+    transform: rotate(45deg); } }
+
+@keyframes movedown-reverse {
+  100% {
+    top: 0; }
+  51% {
+    top: 9px; }
+  50% {
+    transform: rotate(45deg); }
+  0% {
+    top: 9px;
+    transform: rotate(-45deg); } }
+
+@keyframes moveup-reverse {
+  0% {
+    top: -9px;
+    transform: rotate(45deg); }
+  50% {
+    top: -9px;
+    transform: rotate(45deg); }
+  51% {
+    top: -9px; }
+  100% {
+    top: 0px; } }
+
+@keyframes middlerotate {
+  0% {
+    top: 0; }
+  50% {
+    top: 0; }
+  51% {
+    transform: rotate(45deg); }
+  100% {
+    transform: rotate(45deg); } }
+
+@keyframes middlerotate-reverse {
+  0% {
+    transform: rotate(45deg); }
+  50% {
+    transform: rotate(45deg); }
+  51% {
+    top: 0; }
+  100% {
+    top: 0; } }
+
+@keyframes move-nav-down {
+  0% {
+    opacity: 0;
+    top: -400px; }
+  100% {
+    opacity: 1;
+    top: 63px; } }
+
+@keyframes move-nav-up {
+  0% {
+    opacity: 1;
+    top: 63px; }
+  100% {
+    opacity: 0;
+    top: -400px; } }
+
+.calculated-points, .total-calculated-points {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.5;
+  text-align: right;
+  color: #353738;
+  margin-bottom: 16px; }
+
+.total-calculated-points {
+  display: none; }
+
+#submit-points-button {
+  display: none; }
+
+.error-field input, .error-field select {
+  border-color: #d92b3a; }
+
+.error-field .error {
+  color: #d92b3a;
+  background: transparent;
+  padding: 0; }
 
 /*# sourceMappingURL=style.css.map */

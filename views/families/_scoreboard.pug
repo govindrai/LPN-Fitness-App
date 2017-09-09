@@ -1,0 +1,49 @@
+mixin weekdays(days, dates)
+  - var defaultShowDateString = defaultShowDate.toString()
+  - for (var x = 0; x < 7; x++)
+    - var id = ""; var className = ""; var style = ""; var borderStyle = ""
+    if (x===0)
+      - id = "monday"
+    else if (x===6)
+      - id = "sunday"
+    if (defaultShowDateString === dates[x].toString())
+      - className = "current-date"
+      - style = `color:${familyColors[family.name]}`
+      - borderStyle = `border-bottom: 5px solid ${familyColors[family.name]}`
+    a.updatePoints
+      div(class=`weekday ${className}` style=style)
+        div.day= days[x]
+        div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
+
+#scoreboard
+  div#calendarHead
+    div#calendar
+      div#weekdays
+        +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
+
+  #border
+
+  div#dailyPoints.col-12
+    //- div#selectedDate= "SELECTED DATE = " + addPointsButtonDate
+    each participation in familyParticipations
+      .participant
+        .first-row
+          .left-column
+            .nickname= participation.user.name.nickname
+            .realname= participation.user.fullName
+          //- p= "Lifetime Points: " + participation.user.lifetimePoints
+          //- p= `Points For Week: ${participation.totalPoints}`
+          .right-column
+            if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
+              #add-points-button(style=`background-color: ${familyColors[family.name]}` data-date=addPointsButtonDate) +
+            else
+              if participation.totalDailyPoints === 0
+                .total-points &#8213;
+              else
+                .total-points= participation.totalDailyPoints
+        .points-entries-summaries
+          if !isFutureWeek && participation.points.length > 0
+            each point in participation.points
+              .points-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
+            #edit-points(style=`color: ${familyColors[family.name]}`) Edit
+  <div style="clear:both"></div>

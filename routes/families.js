@@ -100,6 +100,7 @@ router.get("/:familyName", (req, res) => {
           defaultShowDate
         );
       }
+
       // then total the points for each challenge participant
       // if the user requesting the page is part of the family
       // then move that user to the top
@@ -113,6 +114,10 @@ router.get("/:familyName", (req, res) => {
       );
     })
     .then(() => {
+      if (addPointsButtonDate) {
+        user.participationId = familyParticipations[0]._id;
+      }
+
       // then, calculate points for the family for the entire week
       // if it is a future week, points will not get calculated
       return Point.calculatePointsForWeek(
@@ -237,7 +242,7 @@ router.get("/:familyName/points", (req, res) => {
       );
     })
     .then(() => {
-      res.render("families/_calendar", {
+      res.render("families/_scoreboard", {
         isFutureWeek,
         family,
         defaultShowDate,

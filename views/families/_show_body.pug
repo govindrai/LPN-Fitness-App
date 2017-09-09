@@ -15,7 +15,7 @@
 #competitorSummary.col-12 Week #[span.weekNumber= requestedWeek]: vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
 
 .col-12
-  #border
+  .border
 
 #weeklyStatus.col-12
   div Opponent score:
@@ -36,7 +36,7 @@ if currentChallenge
   //-     p= 'Status: not participating'
   //-     a(href='/challenges') See upcoming challenges
   #backgroundGradient(style=`background: ${gradients[family.name]}`)
-    include ./_calendar
+    include _scoreboard
 else
   h3 There is no current challenge. Please contact your program administrator to create one!
 

@@ -3,16 +3,32 @@
 - var month = addPointsButtonDate.getMonth() + 1
 - var date = addPointsButtonDate.getDate()
 
-#add-points-container
-  .col-12
-    nav.mobile
-      .logo
-      #x-button.hamburger &#10005;
+include _points_entry_mixin
 
-    .subtitle #{weekday}, #{month}/#{date}
-    form#add-points(action="/points" method="POST")
-      input(type="hidden" name="participation" value=participationId)
-      input(type="hidden", name="date", value=date)
-      div
-        label#activity-name Activity Name
-        input(id="typeahead" placeholder="search activities..." type="text")
+#add-points-container.col-12
+  #x-button.hamburger &#10005;
+
+  .subtitle #{weekday}, #{month}/#{date}
+
+  .border
+
+  form#add-points(action="/points" method="POST")
+    input(type="hidden" name="participation" value=user.participationId)
+    input(type="hidden", name="date", value=addPointsButtonDate)
+
+    //- this is where all point entries will appear
+    .point-entries
+      each point in familyParticipations[0].points
+        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints)
+
+    .total-calculated-points(style=`color: ${familyColors[family.name]}`) TOTAL = #{familyParticipations[0].totalPoints} Points
+    input.total-calculated-points(type="hidden" name="totalPoints" value=familyParticipations[0].totalPoints)
+
+
+    label#activity-name Add Activity
+    input#typeahead(type="text")
+
+    .center
+      button#submit-points-button.grey-button(style=`background-color: ${familyColors[family.name]}` type='submit') Save
+
+

@@ -1,7 +1,7 @@
 mixin link(href, name)
   - let style;
   if (path === href)
-    if (user)
+    if (loggedIn)
       if (familyColors[name])
         - style = `color: ${familyColors[name]}`
       else
@@ -25,10 +25,14 @@ html
     nav.col-12
       .top
         .subtitle.logo LPN Fitness
-        .hamburger &#9776;
+        .hamburger-button
+          .line
+          .line
+          .line
       .nav-links
-        if !user
+        if !isLoggedIn
           +link("/", "Home")
+          +link("/register", "Register")
         else
           +link(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
@@ -48,26 +52,21 @@ html
 
     block footer-scripts
       script.
-        $(document).ready(() => {
-          $("#subMenu").on(
-          "mouseover", "click",
-          () => {
-            $("#dropDown").slideToggle();
-          },
-          () => {
-            $("#dropDown").slideToggle();
-          });
-        })
+        $('body').on('click', '.drop-down', e => $('.drop-down-links').slideToggle());
 
-        $('body').on('click', '.drop-down', (e) => $('.drop-down-links').slideToggle());
-
-        let isNavShowing = false
-        $('body').on('click', '.hamburger', function(e) {
-          isNavShowing = !isNavShowing
-          if (isNavShowing)  {
-            $(e.target).html("&#10005;");
+        let reverse = false;
+        $('body').on('click', ".hamburger-button", e => {
+          if (reverse) {
+            $(e.currentTarget).removeClass("animate-x");
+            $(e.currentTarget).addClass("animate-x-reverse");
+            $(".nav-links").removeClass("move-nav-down");
+            $(".nav-links").addClass("move-nav-up");
+            reverse = !reverse;
           } else {
-            $(e.target).html("&#9776;")
+            $(e.currentTarget).removeClass("animate-x-reverse")
+            $(e.currentTarget).addClass("animate-x");
+            $(".nav-links").removeClass("move-nav-up");
+            $(".nav-links").addClass("move-nav-down");
+            reverse = !reverse;
           }
-          $('.nav-links').toggle(isNavShowing)
-        });
+        })

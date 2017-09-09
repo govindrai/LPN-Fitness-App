@@ -10,6 +10,7 @@ block content
 
 append footer-scripts
   script.
+    /* switching days */
     function updatePoints(e) {
       $.ajax({
         url: window.location.pathname + "/points",
@@ -19,6 +20,7 @@ append footer-scripts
       .fail(e => console.log("updatePoints failed"));
     }
 
+    /* switching weeks */
     function updateShow(e) {
       const weekInfo = {
         direction: $(this).attr('id'),
@@ -34,36 +36,27 @@ append footer-scripts
       .fail(() => console.log("Getting Calendar Head failed"));
     }
 
-    function deletePoint(e) {
-      e.preventDefault();
-      var point = $(this).parent().parent();
-
-      var request = $.ajax({
-        type: 'POST',
-        url: '/points?_method=DELETE',
-        data: { point: point.data('point') }
-      });
-
-      request.done(res => {
-        point.remove();
-      });
-
-      request.fail(res => console.log(res));
+    function removePointEntry(e) {
+      $(e.target).parent().remove();
+      calculateTotalPoints();
     }
 
-    function showAddPointsModal() {
-
-      $("#add-points-container").css("display", "flex")
+    function showAddPointsModal(e) {
+      if ($(this).attr("id") === "edit-points") {
+        $(".total-calculated-points").css("display", "block");
+        calculateTotalPoints();
+      }
+      if ($(".point-entries").children.length > 0) {
+        $("#submit-points-button").css("display", "block")
+      }
+      $("#add-points-container").toggle()
       getActivities();
       $('#typeahead').bind('typeahead:select', getActivityData);
     }
 
     function hideAddPointsModal() {
-      $("#add-points-container").css("display", "none")
+      $("#add-points-container").toggle()
     }
-
-    var typeaheadElements;
-    var partial = false;
 
     function getActivities() {
       $.ajax({
@@ -88,24 +81,17 @@ append footer-scripts
       });
     }
 
+    /* gets information about an selected activity  */
     function getActivityData(ev, suggestion) {
       var request = $.ajax({
-        url: '/activities/' + suggestion,
-        data: partial == true ? "partial=true" : "partial=false"
+        url: `/activities/${suggestion}`
       });
 
       request.done(res => {
-        typeaheadElements = $('#typeahead').parent().parent();
         $('#typeahead').typeahead('val', '');
-        typeaheadElements.hide();
-
-        if (!partial) {
-          $("#add-points").prepend(res);
-        } else {
-          $("#activity-list").append(res);
-          $("#add-activity").show();
-        }
-
+        $(".point-entries").append(res);
+        $("#submit-points-button").css("display", "block");
+        $(".total-calculated-points").css("display", "block");
       });
 
       request.fail(res => {
@@ -113,40 +99,30 @@ append footer-scripts
       });
     }
 
-    function addMoreActivities(e) {
-      $('#activity-list').after(typeaheadElements);
-      typeaheadElements.show();
-      $("#add-activity").hide();
-      partial = true;
-    }
+    function calculateEntryPoints(e) {
+      var pointsEntry = $(this).parent().parent();
 
-    function sumArray(total, num) {
-      return total + num;
-    }
-
-    function calculatePoints(e) {
-      var activity = $(this).parent();
-
-      var activityPoints = activity.find('.activity-points').text();
-      var activityPointsScale = activity.find('.activity-points-scale').text();
+      var activityPoints = pointsEntry.find('.activity-points').text();
+      var activityPointsScale = pointsEntry.find('.activity-points-scale').text();
 
       var numOfUnits = $(this).val();
 
       if (numOfUnits == "") {
-        activity.find('.calculatedPoints').val(0);
+        pointsEntry.find('input.calculated-points').val(0);
+        pointsEntry.find('div.calculated-points').text("0 POINTS")
       } else {
-        var calculation = (parseInt(activityPoints) / parseInt(activityPointsScale)) * parseInt(numOfUnits);
-        activity.find('.calculatedPoints').val(calculation);
+        var calculation = ((parseFloat(activityPoints) / parseFloat(activityPointsScale)) * parseFloat(numOfUnits)).toFixed(2);
+        pointsEntry.find('input.calculated-points').val(calculation);
+        pointsEntry.find('div.calculated-points').text(calculation + " POINTS");
       }
+      calculateTotalPoints();
+    }
 
-      var totalPoints = $(".calculatedPoints").map(function() {
-        return $(this).val() == "" ? 0 : parseInt($(this).val());
-      }).get();
+    function calculateTotalPoints() {
+       const totalCalculatedPoints = $.makeArray($("input.calculated-points")).reduce((total, pointsEntryValue) => total + ($(pointsEntryValue).val() === "" ? 0 : parseFloat($(pointsEntryValue).val())), 0).toFixed(2);
 
-      totalPoints = totalPoints.reduce(sumArray);
-
-      $("#totalPointsDisplay").text(totalPoints);
-      $("#totalPoints").val(totalPoints);
+      $("div.total-calculated-points").text("TOTAL = " + totalCalculatedPoints + " POINTS");
+      $("input.total-calculated-points").val(totalCalculatedPoints);
     }
 
     function getTimeRemaining(endOfWeek) {
@@ -169,10 +145,15 @@ append footer-scripts
       initializeClock();
     });
 
+    function toggleParticipantPoints(e) {
+      $(this).find('.points-entries-summaries').slideToggle();
+    }
+
+    $('body').on('click', '.participant', toggleParticipantPoints)
     $('body').on('click', '.change-week', updateShow);
     $('body').on('click', '.updatePoints', updatePoints);
-    $('body').on('click', '.delete-point', deletePoint);
     $('body').on('click', '#add-points-button', showAddPointsModal);
+    $('body').on('click', '#edit-points', showAddPointsModal)
     $('body').on('click', '#x-button', hideAddPointsModal);
-    $('body').on('keyup', '.num-of-units', calculatePoints);
-    $('body').on('click', '#add-activity button', addMoreActivities);
+    $('body').on('keyup', '.num-of-units', calculateEntryPoints);
+    $('body').on('click', ".trash", removePointEntry)

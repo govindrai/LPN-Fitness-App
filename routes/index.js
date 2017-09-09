@@ -20,27 +20,35 @@ router.get("/register", (req, res) => {
 });
 
 // GET login form
-router.get("/", (req, res) => res.render("sessions/login"));
+router.get("/", (req, res) =>
+  res.render("sessions/new", { loggedOut: req.query.loggedOut })
+);
 
 // POST login form data
 router.post("/login", (req, res) => {
-  var user;
+  let user;
+  const { email } = req.body;
 
-  console.log("req.body", req.body);
-  User.findOne({ email: req.body.email })
+  User.findOne({ email })
     .then(userObj => {
+      if (!userObj) throw new AuthError();
       user = userObj;
       return user.authenticate(req.body.password);
     })
-    .then(res => {
-      if (!res) return Promise.reject("Username/Password Incorrect");
+    .then(isAuthenticated => {
+      if (!isAuthenticated) throw new AuthError();
       return user.generateAuthorizationToken();
     })
     .then(() => {
       req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
-      res.redirect("/");
+      return res.redirect("/");
     })
-    .catch(error => res.render("sessions/login", { error }));
+    .catch(e => {
+      if (e.name === "AuthError") {
+        return res.render("sessions/new", { error: e.message, email });
+      }
+      return console.log(e);
+    });
 });
 
 // Register
@@ -54,30 +62,35 @@ router.post("/register", (req, res) => {
     "password"
   ]);
 
-  const family = JSON.parse(req.body.family);
-  const familyName = family.name;
-  body.family = family.id;
-
   var user = new User(body);
-
   user
     .save()
     .then(() => {
       return user.generateAuthorizationToken();
     })
-    .then(user => {
+    .then(() => {
       req.session["x-auth"] = user.tokens[0].token;
-      res.redirect(`/families/${familyName}`);
+      res.redirect("/");
     })
     .catch(e => {
-      if (body.family === "Please Select") {
-        e.errors.family.message = "Please select a family";
+      console.log(e);
+      const errors = e.errors;
+      if (errors.family && errors.family.name === "CastError") {
+        errors.family.message =
+          "Please select your family from the list above.";
       }
       Family.find()
+        .ne("name", "Bye")
         .then(families => {
-          res.render("index", { families, errors: e.errors, user });
+          return res.render("users/new", {
+            families,
+            user,
+            errors: e.errors
+          });
         })
-        .catch(e => console.log(e.errors));
+        .catch(e => console.log(e));
+      // Easy way to test errors output using postman
+      // return res.json(e.errors);
     });
 });
 
@@ -85,11 +98,11 @@ router.post("/register", (req, res) => {
 router.get("/logout", (req, res) => {
   res.locals.user.tokens.pull({ access: "auth", token: res.locals.token });
   res.locals.user
-    .save()
-    .then(user => {
+    .update({ $set: { tokens: res.locals.user.tokens } })
+    .then(() => {
       req.session.destroy(err => {
         if (err) console.log(err, "Session could not be destroyed");
-        res.redirect("/");
+        res.redirect("/?loggedOut=true");
       });
     })
     .catch(e => console.log(e));
@@ -107,3 +120,13 @@ router.get("/schedule", (req, res) => {
 router.get("/rules", (req, res) => res.render("sessions/rules"));
 
 module.exports = router;
+
+// PRIVATE FUNCTIONS
+
+function AuthError(message) {
+  this.name = "AuthError";
+  this.message = message || "Incorrect Username/Password.";
+  this.stack = new Error().stack;
+}
+AuthError.prototype = Object.create(Error.prototype);
+AuthError.prototype.constructor = AuthError;
