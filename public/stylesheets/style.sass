@@ -71,6 +71,7 @@ body
   max-width: 400px
   position: relative
   padding-bottom: 20px
+  border: 1px solid $scoreboardBorder
 
 input, select, textarea
   display: block
@@ -165,48 +166,50 @@ nav
     margin: 0
 
 #calendarHead
-  padding-bottom: 28px
+  padding-bottom: 20px
   border-bottom: 1px solid $scoreboardBorder
 
-#calendar
-  padding: 0 15px
-  display: flex
-  flex-direction: column
-  justify-content: space-between
-  text-align: center
-  color: $light-grey
-
-  #weekdays
+  #calendar
+    padding: 0 15px
     display: flex
+    flex-direction: column
     justify-content: space-between
+    text-align: center
+    color: $light-grey
 
-    .updatePoints
-      color: $light-grey
+    #weekdays
+      display: flex
+      justify-content: space-between
 
-    .weekday
-      position: relative
-      &.current-date::after
-        position: absolute
-        content: ">"
-        transform: rotate(-90deg)
-        bottom: 2px
-        left: 0
-        font-size: 30px
+      a
+        text-decoration: none
 
+      .updatePoints
+        color: $light-grey
 
-      .day
-        font-size: 13px
-        font-weight: 600
-        line-height: 1.54
-
-      .date
-        font-size: 24px
-        font-weight: 700
-        line-height: 1.5
+      .weekday
+        width: 40px;
         position: relative
-        padding-bottom 20px
+        &.current-date::after
+          position: absolute
+          content: url("/images/arrow.png")
+          bottom: -30px
+          left: 50%
+          font-size: 30px
+          transform: translate(-50%, 0)
 
 
+        .day
+          font-size: 13px
+          font-weight: 600
+          line-height: 1.54
+
+        .date
+          font-size: 24px
+          font-weight: 700
+          line-height: 1.5
+          position: relative
+          padding-bottom 20px
 
 .updatePoints
   cursor: pointer
@@ -378,7 +381,7 @@ hr
 #summary
   display: flex
   justify-content: space-between
-  margin-bottom: 32px
+  margin-bottom: 8px
 
   div
     font-size: 36px
