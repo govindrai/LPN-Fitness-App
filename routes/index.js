@@ -20,7 +20,9 @@ router.get("/register", (req, res) => {
 });
 
 // GET login form
-router.get("/", (req, res) => res.render("sessions/login"));
+router.get("/", (req, res) =>
+  res.render("sessions/new", { loggedOut: req.query.loggedOut })
+);
 
 // POST login form data
 router.post("/login", (req, res) => {
@@ -43,7 +45,7 @@ router.post("/login", (req, res) => {
     })
     .catch(e => {
       if (e.name === "AuthError") {
-        return res.render("sessions/login", { error: e.message, email });
+        return res.render("sessions/new", { error: e.message, email });
       }
       return console.log(e);
     });
@@ -66,7 +68,7 @@ router.post("/register", (req, res) => {
     .then(() => {
       return user.generateAuthorizationToken();
     })
-    .then(user => {
+    .then(() => {
       req.session["x-auth"] = user.tokens[0].token;
       res.redirect("/");
     })
@@ -100,7 +102,7 @@ router.get("/logout", (req, res) => {
     .then(() => {
       req.session.destroy(err => {
         if (err) console.log(err, "Session could not be destroyed");
-        res.redirect("/");
+        res.redirect("/?loggedOut=true");
       });
     })
     .catch(e => console.log(e));

@@ -5,7 +5,7 @@ block content
     .title Register
 
     if errors
-      p.error There are some errors with your submission. Please see below.
+      .error There are some errors with your submission. Please see below.
 
     form#signupForm(action='/register' method='POST')
       label First Name
@@ -25,7 +25,7 @@ block content
         label Email
         input(name='email' type='email' value=user.email required)
         if showError
-          p.error= errors.email
+          .error= errors.email
 
       - showError = null;
       - className = null;
@@ -43,7 +43,7 @@ block content
               - selected = true
             option(value=family._id selected=selected)= family.name
         if showError
-          p.error= errors.family.message
+          .error= errors.family.message
 
       - showError = null;
       - className = null;
@@ -54,7 +54,7 @@ block content
         label Password
         input(name='password' type='password' required)
         if errors && errors.password
-          p.error= errors.password
+          .error= errors.password
 
       input.grey-button(type='submit' value='Join')
 

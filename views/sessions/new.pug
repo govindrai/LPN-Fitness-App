@@ -1,10 +1,13 @@
 extends ../layout
 
 block content
+
   .col-12
-    if error
-      p.error= error
     .title Login
+    if loggedOut
+      .success You've successfully logged out!
+    if error
+      .error= error
     form(action='/login' method='POST')
       label Email
       input(name='email' type='email' required value=email)
