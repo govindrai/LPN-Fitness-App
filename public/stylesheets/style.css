@@ -632,4 +632,7 @@ hr {
 #submit-points-button {
   display: none; }
 
+.error-field input, .error-field select {
+  border-color: rgba(255, 0, 76, 0.3); }
+
 /*# sourceMappingURL=style.css.map */

@@ -1,5 +1,4 @@
 var mongoose = require("mongoose"),
-  validator = require("validator"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcryptjs");
 
@@ -29,16 +28,7 @@ var userSchema = new Schema({
   email: {
     type: String,
     required: [true, "Email is Required"],
-    trim: true,
-    unique: true,
-    isAsync: true,
-    validate: [
-      {
-        validator: validator.isEmail,
-        msg: "Please provide a valid email!"
-      },
-      { validator: isUniqueEmail }
-    ]
+    trim: true
   },
   password: {
     type: String,
@@ -46,11 +36,7 @@ var userSchema = new Schema({
   },
   family: {
     type: Schema.Types.ObjectId,
-    ref: "Family",
-    validate: {
-      validator: v => !v,
-      message: "Please select your family from the above list."
-    }
+    ref: "Family"
   },
   lifetimePoints: {
     type: Number,
@@ -168,11 +154,3 @@ userSchema.virtual("fullName").get(function() {
 var User = mongoose.model("User", userSchema);
 
 module.exports = User;
-
-// PRIVATE FUNCTIONS
-
-// VALIDATORS
-
-function isUniqueEmail(email, cb) {
-  User.find({ email }).then(user => cb(!!user, `${email} is already taken.`));
-}

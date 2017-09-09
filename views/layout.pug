@@ -52,21 +52,10 @@ html
 
     block footer-scripts
       script.
-        $(document).ready(() => {
-          $("#subMenu").on(
-          "mouseover", "click",
-          () => {
-            $("#dropDown").slideToggle();
-          },
-          () => {
-            $("#dropDown").slideToggle();
-          });
-        })
+        $('body').on('click', '.drop-down', e => $('.drop-down-links').slideToggle());
 
-        $('body').on('click', '.drop-down', (e) => $('.drop-down-links').slideToggle());
-
-        let reverse = false
-        $('body').on('click', ".hamburger-button", (e) => {
+        let reverse = false;
+        $('body').on('click', ".hamburger-button", e => {
           if (reverse) {
             $(e.currentTarget).removeClass("animate-x");
             $(e.currentTarget).addClass("animate-x-reverse");

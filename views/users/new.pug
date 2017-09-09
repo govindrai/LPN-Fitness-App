@@ -4,6 +4,9 @@ block content
   .col-12
     .title Register
 
+    if errors
+      p.error There are some errors with your submission. Please see below.
+
     form#signupForm(action='/register' method='POST')
       label First Name
       input(name='name.first' type='text' value=user.name.first placeholder="Lambda" required)
@@ -12,20 +15,43 @@ block content
       required)
       label Nickname
       input(name='name.nickname' type='text' value=user.name.nickname placeholder="MR BIG MUSCLES 🔥")
-      if errors && errors.email
-        p= errors.email.message
-      label Email
-      input(name='email' type='email' value=user.email required)
-      if errors && errors.family
-        p= errors.family.message
-      label Family
-      select(name="family")
-        option Choose one
 
-        each family in families
-          option(value={id: family._id, name: family.name})= family.name
-      label Password
-      input(name='password' type='password' required)
+      - var showError;
+      - var className;
+      if errors && errors.email
+        - className = "error-field";
+        - showError = true;
+      div(class=className)
+        label Email
+        input(name='email' type='email' value=user.email required)
+        if showError
+          p.error= errors.email
+
+      - var showError;
+      - var className;
+      if errors && errors.family
+        - className = "error-field";
+        - showError = true;
+      div(class=className)
+        label Family
+        select(name="family")
+          option Choose one
+          each family in families
+            option(value=family._id)= family.name
+        if showError
+          p.error= errors.family
+
+      - var showError;
+      - var className;
+      if errors && errors.password
+        - className = "error-field";
+        - showError = true;
+      div(class=className)
+        label Password
+        input(name='password' type='password' required)
+        if errors && errors.password
+          p.error= errors.password
+
       input.grey-button(type='submit' value='Join')
 
   .message Already have an account? #[a(href="/") Login]

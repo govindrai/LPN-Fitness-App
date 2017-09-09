@@ -60,38 +60,53 @@ router.post("/register", (req, res) => {
     "password"
   ]);
 
-  let familyName,
-    errors = {};
-
-  // VALIDATE FAMILY
-  if (!family) {
-    errors.family = "Please select a family from the list.";
-  } else {
-    const familyObj = JSON.parse(req.body.family);
-    familyName = familyObj.name;
-    body.family = familyObj.id;
-  }
-
   var user = new User(body);
 
-  user
-    .save()
+  let errorsExist = false;
+  let errors = {};
+
+  console.log("ayeeeee", body.family);
+  if (body.family === "Choose one") {
+    errors.family = "Please choose your family from the list above";
+    errorsExist = true;
+  }
+  if (body.password.length < 6) {
+    errors.password =
+      "Please provide a password that is atleast six characters";
+    errorsExist = true;
+  }
+
+  User.find({ email: body.email })
+    .then(user => {
+      if (user) {
+        errors.email = "Email address already exists!";
+        errorsExist = true;
+      }
+
+      if (errorsExist) {
+        throw new SignUpErrors(errors);
+      }
+
+      return user.save();
+    })
     .then(() => {
       return user.generateAuthorizationToken();
     })
     .then(user => {
       req.session["x-auth"] = user.tokens[0].token;
-      res.redirect(`/families/${familyName}`);
+      res.redirect("/");
     })
     .catch(e => {
-      if (body.family === "Please Select") {
-        e.errors.family.message = "Please select a family";
+      if (e.name === "SignUpErrors") {
+        Family.find()
+          .then(families => {
+            options = { families, user };
+            if (errorsExist) options.errors = e.errors;
+            res.render("users/new", options);
+          })
+          .catch(e => console.log(e));
       }
-      Family.find()
-        .then(families => {
-          res.render("index", { families, errors: e.errors, user });
-        })
-        .catch(e => console.log(e.errors));
+      return console.log(e);
     });
 });
 
@@ -127,6 +142,14 @@ module.exports = router;
 function AuthError(message) {
   this.name = "AuthError";
   this.message = message || "Incorrect Username/Password.";
+  this.stack = new Error().stack;
+}
+AuthError.prototype = Object.create(Error.prototype);
+AuthError.prototype.constructor = AuthError;
+
+function SignUpErrors(errors) {
+  this.name = "SignUpErrors";
+  this.errors = errors;
   this.stack = new Error().stack;
 }
 AuthError.prototype = Object.create(Error.prototype);
