@@ -94,11 +94,11 @@ nav .nav-links {
   border: 1px solid #6B6D70; }
   nav .nav-links.move-nav-down {
     animation-name: move-nav-down;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   nav .nav-links.move-nav-up {
     animation-name: move-nav-up;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   nav .nav-links a {
     display: block;
@@ -512,27 +512,27 @@ hr {
     transform: rotate(45deg); }
   .hamburger-button.animate-x .line:first-child {
     animation-name: movedown;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button.animate-x .line:nth-child(2) {
     animation-name: middlerotate;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button.animate-x .line:nth-child(3) {
     animation-name: moveup;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button.animate-x-reverse .line:first-child {
     animation-name: movedown-reverse;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button.animate-x-reverse .line:nth-child(2) {
     animation-name: middlerotate-reverse;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button.animate-x-reverse .line:nth-child(3) {
     animation-name: moveup-reverse;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards; }
   .hamburger-button .line:not(:first-child) {
     margin-top: 5px; }
