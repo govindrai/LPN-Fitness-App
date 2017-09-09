@@ -62,33 +62,35 @@ router.post("/register", (req, res) => {
 
   var user = new User(body);
 
-  let errorsExist = false;
-  let errors = {};
+  // let errorsExist = false;
+  // let errors = {};
 
-  console.log("ayeeeee", body.family);
-  if (body.family === "Choose one") {
-    errors.family = "Please choose your family from the list above";
-    errorsExist = true;
-  }
-  if (body.password.length < 6) {
-    errors.password =
-      "Please provide a password that is atleast six characters";
-    errorsExist = true;
-  }
+  // if (body.family === "Choose one") {
+  //   errors.family = "Please choose your family from the list above";
+  //   errorsExist = true;
+  // }
 
-  User.find({ email: body.email })
-    .then(user => {
-      if (user) {
-        errors.email = "Email address already exists!";
-        errorsExist = true;
-      }
+  // if (body.password.length < 6) {
+  //   errors.password =
+  //     "Please provide a password that is atleast six characters";
+  //   errorsExist = true;
+  // }
 
-      if (errorsExist) {
-        throw new SignUpErrors(errors);
-      }
+  // User.findOne({ email: body.email })
+  //   .then(existingUser => {
+  //     if (existingUser) {
+  //       errors.email = "Email address already exists!";
+  //       errorsExist = true;
+  //     }
 
-      return user.save();
-    })
+  //     if (errorsExist) {
+  //       throw new SignUpErrors(errors);
+  //     }
+
+  //     return user.save();
+  //   })
+  user
+    .save()
     .then(() => {
       return user.generateAuthorizationToken();
     })
@@ -98,15 +100,17 @@ router.post("/register", (req, res) => {
     })
     .catch(e => {
       if (e.name === "SignUpErrors") {
-        Family.find()
-          .then(families => {
-            options = { families, user };
-            if (errorsExist) options.errors = e.errors;
-            res.render("users/new", options);
-          })
-          .catch(e => console.log(e));
+        return res.json(e);
+        // Family.find()
+        //   .then(families => {
+        //     options = { families, user };
+        //     if (errorsExist) options.errors = e.errors;
+        //     res.render("users/new", options);
+        //   })
+        //   .catch(e => console.log(e));
       }
-      return console.log(e);
+      console.log(e);
+      return res.json(e);
     });
 });
 

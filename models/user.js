@@ -1,4 +1,5 @@
 var mongoose = require("mongoose"),
+  validator = require("validator"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcryptjs");
 
@@ -20,7 +21,7 @@ var userSchema = new Schema({
     },
     nickname: {
       type: String,
-      minLength: 3,
+      minlength: 3,
       trim: true,
       default: null
     }
@@ -28,11 +29,26 @@ var userSchema = new Schema({
   email: {
     type: String,
     required: [true, "Email is Required"],
-    trim: true
+    trim: true,
+    validate: [
+      {
+        validator: validator.isEmail,
+        message: "Please provide a valid email address"
+      },
+      {
+        isAsync: true,
+        validator: (email, cb) => {
+          User.findOne({ email }).then(existingUser => {
+            cb(!existingUser, "Email address already exists.");
+          });
+        }
+      }
+    ]
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: [6, "Passwords must be at least 6 characters long."]
   },
   family: {
     type: Schema.Types.ObjectId,

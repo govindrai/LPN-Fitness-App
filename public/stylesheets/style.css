@@ -633,6 +633,11 @@ hr {
   display: none; }
 
 .error-field input, .error-field select {
-  border-color: rgba(255, 0, 76, 0.3); }
+  border-color: #d92b3a; }
+
+.error-field .error {
+  color: #d92b3a;
+  background: transparent;
+  padding: 0; }
 
 /*# sourceMappingURL=style.css.map */
