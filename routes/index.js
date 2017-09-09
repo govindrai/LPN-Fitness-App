@@ -24,25 +24,29 @@ router.get("/", (req, res) => res.render("sessions/login"));
 
 // POST login form data
 router.post("/login", (req, res) => {
-  var user;
+  let user;
+  const { email } = req.body;
 
-  console.log("req.body", req.body);
-  User.findOne({ email: req.body.email })
+  User.findOne({ email })
     .then(userObj => {
+      if (!userObj) throw new AuthError();
       user = userObj;
       return user.authenticate(req.body.password);
     })
-    .then(res => {
-      if (!res) return Promise.reject("Username/Password Incorrect");
+    .then(isAuthenticated => {
+      if (!isAuthenticated) throw new AuthError();
       return user.generateAuthorizationToken();
     })
     .then(() => {
       req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
       res.redirect("/");
     })
-    .catch(error =>
-      res.render("sessions/login", { error, email: req.body.email })
-    );
+    .catch(e => {
+      if (e.name === "AuthError") {
+        return res.render("sessions/login", { error: e.message, email });
+      }
+      return console.log(e);
+    });
 });
 
 // Register
@@ -109,3 +113,13 @@ router.get("/schedule", (req, res) => {
 router.get("/rules", (req, res) => res.render("sessions/rules"));
 
 module.exports = router;
+
+// PRIVATE FUNCTIONS
+
+function AuthError(message) {
+  this.name = "AuthError";
+  this.message = message || "Incorrect Username/Password.";
+  this.stack = new Error().stack;
+}
+AuthError.prototype = Object.create(Error.prototype);
+AuthError.prototype.constructor = AuthError;
