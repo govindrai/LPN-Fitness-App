@@ -16,8 +16,8 @@ block content
       label Nickname
       input(name='name.nickname' type='text' value=user.name.nickname placeholder="MR BIG MUSCLES 🔥")
 
-      - var showError;
-      - var className;
+      - let showError;
+      - let className;
       if errors && errors.email
         - className = "error-field";
         - showError = true;
@@ -27,8 +27,8 @@ block content
         if showError
           p.error= errors.email
 
-      - var showError;
-      - var className;
+      - showError = null;
+      - className = null;
       if errors && errors.family
         - className = "error-field";
         - showError = true;
@@ -36,13 +36,17 @@ block content
         label Family
         select(name="family")
           option Choose one
-          each family in families
-            option(value=family._id)= family.name
-        if showError
-          p.error= errors.family
 
-      - var showError;
-      - var className;
+          each family in families
+            - let selected;
+            if user.family && user.family.toString() === family._id.toString()
+              - selected = true
+            option(value=family._id selected=selected)= family.name
+        if showError
+          p.error= errors.family.message
+
+      - showError = null;
+      - className = null;
       if errors && errors.password
         - className = "error-field";
         - showError = true;

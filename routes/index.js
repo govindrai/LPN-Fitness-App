@@ -39,7 +39,7 @@ router.post("/login", (req, res) => {
     })
     .then(() => {
       req.session["x-auth"] = user.tokens[user.tokens.length - 1].token;
-      res.redirect("/");
+      return res.redirect("/");
     })
     .catch(e => {
       if (e.name === "AuthError") {
@@ -61,34 +61,6 @@ router.post("/register", (req, res) => {
   ]);
 
   var user = new User(body);
-
-  // let errorsExist = false;
-  // let errors = {};
-
-  // if (body.family === "Choose one") {
-  //   errors.family = "Please choose your family from the list above";
-  //   errorsExist = true;
-  // }
-
-  // if (body.password.length < 6) {
-  //   errors.password =
-  //     "Please provide a password that is atleast six characters";
-  //   errorsExist = true;
-  // }
-
-  // User.findOne({ email: body.email })
-  //   .then(existingUser => {
-  //     if (existingUser) {
-  //       errors.email = "Email address already exists!";
-  //       errorsExist = true;
-  //     }
-
-  //     if (errorsExist) {
-  //       throw new SignUpErrors(errors);
-  //     }
-
-  //     return user.save();
-  //   })
   user
     .save()
     .then(() => {
@@ -99,18 +71,24 @@ router.post("/register", (req, res) => {
       res.redirect("/");
     })
     .catch(e => {
-      if (e.name === "SignUpErrors") {
-        return res.json(e);
-        // Family.find()
-        //   .then(families => {
-        //     options = { families, user };
-        //     if (errorsExist) options.errors = e.errors;
-        //     res.render("users/new", options);
-        //   })
-        //   .catch(e => console.log(e));
-      }
       console.log(e);
-      return res.json(e);
+      const errors = e.errors;
+      if (errors.family && errors.family.name === "CastError") {
+        errors.family.message =
+          "Please select your family from the list above.";
+      }
+      Family.find()
+        .ne("name", "Bye")
+        .then(families => {
+          return res.render("users/new", {
+            families,
+            user,
+            errors: e.errors
+          });
+        })
+        .catch(e => console.log(e));
+      // Easy way to test errors output using postman
+      // return res.json(e.errors);
     });
 });
 
@@ -118,8 +96,8 @@ router.post("/register", (req, res) => {
 router.get("/logout", (req, res) => {
   res.locals.user.tokens.pull({ access: "auth", token: res.locals.token });
   res.locals.user
-    .save()
-    .then(user => {
+    .update({ $set: { tokens: res.locals.user.tokens } })
+    .then(() => {
       req.session.destroy(err => {
         if (err) console.log(err, "Session could not be destroyed");
         res.redirect("/");
@@ -146,14 +124,6 @@ module.exports = router;
 function AuthError(message) {
   this.name = "AuthError";
   this.message = message || "Incorrect Username/Password.";
-  this.stack = new Error().stack;
-}
-AuthError.prototype = Object.create(Error.prototype);
-AuthError.prototype.constructor = AuthError;
-
-function SignUpErrors(errors) {
-  this.name = "SignUpErrors";
-  this.errors = errors;
   this.stack = new Error().stack;
 }
 AuthError.prototype = Object.create(Error.prototype);

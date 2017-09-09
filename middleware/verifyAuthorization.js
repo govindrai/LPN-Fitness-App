@@ -3,7 +3,11 @@ const User = require("./../models/user");
 
 // check if the user is logged in
 module.exports = function verifyAuthorization(req, res, next) {
-  if (req.path === "/register") return next();
+  if (
+    (req.method === "POST" && req.path === "/login") ||
+    req.path === "/register"
+  )
+    return next();
   // if x-auth key doesn't exist in session object
   // render the 404 view (meaning they are not logged in)
   // else verify the JWT and find the user associated with the JWT
@@ -14,6 +18,7 @@ module.exports = function verifyAuthorization(req, res, next) {
   res.locals.token = req.session["x-auth"];
   User.decodeAuthorizationToken(res.locals.token)
     .then(user => {
+      console.log(user);
       if (!user) return res.status(404).send("UNAUTHORIZED.");
       res.locals.user = user;
       res.locals.isLoggedIn = true;
