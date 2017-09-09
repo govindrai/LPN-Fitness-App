@@ -11,14 +11,15 @@ const router = express.Router();
 
 // GET accounts index page and user profile edit form
 router.get("/", function(req, res, next) {
+  console.log(res.path)
   User.findById(res.locals.user._id).then(user => {
-    res.render("users/edit", { user });
+    res.render("users/edit", { user, path: res.path });
   });
 });
 
 // GET admin settings page to change admin access
 router.get("/admin-settings", isAdmin, function(req, res, next) {
-  var adminss, nonAdminss;
+  let adminss, nonAdminss;
   User.getAdmins()
     .then(admins => {
       adminss = admins;

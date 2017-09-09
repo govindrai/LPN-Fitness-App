@@ -1,13 +1,13 @@
-var mongoose = require("mongoose"),
+const mongoose = require("mongoose"),
   validator = require("validator"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcryptjs");
 
-var Schema = mongoose.Schema,
+const Schema = mongoose.Schema,
   Challenge = require("./challenge"),
   Participation = require("./participation");
 
-var userSchema = new Schema({
+let userSchema = new Schema({
   name: {
     first: {
       type: String,
@@ -95,7 +95,7 @@ userSchema.pre("save", function(next) {
 });
 
 userSchema.methods.generateAuthorizationToken = function() {
-  var user = this;
+  let user = this;
   return new Promise((resolve, reject) => {
     var payload = { _id: user._id, access: "auth" };
     jwt.sign(payload, process.env.JWT_SECRET || "secret", (err, token) => {

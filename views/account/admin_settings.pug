@@ -3,40 +3,36 @@ include ../layout.pug
 block content
 	.col-12
 		include ./_account_nav
-		h1 Admin Settings
+		.title Admin Settings
 
-		h2 All Admins
+		.subtitle All Admins
 
 		table#admins
 				thead
 					tr
-						td First Name
-						td Last Name
+						td Name
 						td Email
-						td Remove Admin Access
+						td Change Admin Access
 				tbody
 				each admin in admins
 					tr
-						td= admin.name.first
-						td= admin.name.last
+						td= admin.fullName
 						td= admin.email
 						td
 							input(type="checkbox" name="admin" data-user=`${admin._id}`)
 
-		h2 All Users
+		.subtitle All Users
 
 		table#nonAdmins
 				thead
 					tr
-						td First Name
-						td Last Name
+						td Name
 						td Email
 						td Add Admin Access
 				tbody
 				each nonAdmin in nonAdmins
 					tr
-						td= nonAdmin.name.first
-						td= nonAdmin.name.last
+						td= nonAdmin.fullName
 						td= nonAdmin.email
 						td
 							input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
@@ -55,9 +51,9 @@ append footer-scripts
 			request.done(res => {
 				var response = `<div>${res}</div>`;
 				var user = input.closest('tr');
-				$('h1').after(response);
-				$('h1').next().fadeOut('slow', () => {
-					$('h1').next().remove();
+				$('.title').after(response);
+				$('.title').next().fadeOut('slow', () => {
+					$('.title').next().remove();
 					input[0].checked = false;
 					if (user.parent().parent().attr('id') == 'admins') {
 						$('#nonAdmins').append(user);

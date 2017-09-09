@@ -62,7 +62,7 @@ router.get("/:activityName", (req, res) => {
 });
 
 router.post("/", (req, res, next) => {
-  var activity = new Activity(req.body);
+  let activity = new Activity(req.body);
   activity
     .save()
     .then(activity => {

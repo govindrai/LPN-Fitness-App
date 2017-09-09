@@ -52,7 +52,7 @@ router.put('/edit', (req, res) => {
     User.findById(req.body.user)
       .then(user => {
         user.admin = !user.admin;
-        return user.save();
+        return user.update({$set: {admin: user.admin}});
       })
       .then(user => res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`))
       .catch(e => console.log(e));

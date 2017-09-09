@@ -1,12 +1,12 @@
-var mongoose = require("mongoose"),
+const mongoose = require("mongoose"),
   Schema = mongoose.Schema,
   schedule = require("node-schedule");
 
-var Family = require("./family"),
+const Family = require("./family"),
   Participation = require("./participation"),
   Point = require("./point");
 
-var challengeSchema = new Schema({
+let challengeSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -49,7 +49,7 @@ var challengeSchema = new Schema({
 });
 
 challengeSchema.pre("validate", function(next) {
-  var challenge = this;
+  let challenge = this;
   if (challenge.date.registrationEnd) {
     next();
   } else {
