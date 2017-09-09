@@ -31,10 +31,14 @@ var userSchema = new Schema({
     required: [true, "Email is Required"],
     trim: true,
     unique: true,
-    validate: {
-      validator: validator.isEmail,
-      message: "Please provide a valid email!"
-    }
+    isAsync: true,
+    validate: [
+      {
+        validator: validator.isEmail,
+        msg: "Please provide a valid email!"
+      },
+      { validator: isUniqueEmail }
+    ]
   },
   password: {
     type: String,
@@ -42,7 +46,11 @@ var userSchema = new Schema({
   },
   family: {
     type: Schema.Types.ObjectId,
-    ref: "Family"
+    ref: "Family",
+    validate: {
+      validator: v => !v,
+      message: "Please select your family from the above list."
+    }
   },
   lifetimePoints: {
     type: Number,
@@ -160,3 +168,11 @@ userSchema.virtual("fullName").get(function() {
 var User = mongoose.model("User", userSchema);
 
 module.exports = User;
+
+// PRIVATE FUNCTIONS
+
+// VALIDATORS
+
+function isUniqueEmail(email, cb) {
+  User.find({ email }).then(user => cb(!!user, `${email} is already taken.`));
+}

@@ -60,9 +60,17 @@ router.post("/register", (req, res) => {
     "password"
   ]);
 
-  const family = JSON.parse(req.body.family);
-  const familyName = family.name;
-  body.family = family.id;
+  let familyName,
+    errors = {};
+
+  // VALIDATE FAMILY
+  if (!family) {
+    errors.family = "Please select a family from the list.";
+  } else {
+    const familyObj = JSON.parse(req.body.family);
+    familyName = familyObj.name;
+    body.family = familyObj.id;
+  }
 
   var user = new User(body);
 
