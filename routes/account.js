@@ -19,7 +19,7 @@ router.get("/", function(req, res, next) {
 
 // GET admin settings page to change admin access
 router.get("/admin-settings", isAdmin, function(req, res, next) {
-  var adminss, nonAdminss;
+  let adminss, nonAdminss;
   User.getAdmins()
     .then(admins => {
       adminss = admins;

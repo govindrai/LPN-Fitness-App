@@ -1,7 +1,7 @@
-var mongoose = require("mongoose"),
+const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
-var pointSchema = new Schema({
+let pointSchema = new Schema({
   participation: {
     type: Schema.Types.ObjectId,
     ref: "Participation"
