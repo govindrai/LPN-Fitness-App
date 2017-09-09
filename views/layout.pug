@@ -61,11 +61,13 @@ html
             $(e.currentTarget).addClass("animate-x-reverse");
             $(".nav-links").removeClass("move-nav-down");
             $(".nav-links").addClass("move-nav-up");
+            setTimeout(() => $(".nav-links").css("display", "none"), 300);
             reverse = !reverse;
           } else {
             $(e.currentTarget).removeClass("animate-x-reverse")
             $(e.currentTarget).addClass("animate-x");
             $(".nav-links").removeClass("move-nav-up");
+            $(".nav-links").css("display", "block");
             $(".nav-links").addClass("move-nav-down");
             reverse = !reverse;
           }

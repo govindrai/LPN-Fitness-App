@@ -88,6 +88,7 @@ nav
     align-items: center
 
   .nav-links
+    display: none;
     opacity: 0
     top: -400px
     position: absolute
@@ -188,7 +189,7 @@ nav
         color: $light-grey
 
       .weekday
-        width: 40px;
+        width: 40px
         position: relative
         &.current-date::after
           position: absolute
@@ -197,7 +198,6 @@ nav
           left: 50%
           font-size: 30px
           transform: translate(-50%, 0)
-
 
         .day
           font-size: 13px
@@ -675,6 +675,7 @@ hr
   100%
     opacity: 0
     top: -400px
+    position: absolute
 
 .calculated-points, .total-calculated-points
   font-size: 16px;
