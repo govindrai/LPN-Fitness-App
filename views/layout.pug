@@ -1,7 +1,7 @@
 mixin link(href, name)
   - let style;
   if (path === href)
-    if (user)
+    if (loggedIn)
       if (familyColors[name])
         - style = `color: ${familyColors[name]}`
       else
@@ -32,6 +32,7 @@ html
       .nav-links
         if !isLoggedIn
           +link("/", "Home")
+          +link("/register", "Register")
         else
           +link(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
