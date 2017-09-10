@@ -18,7 +18,6 @@ module.exports = function verifyAuthorization(req, res, next) {
   res.locals.token = req.session["x-auth"];
   User.decodeAuthorizationToken(res.locals.token)
     .then(user => {
-      console.log(user);
       if (!user) return res.status(404).send("UNAUTHORIZED.");
       res.locals.user = user;
       res.locals.isLoggedIn = true;

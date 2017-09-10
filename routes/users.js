@@ -1,33 +1,31 @@
 // Modules
-const express = require('express'),
-  _ = require('lodash'),
-  pug = require('pug'),
-  path = require('path');
+const express = require("express"),
+  _ = require("lodash"),
+  pug = require("pug"),
+  path = require("path");
 
 // Models
-const User = require('./../models/user'),
-  Family = require('./../models/family');
+const User = require("./../models/user"),
+  Family = require("./../models/family");
 
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get("/", function(req, res, next) {
   Family.find({}).then(families => {
-    User.find({})
-      .populate('family')
-      .then(users => {
-        res.render('users/index', { families, users });
-      });
+    User.find({}).populate("family").then(users => {
+      res.render("users/index", { families, users });
+    });
   });
 });
 
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   var user = new User(req.body);
   user
     .save()
     .then(user => {
       user.generateAuthToken().then(token => {
-        res.redirect('/families');
+        res.redirect("/families");
       });
     })
     .catch(e => console.log(e));
@@ -35,24 +33,24 @@ router.post('/', (req, res, next) => {
 
 // initialize new user, if save successful,
 // generate auth token and take to home page
-router.post('/', (req, res, next) => {
+router.post("/", (req, res, next) => {
   var user = new User(req.body);
 
   user
     .save()
     .then(user => {
       user.generateAuthToken().then(token => {
-        res.redirect('/families/');
+        res.redirect("/families/");
       });
     })
     .catch(e => console.log(e));
 });
 
 // handles both admin changes as well as profile edits
-router.put('/edit', (req, res) => {
+router.put("/edit", (req, res) => {
   if (req.body.changeAdmin) {
     if (!res.locals.user.admin)
-      res.status(400).send('You must be an admin to access this feature');
+      res.status(400).send("You must be an admin to access this feature");
     User.findById(req.body.user)
       .then(user => {
         user.admin = !user.admin;
@@ -61,61 +59,65 @@ router.put('/edit', (req, res) => {
       .then(user =>
         res.send(
           `${user.fullName} ${user.admin
-            ? 'is now an admin'
-            : 'is no longer an admin'}`
+            ? "is now an admin"
+            : "is no longer an admin"}`
         )
       )
       .catch(e => console.log(e));
   } else {
     const body = _.pick(req.body, [
-      'name.first',
-      'name.last',
-      'name.nickname',
-      'email',
-      'password'
+      "name.first",
+      "name.last",
+      "name.nickname",
+      "email",
+      "password"
     ]);
 
     const emailNotModified = res.locals.user.email === body.email;
-    const passwordNotModified = body.password === '';
+    const passwordNotModified = body.password === "";
 
     if (emailNotModified) {
       delete body.email;
     }
     const promisesArray = [];
 
+    let hashPasswordPromise;
+
     if (passwordNotModified) {
       delete body.password;
     } else {
-      promisesArray.push(
-        User.hashPassword(body.password).then(hash => {
-          console.log('HASH', hash);
-          console.log('BODY', body);
-          body.password = hash;
-          return hash;
-        })
-      );
+      hashPasswordPromise = function() {
+        return User.hashPassword(body.password).then(
+          hash => (body.password = hash)
+        );
+      };
     }
 
-    console.log('promisesArray');
-    Promise.all(promisesArray)
-      .then(([user]) => {
-        User.findOneAndUpdate(
-          { _id: res.locals.user._id },
-          { $set: body },
-          { new: true, runValidators: true }
-        ).then(user =>
+    updateUserPromise = function() {
+      return User.findOneAndUpdate(
+        { _id: res.locals.user._id },
+        { $set: body },
+        { new: true, runValidators: true }
+      )
+        .then(user => {
           res.send(
             pug.renderFile(
-              path.join(__dirname, '../views/users/_edit_form.pug'),
+              path.join(__dirname, "../views/users/_edit_form.pug"),
               {
-                message: 'Your profile has been updated!',
+                message: "Your profile has been updated!",
                 user
               }
             )
-          )
-        );
-      })
-      .catch(e => console.log(e));
+          );
+        })
+        .catch(e => console.log(e));
+    };
+
+    if (hashPasswordPromise) {
+      hashPasswordPromise().then(() => updateUserPromise());
+    } else {
+      updateUserPromise();
+    }
   }
 });
 module.exports = router;
