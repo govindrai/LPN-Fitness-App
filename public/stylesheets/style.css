@@ -71,7 +71,8 @@ body {
   max-width: 400px;
   position: relative;
   padding-bottom: 20px;
-  border: 1px solid #dadde0; }
+  border: 1px solid #dadde0;
+  height: 100vh; }
 
 input, select, textarea {
   display: block; }
@@ -212,7 +213,9 @@ nav .nav-links {
     padding-bottom: 0; }
   #dailyPoints .participant .first-row {
     display: flex;
-    justify-content: space-between; }
+    justify-content: space-between;
+    margin-bottom: 16px;
+    align-items: center; }
     #dailyPoints .participant .first-row .left-column {
       text-align: left; }
     #dailyPoints .participant .first-row .right-column {
@@ -235,8 +238,7 @@ nav .nav-links {
       font-style: italic;
       line-height: 1.43;
       color: #a0a3a8;
-      text-transform: uppercase;
-      margin-bottom: 16px; }
+      text-transform: uppercase; }
     #dailyPoints .participant .first-row .nickname {
       font-size: 20px;
       line-height: 1.8;
@@ -454,15 +456,16 @@ hr {
   border-bottom: 1px solid #353738; }
   .challenge:only-child {
     border-bottom: none; }
-  .challenge .participation-status {
-    border-radius: 4px;
-    color: white;
-    text-transform: uppercase;
-    padding: 6px; }
-    .challenge .participation-status.green {
-      background-color: #0b8c0b; }
-    .challenge .participation-status.grey {
-      background-color: #a0a3a8; }
+
+.participation-status {
+  border-radius: 4px;
+  color: white;
+  text-transform: uppercase;
+  padding: 6px; }
+  .participation-status.green {
+    background-color: #0b8c0b; }
+  .participation-status.grey {
+    background-color: #a0a3a8; }
 
 .points-entry {
   padding: 16px;
