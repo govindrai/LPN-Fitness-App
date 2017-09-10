@@ -72,6 +72,7 @@ body
   position: relative
   padding-bottom: 20px
   border: 1px solid $scoreboardBorder
+  height: 100vh
 
 input, select, textarea
   display: block
@@ -229,6 +230,8 @@ nav
     .first-row
       display: flex
       justify-content: space-between
+      margin-bottom: 16px
+      align-items: center
       .left-column
         text-align: left
       .right-column
@@ -253,7 +256,6 @@ nav
         line-height: 1.43
         color: $light-grey
         text-transform: uppercase
-        margin-bottom: 16px
 
       .nickname
         font-size: 20px
@@ -484,15 +486,15 @@ hr
   &:only-child
     border-bottom: none
 
-  .participation-status
-    border-radius: 4px
-    color: white
-    text-transform: uppercase
-    padding: 6px
-    &.green
-      background-color: $success
-    &.grey
-      background-color: $light-grey
+.participation-status
+  border-radius: 4px
+  color: white
+  text-transform: uppercase
+  padding: 6px
+  &.green
+    background-color: $success
+  &.grey
+    background-color: $light-grey
 
 .points-entry
   padding: 16px

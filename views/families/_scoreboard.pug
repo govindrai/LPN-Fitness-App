@@ -1,5 +1,6 @@
-mixin weekdays(days, dates)
-  - var defaultShowDateString = defaultShowDate.toString()
+mixin printWeekdays(dates)
+  - const days = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
+  - var defaultShowDateString = defaultShowDate.toString();
   - for (var x = 0; x < 7; x++)
     - var id = ""; var className = ""; var style = ""; var borderStyle = ""
     if (x===0)
@@ -15,35 +16,45 @@ mixin weekdays(days, dates)
         div.day= days[x]
         div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
 
+mixin printParticipants(familyParticipations)
+  each participation in familyParticipations
+        .participant
+          .first-row
+            .left-column
+              .nickname= participation.user.name.nickname
+              .realname= participation.user.fullName
+            .right-column
+              if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
+                #add-points-button(style=`background-color: ${familyColors[family.name]}` data-date=addPointsButtonDate) +
+              else
+                if participation.totalDailyPoints === 0
+                  .total-points &#8213;
+                else
+                  .total-points= participation.totalDailyPoints
+          .points-entries-summaries
+            if !isFutureWeek && participation.points.length > 0
+              each point in participation.points
+                .points-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
+              #edit-points(style=`color: ${familyColors[family.name]}`) Edit
+
 #scoreboard
   div#calendarHead
     div#calendar
       div#weekdays
-        +weekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
+        +printWeekdays(dates)
 
   #border
 
-  div#dailyPoints.col-12
-    //- div#selectedDate= "SELECTED DATE = " + addPointsButtonDate
-    each participation in familyParticipations
+  #dailyPoints.col-12
+    if !user.isParticipating
       .participant
         .first-row
           .left-column
-            .nickname= participation.user.name.nickname
-            .realname= participation.user.fullName
-          //- p= "Lifetime Points: " + participation.user.lifetimePoints
-          //- p= `Points For Week: ${participation.totalPoints}`
+            .nickname= user.name.nickname
+            .realname= user.fullName
           .right-column
-            if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
-              #add-points-button(style=`background-color: ${familyColors[family.name]}` data-date=addPointsButtonDate) +
-            else
-              if participation.totalDailyPoints === 0
-                .total-points &#8213;
-              else
-                .total-points= participation.totalDailyPoints
-        .points-entries-summaries
-          if !isFutureWeek && participation.points.length > 0
-            each point in participation.points
-              .points-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
-            #edit-points(style=`color: ${familyColors[family.name]}`) Edit
+            .participation-status.grey Not Participating
+
+    +printParticipants(familyParticipations)
+
   <div style="clear:both"></div>
