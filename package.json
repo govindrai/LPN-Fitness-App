@@ -11,7 +11,7 @@
     "seed": "node config/db/seed.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^1.0.3",
     "body-parser": "~1.17.1",
     "connect-redis": "^3.3.0",
     "cookie-parser": "~1.4.3",
