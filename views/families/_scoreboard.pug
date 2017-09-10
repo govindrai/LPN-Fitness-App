@@ -1,5 +1,6 @@
-mixin printWeekdays(days, dates)
-  - var defaultShowDateString = defaultShowDate.toString()
+mixin printWeekdays(dates)
+  - const days = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
+  - var defaultShowDateString = defaultShowDate.toString();
   - for (var x = 0; x < 7; x++)
     - var id = ""; var className = ""; var style = ""; var borderStyle = ""
     if (x===0)
@@ -40,11 +41,20 @@ mixin printParticipants(familyParticipations)
   div#calendarHead
     div#calendar
       div#weekdays
-        +printWeekdays(["MON","TUE","WED","THU","FRI","SAT","SUN"], dates)
+        +printWeekdays(dates)
 
   #border
 
   #dailyPoints.col-12
+    if !user.isParticipating
+      .participant
+        .first-row
+          .left-column
+            .nickname= user.name.nickname
+            .realname= user.fullName
+          .right-column
+            .participation-status.grey Not Participating
+
     +printParticipants(familyParticipations)
 
   <div style="clear:both"></div>

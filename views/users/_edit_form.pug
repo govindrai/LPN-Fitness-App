@@ -10,8 +10,8 @@ form#editProfile(action='/users/edit?_method=PUT' method='POST')
   input(value=user.name.nickname name='name.nickname' type='text')
   | Email
   input(value=user.email name='email' type='email' required)
-  | Password
-  input(name='password' type='password')
+  | Change Password
+  input(name='password' type='password' placeholder="Enter new password")
 
   input(type='submit' value='Edit Profile')
 
