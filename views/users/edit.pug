@@ -1,31 +1,24 @@
 include ../layout.pug
 
 block content
-	.col-12
-		include ../account/_account_nav
+  .col-12
+    include ../account/_account_nav
 
-		.title My Profile
+    .title Update Profile
 
-		include ./_edit_form
+    if successMessage
+      .success= successMessage
 
-append footer-scripts
-	script.
-		$("body").on("submit", "#editProfile", function(e) {
-			e.preventDefault();
-			var form = $(this);
-			$.ajax({
-				url: "/users/edit?_method=PUT",
-				data: form.serialize(),
-				type: "POST"
-			}).done(function(res) {
-				$("#editProfile").replaceWith(res);
-				$('#message').fadeOut({
-					duration:2000,
-					complete: function() {
-						this.remove();
-					}
-				});
-			}).fail(function(res) {
-				console.log("Failed XHR buddy :(", res);
-			})
-		});
+    form#editProfile(action='/users/edit?_method=PUT' method='POST')
+      label First Name
+      input(value=user.name.first name='name.first' type='text' required)
+      label Last Name
+      input(value=user.name.last name='name.last' type='text' required)
+      label Nickname
+      input(value=user.name.nickname name='name.nickname' type='text')
+      label Email
+      input(value=user.email name='email' type='email' required)
+      label Update Password
+      input(name='password' type='password' placeholder="Enter new password")
+
+      input.grey-button(type='submit' value='Update Profile')

@@ -100,15 +100,10 @@ router.put("/edit", (req, res) => {
         { new: true, runValidators: true }
       )
         .then(user => {
-          res.send(
-            pug.renderFile(
-              path.join(__dirname, "../views/users/_edit_form.pug"),
-              {
-                message: "Your profile has been updated!",
-                user
-              }
-            )
-          );
+          return res.render("users/edit", {
+            user,
+            successMessage: "Your profile has been updated!"
+          });
         })
         .catch(e => console.log(e));
     };
