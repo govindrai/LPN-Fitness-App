@@ -33,12 +33,12 @@ pointSchema.methods.getUnitName = function() {
 // total those points, sort the participants by most points entered
 // then if the user who requested this page is in the family, move that
 // user to the top of the participants
-pointSchema.statics.calculateParticipantPointsByDay = (
+pointSchema.statics.calculateParticipantPointsByDay = function(
   participations,
   date,
   user,
   isFutureWeek
-) => {
+) {
   if (isFutureWeek) return moveUserToTop(participations, user);
   return Promise.all(
     participations.map(participation => {

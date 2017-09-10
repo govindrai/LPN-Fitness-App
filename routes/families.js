@@ -65,8 +65,6 @@ router.get("/:familyName", (req, res) => {
     })
     .then(familyParticipationsArray => {
       familyParticipations = familyParticipationsArray;
-      // check if user is participating in the challenge
-      user.isParticipating = checkUserParticipation(familyParticipations, user);
       // then, if versingFamily, get all challenge participants in versing family
       if (versingFamily) {
         return Participation.getChallengeParticipantsByFamily(
@@ -104,8 +102,6 @@ router.get("/:familyName", (req, res) => {
       // then total the points for each challenge participant
       // if the user requesting the page is part of the family
       // then move that user to the top
-      // if it is a future week, points will not get calculated
-      // but ordering may change if user is part of family
       return Point.calculateParticipantPointsByDay(
         familyParticipations,
         defaultShowDate,
@@ -114,6 +110,10 @@ router.get("/:familyName", (req, res) => {
       );
     })
     .then(() => {
+      // check if user is participating in the challenge
+      user.isParticipating = checkUserParticipation(familyParticipations, user);
+      console.log("USER IS PARTICIPATING IN ROUTE", user.isParticipating);
+
       if (addPointsButtonDate) {
         user.participationId = familyParticipations[0]._id;
       }
@@ -328,8 +328,8 @@ function determineVersingFamily(
 }
 
 function checkUserParticipation(familyParticipations, user) {
-  familyParticipations.find(
-    participant => participant._id.toString() === user._id.toString()
+  return familyParticipations.find(
+    participation => participation.user._id.toString() === user._id.toString()
   );
 }
 

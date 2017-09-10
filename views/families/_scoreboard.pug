@@ -46,7 +46,7 @@ mixin printParticipants(familyParticipations)
   #border
 
   #dailyPoints.col-12
-    if !user.isParticipating
+    if !user.isParticipating && user.family.name === family.name
       .participant
         .first-row
           .left-column
