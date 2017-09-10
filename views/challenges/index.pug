@@ -12,9 +12,10 @@ mixin printChallenges(challenges, challengeType)
         if challenge.participation
           - status = { message: "Signed Up", color: "green" }
         else
+          - status = { message: "Sign Up"}
           form.participate(action='/participations' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
-            input(type='submit' value='Sign Up')
+            input.grey-button(type='submit' value=status.message)
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       span.participation-status(class=status.color)= status.message
