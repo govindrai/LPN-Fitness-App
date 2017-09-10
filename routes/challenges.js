@@ -1,19 +1,19 @@
 // Modules
-const express = require("express"),
-  _ = require("lodash");
+const express = require('express'),
+  _ = require('lodash');
 
 // Models
-const Challenge = require("./../models/challenge"),
-  Family = require("./../models/family"),
-  Participation = require("./../models/participation");
+const Challenge = require('./../models/challenge'),
+  Family = require('./../models/family'),
+  Participation = require('./../models/participation');
 
 // Middleware
-const isAdmin = require("./../middleware/isAdmin");
+const isAdmin = require('./../middleware/isAdmin');
 
 const router = express.Router();
 
 // GET list all challenges
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   var currentChallenge, futureChallenges, pastChallenges;
   Challenge.getCurrentChallenge()
     .then(challenge => {
@@ -43,7 +43,7 @@ router.get("/", (req, res) => {
       );
     })
     .then(() => {
-      res.render("challenges/index", {
+      res.render('challenges/index', {
         currentChallenge,
         futureChallenges,
         pastChallenges
@@ -53,18 +53,18 @@ router.get("/", (req, res) => {
 });
 
 // Create Challenge Form
-router.get("/new", isAdmin, (req, res) => {
-  res.render("challenges/new");
+router.get('/new', isAdmin, (req, res) => {
+  res.render('challenges/new');
 });
 
 // Create Challenge
-router.post("/", (req, res) => {
-  var body = _.pick(req.body, ["name", "date.start", "date.end"]);
+router.post('/', (req, res) => {
+  var body = _.pick(req.body, ['name', 'date.start', 'date.end']);
   var challenge = new Challenge(body);
   challenge
     .save()
     .then(() => {
-      res.redirect("/challenges");
+      res.redirect('/challenges');
     })
     .catch(e => console.log(e));
 });
