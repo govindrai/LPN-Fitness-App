@@ -1,0 +1,23 @@
+include ../layout.pug
+
+block content
+  .col-12
+
+   .title My Profile
+
+   .activity
+  
+     .subtitle First Name:
+      .activity-name= user.name.first
+
+     .subtitle Last Name:
+      .activity-name= user.name.last
+
+     .subtitle Email:
+      .activity-name= user.email
+
+     .subtitle Family:
+      .activity-name= user.family.name
+
+     .subtitle Lifetime Points:
+      .activity-name= user.lifetimePoints
