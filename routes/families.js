@@ -285,6 +285,7 @@ module.exports = router;
 function calculateDates(weekInfo) {
   var startDate;
   if (weekInfo) {
+    console.log("MADE IT INTO WEEK INFO CONDITIONAL");
     if (weekInfo.direction === "none") {
       startDate = new Date(weekInfo.monday);
     } else if (weekInfo.direction === "previous") {
@@ -296,8 +297,9 @@ function calculateDates(weekInfo) {
     }
   } else {
     var today = new Date();
-    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    today.setHours(0, 0, 0, 0);
     var day = today.getDay();
+    day = day === 0 ? 7 : day;
     startDate = new Date(today.setDate(today.getDate() - (day - 1)));
   }
   var dates = [new Date(startDate)];

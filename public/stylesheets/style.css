@@ -87,6 +87,7 @@ nav .top {
   align-items: center; }
 
 nav .nav-links {
+  display: none;
   opacity: 0;
   top: -400px;
   position: absolute;
@@ -623,7 +624,8 @@ hr {
     top: 63px; }
   100% {
     opacity: 0;
-    top: -400px; } }
+    top: -400px;
+    position: absolute; } }
 
 .calculated-points, .total-calculated-points {
   font-size: 16px;
