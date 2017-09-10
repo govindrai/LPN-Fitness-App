@@ -1,11 +1,11 @@
-const mongoose = require("mongoose"),
-  validator = require("validator"),
-  jwt = require("jsonwebtoken"),
-  bcrypt = require("bcryptjs");
+const mongoose = require('mongoose'),
+  validator = require('validator'),
+  jwt = require('jsonwebtoken'),
+  bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema,
-  Challenge = require("./challenge"),
-  Participation = require("./participation");
+  Challenge = require('./challenge'),
+  Participation = require('./participation');
 
 let userSchema = new Schema({
   name: {
@@ -27,32 +27,32 @@ let userSchema = new Schema({
   },
   email: {
     type: String,
-    required: [true, "Email is required."],
+    required: [true, 'Email is required.'],
     trim: true,
     validate: [
       {
         isAsync: true,
         validator: validator.isEmail,
-        message: "Please provide a valid email address."
+        message: 'Please provide a valid email address.'
       },
       {
         isAsync: true,
-        validator: (email, cb) => {
-          User.findOne({ email }).then(existingUser => {
-            cb(!existingUser, "Email address already exists.");
-          });
-        }
+        validator: isExistingEmail
       }
     ]
   },
   password: {
     type: String,
     required: true,
-    minlength: [6, "Passwords must be at least 6 characters long."]
+    minlength: [6, 'Passwords must be at least 6 characters long.']
+    // validate: {
+    //   isAsync: true,
+    //   validator: hashPassword
+    // }
   },
   family: {
     type: Schema.Types.ObjectId,
-    ref: "Family",
+    ref: 'Family',
     required: true
   },
   lifetimePoints: {
@@ -78,32 +78,37 @@ let userSchema = new Schema({
   ]
 });
 
-userSchema.pre("save", function(next) {
-  var user = this;
-  if (user.isModified("password")) {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return console.log(err);
-      bcrypt.hash(user.password, salt, (error, hash) => {
-        if (error) return console.log(err);
+userSchema.statics.hashPassword = function(password) {
+  return bcrypt
+    .hash(password, 10)
+    .then(hash => hash)
+    .catch(e => console.log('error hashing password: ', e));
+};
+
+userSchema.post('validate', function(next) {
+  const user = this;
+  if (user.isModified('password')) {
+    hashPassword(user.password)
+      .then(hash => {
         user.password = hash;
-        next();
-      });
-    });
+        return next();
+      })
+      .catch(e => console.log(e));
   } else {
-    next();
+    return next();
   }
 });
 
 userSchema.methods.generateAuthorizationToken = function() {
   let user = this;
   return new Promise((resolve, reject) => {
-    var payload = { _id: user._id, access: "auth" };
-    jwt.sign(payload, process.env.JWT_SECRET || "secret", (err, token) => {
+    var payload = { _id: user._id, access: 'auth' };
+    jwt.sign(payload, process.env.JWT_SECRET || 'secret', (err, token) => {
       if (err) reject(err);
       resolve(token);
     });
   }).then(token => {
-    user.tokens.push({ access: "auth", token });
+    user.tokens.push({ access: 'auth', token });
     return user.update({ $set: { tokens: user.tokens } });
   });
 };
@@ -111,16 +116,16 @@ userSchema.methods.generateAuthorizationToken = function() {
 // Verifies authorization token and returns a user
 userSchema.statics.decodeAuthorizationToken = function(token) {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET || "secret", (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, decoded) => {
       if (err) reject(err);
       resolve(decoded);
     });
   }).then(decoded => {
     return User.findOne({
       _id: decoded._id,
-      "tokens.token": token,
-      "tokens.access": decoded.access
-    }).populate("family");
+      'tokens.token': token,
+      'tokens.access': decoded.access
+    }).populate('family');
   });
 };
 
@@ -134,15 +139,19 @@ userSchema.methods.authenticate = function(password) {
 userSchema.statics.getFamilyMembers = familyId => User.find({ familyId });
 
 userSchema.statics.getAdmins = function() {
-  return User.find({ admin: true }).populate("family").then(admins => {
-    return admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
-  });
+  return User.find({ admin: true })
+    .populate('family')
+    .then(admins => {
+      return admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
+    });
 };
 
 userSchema.statics.getNonAdmins = function() {
-  return User.find({ admin: false }).populate("family").then(nonAdmins => {
-    return nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
-  });
+  return User.find({ admin: false })
+    .populate('family')
+    .then(nonAdmins => {
+      return nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
+    });
 };
 
 userSchema.methods.getRegisterableChallengesCount = function() {
@@ -163,10 +172,19 @@ userSchema.methods.getRegisterableChallengesCount = function() {
     });
 };
 
-userSchema.virtual("fullName").get(function() {
-  return this.name.first + " " + this.name.last;
+function isExistingEmail(email, cb = null) {
+  return User.findOne({ email }).then(existingUser => {
+    if (cb) {
+      return cb(!existingUser, 'Email address is already in use.');
+    }
+    return !existingUser;
+  });
+}
+
+userSchema.virtual('fullName').get(function() {
+  return this.name.first + ' ' + this.name.last;
 });
 
-var User = mongoose.model("User", userSchema);
+var User = mongoose.model('User', userSchema);
 
 module.exports = User;

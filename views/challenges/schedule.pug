@@ -1,10 +1,10 @@
 include ../layout.pug
 
 block content
-	h1= 'Schedule - Regular Season'
+	.title= 'Schedule - Regular Season'
 
 	each family in families
-		h2= family.name
+		.subtitle= family.name
 		table
 			thead
 				tr
