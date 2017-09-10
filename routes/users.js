@@ -1,5 +1,6 @@
 // Modules
 const express = require('express'),
+  _ = require('lodash'),
   pug = require('pug'),
   path = require('path');
 
@@ -12,9 +13,11 @@ const router = express.Router();
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   Family.find({}).then(families => {
-    User.find({}).populate('family').then(users => {
-      res.render('users/index', { families, users });
-    });
+    User.find({})
+      .populate('family')
+      .then(users => {
+        res.render('users/index', { families, users });
+      });
   });
 });
 
@@ -48,27 +51,71 @@ router.post('/', (req, res, next) => {
 // handles both admin changes as well as profile edits
 router.put('/edit', (req, res) => {
   if (req.body.changeAdmin) {
-    if (!res.locals.user.admin) res.status(400).send('You must be an admin to access this feature');
+    if (!res.locals.user.admin)
+      res.status(400).send('You must be an admin to access this feature');
     User.findById(req.body.user)
       .then(user => {
         user.admin = !user.admin;
-        return user.update({$set: {admin: user.admin}});
+        return user.update({ $set: { admin: user.admin } });
       })
-      .then(user => res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`))
+      .then(user =>
+        res.send(
+          `${user.fullName} ${user.admin
+            ? 'is now an admin'
+            : 'is no longer an admin'}`
+        )
+      )
       .catch(e => console.log(e));
   } else {
-    User.findOneAndUpdate({ _id: res.locals.user._id }, { $set: req.body }, {new: true })
-      .then(user => {
-        console.log(user)
-        res.send(
-          pug.renderFile(path.join(__dirname, '../views/users/_edit_form.pug'), {
-            message: 'Your profile has been updated!',
-            user
-          })
+    const body = _.pick(req.body, [
+      'name.first',
+      'name.last',
+      'name.nickname',
+      'email',
+      'password'
+    ]);
+
+    const emailNotModified = res.locals.user.email === body.email;
+    const passwordNotModified = body.password === '';
+
+    if (emailNotModified) {
+      delete body.email;
+    }
+    const promisesArray = [];
+
+    if (passwordNotModified) {
+      delete body.password;
+    } else {
+      promisesArray.push(
+        User.hashPassword(body.password).then(hash => {
+          console.log('HASH', hash);
+          console.log('BODY', body);
+          body.password = hash;
+          return hash;
+        })
+      );
+    }
+
+    console.log('promisesArray');
+    Promise.all(promisesArray)
+      .then(([user]) => {
+        User.findOneAndUpdate(
+          { _id: res.locals.user._id },
+          { $set: body },
+          { new: true, runValidators: true }
+        ).then(user =>
+          res.send(
+            pug.renderFile(
+              path.join(__dirname, '../views/users/_edit_form.pug'),
+              {
+                message: 'Your profile has been updated!',
+                user
+              }
+            )
+          )
         );
       })
       .catch(e => console.log(e));
   }
 });
-
 module.exports = router;
