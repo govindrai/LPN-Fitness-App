@@ -66,7 +66,12 @@ router.post('/', (req, res) => {
     .then(() => {
       res.redirect('/challenges');
     })
-    .catch(e => console.log(e));
+    .catch(e => {
+      if (e.name === 'ValidationError') {
+        return res.render('challenges/new', { error: e.errors['date.start'] });
+      }
+      return console.log(e);
+    });
 });
 
 module.exports = router;
