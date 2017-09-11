@@ -98,8 +98,9 @@ router.put('/edit', (req, res) => {
         { new: true, runValidators: true }
       )
         .then(user => {
-          return res.render('users/edit', {
+          return res.render('users/show', {
             user,
+            currentUser: res.locals.user,
             successMessage: 'Your profile has been updated!'
           });
         })

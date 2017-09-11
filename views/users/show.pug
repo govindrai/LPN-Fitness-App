@@ -5,6 +5,9 @@ block content
 
     .title #{user.name.first}'s Profile
 
+    if successMessage
+      .success= successMessage
+
       .activity
           
         .subtitle First Name:
