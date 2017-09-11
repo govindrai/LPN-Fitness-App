@@ -9,22 +9,21 @@ block content
 
 append footer-scripts
   script.
-    /* switching days */
-    function updatePoints(e) {
-      $.ajax({
-        url: window.location.pathname + "/points",
-        data: {weekInfo: {date: $(e.currentTarget).find(".date").data("date"), monday: $("#monday").data("date"), direction: "none"}}
-      })
-      .done(res => $("#scoreboard").replaceWith(res))
-      .fail(e => console.log("updatePoints failed"));
-    }
-
-    /* switching weeks */
     function updateShow(e) {
-      const weekInfo = {
-        direction: $(this).attr('id'),
-        sunday: $('#sunday').data('date'),
-        monday: $('#monday').data('date')
+      let weekInfo;
+
+      if ($(e.target).hasClass("change-week")) {
+        weekInfo = {
+          direction: $(this).attr('id'),
+          sunday: $('#sunday').data('date'),
+          monday: $('#monday').data('date')
+        }
+      } else {
+        weekInfo = {
+          date: $(e.currentTarget).find(".date").data("date"),
+          monday: $("#monday").data("date"),
+          direction: "none"
+        }
       }
 
       $.ajax({
@@ -32,7 +31,7 @@ append footer-scripts
         data: {weekInfo}
       })
       .done(res => $("#showBody").html(res))
-      .fail(() => console.log("Getting Calendar Head failed"));
+      .fail(() => console.log("Updating show failed"));
     }
 
     function removePointEntry(e) {
@@ -150,7 +149,7 @@ append footer-scripts
 
     $('body').on('click', '.participant', toggleParticipantPoints)
     $('body').on('click', '.change-week', updateShow);
-    $('body').on('click', '.updatePoints', updatePoints);
+    $('body').on('click', '.updatePoints', updateShow);
     $('body').on('click', '#add-points-button', showAddPointsModal);
     $('body').on('click', '#edit-points', showAddPointsModal)
     $('body').on('click', '#x-button', hideAddPointsModal);

@@ -10,7 +10,7 @@ const Family = require("./../models/family"),
 const router = express.Router();
 
 router.get("/:familyName", (req, res) => {
-  let user = res.locals.user,
+  let { user } = res.locals,
     family,
     versingFamily,
     familyParticipations,
@@ -28,8 +28,8 @@ router.get("/:familyName", (req, res) => {
     showNext,
     nextVersingFamilyName,
     { familyName } = req.params,
-    weekInfo = req.query.weekInfo,
-    currentChallenge = res.locals.currentChallenge,
+    { weekInfo } = req.query,
+    { currentChallenge } = res.locals,
     today = getToday();
 
   dates = calculateDates(weekInfo);
@@ -80,6 +80,7 @@ router.get("/:familyName", (req, res) => {
 
       // determine selected calendar date when user accesses family page
       // or when user chooses to switch weeks using arrow buttons
+      // or when user chooses to select a specific date
       defaultShowDate = calculateDefaultShowDate(
         requestedWeek,
         currentWeek,
@@ -112,7 +113,6 @@ router.get("/:familyName", (req, res) => {
     .then(() => {
       // check if user is participating in the challenge
       user.isParticipating = checkUserParticipation(familyParticipations, user);
-      console.log("USER IS PARTICIPATING IN ROUTE", user.isParticipating);
 
       if (addPointsButtonDate) {
         user.participationId = familyParticipations[0]._id;
@@ -184,72 +184,6 @@ router.get("/:familyName", (req, res) => {
 
       const view = req.xhr ? "families/_show_body" : "families/show";
       return res.render(view, options);
-    })
-    .catch(e => console.log(e));
-});
-
-router.get("/:familyName/points", (req, res) => {
-  let family,
-    currentWeek,
-    requestedWeek,
-    familyParticipations,
-    defaultShowDate,
-    addPointsButtonDate,
-    isFutureWeek,
-    dates,
-    user = res.locals.user,
-    { familyName } = req.params,
-    currentChallenge = res.locals.currentChallenge,
-    today = getToday(),
-    { weekInfo } = req.query;
-
-  dates = calculateDates(weekInfo);
-  currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
-  requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
-  isFutureWeek = requestedWeek > currentWeek;
-
-  Family.findOne({ name: familyName })
-    .then(familyObj => {
-      family = familyObj;
-      return Participation.getChallengeParticipantsByFamily(
-        currentChallenge._id,
-        family._id
-      );
-    })
-    .then(familyParticipationsArray => {
-      familyParticipations = familyParticipationsArray;
-
-      defaultShowDate = new Date(weekInfo.date);
-
-      if (!isFutureWeek) {
-        // determine if the points button should show and if so the date
-        // it should hold for when user's choose to submit points
-        addPointsButtonDate = calculateAddPointsButtonDate(
-          currentWeek,
-          requestedWeek,
-          today,
-          defaultShowDate
-        );
-      }
-
-      console.log("addPointsButtonDate", addPointsButtonDate);
-
-      return Point.calculateParticipantPointsByDay(
-        familyParticipations,
-        defaultShowDate,
-        family.name === user.family.name ? user : undefined,
-        isFutureWeek
-      );
-    })
-    .then(() => {
-      res.render("families/_scoreboard", {
-        isFutureWeek,
-        family,
-        defaultShowDate,
-        dates,
-        familyParticipations,
-        addPointsButtonDate
-      });
     })
     .catch(e => console.log(e));
 });
@@ -344,6 +278,7 @@ function calculateDefaultShowDate(
   dates
 ) {
   if (requestedWeek === currentWeek) return today;
+  if (weekInfo.direction === "none") return new Date(weekInfo.date);
   return weekInfo.direction === "previous" ? dates[6] : dates[0];
 }
 
