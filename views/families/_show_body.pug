@@ -1,45 +1,39 @@
-.col-12.switch-weeks
-  div
-    if showPrevious
-      #previous.change-week  &lt; Previous Week
-  div
-    if showNext
-      #next.change-week Next Week &gt;
-    else
-      | Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
-
-#summary.col-12
-  .title(style=`color: ${familyColors[family.name]}`)= family.name
-  .title(style=`color: ${familyColors[family.name]}`)= family.teamScore
-
-#competitorSummary.col-12 Week #[span.weekNumber= requestedWeek]: vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
-
 .col-12
+  .switch-weeks
+    div
+      if showPrevious
+        #previous.change-week  &lt; Previous Week
+    div
+      if showNext
+        #next.change-week Next Week &gt;
+      else
+        | Next Week: #[span(style=`color: ${familyColors[nextVersingFamilyName]};font-style: normal`)= nextVersingFamilyName]
+
+  #summary
+    .title(style=`color: ${familyColors[family.name]}`)= family.name
+    .title(style=`color: ${familyColors[family.name]}`)= family.teamScore
+
+  #competitorSummary Week #[span.weekNumber= requestedWeek]: vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
+
+
   .border
 
-#weeklyStatus.col-12
-  div Opponent score:
-    span= versingFamily.teamScore
-  div Status:
-    span(style=`color: ${statusColors[family.pointsNeededToWin.status]}`)= family.pointsNeededToWin.message
-  if isCurrentWeek
-    div Time left:
-      span#timeRemaining= timeRemaining
+  #weeklyStatus
+    div Opponent score:
+      span= versingFamily.teamScore
+    div Status:
+      span(style=`color: ${statusColors[family.pointsNeededToWin.status]}`)= family.pointsNeededToWin.message
+    if isCurrentWeek
+      div Time left:
+        span#timeRemaining= timeRemaining
 
 .clear
 
 if currentChallenge
-  //- UNCOMMENT ASK CALLY ABOUT WHERE TO PUTT CHALLENGE NAME AND WHAT TO DISPLAY IF NOT PARTICIPATING
-  //- p= 'Current challenge: ' + currentChallenge.name
-  //-   if currentChallenge.participation
-  //-     p= 'Status: participating'
-  //-   else
-  //-     p= 'Status: not participating'
-  //-     a(href='/challenges') See upcoming challenges
   #backgroundGradient(style=`background: ${gradients[family.name]}`)
     include _scoreboard
 else
-  h3 There is no current challenge. Please contact your program administrator to create one!
+  .info There is no current challenge. Please contact your program administrator to create one!
 
 if addPointsButtonDate
   include ../points/new
