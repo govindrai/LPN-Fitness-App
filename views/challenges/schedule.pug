@@ -6,24 +6,26 @@ block content
 
 		include _standings
 
-		each family in families
-			.subtitle= family.name
-			table
-				thead
-					tr
-						th Week
-						th Opponent
-						th Result
-						th Team Score
-						th Opp Score
-				tbody
-				- var i = 1
-				while i < 8
-					tr
-						td= i
-						- var week = "week" + i
-						td= currentChallenge.schedule[week][family.name].versingFamily.name
-						td= currentChallenge.schedule[week][family.name].status
-						td= currentChallenge.schedule[week][family.name].finalScore
-						td= currentChallenge.schedule[week][family.name].versingFinalScore
-						- i++
+		each family in Object.keys(currentChallenge.schedule.week1)
+			p= family
+
+			//- .subtitle= family.name
+			//- table
+			//- 	thead
+			//- 		tr
+			//- 			th Week
+			//- 			th Opponent
+			//- 			th Result
+			//- 			th Team Score
+			//- 			th Opp Score
+			//- 	tbody
+			//- 	- var i = 1
+			//- 	while i < 8
+			//- 		tr
+			//- 			td= i
+			//- 			- var week = "week" + i
+			//- 			td= currentChallenge.schedule[week][family.name].versingFamily.name
+			//- 			td= currentChallenge.schedule[week][family.name].status
+			//- 			td= currentChallenge.schedule[week][family.name].finalScore
+			//- 			td= currentChallenge.schedule[week][family.name].versingFinalScore
+			//- 			- i++
