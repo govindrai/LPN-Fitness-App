@@ -22,34 +22,36 @@ mixin printChallenges(challenges, challengeType)
 
 include ../layout.pug
 
-.col-12
-  .title Challenges
+block content
+  .col-12
+    .title Challenges
 
-  if user.admin
-    .center
-      a.grey-button.add-challenge(href="/challenges/new") Create Challenge
+    if user.admin
+      .center
+        a.grey-button.add-challenge(href="/challenges/new") Create Challenge
 
-  .subtitle Current Challenge
-  .current-challenge
-    if currentChallenge
-      +printChallenges([currentChallenge], "current")
-    else
-      h3 There are no current challenges :( Contact your challenge administrator and request one!
+    .subtitle Current Challenge
+    .current-challenge
+      if currentChallenge
+        +printChallenges([currentChallenge], "current")
+      else
+        h3 There are no current challenges :( Contact your challenge administrator and request one!
 
-  .subtitle.toggle-future-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
-  .future-challenges
-    if futureChallenges.length > 0
-      +printChallenges(futureChallenges, "future")
-    else
-      h3 There aren't any scheduled challenges. Contact your program administrator and request one!
+    .subtitle.toggle-future-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
+    .future-challenges
+      if futureChallenges.length > 0
+        +printChallenges(futureChallenges, "future")
+      else
+        h3 There aren't any scheduled challenges. Contact your program administrator and request one!
 
 
-  .subtitle.toggle-past-challenges Past Challenges #[span(class='down-arrow') &#9660;]
-  .past-challenges
-    if pastChallenges.length > 0
-      +printChallenges(pastChallenges, "past")
-    else
-      h3 This will fill up as soon as your organization starts competing!
+    .subtitle.toggle-past-challenges Past Challenges #[span(class='down-arrow') &#9660;]
+    .past-challenges
+      if pastChallenges.length > 0
+        +printChallenges(pastChallenges, "past")
+      else
+        h3 This will fill up as soon as your organization starts competing!
+
 
 append footer-scripts
   script.

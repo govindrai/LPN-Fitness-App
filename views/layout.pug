@@ -42,7 +42,6 @@ html
           +link("/challenges", `Challenges (${challengeCount})`)
           +link("/activities", "Activities")
           +link("/schedule", "Schedule")
-          +link("/standings", "Standings")
           +link("/rules", "Rules")
           if user.admin
             +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
@@ -52,6 +51,7 @@ html
           else
             +link(`/users/${user.email}`, "Profile")
           +link("/logout", "Logout")
+
 
     block content
 

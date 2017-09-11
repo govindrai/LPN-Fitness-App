@@ -74,9 +74,7 @@ body {
   font: 14px "Open Sans", sans-serif;
   max-width: 400px;
   position: relative;
-  padding-bottom: 20px;
-  border: 1px solid #dadde0;
-  min-height: 100vh; }
+  padding-bottom: 20px; }
 
 input, select, textarea {
   display: block; }
