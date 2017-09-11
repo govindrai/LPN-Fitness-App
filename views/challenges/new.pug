@@ -10,6 +10,9 @@ block content
   .col-12
     .title Create Challenge
 
+    if error
+      .error= error.message
+    
     form(action='/challenges' method='POST')
       label Challenge Name
       input(name='name' type='text' required placeholder="i.e. Winter 2090 Challenge")
