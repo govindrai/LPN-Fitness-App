@@ -12,44 +12,44 @@ mixin printChallenges(challenges, challengeType)
         if challenge.participation
           - status = { message: "Signed Up", color: "green" }
         else
-          - status = { message: "Sign Up"}
           form.participate(action='/participations' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
-            input.grey-button(type='submit' value=status.message)
+            input.participation-status(style=`background-color: ${familyColors[user.family.name]}` type='submit' value="Sign Up")
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
-      span.participation-status(class=status.color)= status.message
+      if status
+        span.participation-status(class=status.color)= status.message
 
 include ../layout.pug
 
-.col-12
-  .title Challenges
+block content
+  .col-12
+    .title Challenges
 
-  if user.admin
-    .center
-      a.grey-button.add-challenge(href="/challenges/new") Create Challenge
-
-  .subtitle Current Challenge
-  .current-challenge
+    .subtitle Current Challenge
     if currentChallenge
       +printChallenges([currentChallenge], "current")
     else
       h3 There are no current challenges :( Contact your challenge administrator and request one!
 
-  .subtitle.toggle-future-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
-  .future-challenges
-    if futureChallenges.length > 0
-      +printChallenges(futureChallenges, "future")
-    else
-      h3 There aren't any scheduled challenges. Contact your program administrator and request one!
+    .subtitle.toggle-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
+    .challenges
+      if futureChallenges.length > 0
+        +printChallenges(futureChallenges, "future")
+      else
+        h3 There aren't any scheduled challenges. Contact your program administrator and request one!
 
 
-  .subtitle.toggle-past-challenges Past Challenges #[span(class='down-arrow') &#9660;]
-  .past-challenges
-    if pastChallenges.length > 0
-      +printChallenges(pastChallenges, "past")
-    else
-      h3 This will fill up as soon as your organization starts competing!
+    .subtitle.toggle-challenges Past Challenges #[span(class='down-arrow') &#9660;]
+    .challenges
+      if pastChallenges.length > 0
+        +printChallenges(pastChallenges, "past")
+      else
+        h3 This will fill up as soon as your organization starts competing!
+
+    if user.admin
+      .center
+        a.grey-button.add-challenge(href="/challenges/new") Create Challenge
 
 append footer-scripts
   script.
@@ -77,5 +77,4 @@ append footer-scripts
       })
     };
 
-    $('body').on('click', '.subtitle.toggle-past-challenges', () => $('.past-challenges').slideToggle());
-    $('body').on('click', '.subtitle.toggle-future-challenges', () => $('.future-challenges').slideToggle());
+    $('body').on('click', '.toggle-challenges', (e) => $(e.target).next().slideToggle());

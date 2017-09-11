@@ -29,7 +29,6 @@ $scoreboardBorder: #dadde0
 [class*="col-"]
   float: left
   padding: 0 15px
-  // border: 1px solid red
 
 .col-1
   width: 8.33%
@@ -62,11 +61,8 @@ $scoreboardBorder: #dadde0
 a
   text-decoration: none
   color: blue
-  &:visited
-    color: blue
   &:hover
     text-decoration: underline
-
 
 body
   margin: auto
@@ -74,8 +70,6 @@ body
   max-width: 400px
   position: relative
   padding-bottom: 20px
-  border: 1px solid $scoreboardBorder
-  min-height: 100vh
 
 input, select, textarea
   display: block
@@ -84,12 +78,15 @@ input, select, textarea
     box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.3)
 
 nav
+  border-bottom: 1px solid $scoreboardBorder
+  margin-bottom: 20px
   .top
     padding-top: 10px
-    padding-bottom: 20px
+    padding-bottom: 10px
     display: flex
     justify-content: space-between
     align-items: center
+
 
   .nav-links
     display: none;
@@ -255,19 +252,16 @@ nav
           padding: 0
           margin: 0
           cursor: pointer
-
       .realname
         font-size: 14px
         font-style: italic
         line-height: 1.43
         color: $light-grey
         text-transform: uppercase
-
       .nickname
         font-size: 20px
         line-height: 1.8
         color: $black
-
       .total-points
         font-size: 32px
         font-weight: 300
@@ -292,6 +286,7 @@ nav
       margin: 12px auto 16px auto
       font-style: italic
       font-weight: 600
+
 
 .switch-weeks
   display: flex
@@ -355,24 +350,27 @@ form
     color: $light-grey
 
 .grey-button
+  display: block
   height: 56px
-  text-align: center
+  line-height: 56px
+  min-width: 200px
+  width: fit-content
   background-color: #b1b4ba
   color: white
   text-transform: uppercase
-  margin: 48px auto
+  margin: 32px auto
   font-size: 20px
   font-weight: 700
   padding: 0 20px
   cursor: pointer
   border: none
   letter-spacing: 1.2px
-
+  box-shadow: 1px 2px 8px 0 rgba(0, 0, 0, 0.2)
   &:active
     box-shadow: inset 0 1px 8px 0 rgba(0, 0, 0, 0.2)
   &:hover
     opacity: 0.7
-
+    text-decoration: none
   &.add-challenge
     margin: 0 auto 24px auto
 
@@ -476,26 +474,32 @@ hr
 .center
   text-align: center
 
-.subtitle.toggle-past-challenges, .subtitle.toggle-future-challenges
+.toggle-challenges
   cursor: pointer
 
-.past-challenges, .future-challenges
+.challenges
   display: none
 
 .challenge
   font-size: 14px
   margin-bottom: 16px
   color: $black
-  padding-bottom: 20px
-  border-bottom: 1px solid $black
-  &:only-child
-    border-bottom: none
+  border: 1px solid $scoreboardBorder
+  border-radius: 4px
+  padding: 0 15px
 
+input.participation-status
+  cursor: pointer
 .participation-status
+  font-size: 14px
+  display: block
+  width: fit-content
   border-radius: 4px
   color: white
   text-transform: uppercase
-  padding: 6px
+  padding: 6px 15px
+  margin-bottom: 16px
+  height: auto
   &.green
     background-color: $success
   &.grey

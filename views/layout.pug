@@ -24,17 +24,15 @@ html
   body
     nav.col-12
       .top
-        .subtitle.logo 
-          +link("/", "LPN Fitness")
-        .hamburger-button
-          .line
-          .line
-          .line
-      .nav-links
-        if !isLoggedIn
-          +link("/", "Home")
-          +link("/register", "Register")
-        else
+        .subtitle.logo
+          a(href="/") LPN Fitness
+        if isLoggedIn
+          .hamburger-button
+            .line
+            .line
+            .line
+      if isLoggedIn
+        .nav-links
           +link(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
           +link("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
@@ -44,9 +42,8 @@ html
           +link("/challenges", `Challenges (${challengeCount})`)
           +link("/activities", "Activities")
           +link("/schedule", "Schedule")
-          +link("/standings", "Standings")
           +link("/rules", "Rules")
-          if user.admin 
+          if user.admin
             +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
             .drop-down-links
               +link(`/users/admin-settings`, "Admin Settings")
@@ -54,6 +51,7 @@ html
           else
             +link(`/users/${user.email}`, "Profile")
           +link("/logout", "Logout")
+
 
     block content
 
