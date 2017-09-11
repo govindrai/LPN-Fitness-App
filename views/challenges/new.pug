@@ -12,7 +12,7 @@ block content
 
     if error
       .error= error.message
-    
+
     form(action='/challenges' method='POST')
       label Challenge Name
       input(name='name' type='text' required placeholder="i.e. Winter 2090 Challenge")
@@ -28,7 +28,8 @@ block content
   script.
     $('.start').datepicker()
     .on("change", function() {
-      var date = $(this).datepicker("getDate");
+      var date = $(this).datepicker("getDate", { beforeShowDay: function(date){return [date.getDay() == 1, '']}});
       date.setDate(date.getDate() + 63);
       $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
     });
+
