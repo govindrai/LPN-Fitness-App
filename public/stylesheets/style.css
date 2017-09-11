@@ -658,4 +658,13 @@ hr {
   background: transparent;
   padding: 0; }
 
+table {
+  width: 100%;
+  border-collapse: collapse; }
+  table th {
+    border-bottom: 1px solid #dadde0;
+    text-align: left; }
+  table th, table td {
+    padding: 16px 5px; }
+
 /*# sourceMappingURL=style.css.map */

@@ -183,7 +183,9 @@ challengeSchema.methods.generateSchedule = function() {
 // RETURNS SORTED FAMILY STANDINGS FOR CHALLENGE
 challengeSchema.methods.getStandings = function() {
   const challenge = this;
-  const families = Object.keys(challenge.schedule["week1"]);
+  const families = Object.keys(challenge.schedule["week1"]).filter(
+    family => family !== "Bye"
+  );
   let standings = families.map(family => {
     let { Won: wins, Lost: losses, Tie: ties } = challenge.winCounts[family];
     return { family, score: wins - losses, wins, losses, ties };

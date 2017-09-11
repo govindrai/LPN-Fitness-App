@@ -23,8 +23,7 @@ var index = require("./routes/index"),
   challenges = require("./routes/challenges"),
   account = require("./routes/account"),
   points = require("./routes/points"),
-  participations = require("./routes/participations"),
-  standings = require("./routes/standings");
+  participations = require("./routes/participations");
 
 // Models
 var Family = require("./models/family"),
@@ -92,7 +91,6 @@ app.use("/challenges", challenges);
 app.use("/account", account);
 app.use("/points", points);
 app.use("/participations", participations);
-app.use("/standings", standings);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

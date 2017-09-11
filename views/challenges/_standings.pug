@@ -1,0 +1,21 @@
+.subtitle Standings
+
+table
+		thead
+			tr
+				th #
+				th Family
+				th Wins
+				th Losses
+				th Ties
+		tbody
+		each standing, index in standings
+			tr
+				td= index + 1
+				td(style=`color: ${familyColors[standing.family]}`)= standing.family
+				td= standing.wins
+				td= standing.losses
+				td= standing.ties
+
+.info NOTE: Top 4 teams at the end of week 7 will participate in playoffs.
+
