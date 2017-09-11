@@ -46,7 +46,7 @@ html
           if user.admin
             +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
             .drop-down-links
-              +link(`/users/admin-settings`, "Admin Settings")
+              +link(`/users/admin-settings`, "Admin")
               +link(`/users/${user.email}`, "Profile")
           else
             +link(`/users/${user.email}`, "Profile")
