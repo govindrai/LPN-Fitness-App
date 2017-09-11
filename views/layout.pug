@@ -46,7 +46,13 @@ html
           +link("/schedule", "Schedule")
           +link("/standings", "Standings")
           +link("/rules", "Rules")
-          +link("/account", "Account")
+          if user.admin 
+            +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
+            .drop-down-links
+              +link(`/account/admin-settings`, "Admin Settings")
+              +link(`/users/${user.email}`, "Profile")
+          else
+            +link(`/users/${user.email}`, "Profile")
           +link("/logout", "Logout")
 
     block content

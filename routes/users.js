@@ -10,17 +10,6 @@ const User = require('./../models/user'),
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/:email?', (req, res, next) => {
-  Family.find({}).then(families => {
-    User.findOne({ email: req.params.email })
-      .populate('family')
-      .then(user => {
-        res.render('users/show', { user });
-      });
-  });
-});
-
 router.post('/', (req, res, next) => {
   var user = new User(req.body);
   user
@@ -31,6 +20,13 @@ router.post('/', (req, res, next) => {
       });
     })
     .catch(e => console.log(e));
+});
+
+// GET user profile edit form
+router.get('/edit', function(req, res, next) {
+  User.findById(res.locals.user._id).then(user => {
+    res.render('users/edit', { user, path: res.path });
+  });
 });
 
 // initialize new user, if save successful,
@@ -117,4 +113,13 @@ router.put('/edit', (req, res) => {
     }
   }
 });
+
+router.get('/:email', (req, res, next) => {
+  User.findOne({ email: req.params.email })
+    .populate('family')
+    .then(user => {
+      res.render('users/show', { user, currentUser: res.locals.user });
+    });
+});
+
 module.exports = router;
