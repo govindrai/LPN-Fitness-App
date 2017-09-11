@@ -12,13 +12,13 @@ mixin printChallenges(challenges, challengeType)
         if challenge.participation
           - status = { message: "Signed Up", color: "green" }
         else
-          - status = { message: "Sign Up"}
           form.participate(action='/participations' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
-            input.grey-button(type='submit' value=status.message)
+            input.participation-status(style=`background-color: ${familyColors[user.family.name]}` type='submit' value="Sign Up")
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
-      span.participation-status(class=status.color)= status.message
+      if status
+        span.participation-status(class=status.color)= status.message
 
 include ../layout.pug
 
@@ -27,14 +27,13 @@ block content
     .title Challenges
 
     .subtitle Current Challenge
-    .current-challenge
-      if currentChallenge
-        +printChallenges([currentChallenge], "current")
-      else
-        h3 There are no current challenges :( Contact your challenge administrator and request one!
+    if currentChallenge
+      +printChallenges([currentChallenge], "current")
+    else
+      h3 There are no current challenges :( Contact your challenge administrator and request one!
 
     .subtitle.toggle-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
-    .future-challenges
+    .challenges
       if futureChallenges.length > 0
         +printChallenges(futureChallenges, "future")
       else
@@ -42,7 +41,7 @@ block content
 
 
     .subtitle.toggle-challenges Past Challenges #[span(class='down-arrow') &#9660;]
-    .past-challenges
+    .challenges
       if pastChallenges.length > 0
         +printChallenges(pastChallenges, "past")
       else

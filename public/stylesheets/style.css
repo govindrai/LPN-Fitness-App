@@ -64,8 +64,6 @@
 a {
   text-decoration: none;
   color: blue; }
-  a:visited {
-    color: blue; }
   a:hover {
     text-decoration: underline; }
 
@@ -339,6 +337,7 @@ form input::placeholder {
   display: block;
   height: 56px;
   line-height: 56px;
+  min-width: 200px;
   width: fit-content;
   background-color: #b1b4ba;
   color: white;
@@ -455,23 +454,30 @@ hr {
 .toggle-challenges {
   cursor: pointer; }
 
-.past-challenges, .future-challenges {
+.challenges {
   display: none; }
 
 .challenge {
   font-size: 14px;
   margin-bottom: 16px;
   color: #353738;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #353738; }
-  .challenge:only-child {
-    border-bottom: none; }
+  border: 1px solid #dadde0;
+  border-radius: 4px;
+  padding: 0 15px; }
+
+input.participation-status {
+  cursor: pointer; }
 
 .participation-status {
+  font-size: 14px;
+  display: block;
+  width: fit-content;
   border-radius: 4px;
   color: white;
   text-transform: uppercase;
-  padding: 6px; }
+  padding: 6px 15px;
+  margin-bottom: 16px;
+  height: auto; }
   .participation-status.green {
     background-color: #0b8c0b; }
   .participation-status.grey {

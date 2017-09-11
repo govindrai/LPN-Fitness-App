@@ -1,20 +1,26 @@
 extends ../layout
 
+append head-scripts
+  script(src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+  integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+  crossorigin="anonymous")
+  link(rel="stylesheet", href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css")
+
 block content
+  .col-12
+    .title Create Challenge
 
-  .title Create Challenge
+    form(action='/challenges' method='POST')
+      label Challenge Name
+      input(name='name' type='text' required placeholder="i.e. Winter 2090 Challenge")
+      label Start Date
+      input.start(name='date.start' type='text' required)
+      label End Date
+      input.end(name='date.end' type='text' readonly placeholder="automatically calculated...")
 
-  form(action='/challenges' method='POST')
-    | Name
-    input(name='name' type='text' required)
-    | Start Date
-    input.start(name='date.start' type='text' required)
-    | End Date
-    input.end(name='date.end' type='text' readonly)
+      input.grey-button(type='submit' value='Create challenge')
 
-    input(type='submit' value='Create challenge')
-
-  p #[b Please note:] Challenges must Registration will open as soon as challenge is created, and registration will close at midnight before the challenge.
+    .info #[b NOTE:] Users will be able to sign up for challenges as soon as they are created, and registration will close at midnight before the day of the challenge. Only one challenge may exist at any time.
 
   script.
     $('.start').datepicker()

@@ -61,8 +61,6 @@ $scoreboardBorder: #dadde0
 a
   text-decoration: none
   color: blue
-  &:visited
-    color: blue
   &:hover
     text-decoration: underline
 
@@ -254,19 +252,16 @@ nav
           padding: 0
           margin: 0
           cursor: pointer
-
       .realname
         font-size: 14px
         font-style: italic
         line-height: 1.43
         color: $light-grey
         text-transform: uppercase
-
       .nickname
         font-size: 20px
         line-height: 1.8
         color: $black
-
       .total-points
         font-size: 32px
         font-weight: 300
@@ -291,6 +286,7 @@ nav
       margin: 12px auto 16px auto
       font-style: italic
       font-weight: 600
+
 
 .switch-weeks
   display: flex
@@ -357,6 +353,7 @@ form
   display: block
   height: 56px
   line-height: 56px
+  min-width: 200px
   width: fit-content
   background-color: #b1b4ba
   color: white
@@ -480,23 +477,29 @@ hr
 .toggle-challenges
   cursor: pointer
 
-.past-challenges, .future-challenges
+.challenges
   display: none
 
 .challenge
   font-size: 14px
   margin-bottom: 16px
   color: $black
-  padding-bottom: 20px
-  border-bottom: 1px solid $black
-  &:only-child
-    border-bottom: none
+  border: 1px solid $scoreboardBorder
+  border-radius: 4px
+  padding: 0 15px
 
+input.participation-status
+  cursor: pointer
 .participation-status
+  font-size: 14px
+  display: block
+  width: fit-content
   border-radius: 4px
   color: white
   text-transform: uppercase
-  padding: 6px
+  padding: 6px 15px
+  margin-bottom: 16px
+  height: auto
   &.green
     background-color: $success
   &.grey
