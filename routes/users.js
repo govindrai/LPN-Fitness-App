@@ -8,6 +8,9 @@ const express = require('express'),
 const User = require('./../models/user'),
   Family = require('./../models/family');
 
+// Middleware
+const isAdmin = require('./../middleware/isAdmin');
+
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
@@ -98,11 +101,7 @@ router.put('/edit', (req, res) => {
         { new: true, runValidators: true }
       )
         .then(user => {
-          return res.render('users/show', {
-            user,
-            currentUser: res.locals.user,
-            successMessage: 'Your profile has been updated!'
-          });
+          return res.redirect(`/users/${user.email}?updated=true`);
         })
         .catch(e => console.log(e));
     };
@@ -115,11 +114,32 @@ router.put('/edit', (req, res) => {
   }
 });
 
+router.get('/admin-settings', isAdmin, (req, res, next) => {
+  let adminss, nonAdminss;
+  User.getAdmins()
+    .then(admins => {
+      adminss = admins;
+      return User.getNonAdmins();
+    })
+    .then(nonAdmins => {
+      nonAdminss = nonAdmins;
+      res.render('users/admin_settings', {
+        admins: adminss,
+        nonAdmins: nonAdminss,
+        path: req.path
+      });
+    });
+});
+
 router.get('/:email', (req, res, next) => {
   User.findOne({ email: req.params.email })
     .populate('family')
     .then(user => {
-      res.render('users/show', { user, currentUser: res.locals.user });
+      res.render('users/show', {
+        user,
+        currentUser: res.locals.user,
+        successMessage: req.query.updated
+      });
     });
 });
 

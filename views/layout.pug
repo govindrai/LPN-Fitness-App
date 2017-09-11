@@ -49,7 +49,7 @@ html
           if user.admin 
             +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
             .drop-down-links
-              +link(`/account/admin-settings`, "Admin Settings")
+              +link(`/users/admin-settings`, "Admin Settings")
               +link(`/users/${user.email}`, "Profile")
           else
             +link(`/users/${user.email}`, "Profile")
@@ -59,7 +59,7 @@ html
 
     block footer-scripts
       script.
-        $('body').on('click', '.drop-down', e => $('.drop-down-links').slideToggle());
+        $('body').on('click', '.drop-down', e => $(e.target).next().slideToggle())
 
         let reverse = false;
         $('body').on('click', ".hamburger-button", e => {
