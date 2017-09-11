@@ -109,11 +109,9 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/schedule", (req, res) => {
-  Family.find()
-    .then(families => {
-      res.render("challenges/schedule", { families });
-    })
-    .catch(e => console.log(e));
+  return res.render("challenges/schedule", {
+    standings: res.locals.currentChallenge.getStandings()
+  });
 });
 
 // GET rules page

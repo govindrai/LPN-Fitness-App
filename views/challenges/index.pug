@@ -3,7 +3,7 @@ mixin printChallenges(challenges, challengeType)
     .challenge
       p= challenge.name
       p #{challenge.date.start.toLocaleDateString()} - #{challenge.date.end.toLocaleDateString()}
-      if challenge.winner != null
+      if challenge.winner
         p= "Winner: " + challenge.winner.name
       - let status
       if challengeType === "current"

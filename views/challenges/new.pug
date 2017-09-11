@@ -1,11 +1,8 @@
 extends ../layout
 
-append head-scripts
-  include ../partials/jqueryui
-
 block content
 
-  .subtitle Create a challenge
+  .title Create Challenge
 
   form(action='/challenges' method='POST')
     | Name
