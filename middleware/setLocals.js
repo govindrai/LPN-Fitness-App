@@ -12,7 +12,7 @@ module.exports = function setLocals(req, res, next) {
       Iolite: "#6456f8",
       Sapphire: "#3b8df8",
       Emerald: "#24ab60",
-      Bye: "brown"
+      Bye: "inherit"
     };
     res.locals.statusColors = {
       Winning: "#0b8c0b",
