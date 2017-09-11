@@ -169,6 +169,7 @@ router.get("/:familyName", (req, res) => {
 
       const options = {
         isFutureWeek,
+        isCurrentWeek,
         timeRemaining,
         dates,
         requestedWeek,

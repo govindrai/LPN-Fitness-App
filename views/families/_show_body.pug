@@ -22,8 +22,9 @@
     span= versingFamily.teamScore
   div Status:
     span(style=`color: ${statusColors[family.pointsNeededToWin.status]}`)= family.pointsNeededToWin.message
-  div Time left:
-    span#timeRemaining= timeRemaining
+  if isCurrentWeek
+    div Time left:
+      span#timeRemaining= timeRemaining
 
 .clear
 
