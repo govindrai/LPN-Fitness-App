@@ -1,5 +1,5 @@
 // Modules
-var express = require("express"),
+const express = require("express"),
   methodOverride = require("method-override"),
   session = require("express-session"),
   { REDIS_URL } = require("./config/keys"),
@@ -14,19 +14,17 @@ var express = require("express"),
   sassMiddleware = require("node-sass-middleware"),
   mongoose = require("./config/db/mongoose");
 
-// Routers
-var index = require("./routes/index"),
+const index = require("./routes/index"),
   users = require("./routes/users"),
   families = require("./routes/families"),
   units = require("./routes/units"),
   activities = require("./routes/activities"),
   challenges = require("./routes/challenges"),
-  account = require("./routes/account"),
   points = require("./routes/points"),
   participations = require("./routes/participations");
 
 // Models
-var Family = require("./models/family"),
+const Family = require("./models/family"),
   User = require("./models/user");
 
 // Middleware
@@ -88,7 +86,6 @@ app.use("/families", families);
 app.use("/units", units);
 app.use("/activities", activities);
 app.use("/challenges", challenges);
-app.use("/account", account);
 app.use("/points", points);
 app.use("/participations", participations);
 

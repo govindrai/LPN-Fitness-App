@@ -1,56 +1,57 @@
 // Modules
-const express = require("express"),
-  _ = require("lodash"),
-  pug = require("pug"),
-  path = require("path");
+const express = require('express'),
+  _ = require('lodash'),
+  pug = require('pug'),
+  path = require('path');
 
 // Models
-const User = require("./../models/user"),
-  Family = require("./../models/family");
+const User = require('./../models/user'),
+  Family = require('./../models/family');
+
+// Middleware
+const isAdmin = require('./../middleware/isAdmin');
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get("/", function(req, res, next) {
-  Family.find({}).then(families => {
-    User.find({}).populate("family").then(users => {
-      res.render("users/index", { families, users });
-    });
-  });
-});
-
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   var user = new User(req.body);
   user
     .save()
     .then(user => {
       user.generateAuthToken().then(token => {
-        res.redirect("/families");
+        res.redirect('/families');
       });
     })
     .catch(e => console.log(e));
 });
 
+// GET user profile edit form
+router.get('/edit', function(req, res, next) {
+  User.findById(res.locals.user._id).then(user => {
+    res.render('users/edit', { user, path: res.path });
+  });
+});
+
 // initialize new user, if save successful,
 // generate auth token and take to home page
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   var user = new User(req.body);
 
   user
     .save()
     .then(user => {
       user.generateAuthToken().then(token => {
-        res.redirect("/families/");
+        res.redirect('/families/');
       });
     })
     .catch(e => console.log(e));
 });
 
 // handles both admin changes as well as profile edits
-router.put("/edit", (req, res) => {
+router.put('/edit', (req, res) => {
   if (req.body.changeAdmin) {
     if (!res.locals.user.admin)
-      res.status(400).send("You must be an admin to access this feature");
+      res.status(400).send('You must be an admin to access this feature');
     User.findById(req.body.user)
       .then(user => {
         user.admin = !user.admin;
@@ -59,22 +60,22 @@ router.put("/edit", (req, res) => {
       .then(user =>
         res.send(
           `${user.fullName} ${user.admin
-            ? "is now an admin"
-            : "is no longer an admin"}`
+            ? 'is now an admin'
+            : 'is no longer an admin'}`
         )
       )
       .catch(e => console.log(e));
   } else {
     const body = _.pick(req.body, [
-      "name.first",
-      "name.last",
-      "name.nickname",
-      "email",
-      "password"
+      'name.first',
+      'name.last',
+      'name.nickname',
+      'email',
+      'password'
     ]);
 
     const emailNotModified = res.locals.user.email === body.email;
-    const passwordNotModified = body.password === "";
+    const passwordNotModified = body.password === '';
 
     if (emailNotModified) {
       delete body.email;
@@ -100,10 +101,7 @@ router.put("/edit", (req, res) => {
         { new: true, runValidators: true }
       )
         .then(user => {
-          return res.render("users/edit", {
-            user,
-            successMessage: "Your profile has been updated!"
-          });
+          return res.redirect(`/users/${user.email}?updated=true`);
         })
         .catch(e => console.log(e));
     };
@@ -115,4 +113,34 @@ router.put("/edit", (req, res) => {
     }
   }
 });
+
+router.get('/admin-settings', isAdmin, (req, res, next) => {
+  let adminss, nonAdminss;
+  User.getAdmins()
+    .then(admins => {
+      adminss = admins;
+      return User.getNonAdmins();
+    })
+    .then(nonAdmins => {
+      nonAdminss = nonAdmins;
+      res.render('users/admin_settings', {
+        admins: adminss,
+        nonAdmins: nonAdminss,
+        path: req.path
+      });
+    });
+});
+
+router.get('/:email', (req, res, next) => {
+  User.findOne({ email: req.params.email })
+    .populate('family')
+    .then(user => {
+      res.render('users/show', {
+        user,
+        currentUser: res.locals.user,
+        successMessage: req.query.updated
+      });
+    });
+});
+
 module.exports = router;

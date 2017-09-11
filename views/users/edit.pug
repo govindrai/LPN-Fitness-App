@@ -2,12 +2,8 @@ include ../layout.pug
 
 block content
   .col-12
-    include ../account/_account_nav
 
     .title Update Profile
-
-    if successMessage
-      .success= successMessage
 
     form#editProfile(action='/users/edit?_method=PUT' method='POST')
       label First Name
