@@ -337,6 +337,8 @@ form input::placeholder {
 
 .grey-button {
   height: 56px;
+  width: 200px;
+  min-width: 200px;
   text-align: center;
   background-color: #b1b4ba;
   color: white;
