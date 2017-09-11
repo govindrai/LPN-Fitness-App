@@ -6,4 +6,6 @@ block content
 		each activity in activities
 			.activity
 				.activity-name= activity.name
-				.activity-description #{activity.description} #{activity.points} points for every #{activity.scale} #{activity.unit.name}
+				- let description
+				- activity.description ? description = `${activity.description}, ${activity.points} points for every ${activity.scale} ${activity.unit.name}` : description = `${activity.points} points for every ${activity.scale} ${activity.unit.name}`
+				.activity-description= description
