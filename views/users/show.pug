@@ -1,0 +1,29 @@
+include ../layout.pug
+
+block content
+  .col-12
+
+    .title #{user.name.first}'s Profile
+
+    if successMessage
+      .success Your profile was updated!
+
+    .activity
+        
+      .subtitle First Name:
+      .activity-name= user.name.first
+
+      .subtitle Last Name:
+      .activity-name= user.name.last
+
+      .subtitle Email:
+      .activity-name= user.email
+
+      .subtitle Family:
+      .activity-name= user.family.name
+
+      .subtitle Lifetime Points:
+      .activity-name= user.lifetimePoints
+
+  if user._id.toString() === currentUser._id.toString()
+    a.grey-button(href="/users/edit") Edit Profile
