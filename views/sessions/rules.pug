@@ -28,7 +28,12 @@ block content
 			li Concerns about the point system are requested, but any minor changes will only be incorporated the following quarter
 
 		.title Questions
-		| Email LeAnne at leanne.lnd@gmail.com, Resanna at resannali@gmail.com, or Stephen at stephen.lee.abc@gmail.com
+		| Email your program administrator(s):
+		ul
+			each admin in admins
+				li #{admin.name.first} at #[a(href=`mailto:${admin.email}`) #{admin.email}]
+
+	.clear
 
 
 
