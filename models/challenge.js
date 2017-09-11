@@ -1,7 +1,9 @@
+// MODULES
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema,
   schedule = require("node-schedule");
 
+// MODELS
 const Family = require("./family"),
   Participation = require("./participation"),
   Point = require("./point");
@@ -22,8 +24,7 @@ let challengeSchema = new Schema({
     },
     registrationStart: {
       type: Date,
-      required: true,
-      default: new Date()
+      required: true
     },
     registrationEnd: {
       type: Date,
@@ -66,7 +67,7 @@ challengeSchema.pre("validate", function(next) {
   }
 });
 
-challengeSchema.statics.getCurrentChallenge = () => {
+challengeSchema.statics.getCurrentChallenge = function() {
   return Challenge.findOne()
     .where("date.start")
     .lt(new Date())
@@ -74,7 +75,7 @@ challengeSchema.statics.getCurrentChallenge = () => {
     .gt(new Date());
 };
 
-challengeSchema.statics.getPastChallenges = () => {
+challengeSchema.statics.getPastChallenges = function() {
   return Challenge.find()
     .populate("winner")
     .where("date.end")
@@ -82,12 +83,8 @@ challengeSchema.statics.getPastChallenges = () => {
     .sort("date.start");
 };
 
-challengeSchema.statics.getFutureChallenges = () => {
+challengeSchema.statics.getFutureChallenges = function() {
   return Challenge.find().where("date.start").gt(new Date()).sort("date.start");
-};
-
-challengeSchema.statics.getAllExceptPastChallengesCount = () => {
-  return Challenge.find().where("date.end").gt(new Date()).count();
 };
 
 // sets the initial won/lost/tie counts to 0
@@ -100,11 +97,13 @@ challengeSchema.methods.generateInitialWinCounts = function(families) {
   });
 };
 
+// GENERATES SCHEDULE FOR 9 WEEKS
 challengeSchema.methods.generateSchedule = function() {
   var challenge = this;
 
   return Family.find().then(families => {
     shuffle(families);
+    challenge.generateInitialWinCounts(families);
 
     // use below line to better debug
     // families = families.map(family => family.toObject());
@@ -156,10 +155,6 @@ challengeSchema.methods.generateSchedule = function() {
           });
         } else {
           // add a verse for opposing family
-          console.log(schedule);
-          console.log(weekNumber);
-          console.log(family);
-          console.log(family.name);
           schedule[weekNumber][family.name] = { versingFamily: newFamilies[i] };
           // add same entry for versing family
           schedule[weekNumber][newFamilies[i].name] = { versingFamily: family };
@@ -181,27 +176,20 @@ challengeSchema.methods.generateSchedule = function() {
       });
     });
 
-    challenge.generateInitialWinCounts(families);
-
     return schedule;
   });
 };
 
+// RETURNS SORTED FAMILY STANDINGS FOR CHALLENGE
 challengeSchema.methods.getStandings = function() {
   const challenge = this;
-  return Family.find()
-    .select("name")
-    .then(families => {
-      let standings = families.map(family => {
-        let { Won: wins, Lost: losses, Tie: ties } = challenge.winCounts[
-          family.name
-        ];
-        return { family, score: wins - losses, wins, losses, ties };
-      });
-      standings.sort((a, b) => b.score - a.score);
-      return standings;
-    })
-    .catch(e => console.log("Error in getStandings", e));
+  const families = Object.keys(challenge.schedule["week1"]);
+  let standings = families.map(family => {
+    let { Won: wins, Lost: losses, Tie: ties } = challenge.winCounts[family];
+    return { family, score: wins - losses, wins, losses, ties };
+  });
+  standings.sort((a, b) => b.score - a.score);
+  return standings;
 };
 
 challengeSchema.methods.scheduleUpdateWeeklyWinsJob = function() {

@@ -3,7 +3,7 @@
   box-sizing: border-box;
   outline: none; }
 
-.error, .success {
+.error, .success, .info {
   background: #d92b3a;
   color: white;
   font-style: italic;
@@ -13,6 +13,10 @@
 
 .success {
   background: #0b8c0b; }
+
+.info {
+  background: lightyellow;
+  color: black; }
 
 [class*="col-"] {
   float: left;
@@ -72,7 +76,7 @@ body {
   position: relative;
   padding-bottom: 20px;
   border: 1px solid #dadde0;
-  height: 100vh; }
+  min-height: 100vh; }
 
 input, select, textarea {
   display: block; }
@@ -142,6 +146,9 @@ nav .nav-links {
   margin-bottom: 16px; }
   .subtitle.logo {
     margin-bottom: 0; }
+    .subtitle.logo a {
+      color: inherit;
+      text-decoration: none; }
 
 .message {
   text-align: center;
