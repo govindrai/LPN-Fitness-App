@@ -49,7 +49,7 @@ router.get("/", (req, res) => {
 
 // Create Challenge Form
 router.get("/new", isAdmin, (req, res) => {
-  res.render("challenges/new");
+  res.render("challenges/new", { challenge: new Challenge() });
 });
 
 // Create Challenge
@@ -63,7 +63,7 @@ router.post("/", (req, res) => {
     })
     .catch(e => {
       if (e.name === "ValidationError") {
-        return res.render("challenges/new", { errors: e.errors });
+        return res.render("challenges/new", { errors: e.errors, challenge });
       }
       return console.log(e);
     });
