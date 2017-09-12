@@ -1,41 +1,25 @@
 label Challenge Name
-			input(name='name' type='text' value=challenge.name required placeholder="i.e. Winter 2090 Challenge")
+input(name='name' type='text' value=challenge.name required placeholder="i.e. Winter 2090 Challenge")
 
-			- let showError;
-			- let className;
-			-console.log(errors);
-			if errors && errors["date.start"]
-				- className = "error-field";
-				- showError = true;
-			div(class=className)
-				label Start Date
-				- let startDate, endDate;
-				if challenge.date.start
-					- startDate = challenge.date.start.toLocaleDateString();
-					- endDate = challenge.date.end.toLocaleDateString();
-				else
-					- endDate = startDate = "";
-				input.start(name='date.start' value=startDate type='text' required)
-				if showError
-					.error= errors["date.start"].message
+- let showError;
+- let className;
+-console.log(errors);
+if errors && errors["date.start"]
+	- className = "error-field";
+	- showError = true;
+div(class=className)
+	label Start Date
+	- let startDate, endDate;
+	if challenge.date.start
+		- startDate = challenge.date.start.toLocaleDateString();
+		- endDate = challenge.date.end.toLocaleDateString();
+	else
+		- endDate = startDate = "";
+	input.start(name='date.start' value=startDate type='text' required)
+	if showError
+		.error= errors["date.start"].message
 
-			label End Date (read only field)
-			input.end(name='date.end' type='text' value=endDate readonly placeholder="automatically calculated...")
+label End Date (read only field)
+input.end(name='date.end' type='text' value=endDate readonly placeholder="automatically calculated...")
 
-			input.grey-button(type='submit' value='Create challenge')
-
-.info #[b NOTE:] Users will be able to sign up for challenges as soon as they are created, and registration will close at midnight before the day of the challenge. Only one challenge may exist at any time.
-
-	script.
-		$('.start').datepicker({
-			beforeShowDay: function(date) {
-				return [date.getDay() == 1, '', "Challenges must start on Mondays."]
-			},
-			minDate: new Date(),
-			defaultDate: new Date("#{minDate}")
-		})
-			.on("change", function() {
-				var date = $(this).datepicker("getDate");
-				date.setDate(date.getDate() + 63);
-				$('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
-			});
+input.grey-button(type='submit' value='Create challenge')

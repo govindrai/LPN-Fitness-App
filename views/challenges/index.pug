@@ -11,8 +11,6 @@ mixin printChallenges(challenges, challengeType)
       else if challengeType === "future"
         if challenge.participation
           - status = { message: "Signed Up", color: "green" }
-        if user.admin 
-          - changeable = true
         else
           form.participate(action='/participations' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
@@ -20,9 +18,8 @@ mixin printChallenges(challenges, challengeType)
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       if status
+        a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
         span.participation-status(class=status.color)= status.message
-      if changeable 
-        span.participation-status(class=grey)= 'Edit'
 
 include ../layout.pug
 
@@ -46,6 +43,7 @@ block content
     .challenges
       if futureChallenges.length > 0
         +printChallenges(futureChallenges, "future")
+
       else
         h3 There aren't any scheduled challenges. Contact your program administrator and request one!
 

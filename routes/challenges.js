@@ -83,15 +83,40 @@ router.post("/", (req, res) => {
 });
 
 // get edit challenge form
-router.get("/edit", (req, res) => {
-  Challenge.findById().then(challenge => {
+router.get("/:id/edit", isAdmin, (req, res) => {
+  Challenge.findById(req.params.id).then(challenge => {
+    console.log(challenge);
     res.render("challenges/edit", { challenge });
   });
 });
 
 // Edit Challenge
-router.put("/edit", (req, res) => {
-  const challenge = "hello";
+router.put("/:id", isAdmin, (req, res) => {
+  const body = _.pick(req.body, ["name", "date.start", "date.end"]);
+  let challenge;
+
+  Challenge.findById(req.params.id)
+    .then(oldChallenge => {
+      challenge = oldChallenge;
+      const datesNotModified =
+        oldChallenge.date.start.toLocaleDateString() ===
+        new Date(body["date.start"]).toLocaleDateString();
+      if (datesNotModified) {
+        delete body["date.start"];
+        delete body["date.end"];
+      }
+    })
+    .then(() => {
+      Challenge.findOneAndUpdate(
+        { _id: challenge._id },
+        { $set: body },
+        { new: true, runValidators: true }
+      )
+        .then(doc => {
+          res.redirect("/challenges");
+        })
+        .catch(e => console.log(e));
+    });
 });
 
 module.exports = router;

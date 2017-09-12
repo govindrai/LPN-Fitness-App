@@ -1,0 +1,33 @@
+extends ../layout
+
+append head-scripts
+  script(src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+  integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="
+  crossorigin="anonymous")
+  link(rel="stylesheet", href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css")
+
+block content
+  .col-12
+    .title Edit Challenge
+
+    if errors
+      .error Challenge could not be created. Please correct the error(s) below.
+
+    form(action=`/challenges/${challenge._id}?_method=PUT` method='POST')
+      include _form
+
+    .info #[b NOTE:] Users will be able to sign up for challenges as soon as they are created, and registration will close at midnight before the day of the challenge. Only one challenge may exist at any time.
+
+  script.
+    $('.start').datepicker({
+      beforeShowDay: function(date) {
+        return [date.getDay() == 1, '', "Challenges must start on Mondays."]
+      },
+      minDate: new Date(),
+      defaultDate: new Date("#{minDate}")
+    })
+      .on("change", function() {
+        var date = $(this).datepicker("getDate");
+        date.setDate(date.getDate() + 63);
+        $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
+      });
