@@ -721,6 +721,7 @@ input.participation-status
     padding: 0
 
 table
+  font-size: 16px
   width: 100%
   border-collapse: collapse
   th
@@ -728,3 +729,23 @@ table
     text-align: left
   th, td
     padding: 16px 5px
+
+.matchups
+  font-size: 16px
+  .matchup
+    display: flex
+    color: $black
+    margin-bottom: 8px
+    .family
+      min-width: 130px
+      width: fit-content
+      .family-name
+        font-weight: 600
+        line-height: 1.5
+        margin-bottom: 4px
+      .family-score
+        color: $light-grey
+        font-size: 14px
+        margin-bottom: 16px
+    .vs
+      margin: 0 30px

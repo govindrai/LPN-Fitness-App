@@ -82,8 +82,7 @@ router.get("/:familyName", (req, res) => {
       // or when user chooses to switch weeks using arrow buttons
       // or when user chooses to select a specific date
       defaultShowDate = calculateDefaultShowDate(
-        requestedWeek,
-        currentWeek,
+        isCurrentWeek,
         today,
         weekInfo,
         dates
@@ -271,15 +270,10 @@ function checkUserParticipation(familyParticipations, user) {
 // if requested week is the current week, default show date equals today,
 // otherwise it is either Sunday if requesting the previous week or Monday
 // if requesting the following week
-function calculateDefaultShowDate(
-  requestedWeek,
-  currentWeek,
-  today,
-  weekInfo,
-  dates
-) {
-  if (requestedWeek === currentWeek) return today;
-  if (weekInfo.direction === "none") return new Date(weekInfo.date);
+function calculateDefaultShowDate(isCurrentWeek, today, weekInfo, dates) {
+  // this has to be calculated first since user may want to see a future date in current week
+  if (weekInfo && weekInfo.direction === "none") return new Date(weekInfo.date);
+  if (isCurrentWeek) return today;
   return weekInfo.direction === "previous" ? dates[6] : dates[0];
 }
 
