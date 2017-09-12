@@ -6,26 +6,31 @@ block content
 
 		include _standings
 
-		each family in Object.keys(currentChallenge.schedule.week1)
-			p= family
+		each weekNumber in [1,2,3,4,5,6,7,8,9]
+			- const week = "week" + weekNumber;
+			.subtitle Week #{weekNumber}
+			.border
+			.matchups
+				each family, index in Object.keys(currentChallenge.schedule[week])
+					if index % 2 !== 0
+						- continue
 
-			//- .subtitle= family.name
-			//- table
-			//- 	thead
-			//- 		tr
-			//- 			th Week
-			//- 			th Opponent
-			//- 			th Result
-			//- 			th Team Score
-			//- 			th Opp Score
-			//- 	tbody
-			//- 	- var i = 1
-			//- 	while i < 8
-			//- 		tr
-			//- 			td= i
-			//- 			- var week = "week" + i
-			//- 			td= currentChallenge.schedule[week][family.name].versingFamily.name
-			//- 			td= currentChallenge.schedule[week][family.name].status
-			//- 			td= currentChallenge.schedule[week][family.name].finalScore
-			//- 			td= currentChallenge.schedule[week][family.name].versingFinalScore
-			//- 			- i++
+					- const matchupObject = currentChallenge.schedule[week][family]
+					if weekNumber > 7
+						.matchup
+							.family
+								.family-name #{family}
+								.family-score #{matchupObject.finalScore}
+							.vs vs
+							.opponent
+								.opponent-name tbd
+								.opponent-score ---
+					else
+						.matchup
+							.family
+								.family-name #{family}
+								.family-score #{matchupObject.finalScore}
+							.vs vs
+							.family
+								.family-name #{matchupObject.versingFamily.name}
+								.family-score #{matchupObject.versingFinalScore}

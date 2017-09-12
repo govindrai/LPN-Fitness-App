@@ -115,7 +115,11 @@ router.get("/schedule", (req, res) => {
 });
 
 // GET rules page
-router.get("/rules", (req, res) => res.render("sessions/rules"));
+router.get("/rules", (req, res) => {
+  User.find({ admin: true })
+    .then(admins => res.render("sessions/rules", { admins }))
+    .catch(e => console.log(e));
+});
 
 module.exports = router;
 
