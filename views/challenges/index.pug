@@ -26,13 +26,16 @@ block content
   .col-12
     .title Challenges
 
+    if challengeCount > 0
+      .info There are #{challengeCount} new challenges available! Sign up below under Future Challenges!
+
     .subtitle Current Challenge
     if currentChallenge
       +printChallenges([currentChallenge], "current")
     else
       h3 There are no current challenges :( Contact your challenge administrator and request one!
 
-    .subtitle.toggle-challenges Future Challenges (#{challengeCount}) #[span(class='down-arrow') &#9660;]
+    .subtitle.toggle-challenges Future Challenges #[span(class='down-arrow') &#9660;]
     .challenges
       if futureChallenges.length > 0
         +printChallenges(futureChallenges, "future")

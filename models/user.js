@@ -151,16 +151,17 @@ userSchema.statics.getNonAdmins = function() {
 };
 
 userSchema.methods.getRegisterableChallengesCount = function() {
-  var user = this;
+  const user = this;
+  let challengesArray;
   return Challenge.getFutureChallenges()
     .then(challenges => {
-      const challengesArray = challenges.map(challenge => challenge._id);
+      challengesArray = challenges.map(challenge => challenge._id);
       return Participation.find({ user })
         .where("challenge")
         .in(challengesArray)
         .count();
     })
-    .then(count => count);
+    .then(count => challengesArray.length - count);
 };
 
 function isExistingEmail(email, cb = null) {
