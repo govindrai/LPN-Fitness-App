@@ -5,12 +5,14 @@ mixin printChallenges(challenges, challengeType)
       p #{challenge.date.start.toLocaleDateString()} - #{challenge.date.end.toLocaleDateString()}
       if challenge.winner
         p= "Winner: " + challenge.winner.name
-      - let status
+      - let status, changeable
       if challengeType === "current"
         - status = challenge.participation ? {message: "Participating", color: "green"} : {message: "Not Participating", color: "grey"}
       else if challengeType === "future"
         if challenge.participation
           - status = { message: "Signed Up", color: "green" }
+        if user.admin 
+          - changeable = true
         else
           form.participate(action='/participations' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
@@ -19,6 +21,8 @@ mixin printChallenges(challenges, challengeType)
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       if status
         span.participation-status(class=status.color)= status.message
+      if changeable 
+        span.participation-status(class=grey)= 'Edit'
 
 include ../layout.pug
 
@@ -76,6 +80,7 @@ append footer-scripts
 
       request.done(function(res) {
         form.replaceWith("<span class='participation-status green'>Signed Up</span>");
+        $('div .info').css('display', 'none');
       });
 
       request.fail(function(res) {

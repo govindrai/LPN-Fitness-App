@@ -82,4 +82,16 @@ router.post("/", (req, res) => {
     });
 });
 
+// get edit challenge form
+router.get("/edit", (req, res) => {
+  Challenge.findById().then(challenge => {
+    res.render("challenges/edit", { challenge });
+  });
+});
+
+// Edit Challenge
+router.put("/edit", (req, res) => {
+  const challenge = "hello";
+});
+
 module.exports = router;
