@@ -16,39 +16,10 @@ var Activity = require("./../models/activity"),
 
 var router = express.Router();
 
-router.get("/", (req, res) => {
-  var family, familyParticipations, points, pointsArray;
-  Family.findOne({ name: req.query.familyName })
-    .then(family => {
-      return Participation.getParticipationForChallengeByFamily(
-        res.locals.currentChallenge._id,
-        family._id
-      );
-    })
-    // then get all participants from the family in the current challenge
-    .then(familyParticipationsArray => {
-      familyParticipations = familyParticipationsArray;
-      var user =
-        req.query.familyName == res.locals.user.family.name
-          ? res.locals.user
-          : undefined;
-      return Point.getPointsForParticipationsByDay(
-        familyParticipations,
-        req.query.date,
-        user
-      );
-    })
-    .then(() => {
-      res.render("families/_daily_points", {
-        familyParticipations,
-        addPointsButtonDate: req.query.date
-      });
-    })
-    .catch(e => console.log(e));
-});
-
 router.post("/", (req, res) => {
   var points = [];
+
+  // setup conditional to take more than one point entry
   if (typeof req.body.activity == "object") {
     var countOfActivities = req.body.activity.length;
 

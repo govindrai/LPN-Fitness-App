@@ -152,20 +152,15 @@ userSchema.statics.getNonAdmins = function() {
 
 userSchema.methods.getRegisterableChallengesCount = function() {
   var user = this;
-  var futureChallenges;
   return Challenge.getFutureChallenges()
     .then(challenges => {
-      futureChallenges = challenges;
-      return Participation.setUserParticipationForChallenges(
-        user,
-        futureChallenges
-      );
+      const challengesArray = challenges.map(challenge => challenge._id);
+      return Participation.find({ user })
+        .where("challenge")
+        .in(challengesArray)
+        .count();
     })
-    .then(() => {
-      return futureChallenges.reduce((total, challenge) => {
-        return (total += challenge.participation ? 0 : 1);
-      }, 0);
-    });
+    .then(count => count);
 };
 
 function isExistingEmail(email, cb = null) {

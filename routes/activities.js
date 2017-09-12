@@ -13,22 +13,17 @@ const router = express.Router();
 
 // GET list all activities
 router.get("/", (req, res) => {
+  // XHR for typeahead (just need names)
   if (req.xhr) {
-    Activity.find({})
-      .then(activities => {
-        var activitiesArray = [];
-        activities.forEach(activity => {
-          activitiesArray.push(activity.name);
-        });
-        res.send(activitiesArray);
-      })
+    Activity.select("name")
+      .find()
+      .then(activities => res.send(activities))
       .catch(e => console.log(e));
   } else {
-    Unit.find({}).then(units => {
-      Activity.find({}).populate("unit").then(activities => {
-        res.render("activities/index", { activities });
-      });
-    });
+    // For activities index page
+    Activity.find()
+      .populate("unit")
+      .then(activities => res.render("activities/index", { activities }));
   }
 });
 

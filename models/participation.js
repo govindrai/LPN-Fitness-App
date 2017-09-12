@@ -23,7 +23,7 @@ participationSchema.statics.setUserParticipationForChallenges = function(
   return Promise.all(
     challenges.map(challenge => {
       return Participation.findOne({ user, challenge }).then(result => {
-        if (result) challenge.participation = true;
+        challenge.participation = !!result;
       });
     })
   );
