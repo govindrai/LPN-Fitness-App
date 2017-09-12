@@ -63,7 +63,7 @@ router.post("/", (req, res) => {
     })
     .catch(e => {
       if (e.name === "ValidationError") {
-        return res.render("challenges/new", { error: e.errors["date.start"] });
+        return res.render("challenges/new", { errors: e.errors });
       }
       return console.log(e);
     });

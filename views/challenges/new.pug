@@ -10,14 +10,25 @@ block content
   .col-12
     .title Create Challenge
 
-    if error
-      .error= error.message
+    if errors
+      .error Challenge could not be created. Please correct the error(s) below.
 
     form(action='/challenges' method='POST')
       label Challenge Name
       input(name='name' type='text' required placeholder="i.e. Winter 2090 Challenge")
-      label Start Date
-      input.start(name='date.start' type='text' required)
+
+      - let showError;
+      - let className;
+      -console.log(errors);
+      if errors && errors["date.start"]
+        - className = "error-field";
+        - showError = true;
+      div(class=className)
+        label Start Date
+        input.start(name='date.start' type='text' required)
+        if showError
+          .error= errors["date.start"].message
+
       label End Date
       input.end(name='date.end' type='text' readonly placeholder="automatically calculated...")
 
