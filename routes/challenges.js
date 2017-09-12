@@ -49,18 +49,31 @@ router.get("/", (req, res) => {
 
 // Create Challenge Form
 router.get("/new", isAdmin, (req, res) => {
-  res.render("challenges/new", { challenge: new Challenge() });
+  Challenge.findOne()
+    .sort("-date.end")
+    .select("date.end")
+    .limit(1)
+    .then(challenge => {
+      let minDate = new Date(challenge.date.end);
+      minDate.setDate(minDate.getDate() + 1);
+      res.render("challenges/new", {
+        challenge: new Challenge(),
+        minDate
+      });
+    })
+    .catch(e => console.log(e));
 });
 
 // Create Challenge
 router.post("/", (req, res) => {
-  var body = _.pick(req.body, ["name", "date.start", "date.end"]);
-  var challenge = new Challenge(body);
+  const challenge = new Challenge({
+    name: req.body.name,
+    "date.start": req.body["date.start"],
+    "date.end": req.body["date.end"]
+  });
   challenge
     .save()
-    .then(() => {
-      res.redirect("/challenges");
-    })
+    .then(() => res.redirect("/challenges?created=true"))
     .catch(e => {
       if (e.name === "ValidationError") {
         return res.render("challenges/new", { errors: e.errors, challenge });

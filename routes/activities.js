@@ -15,8 +15,8 @@ const router = express.Router();
 router.get("/", (req, res) => {
   // XHR for typeahead (just need names)
   if (req.xhr) {
-    Activity.select("name")
-      .find()
+    Activity.find()
+      .select("name")
       .then(activities => res.send(activities))
       .catch(e => console.log(e));
   } else {
@@ -29,9 +29,8 @@ router.get("/", (req, res) => {
 
 // GET new activity form
 router.get("/new", isAdmin, (req, res) => {
-  Unit.find({}).then(units => {
-    Activity.find({}).populate("unit").then(activities => {
-      console.log(activities);
+  Unit.find().then(units => {
+    Activity.find().populate("unit").then(activities => {
       res.render("activities/new", { units, activities });
     });
   });
