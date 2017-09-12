@@ -48,7 +48,7 @@ block content
         return [date.getDay() == 1, '', "Challenges must start on Mondays."]
       },
       minDate: new Date(),
-      defaultDate: new Date("#{minDate}")
+      defaultDate: new Date("!{minDate}")
     })
       .on("change", function() {
         var date = $(this).datepicker("getDate");
