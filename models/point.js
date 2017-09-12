@@ -1,14 +1,14 @@
-const mongoose = require("mongoose"),
+const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 let pointSchema = new Schema({
   participation: {
     type: Schema.Types.ObjectId,
-    ref: "Participation"
+    ref: 'Participation'
   },
   activity: {
     type: Schema.Types.ObjectId,
-    ref: "Activity",
+    ref: 'Activity',
     required: true
   },
   date: {
@@ -17,7 +17,11 @@ let pointSchema = new Schema({
   },
   numOfUnits: {
     type: Number,
-    required: true
+    required: true,
+    validate: {
+      validator: value => value !== 0,
+      message: "Can't create points with no units."
+    }
   },
   calculatedPoints: {
     type: Number,
@@ -43,8 +47,8 @@ pointSchema.statics.calculateParticipantPointsByDay = function(
   return Promise.all(
     participations.map(participation => {
       return Point.find({ participation, date }).populate({
-        path: "activity",
-        populate: { path: "unit" }
+        path: 'activity',
+        populate: { path: 'unit' }
       });
     })
   ).then(pointsArray => {
@@ -78,7 +82,7 @@ pointSchema.statics.getTotalPointsForParticipationsByChallenge = participations 
     participations.map(participation => {
       return Point.aggregate([
         { $match: { participation: participation._id } },
-        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
+        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
       ]);
     })
   )
@@ -112,7 +116,7 @@ pointSchema.statics.calculatePointsForWeek = (
             ]
           }
         },
-        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
+        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
       ]);
     })
   )
@@ -139,6 +143,6 @@ pointSchema.statics.getTotalPointsForDay = (participations, date) => {
   });
 };
 
-var Point = mongoose.model("Point", pointSchema);
+var Point = mongoose.model('Point', pointSchema);
 
 module.exports = Point;
