@@ -75,7 +75,7 @@ append footer-scripts
       })
 
       request.done(function(res) {
-        form.replaceWith("Signed Up");
+        form.replaceWith("<span class='participation-status green'>Signed Up</span>");
       });
 
       request.fail(function(res) {
