@@ -27,7 +27,10 @@ block content
     .title Challenges
 
     if challengeCount > 0
-      .info There are #{challengeCount} new challenges available! Sign up below under Future Challenges!
+      if challengeCount === 1
+        .info #[b NOTE:] A new challenge has been created! Sign up below under Future Challenges!
+      else
+        .info #[b NOTE:] There are #{challengeCount} new challenges available! Sign up below under Future Challenges!
 
     .subtitle Current Challenge
     if currentChallenge
