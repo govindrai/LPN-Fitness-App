@@ -85,8 +85,18 @@ router.post("/", (req, res) => {
 // get edit challenge form
 router.get("/:id/edit", isAdmin, (req, res) => {
   Challenge.findById(req.params.id).then(challenge => {
-    console.log(challenge);
     res.render("challenges/edit", { challenge });
+  });
+});
+
+// Delete challenge
+router.delete("/:id", (req, res) => {
+  Challenge.remove({ _id: req.params.id }, function(err) {
+    if (!err) {
+      res.send(200);
+    } else {
+      console.log(err);
+    }
   });
 });
 

@@ -18,8 +18,11 @@ mixin printChallenges(challenges, challengeType)
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       if status
-        a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
         span.participation-status(class=status.color)= status.message
+      if user.admin
+        a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
+        form(class='delete-form' action=`/challenges/${challenge._id}?_method=DELETE` method='POST')
+          input(type='submit' value='Delete')
 
 include ../layout.pug
 
@@ -63,6 +66,7 @@ append footer-scripts
   script.
     $(document).ready(function() {
       $('body').on('submit', '.participate', addParticipation);
+      $('body').on('submit', '.delete-form', deleteHandler);
     });
 
     function addParticipation(e) {
@@ -85,5 +89,23 @@ append footer-scripts
         console.log("Failed", res);
       })
     };
+
+    function deleteHandler(event) {
+      event.preventDefault();
+      let form = $(this);
+      let url = form.attr('action');
+      var request = $.ajax({
+        url,
+        type: 'POST'
+      })
+
+      request.done(res => {
+        $(this).parent().remove();
+      })
+
+      request.fail(res => {
+      console.log("Failed", res);
+      })
+    }
 
     $('body').on('click', '.toggle-challenges', (e) => $(e.target).next().slideToggle());
