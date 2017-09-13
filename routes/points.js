@@ -17,63 +17,82 @@ var Activity = require("./../models/activity"),
 var router = express.Router();
 
 router.post("/", (req, res) => {
-  var points = [];
+  console.log(req.body);
+  let createPoints = [];
+  let deletePointIds = [];
+  let updatePoints = [];
 
-  // setup conditional to take more than one point entry
-  if (typeof req.body.activity == "object") {
-    var countOfActivities = req.body.activity.length;
-
-    for (var i = 0; i < countOfActivities; i++) {
-      points.push({
-        _id: req.body.point[i],
-        participation: req.body.participation,
-        user: res.locals.user._id,
-        activity: req.body.activity[i],
-        numOfUnits: req.body.numOfUnits[i],
-        calculatedPoints: req.body.calculatedPoints[i],
-        date: req.body.date
-      });
-    }
-  } else {
-    var body = _.pick(req.body, [
-      "_id",
-      "participation",
-      "activity",
-      "numOfUnits",
-      "calculatedPoints",
-      "date"
-    ]);
-    body.user = res.locals.user._id;
-    points.push(body);
+  // convert body into array properties if single entry
+  if (typeof req.body.activity !== "object") {
+    req.body._id = [req.body._id];
+    req.body.participation = [req.body.participation];
+    req.body.activity = [req.body.activity];
+    req.body.numOfUnits = [req.body.numOfUnits];
+    req.body.calculatedPoints = [req.body.calculatedPoints];
+    req.body.date = [req.body.date];
   }
 
-  existingPoints = points.filter(point => point._id);
-  newPoints = points.filter(point => {
-    if (!point._id) {
-      delete point._id;
-      return true;
-    }
-  });
+  const countOfActivities = req.body.activity.length;
 
-  let oldPoints = 0;
-  Promise.all(
-    existingPoints.map(existingPoint => {
-      return Point.findByIdAndUpdate(existingPoint._id, existingPoint).then(
-        oldUpdatedPoint => (oldPoints += oldUpdatedPoint.calculatedPoints)
-      );
-    })
-  )
-    .then(() => Point.insertMany(newPoints))
-    .then(() => {
-      totalPoints = req.body.totalPoints - oldPoints;
-      return res.locals.user.update({
-        $inc: { lifetimePoints: totalPoints }
-      });
-    })
-    .then(() => {
-      res.redirect(res.locals.home);
-    })
-    .catch(e => console.log(e));
+  let calculatedPointsCounter = 0;
+  for (var i = 0; i < countOfActivities; i++) {
+    if (req.body.action[i] === "delete") {
+      deletePointIds.push(req.body.point[i]);
+      continue;
+    }
+
+    // need to add a post remove hook to decrease lifetime points
+    // need to add a pre update hook when updating a point
+
+    const pointsBody = {
+      _id: req.body.point[i],
+      participation: req.body.participation,
+      user: res.locals.user._id,
+      activity: req.body.activity[i],
+      numOfUnits: req.body.numOfUnits[i],
+      calculatedPoints: req.body.calculatedPoints[calculatedPointsCounter],
+      date: req.body.date
+    };
+
+    if (req.body.action[i] === "update") {
+      updatePoints.push(pointsBody);
+    } else {
+      createPoints.push(pointsBody);
+    }
+    calculatedPointsCounter++;
+  }
+
+  console.log("createPoints", createPoints);
+  console.log("updatePoints", updatePoints);
+  console.log("deletePoints", deletePointIds);
+
+  // existingPoints = points.filter(point => point._id);
+  // newPoints = points.filter(point => {
+  //   if (!point._id) {
+  //     delete point._id;
+  //     return true;
+  //   }
+  // });
+
+  // let oldPoints = 0;
+  // Promise.all(
+  //   existingPoints.map(existingPoint => {
+  //     return Point.findByIdAndUpdate(existingPoint._id, existingPoint).then(
+  //       oldUpdatedPoint => (oldPoints += oldUpdatedPoint.calculatedPoints)
+  //     );
+  //   })
+  // )
+  //   .then(() => Point.insertMany(newPoints))
+  //   .then(() => {
+  //     totalPoints = req.body.totalPoints - oldPoints;
+  //     return res.locals.user.update({
+  //       $inc: { lifetimePoints: totalPoints }
+  //     });
+  //   })
+  //   .then(() => {
+  //     res.redirect(res.locals.home);
+  //   })
+  //   .catch(e => console.log(e));
 });
 
 router.delete("/", function(req, res) {

@@ -32,10 +32,11 @@ mixin printParticipants(familyParticipations)
                 else
                   .total-points= participation.totalDailyPoints
           .points-entries-summaries
-            if !isFutureWeek && participation.points.length > 0
+            if participation.points.length > 0
               each point in participation.points
                 .points-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
-              #edit-points(style=`color: ${familyColors[family.name]}`) Edit
+              if addPointsButtonDate
+                #edit-points(style=`color: ${familyColors[family.name]}`) Edit
 
 #scoreboard
   div#calendarHead

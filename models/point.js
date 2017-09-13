@@ -1,14 +1,14 @@
-const mongoose = require('mongoose'),
+const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 let pointSchema = new Schema({
   participation: {
     type: Schema.Types.ObjectId,
-    ref: 'Participation'
+    ref: "Participation"
   },
   activity: {
     type: Schema.Types.ObjectId,
-    ref: 'Activity',
+    ref: "Activity",
     required: true
   },
   date: {
@@ -40,15 +40,13 @@ pointSchema.methods.getUnitName = function() {
 pointSchema.statics.calculateParticipantPointsByDay = function(
   participations,
   date,
-  user,
-  isFutureWeek
+  user
 ) {
-  if (isFutureWeek) return moveUserToTop(participations, user);
   return Promise.all(
     participations.map(participation => {
-      return Point.find({ participation, date }).populate({
-        path: 'activity',
-        populate: { path: 'unit' }
+      return Point.find({ participation: participation._id, date }).populate({
+        path: "activity",
+        populate: { path: "unit" }
       });
     })
   ).then(pointsArray => {
@@ -67,7 +65,7 @@ pointSchema.statics.calculateParticipantPointsByDay = function(
 };
 
 function moveUserToTop(participations, user) {
-  if (user !== undefined) {
+  if (user) {
     var currentUserIndex = participations.findIndex(
       participation => participation.user._id.toString() == user._id.toString()
     );
@@ -77,12 +75,14 @@ function moveUserToTop(participations, user) {
 
 // gets the total points for each participation object
 // and sets the total points to the participation obj's totalPoints property
-pointSchema.statics.getTotalPointsForParticipationsByChallenge = participations => {
+pointSchema.statics.getTotalPointsForParticipationsByChallenge = function(
+  participations
+) {
   return Promise.all(
     participations.map(participation => {
       return Point.aggregate([
         { $match: { participation: participation._id } },
-        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
+        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
       ]);
     })
   )
@@ -101,10 +101,8 @@ pointSchema.statics.getTotalPointsForParticipationsByChallenge = participations 
 pointSchema.statics.calculatePointsForWeek = (
   participations,
   weekStart,
-  weekEnd,
-  isFutureWeek
+  weekEnd
 ) => {
-  if (isFutureWeek) return 0;
   return Promise.all(
     participations.map(participation => {
       return Point.aggregate([
@@ -116,7 +114,7 @@ pointSchema.statics.calculatePointsForWeek = (
             ]
           }
         },
-        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } }
+        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
       ]);
     })
   )
@@ -143,6 +141,6 @@ pointSchema.statics.getTotalPointsForDay = (participations, date) => {
   });
 };
 
-var Point = mongoose.model('Point', pointSchema);
+var Point = mongoose.model("Point", pointSchema);
 
 module.exports = Point;

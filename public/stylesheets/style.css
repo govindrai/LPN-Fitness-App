@@ -657,12 +657,6 @@ input.participation-status {
   color: #353738;
   margin-bottom: 16px; }
 
-.total-calculated-points {
-  display: none; }
-
-#submit-points-button {
-  display: none; }
-
 .error-field input, .error-field select {
   border-color: #d92b3a; }
 

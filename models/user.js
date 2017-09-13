@@ -136,18 +136,20 @@ userSchema.methods.authenticate = function(password) {
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.statics.getFamilyMembers = familyId => User.find({ familyId });
-
 userSchema.statics.getAdmins = function() {
-  return User.find({ admin: true }).populate("family").then(admins => {
-    return admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
-  });
+  return User.find({ admin: true })
+    .populate("family")
+    .then(admins => {
+      return admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
+    });
 };
 
 userSchema.statics.getNonAdmins = function() {
-  return User.find({ admin: false }).populate("family").then(nonAdmins => {
-    return nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
-  });
+  return User.find({ admin: false })
+    .populate("family")
+    .then(nonAdmins => {
+      return nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1));
+    });
 };
 
 userSchema.methods.getRegisterableChallengesCount = function() {

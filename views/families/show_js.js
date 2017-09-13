@@ -35,40 +35,38 @@ function updateShow(e) {
 
 //
 function removePointEntry(e) {
-  $(e.target)
+  const hiddenActionInput = $(e.target)
     .parent()
-    .remove();
+    .find('input[name="action"]');
+  if (hiddenActionInput.val() === "update") {
+    hiddenActionInput.val("delete");
+    hiddenActionInput
+      .parent()
+      .find("input.calculated-points")
+      .attr("disabled", "disabled");
+    hiddenActionInput.parent().hide();
+  } else {
+    hiddenActionInput.parent().remove();
+  }
   calculateTotalPoints();
 }
 
 function showAddPointsModal(e) {
-  if ($(this).attr("id") === "edit-points") {
-    $(".total-calculated-points").css("display", "block");
-    calculateTotalPoints();
-  }
-  if ($(".point-entries").children.length > 0) {
-    $("#submit-points-button").css("display", "block");
-  }
   $("#add-points-container").toggle();
   window.scrollTo(0, 0);
   getActivities();
-  $("#typeahead").bind("typeahead:select", getActivityData);
 }
 
 function hideAddPointsModal() {
   $("#add-points-container").toggle();
 }
 
+// gets activity objects and inject's typeahead's
+// functionality into search activity input field
 function getActivities() {
   $.ajax({
     url: "/activities"
   }).done(function(res) {
-    var activitiesFn = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.whitespace,
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      local: res
-    });
-
     $("#typeahead").typeahead(
       {
         minLength: 1,
@@ -76,14 +74,20 @@ function getActivities() {
       },
       {
         name: "my-dataset",
-        source: activitiesFn
+        source: new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: res
+        })
       }
     );
+    $("#typeahead").bind("typeahead:select", getActivityData);
     $(".twitter-typeahead").css("display", "block");
   });
 }
 
-/* gets information about an selected activity  */
+// retrieves HTML for a point entry input when a user
+// selects an activity from the typeahead drop-down
 function getActivityData(ev, suggestion) {
   var request = $.ajax({
     url: `/activities/${suggestion}`
@@ -92,15 +96,15 @@ function getActivityData(ev, suggestion) {
   request.done(res => {
     $("#typeahead").typeahead("val", "");
     $(".point-entries").append(res);
-    $("#submit-points-button").css("display", "block");
-    $(".total-calculated-points").css("display", "block");
   });
 
   request.fail(res => {
-    console.log("FAIL in get activity data", res);
+    console.log("getActivityData Failed", res);
   });
 }
 
+// calculates each entries point value by multiplying scale * unit
+// also calculates the total points since values changed
 function calculateEntryPoints(e) {
   var pointsEntry = $(this)
     .parent()
@@ -124,8 +128,10 @@ function calculateEntryPoints(e) {
   calculateTotalPoints();
 }
 
+// calculates total points by adding each point entry's value
 function calculateTotalPoints() {
-  const totalCalculatedPoints = $.makeArray($("input.calculated-points"))
+  const pointEntries = $("input.calculated-points[disabled!=disabled]");
+  const totalCalculatedPoints = $.makeArray(pointEntries)
     .reduce(
       (total, pointsEntryValue) =>
         total +
@@ -135,11 +141,27 @@ function calculateTotalPoints() {
       0
     )
     .toFixed(2);
+  if (pointEntries.length === 0) {
+    $("#submit-points-button").css("display", "none");
+  } else {
+    $("#submit-points-button").css("display", "block");
+  }
+  const pointString =
+    pointEntries.length === 0 && totalCalculatedPoints === "0.00"
+      ? ""
+      : "TOTAL = " + totalCalculatedPoints + " POINTS";
+  $("div.total-calculated-points").text(pointString);
 
-  $("div.total-calculated-points").text(
-    "TOTAL = " + totalCalculatedPoints + " POINTS"
-  );
   $("input.total-calculated-points").val(totalCalculatedPoints);
+}
+
+// Shows/Hides a users points
+function toggleParticipantPoints(e) {
+  if ($(e.target).attr("id") !== "edit-points") {
+    $(this)
+      .find(".points-entries-summaries")
+      .slideToggle();
+  }
 }
 
 function getTimeRemaining(endOfWeek) {
@@ -160,21 +182,30 @@ function initializeClock() {
   var timeinterval = setInterval(() => getTimeRemaining(endtime), 1000);
 }
 
+function getPoints() {
+  const addPointsButtonDate = $(".current-date .date").data("date");
+  const participation = $("input[name='participation']").val();
+  $.ajax({
+    url: "/users/points",
+    type: "PUT",
+    data: { addPointsButtonDate, participation }
+  })
+    .done(res => {
+      $("#add-points-container").replaceWith(res);
+      showAddPointsModal();
+    })
+    .fail(e => console.log("getPoints failed"));
+}
+
 $(document).ready(function() {
   initializeClock();
 });
-
-function toggleParticipantPoints(e) {
-  $(this)
-    .find(".points-entries-summaries")
-    .slideToggle();
-}
 
 $("body").on("click", ".participant", toggleParticipantPoints);
 $("body").on("click", ".change-week", updateShow);
 $("body").on("click", ".updatePoints", updateShow);
 $("body").on("click", "#add-points-button", showAddPointsModal);
-$("body").on("click", "#edit-points", showAddPointsModal);
+$("body").on("click", "#edit-points", getPoints);
 $("body").on("click", "#x-button", hideAddPointsModal);
 $("body").on("keyup", ".num-of-units", calculateEntryPoints);
 $("body").on("click", ".trash", removePointEntry);

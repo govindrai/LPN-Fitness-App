@@ -6,7 +6,8 @@ const express = require("express"),
 
 // Models
 const User = require("./../models/user"),
-  Family = require("./../models/family");
+  Family = require("./../models/family"),
+  Point = require("./../models/point");
 
 // Middleware
 const isAdmin = require("./../middleware/isAdmin");
@@ -104,7 +105,28 @@ router.get("/admin-settings", isAdmin, (req, res, next) => {
     });
 });
 
-router.get("/:email", (req, res, next) => {
+// edit points for a user for certain day
+router.put("/points", (req, res) => {
+  const { participation } = req.body;
+  res.locals.user.participationId = participation;
+  const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
+  const familyParticipations = [{ _id: participation, user: res.locals.user }];
+  Point.calculateParticipantPointsByDay(
+    familyParticipations,
+    addPointsButtonDate,
+    res.locals.user
+  )
+    .then(() => {
+      res.render("points/newandedit", {
+        familyParticipations,
+        addPointsButtonDate,
+        editRequest: true
+      });
+    })
+    .catch(e => console.log(e));
+});
+
+router.get("/:email", (req, res) => {
   User.findOne({ email: req.params.email })
     .populate("family")
     .then(user => {
