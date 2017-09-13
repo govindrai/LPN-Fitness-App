@@ -16,6 +16,10 @@ block content
       .subtitle Last Name:
       .activity-name= user.name.last
 
+      if user.name.nickname 
+        .subtitle Nickname:
+        .activity-name= user.name.nickname 
+
       .subtitle Email:
       .activity-name= user.email
 
@@ -26,4 +30,4 @@ block content
       .activity-name= user.lifetimePoints
 
   if user._id.toString() === currentUser._id.toString()
-    a.grey-button(href="/users/edit") Edit Profile
+    a(href="/users/edit") Edit Profile
