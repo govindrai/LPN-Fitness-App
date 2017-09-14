@@ -92,17 +92,19 @@ router.get("/:id/edit", isAdmin, (req, res) => {
 
 // Delete challenge
 router.delete("/:id", (req, res) => {
-  let participations = [];
+  let participationIds = [];
   Challenge.remove({ _id: req.params.id })
     .then(() => {
       return Participation.find({ challenge: req.params.id });
     })
     .then(participations => {
-      participations.forEach(element => participations.push(element._id));
+      participations.forEach(participation =>
+        participationIds.push(participation._id)
+      );
       return Participation.remove({ challenge: req.params.id });
     })
     .then(() => {
-      return Point.remove({ _id: { $in: participations } });
+      return Point.remove({ _id: { $in: participationIds } });
     })
     .then(() => {
       res.sendStatus(200);

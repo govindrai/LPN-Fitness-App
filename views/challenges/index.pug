@@ -100,7 +100,7 @@ append footer-scripts
       })
 
       request.done(res => {
-        if (form.parent().siblings().length == 0) {
+        if (form.parent().siblings().length === 0) {
           form.parent().replaceWith("<h3>There aren't any scheduled challenges. Contact your program administrator and request one!</h3>");
         } else {
           form.parent().remove();
