@@ -35,4 +35,4 @@ block content
       .activity-description= user.lifetimePoints
 
     if user._id.toString() === currentUser._id.toString()
-      a.grey-button(href="/users/edit") Edit Profile
+      a.grey-button(href=`/users/${user._id}/edit`) Edit Profile

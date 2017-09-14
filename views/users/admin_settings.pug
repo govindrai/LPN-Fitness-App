@@ -20,39 +20,6 @@ block content
     +printUsersTable("Administrators", "admins", admins, "admin")
     +printUsersTable("Users", "nonAdmins", nonAdmins, "nonAdmin")
 
-    //- .subtitle Administrators
-
-    //- table#admins
-    //-   //- thead
-    //-   //-   tr
-    //-   //-     td Name
-    //-   //-     td Email
-    //-   //-     td Change Admin Access
-    //-   //- tbody
-    //-   each admin in admins
-    //-     tr.user
-    //-       td
-    //-         .user-name= admin.fullName
-    //-         .user-email= admin.email
-    //-       td
-    //-         input(type="checkbox" name="admin" data-user=`${admin._id}`) Remove
-
-    //- .subtitle Users
-
-    //- table#nonAdmins
-    //-   //- thead
-    //-   //-   tr
-    //-   //-     td Name
-    //-   //-     td Email
-    //-   //-     td Add Admin Access
-    //-   //- tbody
-    //-   each nonAdmin in nonAdmins
-    //-     tr.user
-    //-       td
-    //-         .user-name= nonAdmin.fullName
-    //-         .user-email= nonAdmin.email
-    //-       td
-    //-         input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
 
 append footer-scripts
   script.
@@ -81,7 +48,7 @@ append footer-scripts
       });
 
       request.fail(res => {
-        console.log("ERROR", res)
+        console.log("Changing Admin Failed", res)
       });
     }
 

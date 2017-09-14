@@ -15,14 +15,14 @@ const isAdmin = require("./../middleware/isAdmin");
 const router = express.Router();
 
 // GET user profile edit form
-router.get("/edit", function(req, res, next) {
+router.get("/:id/edit", function(req, res, next) {
   User.findById(res.locals.user._id).then(user => {
     res.render("users/edit", { user, path: res.path });
   });
 });
 
 // handles both admin changes as well as profile edits
-router.put("/edit", (req, res) => {
+router.put("/:id", (req, res) => {
   if (req.body.changeAdmin) {
     if (!res.locals.user.admin)
       res.status(400).send("You must be an admin to access this feature");
