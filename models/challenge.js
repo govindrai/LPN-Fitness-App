@@ -95,7 +95,10 @@ challengeSchema.statics.getPastChallenges = function() {
 };
 
 challengeSchema.statics.getFutureChallenges = function() {
-  return Challenge.find().where("date.start").gt(new Date()).sort("date.start");
+  return Challenge.find()
+    .where("date.start")
+    .gt(new Date())
+    .sort("date.start");
 };
 
 // sets the initial won/lost/tie counts to 0

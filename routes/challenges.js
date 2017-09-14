@@ -5,7 +5,8 @@ const express = require("express"),
 // Models
 const Challenge = require("./../models/challenge"),
   Family = require("./../models/family"),
-  Participation = require("./../models/participation");
+  Participation = require("./../models/participation"),
+  Point = require("./../models/point");
 
 // Middleware
 const isAdmin = require("./../middleware/isAdmin");
@@ -91,13 +92,22 @@ router.get("/:id/edit", isAdmin, (req, res) => {
 
 // Delete challenge
 router.delete("/:id", (req, res) => {
-  Challenge.remove({ _id: req.params.id }, function(err) {
-    if (!err) {
-      res.send(200);
-    } else {
-      console.log(err);
-    }
-  });
+  let participations = [];
+  Challenge.remove({ _id: req.params.id })
+    .then(() => {
+      return Participation.find({ challenge: req.params.id });
+    })
+    .then(participations => {
+      participations.forEach(element => participations.push(element._id));
+      return Participation.remove({ challenge: req.params.id });
+    })
+    .then(() => {
+      return Point.remove({ _id: { $in: participations } });
+    })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(e => console.log(e));
 });
 
 // Edit Challenge

@@ -100,7 +100,12 @@ append footer-scripts
       })
 
       request.done(res => {
-        $(this).parent().remove();
+        form.parent().remove();
+        //- if (form.parent().siblings().count == 0) {
+        //-   form.parent().replace('<h3>Testing</h3>')
+        //- } else {
+        //-   form.parent().remove();
+        //- }
       })
 
       request.fail(res => {
