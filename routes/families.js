@@ -122,8 +122,7 @@ router.get("/:familyName", (req, res) => {
       return Point.calculatePointsForWeek(
         familyParticipations,
         dates[0],
-        dates[6],
-        isFutureWeek
+        dates[6]
       );
     })
     .then(totalFamilyPointsForWeek => {
@@ -140,8 +139,7 @@ router.get("/:familyName", (req, res) => {
         return Point.calculatePointsForWeek(
           versingFamilyParticipations,
           dates[0],
-          dates[6],
-          isFutureWeek
+          dates[6]
         );
       }
     })
@@ -386,7 +384,7 @@ function getTimeRemainingInWeek(endOfWeek) {
   nextMonday.setDate(nextMonday.getDate() + 1);
   const total = Date.parse(nextMonday) - Date.parse(new Date()),
     days = Math.floor(total / (1000 * 60 * 60 * 24)),
-    hours = Math.floor(total / (1000 * 60 * 60) % 24),
-    minutes = Math.floor(total / 1000 / 60 % 60);
+    hours = Math.floor((total / (1000 * 60 * 60)) % 24),
+    minutes = Math.floor((total / 1000 / 60) % 60);
   return `${days} DAYS, ${hours} HOURS, ${minutes} MINUTES`;
 }
