@@ -1,11 +1,14 @@
 mixin printLink(href, name)
-  - let style;
+  - let color;
   if path === href
     if isLoggedIn
-      - style = `color: ${familyColors[user.family.name]}`
+      if familyColors[name]
+        - color = familyColors[name];
+      else
+        - color = familyColors[user.family.name]
     else
-      - style = "text-decoration: underline"
-  a(class!=attributes.class href=href style=style)!= name
+      - color = "text-decoration: underline"
+  a(class!=attributes.class href=href style=`color: ${color}`)!= name
 
 doctype html
 html
