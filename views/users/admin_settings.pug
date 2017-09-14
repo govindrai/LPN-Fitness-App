@@ -1,70 +1,88 @@
 include ../layout.pug
 
+mixin printUsersTable(sectionSubtitle, tableId, users, fieldName)
+  .subtitle= sectionSubtitle
+
+  table(id=tableId)
+    each user in users
+      tr.user
+        td
+          .user-name= user.fullName
+          .user-email= user.email
+        td
+          input(type="checkbox" name=fieldName data-user=`${user._id}`)
+
+
 block content
-	.col-12
-		.title Admin Settings
+  .col-12
+    .title Admin Settings
 
-		.subtitle All Admins
+    +printUsersTable("Administrators", "admins", admins, "admin")
+    +printUsersTable("Users", "nonAdmins", nonAdmins, "nonAdmin")
 
-		table#admins
-				thead
-					tr
-						td Name
-						td Email
-						td Change Admin Access
-				tbody
-				each admin in admins
-					tr
-						td= admin.fullName
-						td= admin.email
-						td
-							input(type="checkbox" name="admin" data-user=`${admin._id}`)
+    //- .subtitle Administrators
 
-		.subtitle All Users
+    //- table#admins
+    //-   //- thead
+    //-   //-   tr
+    //-   //-     td Name
+    //-   //-     td Email
+    //-   //-     td Change Admin Access
+    //-   //- tbody
+    //-   each admin in admins
+    //-     tr.user
+    //-       td
+    //-         .user-name= admin.fullName
+    //-         .user-email= admin.email
+    //-       td
+    //-         input(type="checkbox" name="admin" data-user=`${admin._id}`) Remove
 
-		table#nonAdmins
-				thead
-					tr
-						td Name
-						td Email
-						td Add Admin Access
-				tbody
-				each nonAdmin in nonAdmins
-					tr
-						td= nonAdmin.fullName
-						td= nonAdmin.email
-						td
-							input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
+    //- .subtitle Users
+
+    //- table#nonAdmins
+    //-   //- thead
+    //-   //-   tr
+    //-   //-     td Name
+    //-   //-     td Email
+    //-   //-     td Add Admin Access
+    //-   //- tbody
+    //-   each nonAdmin in nonAdmins
+    //-     tr.user
+    //-       td
+    //-         .user-name= nonAdmin.fullName
+    //-         .user-email= nonAdmin.email
+    //-       td
+    //-         input(type="checkbox" name="nonAdmin" data-user=`${nonAdmin._id}`)
 
 append footer-scripts
-	script.
-		function changeAdmin(e) {
-			var input = $(this);
-			var user = $(this).data('user');
-			var request = $.ajax({
-				url: '/users/edit',
-				data: {changeAdmin: true, user},
-				type: 'PUT'
-			});
+  script.
+    function changeAdmin(e) {
+      var input = $(this);
+      var user = $(this).data('user');
+      var request = $.ajax({
+        url: '/users/edit',
+        data: {changeAdmin: true, user},
+        type: 'PUT'
+      });
 
-			request.done(res => {
-				var response = `<div>${res}</div>`;
-				var user = input.closest('tr');
-				$('.title').after(response);
-				$('.title').next().fadeOut('slow', () => {
-					$('.title').next().remove();
-					input[0].checked = false;
-					if (user.parent().parent().attr('id') == 'admins') {
-						$('#nonAdmins').append(user);
-					} else {
-						$('#admins').append(user);
-					}
-				});
-			});
+      request.done(res => {
+        var response = `<div>${res}</div>`;
+        var user = input.closest('tr');
+        $('.title').after(response);
+        $('.title').next().fadeOut('slow', () => {
+          $('.title').next().remove();
+          input[0].checked = false;
+          if (user.parent().parent().attr('id') == 'admins') {
+            $('#nonAdmins').append(user);
+          } else {
+            $('#admins').append(user);
+          }
+        });
+      });
 
-			request.fail(res => {
-				console.log("ERROR", res)
-			});
-		}
+      request.fail(res => {
+        console.log("ERROR", res)
+      });
+    }
 
-		$('input:checkbox').on('click', changeAdmin);
+    $('input:checkbox').on('click', changeAdmin);
