@@ -107,7 +107,7 @@ router.delete("/:id", (req, res) => {
       return Point.remove({ _id: { $in: participationIds } });
     })
     .then(() => {
-      res.sendStatus(200);
+      return res.redirect("/challenges");
     })
     .catch(e => console.log(e));
 });

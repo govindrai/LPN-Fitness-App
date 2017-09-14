@@ -21,8 +21,8 @@ mixin printChallenges(challenges, challengeType)
         span.participation-status(class=status.color)= status.message
       if user.admin
         a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
-        form(class='delete-form' action=`/challenges/${challenge._id}?_method=DELETE` method='POST')
-          input(type='submit' value='Delete')
+        button.grey-button(class='deleteButton' type='submit') Delete
+        include _delete_confirmation_modal
 
 include ../layout.pug
 
@@ -66,7 +66,12 @@ append footer-scripts
     $(document).ready(function() {
       $('body').on('submit', '.participate', addParticipation);
       $('body').on('submit', '.delete-form', deleteChallenge);
+      $('body').on('submit', '.deleteButton', displayDeleteModal);
     });
+
+    function displayDeleteModal(e) {
+      
+    }
 
     function addParticipation(e) {
       e.preventDefault();
@@ -99,11 +104,7 @@ append footer-scripts
       })
 
       request.done(res => {
-        if (form.parent().siblings().length === 0) {
-          form.parent().replaceWith("<h3>There aren't any scheduled challenges. Contact your program administrator and request one!</h3>");
-        } else {
-          form.parent().remove();
-        }
+        window.location = '/challenges';
       })
 
       request.fail(res => {

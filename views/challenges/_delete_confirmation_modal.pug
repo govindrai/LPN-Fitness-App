@@ -1,0 +1,5 @@
+.delete-modal
+ .subtitle Are you sure you want to delete #{challenge.name}?
+  form(class='delete-form' action=`/challenges/${challenge._id}?_method=DELETE` method='POST')
+   input(type='submit' value='Delete')
+   a.grey-button(class='cancel-deletion' href='/challenges') Cancel
