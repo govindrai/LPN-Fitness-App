@@ -114,8 +114,9 @@ challengeSchema.methods.generateInitialWinCounts = function(families) {
 // calculate how many participants
 challengeSchema.methods.getParticipantCount = function() {
   const challenge = this;
-
-  return Participation.count({ challenge: challenge._id });
+  return Participation.count({ challenge: challenge._id }).then(count => {
+    return (challenge.participantCount = count);
+  });
 };
 
 // GENERATES SCHEDULE FOR 9 WEEKS

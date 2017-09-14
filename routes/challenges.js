@@ -34,6 +34,11 @@ router.get("/", (req, res) => {
     })
     .then(challenges => {
       pastChallenges = challenges;
+      return futureChallenges.forEach(challenge => {
+        return challenge.getParticipantCount();
+      });
+    })
+    .then(() => {
       return Participation.setUserParticipationForChallenges(
         res.locals.user,
         pastChallenges
