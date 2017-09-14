@@ -92,14 +92,6 @@ pointSchema.statics.calculatePointsForWeek = function(
   });
 };
 
-pointSchema.statics.getTotalPointsForDay = (participations, date) => {
-  participations.forEach(participation => {
-    participation.totalDailyPoints = participation.points.reduce(
-      (total, point) => total + point.calculatedPoints
-    );
-  });
-};
-
 var Point = mongoose.model("Point", pointSchema);
 
 module.exports = Point;
