@@ -15,10 +15,13 @@ const router = express.Router();
 
 // GET list all challenges
 router.get("/", (req, res) => {
-  let futureChallenges, pastChallenges;
-  Participation.setUserParticipationForChallenges(res.locals.user, [
-    res.locals.currentChallenge
-  ])
+  let futureChallenges,
+    pastChallenges,
+    currentChallenge = [res.locals.currentChallenge];
+  Participation.setUserParticipationForChallenges(
+    res.locals.user,
+    currentChallenge
+  )
     .then(() => {
       return Challenge.getFutureChallenges();
     })
@@ -34,14 +37,18 @@ router.get("/", (req, res) => {
     })
     .then(challenges => {
       pastChallenges = challenges;
-      return futureChallenges.forEach(challenge => {
-        return challenge.getParticipantCount();
-      });
-    })
-    .then(() => {
       return Participation.setUserParticipationForChallenges(
         res.locals.user,
         pastChallenges
+      );
+    })
+    .then(() => {
+      const allChallenges = currentChallenge.concat(
+        futureChallenges,
+        pastChallenges
+      );
+      return Promise.all(
+        allChallenges.map(challenge => challenge.getParticipantCount())
       );
     })
     .then(() =>

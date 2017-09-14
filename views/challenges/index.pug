@@ -20,7 +20,7 @@ mixin printChallenges(challenges, challengeType)
       if status
         span.participation-status(class=status.color)= status.message
       if user.admin
-        p= challenge.participantCount + "have signed up"
+        p= challenge.participantCount + " have signed up"
         a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
         button.grey-button(class='deleteButton' type='submit') Delete
         include _delete_confirmation_modal
