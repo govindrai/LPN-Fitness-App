@@ -5,7 +5,7 @@ mixin printChallenges(challenges, challengeType)
       p #{challenge.date.start.toLocaleDateString()} - #{challenge.date.end.toLocaleDateString()}
       if challenge.winner
         p= "Winner: " + challenge.winner.name
-      - let status
+      - let status, changeable
       if challengeType === "current"
         - status = challenge.participation ? {message: "Participating", color: "green"} : {message: "Not Participating", color: "grey"}
       else if challengeType === "future"
@@ -19,6 +19,10 @@ mixin printChallenges(challenges, challengeType)
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       if status
         span.participation-status(class=status.color)= status.message
+      if user.admin
+        a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
+        form(class='delete-form' action=`/challenges/${challenge._id}?_method=DELETE` method='POST')
+          input(type='submit' value='Delete')
 
 include ../layout.pug
 
@@ -42,6 +46,7 @@ block content
     .challenges
       if futureChallenges.length > 0
         +printChallenges(futureChallenges, "future")
+
       else
         h3 There aren't any scheduled challenges. Contact your program administrator and request one!
 
@@ -60,6 +65,7 @@ append footer-scripts
   script.
     $(document).ready(function() {
       $('body').on('submit', '.participate', addParticipation);
+      $('body').on('submit', '.delete-form', deleteChallenge);
     });
 
     function addParticipation(e) {
@@ -74,12 +80,35 @@ append footer-scripts
       })
 
       request.done(function(res) {
-        form.replaceWith("Signed Up");
+        form.replaceWith("<span class='participation-status green'>Signed Up</span>");
+        $('div .info').css('display', 'none');
       });
 
       request.fail(function(res) {
         console.log("Failed", res);
       })
     };
+
+    function deleteChallenge(event) {
+      event.preventDefault();
+      let form = $(this);
+      let url = form.attr('action');
+      var request = $.ajax({
+        url,
+        type: 'POST'
+      })
+
+      request.done(res => {
+        if (form.parent().siblings().length === 0) {
+          form.parent().replaceWith("<h3>There aren't any scheduled challenges. Contact your program administrator and request one!</h3>");
+        } else {
+          form.parent().remove();
+        }
+      })
+
+      request.fail(res => {
+      console.log("Failed", res);
+      })
+    }
 
     $('body').on('click', '.toggle-challenges', (e) => $(e.target).next().slideToggle());

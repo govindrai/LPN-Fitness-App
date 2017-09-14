@@ -5,7 +5,8 @@ const express = require("express"),
 // Models
 const Challenge = require("./../models/challenge"),
   Family = require("./../models/family"),
-  Participation = require("./../models/participation");
+  Participation = require("./../models/participation"),
+  Point = require("./../models/point");
 
 // Middleware
 const isAdmin = require("./../middleware/isAdmin");
@@ -79,6 +80,64 @@ router.post("/", (req, res) => {
         return res.render("challenges/new", { errors: e.errors, challenge });
       }
       return console.log(e);
+    });
+});
+
+// get edit challenge form
+router.get("/:id/edit", isAdmin, (req, res) => {
+  Challenge.findById(req.params.id).then(challenge => {
+    res.render("challenges/edit", { challenge });
+  });
+});
+
+// Delete challenge
+router.delete("/:id", (req, res) => {
+  let participationIds = [];
+  Challenge.remove({ _id: req.params.id })
+    .then(() => {
+      return Participation.find({ challenge: req.params.id });
+    })
+    .then(participations => {
+      participations.forEach(participation =>
+        participationIds.push(participation._id)
+      );
+      return Participation.remove({ challenge: req.params.id });
+    })
+    .then(() => {
+      return Point.remove({ _id: { $in: participationIds } });
+    })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(e => console.log(e));
+});
+
+// Edit Challenge
+router.put("/:id", isAdmin, (req, res) => {
+  const body = _.pick(req.body, ["name", "date.start", "date.end"]);
+  let challenge;
+
+  Challenge.findById(req.params.id)
+    .then(oldChallenge => {
+      challenge = oldChallenge;
+      const datesNotModified =
+        oldChallenge.date.start.toLocaleDateString() ===
+        new Date(body["date.start"]).toLocaleDateString();
+      if (datesNotModified) {
+        delete body["date.start"];
+        delete body["date.end"];
+      }
+    })
+    .then(() => {
+      Challenge.findOneAndUpdate(
+        { _id: challenge._id },
+        { $set: body },
+        { new: true, runValidators: true }
+      )
+        .then(doc => {
+          res.redirect("/challenges");
+        })
+        .catch(e => console.log(e));
     });
 });
 
