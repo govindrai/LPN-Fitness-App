@@ -8,15 +8,13 @@ append head-scripts
 
 block content
   .col-12
-    .title Create Challenge
+    .title Edit Challenge
 
     if errors
       .error Challenge could not be created. Please correct the error(s) below.
 
-  form(action='/challenges' method='POST')
-    include _form
-  
-  .info #[b NOTE:] Users will be able to sign up for challenges as soon as they are created, and registration will close at midnight before the day of the challenge. Only one challenge may exist at any time.
+    form(action=`/challenges/${challenge._id}?_method=PUT` method='POST')
+      include _form
 
-  script
-    include _datepicker.js
+    script
+      include _datepicker.js 

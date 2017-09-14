@@ -16,6 +16,10 @@ block content
       .subtitle Last Name:
       .activity-name= user.name.last
 
+      if user.name.nickname 
+        .subtitle Nickname:
+        .activity-name= user.name.nickname 
+
       .subtitle Email:
       .activity-name= user.email
 

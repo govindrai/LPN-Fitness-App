@@ -1,0 +1,25 @@
+label Challenge Name
+input(name='name' type='text' value=challenge.name required placeholder="i.e. Winter 2090 Challenge")
+
+- let showError;
+- let className;
+-console.log(errors);
+if errors && errors["date.start"]
+	- className = "error-field";
+	- showError = true;
+div(class=className)
+	label Start Date
+	- let startDate, endDate;
+	if challenge.date.start
+		- startDate = challenge.date.start.toLocaleDateString();
+		- endDate = challenge.date.end.toLocaleDateString();
+	else
+		- endDate = startDate = "";
+	input.start(name='date.start' value=startDate type='text' required)
+	if showError
+		.error= errors["date.start"].message
+
+label End Date (read only field)
+input.end(name='date.end' type='text' value=endDate readonly placeholder="automatically calculated...")
+
+input.grey-button(type='submit' value='Create challenge')
