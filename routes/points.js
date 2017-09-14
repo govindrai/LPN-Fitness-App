@@ -66,33 +66,25 @@ router.post("/", (req, res) => {
   console.log("updatePoints", updatePoints);
   console.log("deletePoints", deletePointIds);
 
-  // existingPoints = points.filter(point => point._id);
-  // newPoints = points.filter(point => {
-  //   if (!point._id) {
-  //     delete point._id;
-  //     return true;
-  //   }
-  // });
-
-  // let oldPoints = 0;
-  // Promise.all(
-  //   existingPoints.map(existingPoint => {
-  //     return Point.findByIdAndUpdate(existingPoint._id, existingPoint).then(
-  //       oldUpdatedPoint => (oldPoints += oldUpdatedPoint.calculatedPoints)
-  //     );
-  //   })
-  // )
-  //   .then(() => Point.insertMany(newPoints))
-  //   .then(() => {
-  //     totalPoints = req.body.totalPoints - oldPoints;
-  //     return res.locals.user.update({
-  //       $inc: { lifetimePoints: totalPoints }
-  //     });
-  //   })
-  //   .then(() => {
-  //     res.redirect(res.locals.home);
-  //   })
-  //   .catch(e => console.log(e));
+  let oldTotalPoints = 0;
+  Promise.all(
+    updatePoints.map(updatePoint => {
+      return Point.findByIdAndUpdate(updatePoint._id, updatePoint).then(
+        originalPoint => (oldTotalPoints += originalPoint.calculatedPoints)
+      );
+    })
+  )
+    .then(() => Point.insertMany(createPoints))
+    .then(() => {
+      const newTotalPoints = req.body.totalDailyPoints - oldTotalPoints;
+      return res.locals.user.update({
+        $inc: { lifetimePoints: newTotalPoints }
+      });
+    })
+    .then(() => {
+      res.redirect(res.locals.home);
+    })
+    .catch(e => console.log(e));
 });
 
 router.delete("/", function(req, res) {
