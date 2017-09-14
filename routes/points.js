@@ -25,7 +25,6 @@ router.post("/", (req, res) => {
   // convert body into array properties if single entry
   if (typeof req.body.activity !== "object") {
     req.body._id = [req.body._id];
-    req.body.participation = [req.body.participation];
     req.body.activity = [req.body.activity];
     req.body.numOfUnits = [req.body.numOfUnits];
     req.body.calculatedPoints = [req.body.calculatedPoints];
@@ -57,6 +56,7 @@ router.post("/", (req, res) => {
     if (req.body.action[i] === "update") {
       updatePoints.push(pointsBody);
     } else {
+      delete pointsBody._id;
       createPoints.push(pointsBody);
     }
     calculatedPointsCounter++;

@@ -24,6 +24,9 @@ function updateShow(e) {
     };
   }
 
+  $("#dailyPoints").html(
+    '<div class="center"><img src="/images/loading.gif" alt="loading indicator gif" /></div>'
+  );
   // send the weekInfo object and update the #showBody container
   $.ajax({
     url: window.location.pathname,
