@@ -9,7 +9,7 @@ block content
       .success Your profile was updated!
 
     .activity
-        
+
       .subtitle First Name:
       .activity-name= user.name.first
 
@@ -25,5 +25,5 @@ block content
       .subtitle Lifetime Points:
       .activity-name= user.lifetimePoints
 
-  if user._id.toString() === currentUser._id.toString()
-    a.grey-button(href="/users/edit") Edit Profile
+    if user._id.toString() === currentUser._id.toString()
+      a.grey-button(href="/users/edit") Edit Profile

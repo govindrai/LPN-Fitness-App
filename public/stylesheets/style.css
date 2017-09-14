@@ -338,6 +338,7 @@ form input::placeholder {
 
 .grey-button {
   display: block;
+  text-align: center;
   height: 56px;
   line-height: 56px;
   min-width: 200px;
