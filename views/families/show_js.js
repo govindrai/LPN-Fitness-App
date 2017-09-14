@@ -46,7 +46,7 @@ function removePointEntry(e) {
     hiddenActionInput
       .parent()
       .find("input.calculated-points")
-      .attr("disabled", "disabled");
+      .attr({ disabled: "disabled", novalidate: "novalidate" });
     hiddenActionInput.parent().hide();
   } else {
     hiddenActionInput.parent().remove();

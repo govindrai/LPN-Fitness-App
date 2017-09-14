@@ -75,6 +75,7 @@ router.post("/", (req, res) => {
     })
   )
     .then(() => Point.insertMany(createPoints))
+    .then(() => Point.remove({ _id: { $in: deletePointIds } }))
     .then(() => {
       const newTotalPoints = req.body.totalDailyPoints - oldTotalPoints;
       return res.locals.user.update({
