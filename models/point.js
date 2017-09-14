@@ -49,9 +49,9 @@ pointSchema.statics.calculateParticipantPointsByDay = function(
         populate: { path: "unit" }
       });
     })
-  ).then(pointsArray => {
+  ).then(pointsArraysArray => {
     participations.forEach((participation, index) => {
-      participation.points = pointsArray[index];
+      participation.points = pointsArraysArray[index];
       participation.totalDailyPoints = participation.points.reduce(
         (total, point) => total + point.calculatedPoints,
         0
@@ -73,36 +73,11 @@ function moveUserToTop(participations, user) {
   }
 }
 
-// gets the total points for each participation object
-// and sets the total points to the participation obj's totalPoints property
-pointSchema.statics.getTotalPointsForParticipationsByChallenge = function(
-  participations
-) {
-  return Promise.all(
-    participations.map(participation => {
-      return Point.aggregate([
-        { $match: { participation: participation._id } },
-        { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
-      ]);
-    })
-  )
-    .then(totalPointObjs => {
-      totalPointObjs.forEach((totalPointObj, index) => {
-        participations[index].totalPoints = totalPointObj[0]
-          ? totalPointObj[0].total
-          : 0;
-      });
-    })
-    .then(() => {
-      return participations.reduce((a, b) => a.totalPoints + b.totalPoints);
-    });
-};
-
-pointSchema.statics.calculatePointsForWeek = (
+pointSchema.statics.calculatePointsForWeek = function(
   participations,
   weekStart,
   weekEnd
-) => {
+) {
   return Promise.all(
     participations.map(participation => {
       return Point.aggregate([
@@ -110,27 +85,24 @@ pointSchema.statics.calculatePointsForWeek = (
           $match: {
             $and: [
               { participation: participation._id },
-              { date: { $gt: weekStart, $lt: weekEnd } }
+              { date: { $gte: weekStart, $lte: weekEnd } }
             ]
           }
         },
         { $group: { _id: null, total: { $sum: "$calculatedPoints" } } }
       ]);
     })
-  )
-    .then(totalPointObjs => {
-      totalPointObjs.forEach((totalPointObj, index) => {
-        participations[index].totalPoints = totalPointObj[0]
-          ? totalPointObj[0].total
-          : 0;
-      });
-    })
-    .then(() => {
-      return participations.reduce(
-        (total, participation) => total + participation.totalPoints,
-        0
-      );
+  ).then(totalPointObjs => {
+    totalPointObjs.forEach((totalPointObj, index) => {
+      participations[index].totalPoints = totalPointObj[0]
+        ? totalPointObj[0].total
+        : 0;
     });
+    return participations.reduce(
+      (total, participation) => total + participation.totalPoints,
+      0
+    );
+  });
 };
 
 pointSchema.statics.getTotalPointsForDay = (participations, date) => {
