@@ -66,7 +66,7 @@ append footer-scripts
   script.
     $(document).ready(function() {
       $('body').on('submit', '.participate', addParticipation);
-      $('body').on('submit', '.delete-form', deleteHandler);
+      $('body').on('submit', '.delete-form', deleteChallenge);
     });
 
     function addParticipation(e) {
@@ -90,7 +90,7 @@ append footer-scripts
       })
     };
 
-    function deleteHandler(event) {
+    function deleteChallenge(event) {
       event.preventDefault();
       let form = $(this);
       let url = form.attr('action');

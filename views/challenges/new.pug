@@ -18,16 +18,5 @@ block content
   
   .info #[b NOTE:] Users will be able to sign up for challenges as soon as they are created, and registration will close at midnight before the day of the challenge. Only one challenge may exist at any time.
 
-  script.
-    $('.start').datepicker({
-      beforeShowDay: function(date) {
-        return [date.getDay() == 1, '', "Challenges must start on Mondays."]
-      },
-      minDate: new Date(),
-      defaultDate: new Date("#{minDate}")
-    })
-      .on("change", function() {
-        var date = $(this).datepicker("getDate");
-        date.setDate(date.getDate() + 63);
-        $('.end').val(`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`);
-      });
+  script
+    include _datepicker.js
