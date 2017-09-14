@@ -29,10 +29,6 @@ let pointSchema = new Schema({
   }
 });
 
-pointSchema.methods.getUnitName = function() {
-  return this.activity.unit.name;
-};
-
 // For each participant, find all point entries for requested date
 // total those points, sort the participants by most points entered
 // then if the user who requested this page is in the family, move that
@@ -63,15 +59,6 @@ pointSchema.statics.calculateParticipantPointsByDay = function(
     moveUserToTop(participations, user);
   });
 };
-
-function moveUserToTop(participations, user) {
-  if (user) {
-    var currentUserIndex = participations.findIndex(
-      participation => participation.user._id.toString() == user._id.toString()
-    );
-    participations.unshift(participations.splice(currentUserIndex, 1)[0]);
-  }
-}
 
 pointSchema.statics.calculatePointsForWeek = function(
   participations,
@@ -116,3 +103,15 @@ pointSchema.statics.getTotalPointsForDay = (participations, date) => {
 var Point = mongoose.model("Point", pointSchema);
 
 module.exports = Point;
+
+// PRIVATE FUNCTIONS
+
+// used inside Point#calculateParticpantPointsByDay
+function moveUserToTop(participations, user) {
+  if (user) {
+    var currentUserIndex = participations.findIndex(
+      participation => participation.user._id.toString() == user._id.toString()
+    );
+    participations.unshift(participations.splice(currentUserIndex, 1)[0]);
+  }
+}
