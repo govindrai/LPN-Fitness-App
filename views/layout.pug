@@ -1,14 +1,14 @@
-mixin link(href, name)
-  - let style;
-  if (path === href)
-    if (loggedIn)
-      if (familyColors[name])
-        - style = `color: ${familyColors[name]}`
+mixin printLink(href, name)
+  - let color;
+  - let textDecoration = "none"
+  if path === href
+    - textDecoration = "underline"
+    if isLoggedIn
+      if familyColors[name]
+        - color = familyColors[name];
       else
-        - style = `color: ${familyColors[user.family.name]}`
-    else
-      - style = "text-decoration: underline"
-  a(class!=attributes.class href=href style=style)!= name
+        - color = familyColors[user.family.name]
+  a(class!=attributes.class href=href style=`color: ${color}; text-decoration: ${textDecoration}`)!= name
 
 doctype html
 html
@@ -33,24 +33,24 @@ html
             .line
       if isLoggedIn
         .nav-links
-          +link(home, "Home")
+          +printLink(home, "Home")
           - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
-          +link("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
+          +printLink("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
           .drop-down-links
             each familyName in familyNames
-              +link(`/families/${familyName}`, familyName)
-          +link("/challenges", `Challenges (${challengeCount})`)
-          +link("/activities", "Activities")
-          +link("/schedule", "Schedule")
-          +link("/rules", "Rules")
+              +printLink(`/families/${familyName}`, familyName)
+          +printLink("/challenges", `Challenges (${challengeCount})`)
+          +printLink("/activities", "Activities")
+          +printLink("/schedule", "Schedule")
+          +printLink("/rules", "Rules")
           if user.admin
-            +link("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
+            +printLink("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
             .drop-down-links
-              +link(`/users/admin-settings`, "Admin")
-              +link(`/users/${user.email}`, "Profile")
+              +printLink(`/users/admin-settings`, "Admin")
+              +printLink(`/users/${user.email}`, "Profile")
           else
-            +link(`/users/${user.email}`, "Profile")
-          +link("/logout", "Logout")
+            +printLink(`/users/${user.email}`, "Profile")
+          +printLink("/logout", "Logout")
 
     .clear
 

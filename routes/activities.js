@@ -17,7 +17,9 @@ router.get("/", (req, res) => {
   if (req.xhr) {
     Activity.find()
       .select("name")
-      .then(activities => res.send(activities))
+      .then(activities => {
+        res.send(activities.map(activity => activity.name));
+      })
       .catch(e => console.log(e));
   } else {
     // For activities index page
@@ -30,9 +32,11 @@ router.get("/", (req, res) => {
 // GET new activity form
 router.get("/new", isAdmin, (req, res) => {
   Unit.find().then(units => {
-    Activity.find().populate("unit").then(activities => {
-      res.render("activities/new", { units, activities });
-    });
+    Activity.find()
+      .populate("unit")
+      .then(activities => {
+        res.render("activities/new", { units, activities });
+      });
   });
 });
 

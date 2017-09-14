@@ -338,6 +338,7 @@ form input::placeholder {
 
 .grey-button {
   display: block;
+  text-align: center;
   height: 56px;
   line-height: 56px;
   min-width: 200px;
@@ -656,12 +657,6 @@ input.participation-status {
   text-align: right;
   color: #353738;
   margin-bottom: 16px; }
-
-.total-calculated-points {
-  display: none; }
-
-#submit-points-button {
-  display: none; }
 
 .error-field input, .error-field select {
   border-color: #d92b3a; }

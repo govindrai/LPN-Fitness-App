@@ -1,0 +1,43 @@
+- var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+- var weekday = weekdays[addPointsButtonDate.getDay()]
+- var month = addPointsButtonDate.getMonth() + 1
+- var date = addPointsButtonDate.getDate()
+
+include _points_entry_mixin
+
+#add-points-container.col-12
+  #x-button.hamburger &#10005;
+
+  .subtitle #{weekday}, #{month}/#{date}
+
+  .border
+
+  form#add-points(action="/points" method="POST")
+    input(type="hidden" name="participation" value=user.participationId)
+    input(type="hidden", name="date", value=addPointsButtonDate)
+
+    //- this is where all point entries will appear
+    .point-entries
+      each point in familyParticipations[0].points
+        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "update")
+
+    - let pointsString = "";
+    if familyParticipations[0].totalDailyPoints
+      - pointsString = `TOTAL = ${familyParticipations[0].totalDailyPoints.toFixed(2)} POINTS`
+    .total-calculated-points(style=`color: ${familyColors[user.family.name]}`) #{pointsString}
+    input.total-calculated-points(type="hidden" name="totalDailyPoints" value=familyParticipations[0].totalDailyPoints)
+
+
+    label#activity-name Add Activity
+    input#typeahead(type="text")
+
+    .center
+      if editRequest
+        button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit' ) Update
+      else
+        - let display = "none";
+        if familyParticipations[0].totalPoints
+          - display = "block";
+        button#submit-points-button.grey-button(style=`display: ${display};background-color: ${familyColors[user.family.name]}` type='submit') Save
+
+

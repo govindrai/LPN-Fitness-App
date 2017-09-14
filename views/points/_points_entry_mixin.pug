@@ -1,16 +1,21 @@
-mixin pointsEntry(id, activity, numOfUnits, calculatedPoints)
+mixin pointsEntry(id, activity, numOfUnits, calculatedPoints, action)
   .points-entry.col-12
-    input(type="hidden", name="point", value=id)
+    input(type="hidden" name="point" value=id)
     img.trash(src="/images/trash.png")
 
     .activity
-      input(type="hidden", name="activity" , value=activity._id)
+      input(type="hidden" name="activity" value=activity._id)
       .activity-name= activity.name
-      .activity-description #{activity.description}, #[span.activity-points= activity.points] points for every #[span.activity-points-scale= activity.scale] #{activity.unit.name}
+      - let description = ""
+      if activity.description
+        - description = `${activity.description},`
+      .activity-description #{description} #[span.activity-points= activity.points] points for every #[span.activity-points-scale= activity.scale] #{activity.unit.name}
 
     .fieldset
       label(for="numOfUnits")= `${activity.unit.name}s`
-      input.num-of-units(type="text", name="numOfUnits" value=numOfUnits)
+      input.num-of-units(type="number" step="0.00000001" min="0.00000001" name="numOfUnits" value=numOfUnits required)
 
     .calculated-points #{calculatedPoints} POINTS
     input.calculated-points(type="hidden", name="calculatedPoints", value=calculatedPoints)
+
+    input(type="hidden" name="action" value=action)
