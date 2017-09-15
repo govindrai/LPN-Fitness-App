@@ -85,17 +85,14 @@ userSchema.statics.hashPassword = function(password) {
     .catch(e => console.log("error hashing password: ", e));
 };
 
-userSchema.post("validate", function(next) {
+userSchema.post("validate", function(doc) {
   const user = this;
   if (user.isModified("password")) {
     User.hashPassword(user.password)
       .then(hash => {
         user.password = hash;
-        return next();
       })
       .catch(e => console.log(e));
-  } else {
-    return next();
   }
 });
 

@@ -1,6 +1,6 @@
 include ../layout.pug
 
-mixin printUsersTable(sectionSubtitle, tableId, users, fieldName)
+mixin printUsersTable(sectionSubtitle, tableId, users, fieldName, linkText)
   .subtitle= sectionSubtitle
 
   table(id=tableId)
@@ -10,46 +10,45 @@ mixin printUsersTable(sectionSubtitle, tableId, users, fieldName)
           .user-name= user.fullName
           .user-email= user.email
         td
-          input(type="checkbox" name=fieldName data-user=`${user._id}`)
+          a.change-privilege(href="#" data-user=`${user._id}`)= linkText
 
 
 block content
   .col-12
     .title Admin Settings
 
-    +printUsersTable("Administrators", "admins", admins, "admin")
-    +printUsersTable("Users", "nonAdmins", nonAdmins, "nonAdmin")
+    +printUsersTable("Administrators", "admins", admins, "admin", "Make Non-Admin")
+    +printUsersTable("Users", "nonAdmins", nonAdmins, "nonAdmin", "Make Admin")
 
 
 append footer-scripts
   script.
     function changeAdmin(e) {
-      var input = $(this);
-      var user = $(this).data('user');
+      e.preventDefault();
+      var link = $(this);
+      var userId = $(this).data('user');
       var request = $.ajax({
-        url: '/users/edit',
-        data: {changeAdmin: true, user},
+        url: `/users/${userId}`,
+        data: {changeAdmin: true, userId},
         type: 'PUT'
-      });
-
-      request.done(res => {
+      })
+      .done(res => {
+        console.log(res);
         var response = `<div>${res}</div>`;
-        var user = input.closest('tr');
         $('.title').after(response);
-        $('.title').next().fadeOut('slow', () => {
-          $('.title').next().remove();
-          input[0].checked = false;
-          if (user.parent().parent().attr('id') == 'admins') {
-            $('#nonAdmins').append(user);
-          } else {
-            $('#admins').append(user);
-          }
-        });
-      });
 
-      request.fail(res => {
-        console.log("Changing Admin Failed", res)
-      });
+        //- var user = input.closest('tr');
+        //- $('.title').next().fadeOut('slow', () => {
+        //-   $('.title').next().remove();
+        //-   input[0].checked = false;
+        //-   if (user.parent().parent().attr('id') == 'admins') {
+        //-     $('#nonAdmins').append(user);
+        //-   } else {
+        //-     $('#admins').append(user);
+        //-   }
+        //- });
+      })
+      .fail(res => console.log("Changing Admin Failed", res));
     }
 
-    $('input:checkbox').on('click', changeAdmin);
+    $('body').on('click', '.change-privilege', changeAdmin);
