@@ -445,6 +445,9 @@ removeModelObjs(Family)
     return removeModelObjs(Participation);
   })
   .then(() => {
+    return removeModelObjs(Point);
+  })
+  .then(() => {
     return createObjs(families);
   })
   .then(() => {
