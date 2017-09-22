@@ -18,6 +18,7 @@ let iolite,
   users,
   families,
   activities,
+  participations = [],
   mile,
   game,
   feet,
@@ -211,14 +212,9 @@ var challenges = [
   // })
 ];
 
-// Removes all documents of model
-function removeModelObjs(model) {
-  return model.remove().catch(e => console.log(e));
-}
-
 // returns a promise that waits for all objects to be created (in parallel) in MongoDB
 function createObjs(arr) {
-  return Promise.all(arr.map(obj => obj.save())).catch(e => console.log(e));
+  return Promise.all(arr.map(obj => obj.save()));
 }
 
 function assignChallenges() {
@@ -396,29 +392,8 @@ function assignActivities() {
     .catch(e => console.log(e));
 }
 
-var participations = [];
-
 mongoose.connection
   .dropDatabase()
-  // removeModelObjs(Family)
-  //   .then(() => {
-  //     return removeModelObjs(User);
-  //   })
-  //   .then(() => {
-  //     return removeModelObjs(Unit);
-  //   })
-  //   .then(() => {
-  //     return removeModelObjs(Activity);
-  //   })
-  //   .then(() => {
-  //     return removeModelObjs(Challenge);
-  //   })
-  //   .then(() => {
-  //     return removeModelObjs(Participation);
-  //   })
-  //   .then(() => {
-  //     return removeModelObjs(Point);
-  //   })
   .then(() => {
     return createObjs(families);
   })
@@ -1154,20 +1129,17 @@ mongoose.connection
     return assignChallenges();
   })
   .then(() => {
-    return User.find({});
+    return User.find();
   })
   .then(users => {
     users.forEach(user => {
       participations.push(
         new Participation({
           challenge: currentChallenge,
-          user: user
+          user
         })
       );
     });
-    return participations;
-  })
-  .then(() => {
     return createObjs(participations);
   })
   .then(() => {
