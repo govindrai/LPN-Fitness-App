@@ -1,4 +1,4 @@
-var mongoose = require("./mongoose"),
+const mongoose = require("./mongoose"),
   Activity = require("../../models/activity"),
   User = require("../../models/user"),
   Family = require("../../models/family"),
@@ -7,14 +7,17 @@ var mongoose = require("./mongoose"),
   Participation = require("../../models/participation"),
   Unit = require("../../models/unit");
 
-var iolite,
+let iolite,
   sunstone,
   ruby,
   emerald,
   sapphire,
   topaz,
   alexandrite,
+  units,
   users,
+  families,
+  activities,
   mile,
   game,
   feet,
@@ -50,7 +53,7 @@ var iolite,
   lastYearChallenge,
   twoYearsAgoChallenge;
 
-var units = [
+units = [
   new Unit({
     name: "Mile",
     abbreviation: "mi"
@@ -89,7 +92,7 @@ var units = [
   })
 ];
 
-var families = [
+families = [
   new Family({
     name: "Iolite",
     motto: "The best family",
@@ -170,7 +173,6 @@ function getChallengeStartDates() {
     getMonday(nextYear),
     getMonday(twoYearsLater)
   );
-  console.log(dates);
   return dates;
 }
 
@@ -209,244 +211,214 @@ var challenges = [
   // })
 ];
 
+// Removes all documents of model
 function removeModelObjs(model) {
-  var promise = new Promise((resolve, reject) => {
-    model.remove({}, err => {
-      if (err) {
-        reject(err);
-      }
-      resolve();
-    });
-  });
-  return promise;
+  return model.remove().catch(e => console.log(e));
 }
 
+// returns a promise that waits for all objects to be created (in parallel) in MongoDB
 function createObjs(arr) {
-  var promise = new Promise((resolve, reject) => {
-    arr.forEach(obj => {
-      obj
-        .save()
-        .then(() => {
-          resolve();
-        })
-        .catch(e => reject(e));
-    });
-  });
-  return promise;
+  return Promise.all(arr.map(obj => obj.save())).catch(e => console.log(e));
 }
 
 function assignChallenges() {
-  var promise = new Promise((resolve, reject) => {
-    Challenge.find()
-      .then(challenges => {
-        challenges.forEach(challenge => {
-          switch (challenge.name) {
-            case "THE CURRENT CHALLENGE":
-              currentChallenge = challenge;
-              break;
-            case "LAST YEAR CHALLENGE":
-              lastYearChallenge = challenge;
-              break;
-            case "TWO YEARS AGO CHALLENGE":
-              twoYearsAgoChallenge = challenge;
-              break;
-            case "NEXT YEAR CHALLENGE":
-              nextYearChallenge = challenge;
-              break;
-            case "TWO YEARS LATER CHALLENGE":
-              twoYearsLaterChallenge = challenge;
-              break;
-            default:
-              console.log("i don't know that challenge");
-          }
-        });
-        resolve();
-      })
-      .catch(e => reject(e));
-  });
-  return promise;
+  return Challenge.find()
+    .then(challenges => {
+      challenges.forEach(challenge => {
+        switch (challenge.name) {
+          case "THE CURRENT CHALLENGE":
+            currentChallenge = challenge;
+            break;
+          case "LAST YEAR CHALLENGE":
+            lastYearChallenge = challenge;
+            break;
+          case "TWO YEARS AGO CHALLENGE":
+            twoYearsAgoChallenge = challenge;
+            break;
+          case "NEXT YEAR CHALLENGE":
+            nextYearChallenge = challenge;
+            break;
+          case "TWO YEARS LATER CHALLENGE":
+            twoYearsLaterChallenge = challenge;
+            break;
+          default:
+            console.log("i don't know that challenge");
+        }
+      });
+    })
+    .catch(e => console.log(e));
 }
 
 function assignFamilies() {
-  var promise = new Promise((resolve, reject) => {
-    Family.find()
-      .then(families => {
-        families.forEach(family => {
-          switch (family.name) {
-            case "Iolite":
-              iolite = family;
-              break;
-            case "Alexandrite":
-              alexandrite = family;
-              break;
-            case "Sunstone":
-              sunstone = family;
-              break;
-            case "Ruby":
-              ruby = family;
-              break;
-            case "Sapphire":
-              sapphire = family;
-              break;
-            case "Topaz":
-              topaz = family;
-              break;
-            case "Emerald":
-              emerald = family;
-              break;
-            default:
-              console.log("i don't know that family");
-          }
-        });
-        resolve();
-      })
-      .catch(e => reject(e));
-  });
-  return promise;
+  return Family.find()
+    .then(families => {
+      families.forEach(family => {
+        switch (family.name) {
+          case "Iolite":
+            iolite = family;
+            break;
+          case "Alexandrite":
+            alexandrite = family;
+            break;
+          case "Sunstone":
+            sunstone = family;
+            break;
+          case "Ruby":
+            ruby = family;
+            break;
+          case "Sapphire":
+            sapphire = family;
+            break;
+          case "Topaz":
+            topaz = family;
+            break;
+          case "Emerald":
+            emerald = family;
+            break;
+          default:
+            console.log("i don't know that family");
+        }
+      });
+    })
+    .catch(e => console.log(e));
 }
 
 function assignUnits() {
-  var promise = new Promise((resolve, reject) => {
-    Unit.find()
-      .then(units => {
-        units.forEach(unit => {
-          switch (unit.name) {
-            case "Mile":
-              mile = unit;
-              break;
-            case "Game":
-              game = unit;
-              break;
-            case "Feet":
-              feet = unit;
-              break;
-            case "Meter":
-              meter = unit;
-              break;
-            case "Minute":
-              minute = unit;
-              break;
-            case "Hour":
-              hour = unit;
-              break;
-            case "Hole":
-              hole = unit;
-              break;
-            case "Day":
-              day = unit;
-              break;
-            case "Jump":
-              jump = unit;
-              break;
-            default:
-              console.log("i don't know that unit");
-          }
-        });
-        resolve();
-      })
-      .catch(e => reject(e));
-  });
-  return promise;
+  return Unit.find()
+    .then(units => {
+      units.forEach(unit => {
+        switch (unit.name) {
+          case "Mile":
+            mile = unit;
+            break;
+          case "Game":
+            game = unit;
+            break;
+          case "Feet":
+            feet = unit;
+            break;
+          case "Meter":
+            meter = unit;
+            break;
+          case "Minute":
+            minute = unit;
+            break;
+          case "Hour":
+            hour = unit;
+            break;
+          case "Hole":
+            hole = unit;
+            break;
+          case "Day":
+            day = unit;
+            break;
+          case "Jump":
+            jump = unit;
+            break;
+          default:
+            console.log("i don't know that unit");
+        }
+      });
+    })
+    .catch(e => console.log(e));
 }
 
 function assignActivities() {
-  var promise = new Promise((resolve, reject) => {
-    Activity.find()
-      .then(activities => {
-        activities.forEach(activity => {
-          switch (activity.name) {
-            case "Jump roping":
-              jumpRoping = activity;
-              break;
-            case "Biking(<5 min pace)":
-              bikingLess5 = activity;
-              break;
-            case "Biking(>5 min pace)":
-              bikingMore5 = activity;
-              break;
-            case "Biking(elevation)":
-              bikingElevation = activity;
-              break;
-            case "Elliptical":
-              elliptical = activity;
-              break;
-            case "Bowling":
-              bowling = activity;
-              break;
-            case "Hiking":
-              hiking = activity;
-              break;
-            case "Run/walk(10-15 min pace)":
-              runAndWalk = activity;
-              break;
-            case "Hiking(elevation)":
-              hikingElevation = activity;
-              break;
-            case "Rowing":
-              rowing = activity;
-              break;
-            case "Weightlifting":
-              weightlifting = activity;
-              break;
-            case "Swimming":
-              swimming = activity;
-              break;
-            case "Abs":
-              abs = activity;
-              break;
-            case "Running(<10 min pace)":
-              runningLess10 = activity;
-              break;
-            case "Sports game":
-              sportsGame = activity;
-              break;
-            case "Fitness class":
-              fitnessClass = activity;
-              break;
-            case "Golf":
-              golf = activity;
-              break;
-            case "Intense workout":
-              intenseWorkout = activity;
-              break;
-            case "Surfing":
-              surfing = activity;
-              break;
-            case "Snowboarding":
-              snowboarding = activity;
-              break;
-            default:
-              console.log("i don't know that activity");
-          }
-        });
-        resolve();
-      })
-      .catch(e => reject(e));
-  });
-  return promise;
+  return Activity.find()
+    .then(activities => {
+      activities.forEach(activity => {
+        switch (activity.name) {
+          case "Jump roping":
+            jumpRoping = activity;
+            break;
+          case "Biking(<5 min pace)":
+            bikingLess5 = activity;
+            break;
+          case "Biking(>5 min pace)":
+            bikingMore5 = activity;
+            break;
+          case "Biking(elevation)":
+            bikingElevation = activity;
+            break;
+          case "Elliptical":
+            elliptical = activity;
+            break;
+          case "Bowling":
+            bowling = activity;
+            break;
+          case "Hiking":
+            hiking = activity;
+            break;
+          case "Run/walk(10-15 min pace)":
+            runAndWalk = activity;
+            break;
+          case "Hiking(elevation)":
+            hikingElevation = activity;
+            break;
+          case "Rowing":
+            rowing = activity;
+            break;
+          case "Weightlifting":
+            weightlifting = activity;
+            break;
+          case "Swimming":
+            swimming = activity;
+            break;
+          case "Abs":
+            abs = activity;
+            break;
+          case "Running(<10 min pace)":
+            runningLess10 = activity;
+            break;
+          case "Sports game":
+            sportsGame = activity;
+            break;
+          case "Fitness class":
+            fitnessClass = activity;
+            break;
+          case "Golf":
+            golf = activity;
+            break;
+          case "Intense workout":
+            intenseWorkout = activity;
+            break;
+          case "Surfing":
+            surfing = activity;
+            break;
+          case "Snowboarding":
+            snowboarding = activity;
+            break;
+          default:
+            console.log("i don't know that activity");
+        }
+      });
+    })
+    .catch(e => console.log(e));
 }
 
 var participations = [];
 
-removeModelObjs(Family)
-  .then(() => {
-    return removeModelObjs(User);
-  })
-  .then(() => {
-    return removeModelObjs(Unit);
-  })
-  .then(() => {
-    return removeModelObjs(Activity);
-  })
-  .then(() => {
-    return removeModelObjs(Challenge);
-  })
-  .then(() => {
-    return removeModelObjs(Participation);
-  })
-  .then(() => {
-    return removeModelObjs(Point);
-  })
+mongoose.connection
+  .dropDatabase()
+  // removeModelObjs(Family)
+  //   .then(() => {
+  //     return removeModelObjs(User);
+  //   })
+  //   .then(() => {
+  //     return removeModelObjs(Unit);
+  //   })
+  //   .then(() => {
+  //     return removeModelObjs(Activity);
+  //   })
+  //   .then(() => {
+  //     return removeModelObjs(Challenge);
+  //   })
+  //   .then(() => {
+  //     return removeModelObjs(Participation);
+  //   })
+  //   .then(() => {
+  //     return removeModelObjs(Point);
+  //   })
   .then(() => {
     return createObjs(families);
   })
@@ -1039,8 +1011,7 @@ removeModelObjs(Family)
     return assignUnits();
   })
   .then(() => {
-    // debugger;
-    var activities = [
+    activities = [
       new Activity({
         name: "Jump roping",
         points: 1,
@@ -1201,6 +1172,6 @@ removeModelObjs(Family)
   })
   .then(() => {
     console.log("Finished Seeding");
-    // process.exit();
+    process.exit();
   })
   .catch(e => console.log(e));

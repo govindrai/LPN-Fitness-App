@@ -7,7 +7,7 @@ mongoose.set("debug", true);
 mongoose.connect(MONGO_URL, { useMongoClient: true }, error => {
   if (error) return console.log("There was an error: ", error);
   console.log("Successfully connected to LPN");
-  console.log(mongoose.modelNames());
+  console.log("Model Names: ", mongoose.modelNames());
 });
 
 mongoose.connection.on("error", () => {
