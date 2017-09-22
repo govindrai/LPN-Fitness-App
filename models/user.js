@@ -45,10 +45,6 @@ let userSchema = new Schema({
     type: String,
     required: true,
     minlength: [6, "Passwords must be at least 6 characters long."]
-    // validate: {
-    //   isAsync: true,
-    //   validator: hashPassword
-    // }
   },
   family: {
     type: Schema.Types.ObjectId,
@@ -85,18 +81,28 @@ userSchema.statics.hashPassword = function(password) {
     .catch(e => console.log("error hashing password: ", e));
 };
 
-userSchema.post("validate", function(next) {
+userSchema.post("validate", function(doc) {
   const user = this;
   if (user.isModified("password")) {
     User.hashPassword(user.password)
       .then(hash => {
         user.password = hash;
-        return next();
       })
       .catch(e => console.log(e));
-  } else {
-    return next();
   }
+});
+
+userSchema.pre("save", function(done) {
+  const user = this;
+  User.hashPassword(user.password)
+    .then(hash => {
+      user.password = hash;
+      done();
+    })
+    .catch(e => {
+      console.log(e);
+      done(e);
+    });
 });
 
 userSchema.methods.generateAuthorizationToken = function() {
