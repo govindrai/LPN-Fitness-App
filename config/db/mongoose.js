@@ -4,14 +4,12 @@ const mongoose = require("mongoose"),
 mongoose.Promise = global.Promise;
 mongoose.set("debug", true);
 
-mongoose.connect(MONGO_URL, { useMongoClient: true }, error => {
-  if (error) return console.log("There was an error: ", error);
-  console.log("Successfully connected to LPN");
-  console.log("Model Names: ", mongoose.modelNames());
-});
-
-mongoose.connection.on("error", () => {
-  console.log("Mongoose Collection Error!");
-});
+mongoose
+  .connect(MONGO_URL, { useMongoClient: true })
+  .then(() => {
+    console.log("Successfully connected to LPN");
+    console.log("Model Names: ", mongoose.modelNames());
+  })
+  .catch(e => console.log("There was an error: ", e));
 
 module.exports = mongoose;
