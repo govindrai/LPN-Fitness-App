@@ -34,7 +34,7 @@ html
       if isLoggedIn
         .nav-links
           +printLink(home, "Home")
-          - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
+          - let familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
           +printLink("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
           .drop-down-links
             each familyName in familyNames

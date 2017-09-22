@@ -52,7 +52,11 @@ router.post("/login", (req, res) => {
     })
     .catch(e => {
       if (e.name === "AuthError") {
-        return res.render("sessions/new", { error: e.message, email });
+        return res.render("sessions/new", {
+          error: e.message,
+          email,
+          title: "Login"
+        });
       }
       return console.log(e);
     });
@@ -92,7 +96,8 @@ router.post("/register", (req, res) => {
           return res.render("users/new", {
             families,
             user,
-            errors: e.errors
+            errors: e.errors,
+            title: "Register"
           });
         })
         .catch(e => console.log(e));
@@ -117,14 +122,17 @@ router.get("/logout", (req, res) => {
 
 router.get("/schedule", (req, res) => {
   return res.render("challenges/schedule", {
-    standings: res.locals.currentChallenge.getStandings()
+    standings: res.locals.currentChallenge.getStandings(),
+    title: "Standings & Schedule"
   });
 });
 
 // GET rules page
 router.get("/rules", (req, res) => {
   User.find({ admin: true })
-    .then(admins => res.render("sessions/rules", { admins }))
+    .then(admins =>
+      res.render("sessions/rules", { admins, title: "Rubric & Rules" })
+    )
     .catch(e => console.log(e));
 });
 
