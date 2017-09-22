@@ -32,7 +32,6 @@ router.get("/:familyName", (req, res) => {
     { currentChallenge } = res.locals,
     today = getToday();
 
-  console.log("CURRENT CHALLENGE", res.locals.currentChallenge);
   dates = calculateDates(weekInfo);
   timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);

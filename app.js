@@ -1,5 +1,6 @@
 // Modules
 const express = require("express"),
+  favicon = require("serve-favicon"),
   methodOverride = require("method-override"),
   session = require("express-session"),
   { REDIS_URL } = require("./config/keys"),
@@ -7,7 +8,6 @@ const express = require("express"),
   client = redis.createClient(REDIS_URL),
   RedisStore = require("connect-redis")(session),
   path = require("path"),
-  favicon = require("serve-favicon"),
   logger = require("morgan"),
   cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
@@ -39,10 +39,7 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-// Configure Middleware
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
+app.use(favicon(path.join(__dirname, "public/images", "favicon.ico")));
 app.use(methodOverride("_method"));
 app.use(logger("dev"));
 app.use(bodyParser.json());
