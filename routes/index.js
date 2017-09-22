@@ -14,14 +14,21 @@ router.get("/register", (req, res) => {
   Family.find()
     .ne("name", "Bye")
     .then(families => {
-      res.render("users/new", { families, user: new User() });
+      res.render("users/new", {
+        families,
+        user: new User(),
+        title: "Register"
+      });
     })
     .catch(e => console.log(e));
 });
 
+// Redirect to Index
+router.get("/login", (req, res) => res.redirect("/"));
+
 // GET login form
 router.get("/", (req, res) =>
-  res.render("sessions/new", { loggedOut: req.query.loggedOut })
+  res.render("sessions/new", { loggedOut: req.query.loggedOut, title: "Login" })
 );
 
 // POST login form data

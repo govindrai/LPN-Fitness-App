@@ -177,7 +177,8 @@ router.get("/:familyName", (req, res) => {
         showNext,
         nextVersingFamilyName,
         defaultShowDate,
-        addPointsButtonDate
+        addPointsButtonDate,
+        title: `${family.name} Scoreboard`
       };
 
       const view = req.xhr ? "families/_show_body" : "families/show";
