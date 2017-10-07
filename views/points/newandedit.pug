@@ -12,7 +12,7 @@ include _points_entry_mixin
 
   .border
 
-  form#add-points(action="/points" method="POST")
+  form#add-points-form(action="/points" method="POST")
     input(type="hidden" name="participation" value=user.participationId)
     input(type="hidden", name="date", value=addPointsButtonDate)
 

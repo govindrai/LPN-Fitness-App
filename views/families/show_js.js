@@ -1,3 +1,8 @@
+const spinner =
+  '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
+
+const addPointsStateChanged = false;
+
 // updates the #showBody container upon request of new date/week
 function updateShow(e) {
   let weekInfo;
@@ -23,10 +28,7 @@ function updateShow(e) {
       direction: "none"
     };
   }
-
-  $("#dailyPoints").html(
-    '<div class="center"><img src="/images/loading.gif" alt="loading indicator gif" /></div>'
-  );
+  $("#dailyPoints").html(spinner);
   // send the weekInfo object and update the #showBody container
   $.ajax({
     url: window.location.pathname,
@@ -53,58 +55,51 @@ function removePointEntry(e) {
   calculateTotalPoints();
 }
 
-function showAddPointsModal(e) {
-  $("#add-points-container").toggle();
-  window.scrollTo(0, 0);
-  getActivities();
-}
-
 function hideAddPointsModal() {
   $("#add-points-container").toggle();
+}
+
+// retrieves HTML for a point entry input when a user
+// selects an activity from the typeahead drop-down
+function getActivityData(ev, suggestion) {
+  $.ajax({
+    url: `/activities/${suggestion}`
+  })
+    .done(res => {
+      $("#typeahead").typeahead("val", "");
+      $(".point-entries").append(res);
+    })
+    .fail(res => {
+      console.log("getActivityData Failed", res);
+    });
 }
 
 // gets activity objects and inject's typeahead's
 // functionality into search activity input field
 function getActivities() {
-  // retrieves HTML for a point entry input when a user
-  // selects an activity from the typeahead drop-down
-  function getActivityData(ev, suggestion) {
-    var request = $.ajax({
-      url: `/activities/${suggestion}`
-    });
-
-    request.done(res => {
-      $("#typeahead").typeahead("val", "");
-      $(".point-entries").append(res);
-    });
-
-    request.fail(res => {
-      console.log("getActivityData Failed", res);
-    });
-  }
-
   $.ajax({
     url: "/activities"
-  }).done(res => {
-    const typeahead = $("#typeahead");
-    typeahead.typeahead(
-      {
-        highlight: true,
-        hint: "search.."
-      },
-      {
-        name: "my-dataset",
-        source: new Bloodhound({
-          datumTokenizer: Bloodhound.tokenizers.whitespace,
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          local: res
-        })
-      }
-    );
-    typeahead.bind("typeahead:select", getActivityData);
-    $(".twitter-typeahead").css("display", "block");
-    typeahead.focus();
-  });
+  })
+    .done(res => {
+      const typeahead = $("#typeahead");
+      typeahead.typeahead(
+        {
+          highlight: true,
+          hint: "search.."
+        },
+        {
+          name: "my-dataset",
+          source: new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: res
+          })
+        }
+      );
+      typeahead.bind("typeahead:select", getActivityData);
+      $(".twitter-typeahead").css("display", "block");
+    })
+    .fail(e => console.log(e));
 }
 
 // calculates each entries point value by multiplying scale * unit
@@ -186,7 +181,14 @@ function initializeClock() {
   var timeinterval = setInterval(() => getTimeRemaining(endtime), 1000);
 }
 
-function getPoints() {
+function showAddPointsModal(e) {
+  $("#add-points-container").toggle();
+  window.scrollTo(0, 0);
+  const editingPoints = $(e.target).attr("id") === "edit-points";
+  if (!editingPoints) $("#typeahead").focus();
+}
+
+function getExistingPoints() {
   const addPointsButtonDate = $(".current-date .date").data("date");
   const participation = $("input[name='participation']").val();
   $.ajax({
@@ -195,21 +197,22 @@ function getPoints() {
     data: { addPointsButtonDate, participation }
   })
     .done(res => {
-      $("#add-points-container").replaceWith(res);
-      showAddPointsModal();
+      $("#point-entries").replaceWith(res);
+      resolve();
     })
-    .fail(e => console.log("getPoints failed"));
+    .fail(e => console.log("getPointsFailed"));
 }
 
 $(document).ready(function() {
   initializeClock();
+  getActivities();
 });
 
 $("body").on("click", ".participant", toggleParticipantPoints);
 $("body").on("click", ".change-week", updateShow);
 $("body").on("click", ".updatePoints", updateShow);
 $("body").on("click", "#add-points-button", showAddPointsModal);
-$("body").on("click", "#edit-points", getPoints);
+$("body").on("click", "#edit-points", showAddPointsModal);
 $("body").on("click", "#x-button", hideAddPointsModal);
 $("body").on("keyup", ".num-of-units", calculateEntryPoints);
 $("body").on("click", ".trash", removePointEntry);

@@ -34,7 +34,7 @@ router.get("/admin-settings", isAdmin, (req, res, next) => {
 // edit points for a user for certain day
 router.put("/points", (req, res) => {
   const { participation } = req.body;
-  res.locals.user.participationId = participation;
+  // res.locals.user.participationId = participation;
   const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
   const familyParticipations = [{ _id: participation, user: res.locals.user }];
   Point.calculateParticipantPointsByDay(
@@ -43,10 +43,10 @@ router.put("/points", (req, res) => {
     res.locals.user
   )
     .then(() => {
-      return res.render("points/newandedit", {
-        familyParticipations,
-        addPointsButtonDate,
-        editRequest: true
+      return res.render("points/_points_entries", {
+        familyParticipations
+        // addPointsButtonDate,
+        // editRequest: true
       });
     })
     .catch(e => console.log(e));
