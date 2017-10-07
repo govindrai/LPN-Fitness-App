@@ -36,7 +36,6 @@ function updateShow(e) {
     .fail(() => console.log("Updating show failed"));
 }
 
-//
 function removePointEntry(e) {
   const hiddenActionInput = $(e.target)
     .parent()
@@ -67,13 +66,31 @@ function hideAddPointsModal() {
 // gets activity objects and inject's typeahead's
 // functionality into search activity input field
 function getActivities() {
+  // retrieves HTML for a point entry input when a user
+  // selects an activity from the typeahead drop-down
+  function getActivityData(ev, suggestion) {
+    var request = $.ajax({
+      url: `/activities/${suggestion}`
+    });
+
+    request.done(res => {
+      $("#typeahead").typeahead("val", "");
+      $(".point-entries").append(res);
+    });
+
+    request.fail(res => {
+      console.log("getActivityData Failed", res);
+    });
+  }
+
   $.ajax({
     url: "/activities"
-  }).done(function(res) {
-    $("#typeahead").typeahead(
+  }).done(res => {
+    const typeahead = $("#typeahead");
+    typeahead.typeahead(
       {
-        minLength: 1,
-        highlight: true
+        highlight: true,
+        hint: "search.."
       },
       {
         name: "my-dataset",
@@ -84,25 +101,9 @@ function getActivities() {
         })
       }
     );
-    $("#typeahead").bind("typeahead:select", getActivityData);
+    typeahead.bind("typeahead:select", getActivityData);
     $(".twitter-typeahead").css("display", "block");
-  });
-}
-
-// retrieves HTML for a point entry input when a user
-// selects an activity from the typeahead drop-down
-function getActivityData(ev, suggestion) {
-  var request = $.ajax({
-    url: `/activities/${suggestion}`
-  });
-
-  request.done(res => {
-    $("#typeahead").typeahead("val", "");
-    $(".point-entries").append(res);
-  });
-
-  request.fail(res => {
-    console.log("getActivityData Failed", res);
+    typeahead.focus();
   });
 }
 

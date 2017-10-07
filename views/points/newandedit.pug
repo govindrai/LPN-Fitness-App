@@ -32,12 +32,13 @@ include _points_entry_mixin
     input#typeahead(type="text")
 
     .center
-      if editRequest
-        button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit' ) Update
-      else
-        - let display = "none";
-        if familyParticipations[0].totalPoints
-          - display = "block";
-        button#submit-points-button.grey-button(style=`display: ${display};background-color: ${familyColors[user.family.name]}` type='submit') Save
+      button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit') Done
+      //- if editRequest
+      //-   button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit' ) Update
+      //- else
+      //-   - let display = "none";
+      //-   if familyParticipations[0].totalPoints
+      //-     - display = "block";
+      //-   button#submit-points-button.grey-button(style=`display: ${display};background-color: ${familyColors[user.family.name]}` type='submit') Save
 
 
