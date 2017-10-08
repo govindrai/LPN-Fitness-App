@@ -110,6 +110,7 @@ function getActivities() {
 // calculates each entries point value by multiplying scale * unit
 // also calculates the total points since values changed
 function calculateEntryPoints(e) {
+  console.log("calculate entry points hit");
   var pointsEntry = $(this)
     .parent()
     .parent()
