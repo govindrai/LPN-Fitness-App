@@ -1,7 +1,7 @@
 const spinner =
   '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
 
-const addPointsStateChanged = false;
+let addPointsStateChanged = false;
 
 // updates the #showBody container upon request of new date/week
 function updateShow(e) {
@@ -56,18 +56,23 @@ function removePointEntry(e) {
 }
 
 function hideAddPointsModal() {
-  $("#add-points-container").toggle();
+  window.location.reload();
 }
 
 // retrieves HTML for a point entry input when a user
 // selects an activity from the typeahead drop-down
 function getActivityData(ev, suggestion) {
+  $("#typeahead").typeahead("val", "");
+  $("#typeahead").blur();
+
+  $(".point-entries").append(spinner);
   $.ajax({
     url: `/activities/${suggestion}`
   })
     .done(res => {
-      $("#typeahead").typeahead("val", "");
-      $(".point-entries").append(res);
+      $(".point-entries")
+        .find(".center")
+        .replaceWith(res);
     })
     .fail(res => {
       console.log("getActivityData Failed", res);
@@ -106,6 +111,7 @@ function getActivities() {
 // also calculates the total points since values changed
 function calculateEntryPoints(e) {
   var pointsEntry = $(this)
+    .parent()
     .parent()
     .parent();
 
@@ -203,6 +209,38 @@ function getExistingPoints() {
     .fail(e => console.log("getPointsFailed"));
 }
 
+function validatePointEntry(e) {
+  $(e.target)
+    .parent()
+    .parent()
+    .removeClass("error-field");
+  $(e.target)
+    .parent()
+    .parent()
+    .find(".error")
+    .remove();
+  if (parseInt(e.target.value) <= 0) {
+    $(e.target)
+      .parent()
+      .parent()
+      .addClass("error-field");
+    $(e.target)
+      .parent()
+      .parent()
+      .append(`<div class="error">Please enter a value greater than 0.</div>`);
+  } else {
+    $(e.target)
+      .parent()
+      .parent()
+      .removeClass("error-field");
+    $(e.target)
+      .parent()
+      .parent()
+      .find(".error")
+      .remove();
+  }
+}
+
 $(document).ready(function() {
   initializeClock();
   getActivities();
@@ -216,3 +254,4 @@ $("body").on("click", "#edit-points", showAddPointsModal);
 $("body").on("click", "#x-button", hideAddPointsModal);
 $("body").on("keyup", ".num-of-units", calculateEntryPoints);
 $("body").on("click", ".trash", removePointEntry);
+$("body").on("blur", ".num-of-units", validatePointEntry);

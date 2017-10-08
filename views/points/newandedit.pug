@@ -19,7 +19,7 @@ include _points_entry_mixin
     //- this is where all point entries will appear
     .point-entries
       each point in familyParticipations[0].points
-        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "update")
+        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "unchanged")
 
     - let pointsString = "";
     if familyParticipations[0].totalDailyPoints
@@ -33,12 +33,5 @@ include _points_entry_mixin
 
     .center
       button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit') Done
-      //- if editRequest
-      //-   button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit' ) Update
-      //- else
-      //-   - let display = "none";
-      //-   if familyParticipations[0].totalPoints
-      //-     - display = "block";
-      //-   button#submit-points-button.grey-button(style=`display: ${display};background-color: ${familyColors[user.family.name]}` type='submit') Save
 
 

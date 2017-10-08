@@ -11,11 +11,13 @@ mixin pointsEntry(id, activity, numOfUnits, calculatedPoints, action)
         - description = `${activity.description},`
       .activity-description #{description} #[span.activity-points= activity.points] points for every #[span.activity-points-scale= activity.scale] #{activity.unit.name}
 
-    .fieldset
-      label(for="numOfUnits")= `${activity.unit.name}s`
-      input.num-of-units(type="number" step="0.00000001" min="0.00000001" name="numOfUnits" value=numOfUnits required)
+    div
+      .fieldset
+        label(for="numOfUnits")= `${activity.unit.name}s`
+        input.num-of-units(type="number" name="numOfUnits" value=numOfUnits required)
 
-    .calculated-points #{calculatedPoints} POINTS
+
+    .calculated-points #{calculatedPoints} 0.00 POINTS
     input.calculated-points(type="hidden", name="calculatedPoints", value=calculatedPoints)
 
     input(type="hidden" name="action" value=action)
