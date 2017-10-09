@@ -75,7 +75,7 @@ function removePointEntry(e) {
 
   // If the fade completed that means nothing happened
   setTimeout(function() {
-    undoMessage.fadeOut();
+    undoMessage.fadeOut(() => undoMessage.remove());
   }, 3000);
 }
 
