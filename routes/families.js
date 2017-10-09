@@ -89,14 +89,11 @@ router.get("/:familyName", (req, res) => {
       // determine if the points button should show and if so the date
       // it should hold for when user's choose to submit points
       addPointsButtonDate = calculateAddPointsButtonDate(
-        currentWeek,
-        requestedWeek,
+        isCurrentWeek,
+        requestedWeek === currentWeek - 1,
         today,
         defaultShowDate
       );
-      console.log("*************************");
-      console.log("ADD POINTS BUTTON DATE", addPointsButtonDate);
-      console.log("*************************");
 
       // then total the points for each challenge participant
       // if the user requesting the page is part of the family
@@ -274,21 +271,24 @@ function calculateDefaultShowDate(isCurrentWeek, today, weekInfo, dates) {
 
 // determines the date for the addpointsbutton
 function calculateAddPointsButtonDate(
-  currentWeek,
-  requestedWeek,
+  isCurrentWeek,
+  isPreviousWeek,
   today,
   defaultShowDate
 ) {
-  // if the requested date is today, then return today's date
-  if (today.toString() === defaultShowDate.toString()) return defaultShowDate;
+  // if requesting the current week, then return
+  // any date in the current week which is less than or equal to today
+  if (isCurrentWeek) {
+    // if (today.toString() === defaultShowDate.toString()) {
+    return defaultShowDate <= today ? defaultShowDate : false;
+  }
 
   // if
   // 1) requesting the previous week
   // 2) date requested is sunday
   // 3) the current date is a monday and before 12pm
   // display addpointsbutton with sunday's date
-  const previousWeek = currentWeek - 1;
-  if (requestedWeek === previousWeek && defaultShowDate.getDay() === 0) {
+  if (isPreviousWeek && defaultShowDate.getDay() === 0) {
     if (today.getDay() === 1) {
       middayMonday = new Date(today);
       middayMonday.setHours(12, 0, 0, 0);
