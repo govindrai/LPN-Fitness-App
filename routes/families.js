@@ -285,10 +285,9 @@ function calculateAddPointsButtonDate(
 
   // if
   // 1) requesting the previous week
-  // 2) date requested is sunday
-  // 3) the current date is a monday and before 12pm
-  // display addpointsbutton with sunday's date
-  if (isPreviousWeek && defaultShowDate.getDay() === 0) {
+  // 2) the current date is a monday and before 12pm
+  // 3) all of last weeks days should be editable
+  if (isPreviousWeek) {
     if (today.getDay() === 1) {
       middayMonday = new Date(today);
       middayMonday.setHours(12, 0, 0, 0);
