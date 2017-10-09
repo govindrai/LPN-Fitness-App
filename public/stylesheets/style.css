@@ -494,7 +494,7 @@ input.participation-status {
   background-color: #f0f4f8;
   position: relative;
   margin-bottom: 16px; }
-  .points-entry .trash {
+  .points-entry .trash, .points-entry .undo {
     position: absolute;
     top: 15px;
     right: 15px;

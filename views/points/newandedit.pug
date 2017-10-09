@@ -19,7 +19,8 @@ include _points_entry_mixin
     //- this is where all point entries will appear
     .point-entries
       each point in familyParticipations[0].points
-        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "unchanged")
+        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
+        .clear
 
     - let pointsString = "";
     if familyParticipations[0].totalDailyPoints

@@ -39,20 +39,58 @@ function updateShow(e) {
 }
 
 function removePointEntry(e) {
-  const hiddenActionInput = $(e.target)
-    .parent()
-    .find('input[name="action"]');
-  if (hiddenActionInput.val() === "update") {
+  // first hide the point entry, make it disabled and disable validation
+  // set the entry action to delete
+  // then calculateTotalPoints to show a correct reflection
+  const pointEntry = $(e.target).parent();
+  pointEntry.hide();
+  const calculatedPointsInput = pointEntry.find("input.calculated-points");
+  calculatedPointsInput.attr({
+    disabled: "disabled",
+    novalidate: "novalidate"
+  });
+  const hiddenActionInput = pointEntry.find('input[name="action"]');
+  const hiddenActionInputValue = hiddenActionInput.val();
+  if (hiddenActionInputValue !== "create") {
     hiddenActionInput.val("delete");
-    hiddenActionInput
-      .parent()
-      .find("input.calculated-points")
-      .attr({ disabled: "disabled", novalidate: "novalidate" });
-    hiddenActionInput.parent().hide();
-  } else {
-    hiddenActionInput.parent().remove();
   }
   calculateTotalPoints();
+
+  // Then find what activity was deleted, and show an undo message after
+  // the entry in the DOM and set it to fade in 3 seconds
+  const activityName = pointEntry.find(".activity-name").text();
+  const undoMessage = $(
+    `<div class="point-entry col-12">
+      <div data-original-action="${hiddenActionInputValue}" class="activty-name">
+        Deleted: ${activityName}
+      </div>
+      <a href="#" onclick="undoDelete" class="undo">UNDO</a>
+    </div>`
+  );
+
+  undoMessage.insertAfter(pointEntry);
+
+  // If the fade completed that means nothing happened
+  setTimeout(function() {
+    undoMessage.fadeOut();
+  }, 3000);
+}
+
+function undoDelete(e) {
+  e.preventDefault();
+  const undoMessage = $(e.target).parent();
+  const pointEntry = undoMessage.prev();
+  undoMessage.remove();
+  pointEntry.show();
+  pointEntry
+    .find("input.calculated-points")
+    .prop("disabled", false)
+    .prop("novalidate", false);
+  pointEntry.find("input[name='action']").val(
+    $(e.target)
+      .prev()
+      .data("originalAction")
+  );
 }
 
 function hideAddPointsModal() {
@@ -115,6 +153,13 @@ function calculateEntryPoints(e) {
     .parent()
     .parent()
     .parent();
+
+  // If the activity action is ignore, this means an existing entry is being updated
+  // therefore change the action to update
+  // debugger;
+  var actionInput = pointsEntry.find("input[name='action']");
+  var unchangedActivity = actionInput.val() === "ignore";
+  if (unchangedActivity) actionInput.val("update");
 
   var activityPoints = pointsEntry.find(".activity-points").text();
   var activityPointsScale = pointsEntry.find(".activity-points-scale").text();
@@ -253,6 +298,7 @@ $("body").on("click", ".updatePoints", updateShow);
 $("body").on("click", "#add-points-button", showAddPointsModal);
 $("body").on("click", "#edit-points", showAddPointsModal);
 $("body").on("click", "#x-button", hideAddPointsModal);
-$("body").on("keyup", ".num-of-units", calculateEntryPoints);
+$("body").on("change", ".num-of-units", calculateEntryPoints);
 $("body").on("click", ".trash", removePointEntry);
 $("body").on("blur", ".num-of-units", validatePointEntry);
+$("body").on("click", ".undo", undoDelete);

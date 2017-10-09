@@ -14,10 +14,10 @@ mixin pointsEntry(id, activity, numOfUnits, calculatedPoints, action)
     div
       .fieldset
         label(for="numOfUnits")= `${activity.unit.name}s`
-        input.num-of-units(type="number" name="numOfUnits" value=numOfUnits required)
+        input.num-of-units(type="number" name="numOfUnits" value=numOfUnits min="0" required )
 
 
-    .calculated-points #{calculatedPoints} 0.00 POINTS
+    .calculated-points #{calculatedPoints || 0.00} POINTS
     input.calculated-points(type="hidden", name="calculatedPoints", value=calculatedPoints)
 
     input(type="hidden" name="action" value=action)
