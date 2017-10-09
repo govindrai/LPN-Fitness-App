@@ -5,6 +5,8 @@ let addPointsStateChanged = false;
 
 // updates the #showBody container upon request of new date/week
 function updateShow(e) {
+  $("#dailyPoints").html(spinner);
+
   let weekInfo;
 
   // if changing weeks, send change direction and
@@ -28,7 +30,7 @@ function updateShow(e) {
       direction: "none"
     };
   }
-  $("#dailyPoints").html(spinner);
+
   // send the weekInfo object and update the #showBody container
   $.ajax({
     url: window.location.pathname,
@@ -291,7 +293,9 @@ function validatePointEntry(e) {
 }
 
 $(document).ready(function() {
-  initializeClock();
+  if ($("timeRemaining").length > 0) {
+    initializeClock();
+  }
   getActivities();
 });
 

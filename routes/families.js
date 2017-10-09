@@ -21,7 +21,6 @@ router.get("/:familyName", (req, res) => {
     dates,
     currentWeek,
     requestedWeek,
-    isFutureWeek,
     isCurrentWeek,
     timeRemaining,
     showPrevious,
@@ -36,7 +35,6 @@ router.get("/:familyName", (req, res) => {
   timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
-  isFutureWeek = requestedWeek > currentWeek;
   isCurrentWeek = requestedWeek === currentWeek;
   showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
   showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
@@ -88,16 +86,17 @@ router.get("/:familyName", (req, res) => {
         dates
       );
 
-      if (!isFutureWeek) {
-        // determine if the points button should show and if so the date
-        // it should hold for when user's choose to submit points
-        addPointsButtonDate = calculateAddPointsButtonDate(
-          currentWeek,
-          requestedWeek,
-          today,
-          defaultShowDate
-        );
-      }
+      // determine if the points button should show and if so the date
+      // it should hold for when user's choose to submit points
+      addPointsButtonDate = calculateAddPointsButtonDate(
+        currentWeek,
+        requestedWeek,
+        today,
+        defaultShowDate
+      );
+      console.log("*************************");
+      console.log("ADD POINTS BUTTON DATE", addPointsButtonDate);
+      console.log("*************************");
 
       // then total the points for each challenge participant
       // if the user requesting the page is part of the family
@@ -105,8 +104,7 @@ router.get("/:familyName", (req, res) => {
       return Point.calculateParticipantPointsByDay(
         familyParticipations,
         defaultShowDate,
-        family.name === user.family.name ? user : undefined,
-        isFutureWeek
+        family.name === user.family.name ? user : undefined
       );
     })
     .then(() => {
@@ -165,7 +163,6 @@ router.get("/:familyName", (req, res) => {
       }
 
       const options = {
-        isFutureWeek,
         isCurrentWeek,
         timeRemaining,
         dates,
@@ -218,7 +215,6 @@ module.exports = router;
 function calculateDates(weekInfo) {
   var startDate;
   if (weekInfo) {
-    console.log("MADE IT INTO WEEK INFO CONDITIONAL");
     if (weekInfo.direction === "none") {
       startDate = new Date(weekInfo.monday);
     } else if (weekInfo.direction === "previous") {
@@ -292,7 +288,7 @@ function calculateAddPointsButtonDate(
   // 3) the current date is a monday and before 12pm
   // display addpointsbutton with sunday's date
   const previousWeek = currentWeek - 1;
-  if (requestedWeek === previousWeek && defaultShowDate.getDay() === 7) {
+  if (requestedWeek === previousWeek && defaultShowDate.getDay() === 0) {
     if (today.getDay() === 1) {
       middayMonday = new Date(today);
       middayMonday.setHours(12, 0, 0, 0);
