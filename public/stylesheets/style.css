@@ -497,7 +497,8 @@ input.participation-status {
   .points-entry .trash, .points-entry .undo {
     position: absolute;
     top: 15px;
-    right: 15px; }
+    right: 15px;
+    cursor: pointer; }
   .points-entry .activity-name {
     margin-bottom: 12px; }
   .points-entry .entry-points-calculation {

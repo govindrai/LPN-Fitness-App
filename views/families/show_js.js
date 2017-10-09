@@ -99,7 +99,9 @@ function undoDelete(e) {
 }
 
 function hideAddPointsModal() {
-  window.location.reload();
+  $(".current-date")
+    .parent()
+    .trigger("click");
 }
 
 // retrieves HTML for a point entry input when a user
