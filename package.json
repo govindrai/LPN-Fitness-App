@@ -8,7 +8,8 @@
     "redis": "~/redis-3.2.9/src/redis-server",
     "test": "mocha tests/routes/index.test.js",
     "test-watch": "nodemon --exec \"npm test\"",
-    "seed": "node config/db/seed.js"
+    "seed": "node config/db/seed.js",
+    "reload": "browser-sync start --proxy \"localhost:3000\" --files \"./*.*\""
   },
   "dependencies": {
     "bcrypt": "^1.0.3",

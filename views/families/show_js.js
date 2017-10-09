@@ -53,6 +53,8 @@ function removePointEntry(e) {
   const hiddenActionInputValue = hiddenActionInput.val();
   if (hiddenActionInputValue !== "create") {
     hiddenActionInput.val("delete");
+  } else {
+    hiddenActionInput.val("ignore");
   }
   calculateTotalPoints();
 
@@ -60,12 +62,13 @@ function removePointEntry(e) {
   // the entry in the DOM and set it to fade in 3 seconds
   const activityName = pointEntry.find(".activity-name").text();
   const undoMessage = $(
-    `<div class="point-entry col-12">
+    `<div class="points-entry col-12">
       <div data-original-action="${hiddenActionInputValue}" class="activty-name">
         Deleted: ${activityName}
       </div>
       <a href="#" onclick="undoDelete" class="undo">UNDO</a>
-    </div>`
+    </div>
+    <div class="clear"></div>`
   );
 
   undoMessage.insertAfter(pointEntry);
