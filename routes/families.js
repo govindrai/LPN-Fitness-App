@@ -321,7 +321,7 @@ function calculateWeekNumber(challengeEndDate, sunday) {
   );
 }
 
-// a and b are javascript Date objects
+// a and b are JavaScript Date objects
 function dateDiffInDays(a, b) {
   var _MS_PER_DAY = 1000 * 60 * 60 * 24;
   // Discard the time and time-zone information.

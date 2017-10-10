@@ -1,16 +1,16 @@
 const spinner =
   '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
 
-let pointEntriesClone;
+let addPointsFormClone;
 
 function showAddPointsModal(e) {
   // scroll to the top of the window since user could be anywhere on the screen
   window.scrollTo(0, 0);
 
-  // clone the existing entries in case user decides to abandon changes
-  // only clone if the entry wasn't already clone (to avoid redundant cloning)
-  if (!pointEntriesClone) {
-    pointEntriesClone = $(".point-entries").clone(true);
+  // clone the existing addPointsFormClone in case user decides to abandon changes
+  // only clone if the form wasn't already cloned (to avoid redundant cloning)
+  if (!addPointsFormClone) {
+    addPointsFormClone = $("#add-points-form").clone(true);
   }
 
   // show the add points modal
@@ -19,9 +19,10 @@ function showAddPointsModal(e) {
   getActivities()
     .then(() => {
       // hide the spinner
-      $(".center.spinner").hide();
+      $(".typeahead-loading-spinner").hide();
 
-      $("#add-points-form").show();
+      // show the form content
+      $(".add-points-form-content").show();
 
       // if the user is adding points for the first time, focus the typeahead field
       const isAddingInitialPoints =
@@ -32,8 +33,10 @@ function showAddPointsModal(e) {
 }
 
 function hideAddPointsModal() {
+  // hide the add points modal
   $("#add-points-container").hide();
-  $(".point-entries").replaceWith(pointEntriesClone);
+  // replace the add points form with the clone since user abandoned changes
+  $("#add-points-form").replaceWith(addPointsFormClone);
 }
 
 // updates the #showBody container upon request of new date/week

@@ -6,36 +6,47 @@
 include _points_entry_mixin
 
 #add-points-container.col-12
-  #x-button.hamburger &#10005;
+  #x-button.hamburger(onclick="() => {document.querySelector('#confirm-abandon-changes').style.display='flex'}") &#10005;
+
+  #confirm-abandon-changes
+    .dialog-box
+      .dialog-title.center Unsaved Changes
+      .dialog-message Your changes will not be saved. Are you sure you want to leave?
+      .dialog-buttons
+        button.grey-button(onclick="goToHome") Yes
+        button.grey-button(style=`background-color: ${familyColors[user.family.name]}` onclick="function () {document.querySelector('#confirm-abandon-changes').style.display ='none'}") No
+
 
   .subtitle #{weekday}, #{month}/#{date}
 
   .border
 
-  .center.spinner
-    img(src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif")
+
 
   form#add-points-form(action="/points" method="POST")
-    input(type="hidden" name="participation" value=user.participationId)
-    input(type="hidden", name="date", value=addPointsButtonDate)
+    .center.typeahead-loading-spinner
+      img(src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif")
 
-    //- this is where all point entries will appear
-    .point-entries
-      each point in familyParticipations[0].points
-        +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
-        .clear
+    .add-points-form-content
+      input(type="hidden" name="participation" value=user.participationId)
+      input(type="hidden", name="date", value=addPointsButtonDate)
 
-    - let pointsString = "";
-    if familyParticipations[0].totalDailyPoints
-      - pointsString = `TOTAL = ${familyParticipations[0].totalDailyPoints.toFixed(2)} POINTS`
-    .total-calculated-points(style=`color: ${familyColors[user.family.name]}`) #{pointsString}
-    input.total-calculated-points(type="hidden" name="totalDailyPoints" value=familyParticipations[0].totalDailyPoints)
+      //- this is where all point entries will appear
+      .point-entries
+        each point in familyParticipations[0].points
+          +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
+          .clear
 
-
-    label#activity-name Add Activity
-    input#typeahead(type="text")
-
-    .center
-      button#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` type='submit') Done
+      - let pointsString = "";
+      if familyParticipations[0].totalDailyPoints
+        - pointsString = `TOTAL = ${familyParticipations[0].totalDailyPoints.toFixed(2)} POINTS`
+      .total-calculated-points(style=`color: ${familyColors[user.family.name]}`) #{pointsString}
+      input.total-calculated-points(type="hidden" name="totalDailyPoints" value=familyParticipations[0].totalDailyPoints)
 
 
+      label#activity-name Add Activity
+      input#typeahead(type="text")
+
+      input#submit-points-button.grey-button(style=`background-color: ${familyColors[user.family.name]}` value="Done" type='submit')
+
+.clear
