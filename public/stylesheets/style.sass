@@ -222,12 +222,19 @@ nav
 .updatePoints
   cursor: pointer
 
+#add-points-form
+  display: none
+
+
+
+
+
 #dailyPoints
   .participant
     border-bottom: 1px solid #dadde0
     margin: 16px 0
     cursor: pointer
-    &:not(:first-child) .points-entries-summaries
+    &:not(:first-child) .point-entries-summaries
       display: none
     &:last-child
       border: none
@@ -272,9 +279,9 @@ nav
         line-height: 1.38
         color: $dark-grey
 
-  .points-entries-summaries
+  .point-entries-summaries
     margin-top: -4px
-    .points-entry-summary
+    .point-entry-summary
       color: $black
       font-weight: 300
       .calculated-points-label
@@ -509,7 +516,7 @@ input.participation-status
   &.grey
     background-color: $light-grey
 
-.points-entry
+.point-entry
   padding: 16px
   border-radius: 5px
   background-color: #f0f4f8

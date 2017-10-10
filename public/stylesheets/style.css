@@ -210,11 +210,14 @@ nav {
 .updatePoints {
   cursor: pointer; }
 
+#add-points-form {
+  display: none; }
+
 #dailyPoints .participant {
   border-bottom: 1px solid #dadde0;
   margin: 16px 0;
   cursor: pointer; }
-  #dailyPoints .participant:not(:first-child) .points-entries-summaries {
+  #dailyPoints .participant:not(:first-child) .point-entries-summaries {
     display: none; }
   #dailyPoints .participant:last-child {
     border: none;
@@ -258,20 +261,20 @@ nav {
       line-height: 1.38;
       color: #6B6D70; }
 
-#dailyPoints .points-entries-summaries {
+#dailyPoints .point-entries-summaries {
   margin-top: -4px; }
-  #dailyPoints .points-entries-summaries .points-entry-summary {
+  #dailyPoints .point-entries-summaries .point-entry-summary {
     color: #353738;
     font-weight: 300; }
-    #dailyPoints .points-entries-summaries .points-entry-summary .calculated-points-label {
+    #dailyPoints .point-entries-summaries .point-entry-summary .calculated-points-label {
       font-weight: 600;
       display: inline-block;
       padding-right: 5px; }
-    #dailyPoints .points-entries-summaries .points-entry-summary:not(:last-child) {
+    #dailyPoints .point-entries-summaries .point-entry-summary:not(:last-child) {
       margin-bottom: 6px; }
-    #dailyPoints .points-entries-summaries .points-entry-summary:last-child {
+    #dailyPoints .point-entries-summaries .point-entry-summary:last-child {
       margin-bottom: 16px; }
-  #dailyPoints .points-entries-summaries #edit-points {
+  #dailyPoints .point-entries-summaries #edit-points {
     text-align: center;
     margin: 12px auto 16px auto;
     font-style: italic;
@@ -488,20 +491,20 @@ input.participation-status {
   .participation-status.grey {
     background-color: #a0a3a8; }
 
-.points-entry {
+.point-entry {
   padding: 16px;
   border-radius: 5px;
   background-color: #f0f4f8;
   position: relative;
   margin-bottom: 16px; }
-  .points-entry .trash, .points-entry .undo {
+  .point-entry .trash, .point-entry .undo {
     position: absolute;
     top: 15px;
     right: 15px;
     cursor: pointer; }
-  .points-entry .activity-name {
+  .point-entry .activity-name {
     margin-bottom: 12px; }
-  .points-entry .entry-points-calculation {
+  .point-entry .entry-points-calculation {
     font-weight: bold;
     line-height: 1.5;
     text-align: right;

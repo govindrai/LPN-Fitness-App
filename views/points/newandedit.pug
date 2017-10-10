@@ -12,6 +12,9 @@ include _points_entry_mixin
 
   .border
 
+  .center.spinner
+    img(src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif")
+
   form#add-points-form(action="/points" method="POST")
     input(type="hidden" name="participation" value=user.participationId)
     input(type="hidden", name="date", value=addPointsButtonDate)
@@ -19,7 +22,7 @@ include _points_entry_mixin
     //- this is where all point entries will appear
     .point-entries
       each point in familyParticipations[0].points
-        +pointsEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
+        +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
         .clear
 
     - let pointsString = "";

@@ -1,7 +1,40 @@
 const spinner =
   '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
 
-let addPointsStateChanged = false;
+let pointEntriesClone;
+
+function showAddPointsModal(e) {
+  // scroll to the top of the window since user could be anywhere on the screen
+  window.scrollTo(0, 0);
+
+  // clone the existing entries in case user decides to abandon changes
+  // only clone if the entry wasn't already clone (to avoid redundant cloning)
+  if (!pointEntriesClone) {
+    pointEntriesClone = $(".point-entries").clone(true);
+  }
+
+  // show the add points modal
+  $("#add-points-container").show();
+
+  getActivities()
+    .then(() => {
+      // hide the spinner
+      $(".center.spinner").hide();
+
+      $("#add-points-form").show();
+
+      // if the user is adding points for the first time, focus the typeahead field
+      const isAddingInitialPoints =
+        $(e.target).attr("id") === "add-points-button";
+      if (isAddingInitialPoints) $("#typeahead").focus();
+    })
+    .catch(e => console.log(e));
+}
+
+function hideAddPointsModal() {
+  $("#add-points-container").hide();
+  $(".point-entries").replaceWith(pointEntriesClone);
+}
 
 // updates the #showBody container upon request of new date/week
 function updateShow(e) {
@@ -40,32 +73,51 @@ function updateShow(e) {
     .fail(() => console.log("Updating show failed"));
 }
 
-function removePointEntry(e) {
-  // first hide the point entry, make it disabled and disable validation
+// hides the point entry, and changes attributes for
+// crud action and input field validations
+// also invokes an undo delete container for reversal
+function deletePointEntry(e) {
+  // the point entry container
+  const pointEntry = $(e.target).parent();
+  // hide the point entry
+  pointEntry.hide();
+
+  // get the hidden input that stores the crud action
+  const actionInput = pointEntry.find('input[name="action"]');
+
+  // crud current and previous action values
+  const currentAction = actionInput.val();
+  const previousAction = actionInput.data("previousAction");
+
+  // set the data attribute previous action to the current action
+  // in the event the user wishes to undo delete
+
+  // if the current crud action is not create (meaning it is not a new entry)
+  // set the action to delete, so that the existing entry can be deleted
+  // otherwise set it to ignore since removing a new entry implies no data change
+  if (currentAction !== "create") {
+    actionInput.val("delete");
+  } else {
+    actionInput.val("ignore");
+  }
+
+  // make it disabled and disable validation
   // set the entry action to delete
   // then calculateTotalPoints to show a correct reflection
-  const pointEntry = $(e.target).parent();
-  pointEntry.hide();
   const calculatedPointsInput = pointEntry.find("input.calculated-points");
   calculatedPointsInput.attr({
     disabled: "disabled",
     novalidate: "novalidate"
   });
-  const hiddenActionInput = pointEntry.find('input[name="action"]');
-  const hiddenActionInputValue = hiddenActionInput.val();
-  if (hiddenActionInputValue !== "create") {
-    hiddenActionInput.val("delete");
-  } else {
-    hiddenActionInput.val("ignore");
-  }
+
   calculateTotalPoints();
 
   // Then find what activity was deleted, and show an undo message after
   // the entry in the DOM and set it to fade in 3 seconds
   const activityName = pointEntry.find(".activity-name").text();
   const undoMessage = $(
-    `<div class="points-entry col-12">
-      <div data-original-action="${hiddenActionInputValue}" class="activty-name">
+    `<div class="point-entry col-12">
+      <div data-original-action="${currentAction}" class="activty-name">
         Deleted: ${activityName}
       </div>
       <a href="#" onclick="undoDelete" class="undo">UNDO</a>
@@ -98,12 +150,6 @@ function undoDelete(e) {
   );
 }
 
-function hideAddPointsModal() {
-  $(".current-date")
-    .parent()
-    .trigger("click");
-}
-
 // retrieves HTML for a point entry input when a user
 // selects an activity from the typeahead drop-down
 function getActivityData(ev, suggestion) {
@@ -127,61 +173,81 @@ function getActivityData(ev, suggestion) {
 // gets activity objects and inject's typeahead's
 // functionality into search activity input field
 function getActivities() {
-  $.ajax({
-    url: "/activities"
-  })
-    .done(res => {
-      const typeahead = $("#typeahead");
-      typeahead.typeahead(
-        {
-          highlight: true,
-          hint: "search.."
-        },
-        {
-          name: "my-dataset",
-          source: new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.whitespace,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: res
-          })
-        }
-      );
-      typeahead.bind("typeahead:select", getActivityData);
-      $(".twitter-typeahead").css("display", "block");
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "/activities"
     })
-    .fail(e => console.log(e));
+      .done(res => {
+        const typeahead = $("#typeahead");
+        typeahead.typeahead(
+          {
+            highlight: true,
+            hint: "search.."
+          },
+          {
+            name: "my-dataset",
+            source: new Bloodhound({
+              datumTokenizer: Bloodhound.tokenizers.whitespace,
+              queryTokenizer: Bloodhound.tokenizers.whitespace,
+              local: res
+            })
+          }
+        );
+        typeahead.bind("typeahead:select", getActivityData);
+        $(".twitter-typeahead").css("display", "block");
+        return resolve();
+      })
+      .fail(e => reject(e));
+  });
 }
 
 // calculates each entries point value by multiplying scale * unit
-// also calculates the total points since values changed
+// also recalculates the total points since values changed
 function calculateEntryPoints(e) {
-  console.log("calculate entry points hit");
-  var pointsEntry = $(this)
+  // Entire point entry container
+  const pointEntry = $(this)
     .parent()
     .parent()
     .parent();
 
-  // If the activity action is ignore, this means an existing entry is being updated
-  // therefore change the action to update
-  // debugger;
-  var actionInput = pointsEntry.find("input[name='action']");
-  var unchangedActivity = actionInput.val() === "ignore";
-  if (unchangedActivity) actionInput.val("update");
+  // the action for the point entry (ignore|update|delete|create)
+  const actionInput = pointEntry.find("input[name='action']");
 
-  var activityPoints = pointsEntry.find(".activity-points").text();
-  var activityPointsScale = pointsEntry.find(".activity-points-scale").text();
+  // the number of units the user has inputted for the activity
+  const numOfUnits = $(this).val();
 
-  var numOfUnits = $(this).val();
+  // the original points and action associated with the activity
+  const originalNumOfUnits = $(this).data("originalNumOfUnits");
+  const originalAction = actionInput.data("originalAction");
 
-  if (numOfUnits == "") {
-    pointsEntry.find("input.calculated-points").val(0);
-    pointsEntry.find("div.calculated-points").text("0 POINTS");
+  // activity is existing action if the original action is ignore
+  const isExistingActivity = originalAction === "ignore";
+
+  // if existing activity and numOfUnits are equal to originalNumOfUnits
+  // change the action back from update to ignore
+  // otherwise change the action to update
+  if (isExistingActivity) {
+    if (numOfUnits === originalNumOfUnits) {
+      actionInput.val("ignore");
+      pointEntry.data("isActionChanged", false);
+    } else {
+      actionInput.val("update");
+      pointEntry.data("isActionChanged", true);
+    }
+  }
+
+  const activityPoints = pointEntry.find(".activity-points").text();
+  const activityPointsScale = pointEntry.find(".activity-points-scale").text();
+
+  if (numOfUnits === "") {
+    pointEntry.find("input.calculated-points").val(0);
+    pointEntry.find("div.calculated-points").text("0 POINTS");
   } else {
     var calculation = (parseFloat(activityPoints) /
       parseFloat(activityPointsScale) *
       parseFloat(numOfUnits)).toFixed(2);
-    pointsEntry.find("input.calculated-points").val(calculation);
-    pointsEntry.find("div.calculated-points").text(calculation + " POINTS");
+    pointEntry.find("input.calculated-points").val(calculation);
+    pointEntry.find("div.calculated-points").text(calculation + " POINTS");
   }
   calculateTotalPoints();
 }
@@ -191,11 +257,11 @@ function calculateTotalPoints() {
   const pointEntries = $("input.calculated-points[disabled!=disabled]");
   const totalCalculatedPoints = $.makeArray(pointEntries)
     .reduce(
-      (total, pointsEntryValue) =>
+      (total, pointEntryValue) =>
         total +
-        ($(pointsEntryValue).val() === ""
+        ($(pointEntryValue).val() === ""
           ? 0
-          : parseFloat($(pointsEntryValue).val())),
+          : parseFloat($(pointEntryValue).val())),
       0
     )
     .toFixed(2);
@@ -217,7 +283,7 @@ function calculateTotalPoints() {
 function toggleParticipantPoints(e) {
   if ($(e.target).attr("id") !== "edit-points") {
     $(this)
-      .find(".points-entries-summaries")
+      .find(".point-entries-summaries")
       .slideToggle();
   }
 }
@@ -238,13 +304,6 @@ function initializeClock() {
 
   var clock = document.getElementById("timeRemaining");
   var timeinterval = setInterval(() => getTimeRemaining(endtime), 1000);
-}
-
-function showAddPointsModal(e) {
-  $("#add-points-container").toggle();
-  window.scrollTo(0, 0);
-  const editingPoints = $(e.target).attr("id") === "edit-points";
-  if (!editingPoints) $("#typeahead").focus();
 }
 
 function getExistingPoints() {
@@ -308,6 +367,6 @@ $("body").on("click", "#add-points-button", showAddPointsModal);
 $("body").on("click", "#edit-points", showAddPointsModal);
 $("body").on("click", "#x-button", hideAddPointsModal);
 $("body").on("change", ".num-of-units", calculateEntryPoints);
-$("body").on("click", ".trash", removePointEntry);
+$("body").on("click", ".trash", deletePointEntry);
 $("body").on("blur", ".num-of-units", validatePointEntry);
 $("body").on("click", ".undo", undoDelete);

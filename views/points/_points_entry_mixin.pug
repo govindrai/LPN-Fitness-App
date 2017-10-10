@@ -1,5 +1,5 @@
-mixin pointsEntry(id, activity, numOfUnits, calculatedPoints, action)
-  .points-entry.col-12
+mixin pointEntry(id, activity, numOfUnits, calculatedPoints, action)
+  .point-entry.col-12(data-is-action-changed=false)
     input(type="hidden" name="point" value=id)
     img.trash(src="/images/trash.png" width="24px")
 
@@ -14,10 +14,9 @@ mixin pointsEntry(id, activity, numOfUnits, calculatedPoints, action)
     div
       .fieldset
         label(for="numOfUnits")= `${activity.unit.name}s`
-        input.num-of-units(type="number" name="numOfUnits" value=numOfUnits min="0" required )
-
+        input.num-of-units(data-original-num-of-units=numOfUnits type="number" name="numOfUnits" value=numOfUnits min="0" required )
 
     .calculated-points #{calculatedPoints || 0.00} POINTS
     input.calculated-points(type="hidden", name="calculatedPoints", value=calculatedPoints)
 
-    input(type="hidden" name="action" value=action)
+    input(data-original-action=action data-previous-action=action type="hidden" name="action" value=action)

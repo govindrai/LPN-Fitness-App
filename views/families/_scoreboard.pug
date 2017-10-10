@@ -31,10 +31,10 @@ mixin printParticipants(familyParticipations)
                   .total-points &#8213;
                 else
                   .total-points= participation.totalDailyPoints
-          .points-entries-summaries
+          .point-entries-summaries
             if participation.points.length > 0
               each point in participation.points
-                .points-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
+                .point-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
               if addPointsButtonDate
                 #edit-points(style=`color: ${familyColors[family.name]}`) Edit
 
