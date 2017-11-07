@@ -90,12 +90,9 @@ userSchema.post("validate", function(next) {
   if (user.isModified("password")) {
     User.hashPassword(user.password)
       .then(hash => {
-        user.password = hash;
-        return next();
+        return (user.password = hash);
       })
       .catch(e => console.log(e));
-  } else {
-    return next();
   }
 });
 

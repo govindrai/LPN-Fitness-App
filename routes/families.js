@@ -260,6 +260,7 @@ function determineVersingFamily(
 }
 
 function checkUserParticipation(familyParticipations, user) {
+  console.log("FAMILY Participations", familyParticipations);
   return familyParticipations.find(
     participation => participation.user._id.toString() === user._id.toString()
   );
