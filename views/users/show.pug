@@ -3,31 +3,36 @@ include ../layout.pug
 block content
   .col-12
 
-    .title #{user.name.first}'s Profile
+    .subtitle #{user.name.first}'s Profile
+    .border
 
     if successMessage
       .success Your profile was updated!
 
     .activity
+      .activity-name First Name
+      .activity-description= user.name.first
 
-      .subtitle First Name:
-      .activity-name= user.name.first
+    .activity
+      .activity-name Last Name
+      .activity-description= user.name.last
 
-      .subtitle Last Name:
-      .activity-name= user.name.last
+    if user.name.nickname
+      .activity
+        .activity-name Nickname
+        .activity-description= user.name.nickname
 
-      if user.name.nickname 
-        .subtitle Nickname:
-        .activity-name= user.name.nickname 
+    .activity
+      .activity-name Email
+      .activity-description= user.email
 
-      .subtitle Email:
-      .activity-name= user.email
+    .activity
+      .activity-name Family
+      .activity-description= user.family.name
 
-      .subtitle Family:
-      .activity-name= user.family.name
-
-      .subtitle Lifetime Points:
-      .activity-name= user.lifetimePoints
+    .activity
+      .activity-name Lifetime Points
+      .activity-description= user.lifetimePoints
 
     if user._id.toString() === currentUser._id.toString()
-      a.grey-button(href="/users/edit") Edit Profile
+      a.grey-button(href=`/users/${user._id}/edit`) Edit Profile
