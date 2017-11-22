@@ -1,16 +1,17 @@
 const spinner =
   '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
 
-let addPointsFormClone;
+let originalFormHTML;
 
 function showAddPointsModal(e) {
+  console.log("showAddPointsModal triggered");
   // scroll to the top of the window since user could be anywhere on the screen
   window.scrollTo(0, 0);
 
-  // clone the existing addPointsFormClone in case user decides to abandon changes
-  // only clone if the form wasn't already cloned (to avoid redundant cloning)
-  if (!addPointsFormClone) {
-    addPointsFormClone = $("#add-points-form").clone(true);
+  // get the html of the existing points form in the event user decides to abandon the adding/updating points process
+  // only clone if the form wasn't already cloned (to avoid redundant cloning) this happens in situations when you abandon changes multiple times without reloading the page.
+  if (!originalFormHTML) {
+    originalFormHTML = $("#add-points-form").html();
   }
 
   // show the add points modal
@@ -32,11 +33,10 @@ function showAddPointsModal(e) {
     .catch(e => console.log(e));
 }
 
+// triggered when user abandons the add/update points flow
 function hideAddPointsModal() {
-  // hide the add points modal
   $("#add-points-container").hide();
-  // replace the add points form with the clone since user abandoned changes
-  $("#add-points-form").replaceWith(addPointsFormClone);
+  $("#add-points-form").html(originalFormHTML);
 }
 
 // updates the #showBody container upon request of new date/week
@@ -156,6 +156,8 @@ function undoDelete(e) {
 // retrieves HTML for a point entry input when a user
 // selects an activity from the typeahead drop-down
 function getActivityData(ev, suggestion) {
+  // debugger;
+  console.log("getActivityData triggered");
   $("#typeahead").typeahead("val", "");
   $("#typeahead").blur();
 
@@ -164,6 +166,7 @@ function getActivityData(ev, suggestion) {
     url: `/activities/${suggestion}`
   })
     .done(res => {
+      // debugger;
       $(".point-entries")
         .find(".center")
         .replaceWith(res);
@@ -173,9 +176,10 @@ function getActivityData(ev, suggestion) {
     });
 }
 
-// gets activity objects and inject's typeahead's
-// functionality into search activity input field
+// gets activity info from db and injects typeahead
+// functionality into activity search field
 function getActivities() {
+  console.log("getActivities triggered");
   return new Promise((resolve, reject) => {
     $.ajax({
       url: "/activities"
@@ -310,6 +314,7 @@ function initializeClock() {
 }
 
 function getExistingPoints() {
+  console.log("getExistingPoints triggered");
   const addPointsButtonDate = $(".current-date .date").data("date");
   const participation = $("input[name='participation']").val();
   $.ajax({
@@ -360,7 +365,7 @@ $(document).ready(function() {
   if ($("timeRemaining").length > 0) {
     initializeClock();
   }
-  getActivities();
+  // getActivities();
 });
 
 $("body").on("click", ".participant", toggleParticipantPoints);
