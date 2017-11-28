@@ -5,16 +5,16 @@
 
 include _points_entry_mixin
 
-#add-points-container.col-12
-  #x-button.hamburger(onclick="() => {document.querySelector('#confirm-abandon-changes').style.display='flex'}") &#10005;
+#points-form-modal.col-12
+  #abandon-points-form.hamburger &#10005;
 
-  #confirm-abandon-changes
+  #abandon-points-form-confirmation-modal
     .dialog-box
       .dialog-title.center Unsaved Changes
       .dialog-message Your changes will not be saved. Are you sure you want to leave?
       .dialog-buttons
-        button.grey-button(onclick="goToHome") Yes
-        button.grey-button(style=`background-color: ${familyColors[user.family.name]}` onclick="function () {document.querySelector('#confirm-abandon-changes').style.display ='none'}") No
+        button#confirm-abandon-points-form.grey-button Yes
+        button#cancel-abandon-points-form.grey-button(style=`background-color: ${familyColors[user.family.name]}`) No
 
 
   .subtitle #{weekday}, #{month}/#{date}
@@ -23,11 +23,11 @@ include _points_entry_mixin
 
 
 
-  form#add-points-form(action="/points" method="POST")
+  form#points-form(action="/points" method="POST")
     .center.typeahead-loading-spinner
       img(src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif")
 
-    .add-points-form-content
+    .points-form-content
       input(type="hidden" name="participation" value=user.participationId)
       input(type="hidden", name="date", value=addPointsButtonDate)
 

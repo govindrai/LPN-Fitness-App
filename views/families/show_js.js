@@ -1,42 +1,88 @@
+let originalPointsFormHTML;
 const spinner =
   '<div class="center"><img src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif" /></div>';
 
-let originalFormHTML;
-
-function showAddPointsModal(e) {
-  console.log("showAddPointsModal triggered");
-  // scroll to the top of the window since user could be anywhere on the screen
+function goToTopOfWindow() {
   window.scrollTo(0, 0);
+}
 
-  // get the html of the existing points form in the event user decides to abandon the adding/updating points process
-  // only clone if the form wasn't already cloned (to avoid redundant cloning) this happens in situations when you abandon changes multiple times without reloading the page.
-  if (!originalFormHTML) {
-    originalFormHTML = $("#add-points-form").html();
-  }
+function addPoints(e) {
+  // scroll to the top as user could be anywhere on the screen
+  goToTopOfWindow();
 
-  // show the add points modal
-  $("#add-points-container").show();
+  // show the points form modal
+  $("#points-form-modal").show();
 
+  // get list of selectable activities
   getActivities()
     .then(() => {
       // hide the spinner
       $(".typeahead-loading-spinner").hide();
 
       // show the form content
-      $(".add-points-form-content").show();
+      $(".points-form-content").show();
 
       // if the user is adding points for the first time, focus the typeahead field
       const isAddingInitialPoints =
         $(e.target).attr("id") === "add-points-button";
       if (isAddingInitialPoints) $("#typeahead").focus();
+
+      copyOriginalPointsFormHTML();
     })
     .catch(e => console.log(e));
 }
 
-// triggered when user abandons the add/update points flow
-function hideAddPointsModal() {
-  $("#add-points-container").hide();
-  $("#add-points-form").html(originalFormHTML);
+// get the html of the existing points form in the event user decides to abandon the adding/updating points process
+// only clone if the form wasn't already cloned (to avoid redundant cloning) this happens in situations when you abandon changes multiple times without reloading the page.
+function copyOriginalPointsFormHTML() {
+  if (!originalPointsFormHTML) {
+    console.log("copying form as originalPointsFormHTML does not exist");
+    originalPointsFormHTML = $("#points-form").html();
+  }
+}
+
+function isPointsFormChanged(originalPointsFormHTML) {
+  var currentHTML = $("#points-form").html();
+  var booleanValue = originalPointsFormHTML !== currentHTML;
+  console.log("current");
+  console.log(currentHTML);
+  console.log("originalPointsFormHTML");
+  console.log(originalPointsFormHTML);
+  return booleanValue;
+  // return originalPointsFormHTML === $("#points-form").html();
+}
+
+function showAbandonPointsFormModal() {
+  $("#abandon-changes-modal").show();
+}
+
+function hideAddPointsFormModal() {
+  $("#points-form-modal").hide();
+}
+
+// triggered when user wants to abandon the points form flow
+// if the form was changed, have user confirm they want to abandon
+// otherwise hide the add-points-form modal
+function abandonPointsForm() {
+  if (isPointsFormChanged(originalPointsFormHTML)) {
+    showAbandonPointsFormModal();
+  } else {
+    console.log("Add Points form was not changed");
+    hideAddPointsFormModal();
+  }
+}
+
+function revertPointsFormToOriginalState() {
+  $("#points-form").html(originalPointsFormHTML);
+}
+
+function confirmAbandonPointsForm() {
+  hideAddPointsFormModal();
+  revertPointsFormToOriginalState();
+}
+
+function cancelAbandonPointsForm() {
+  $("#abandon-points-form-confirmation-modal").hide();
 }
 
 // updates the #showBody container upon request of new date/week
@@ -371,10 +417,12 @@ $(document).ready(function() {
 $("body").on("click", ".participant", toggleParticipantPoints);
 $("body").on("click", ".change-week", updateShow);
 $("body").on("click", ".updatePoints", updateShow);
-$("body").on("click", "#add-points-button", showAddPointsModal);
-$("body").on("click", "#edit-points", showAddPointsModal);
-$("body").on("click", "#x-button", hideAddPointsModal);
+$("body").on("click", "#add-points-button", addPoints);
+$("body").on("click", "#edit-points", addPoints);
+$("body").on("click", "#abandon-points-form", abandonPointsForm);
 $("body").on("change", ".num-of-units", calculateEntryPoints);
 $("body").on("click", ".trash", deletePointEntry);
 $("body").on("blur", ".num-of-units", validatePointEntry);
 $("body").on("click", ".undo", undoDelete);
+$("body").on("click", "#confirm-abandon-points-form", confirmAbandonPointsForm);
+$("body").on("click", "#cancel-abandon-points-form", cancelAbandonPointsForm);
