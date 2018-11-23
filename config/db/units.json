@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Mile",
+    "abbreviation": "mi"
+  },
+  {
+    "name": "Game",
+    "abbreviation": "game"
+  },
+  {
+    "name": "Feet",
+    "abbreviation": "ft"
+  },
+  {
+    "name": "Meter",
+    "abbreviation": "mm"
+  },
+  {
+    "name": "Minute",
+    "abbreviation": "min"
+  },
+  {
+    "name": "Hour",
+    "abbreviation": "hr"
+  },
+  {
+    "name": "Hole",
+    "abbreviation": "hole"
+  },
+  {
+    "name": "Day",
+    "abbreviation": "day"
+  },
+  {
+    "name": "Jump",
+    "abbreviation": "jump"
+  }
+]
