@@ -1,27 +1,22 @@
 const mongoose = require("./mongoose"),
   Activity = require("../../models/activity"),
-  activities = require("../json/activities.json"),
   User = require("../../models/user"),
-  users = require("../json/users.json"),
   Family = require("../../models/family"),
-  families = require("../json/families.json"),
+  families = require("./json/families.json"),
   Challenge = require("../../models/challenge"),
   Point = require("../../models/point"),
   Participation = require("../../models/participation"),
   Unit = require("../../models/unit"),
-  units = require("../json/units.json"),;
+  units = require("./json/units.json");
 
 let iolite,
+  activities,
   sunstone,
   ruby,
   emerald,
   sapphire,
   topaz,
   alexandrite,
-  units,
-  users,
-  families,
-  activities,
   participations = [],
   mile,
   game,
@@ -235,6 +230,139 @@ function assignUnits() {
     })
     .catch(e => console.log(e));
 }
+function createActivities() {
+  activities = [
+    new Activity({
+      name: "Jump roping",
+      points: 1,
+      scale: 150,
+      unit: jump
+    }),
+    new Activity({
+      name: "Biking(<5 min pace)",
+      points: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Biking(>5 min pace)",
+      points: 1,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Biking(elevation)",
+      points: 2,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: "Elliptical",
+      points: 2,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Bowling",
+      points: 2,
+      scale: 1,
+      unit: game
+    }),
+    new Activity({
+      name: "Hiking",
+      description: "outdoors on trail",
+      points: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Run/walk(10-15 min pace)",
+      points: 3,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Hiking(elevation)",
+      description: "after initial 1000ft.",
+      points: 1.5,
+      scale: 100,
+      unit: feet
+    }),
+    new Activity({
+      name: "Rowing",
+      points: 4,
+      scale: 1500,
+      unit: meter
+    }),
+    new Activity({
+      name: "Weightlifting",
+      description: "body weight exercises like pushups, pullups etc. included",
+      points: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: "Swimming",
+      points: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: "Abs",
+      description: "not in class",
+      points: 4,
+      scale: 15,
+      unit: minute
+    }),
+    new Activity({
+      name: "Running(<10 min pace)",
+      points: 4,
+      scale: 1,
+      unit: mile
+    }),
+    new Activity({
+      name: "Sports game",
+      description:
+        "basketball, volleyball, badminton, etc. (actual game, not just warming up)",
+      points: 6,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: "Fitness class",
+      description: "pilates, yoga, zumba, rock climbing, martial arts etc.",
+      points: 8,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: "Golf",
+      points: 12,
+      scale: 9,
+      unit: hole
+    }),
+    new Activity({
+      name: "Intense workout",
+      description: "p90x, parkour, cycling class, crossfit",
+      points: 12,
+      scale: 30,
+      unit: minute
+    }),
+    new Activity({
+      name: "Surfing",
+      points: 12,
+      scale: 1,
+      unit: hour
+    }),
+    new Activity({
+      name: "Snowboarding",
+      points: 15,
+      scale: 0.5,
+      unit: day
+    })
+  ];
+  return createObjs(activities);
+}
 
 function assignActivities() {
   return Activity.find()
@@ -322,15 +450,35 @@ async function createParticipations() {
   );
 }
 
+// NEED TO MAKE THIS WORK
+async function createUsers() {
+  const families = await Family.find();
+  const users = require("./json/users.json");
+  await User.create(
+    users.map(user => {
+      family: families[Math.floor(Math.random() * families.length)],
+      email: user.email,
+      name {
+        first: user.name.first,
+        last: user.name.last,
+        nickname: user.name.nickname
+      },
+      family: user.family,
+      lifetimePoints: user.lifetimePoints
+    });
+  );
+}
+
 async function seedGlobalData() {
   await Family.create(families);
-  await Activity.create(activities);
+  await assignFamilies();
   await Unit.create(units);
   await assignUnits();
+  await createActivities();
 }
 
 async function seedSampleData() {
-  await User.create(users);
+  await createUsers();
   await assignActivities();
   await Challenge.create(challenges);
   await assignChallenges();
