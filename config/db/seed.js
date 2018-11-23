@@ -1,11 +1,15 @@
 const mongoose = require("./mongoose"),
   Activity = require("../../models/activity"),
+  activities = require("../json/activities.json"),
   User = require("../../models/user"),
+  users = require("../json/users.json"),
   Family = require("../../models/family"),
+  families = require("../json/families.json"),
   Challenge = require("../../models/challenge"),
   Point = require("../../models/point"),
   Participation = require("../../models/participation"),
-  Unit = require("../../models/unit");
+  Unit = require("../../models/unit"),
+  units = require("../json/units.json"),;
 
 let iolite,
   sunstone,
@@ -151,7 +155,7 @@ function assignChallenges() {
             twoYearsLaterChallenge = challenge;
             break;
           default:
-            console.log("i don't know that challenge");
+            Object.empty = challenge;
         }
       });
     })
@@ -185,7 +189,7 @@ function assignFamilies() {
             emerald = family;
             break;
           default:
-            console.log("i don't know that family");
+            Object.empty = family;
         }
       });
     })
@@ -225,7 +229,7 @@ function assignUnits() {
             jump = unit;
             break;
           default:
-            console.log("i don't know that unit");
+            Object.empty = unit;
         }
       });
     })
@@ -298,7 +302,7 @@ function assignActivities() {
             snowboarding = activity;
             break;
           default:
-            console.log("i don't know that activity");
+            Object.empty = activity;
         }
       });
     })
@@ -319,14 +323,14 @@ async function createParticipations() {
 }
 
 async function seedGlobalData() {
-  await Family.create(require("./families.json"));
-  await Activity.create(require("./activities.json"));
-  await Unit.create(require("./units.json"));
+  await Family.create(families);
+  await Activity.create(activities);
+  await Unit.create(units);
   await assignUnits();
 }
 
 async function seedSampleData() {
-  await User.create(require("./users.json"));
+  await User.create(users);
   await assignActivities();
   await Challenge.create(challenges);
   await assignChallenges();
