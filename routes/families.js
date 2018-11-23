@@ -10,7 +10,7 @@ const Family = require("./../models/family"),
 const router = express.Router();
 
 router.get("/:familyName", (req, res) => {
-  let { user } = res.locals,
+  let { user, currentChallenge } = res.locals,
     family,
     versingFamily,
     familyParticipations,
@@ -29,10 +29,11 @@ router.get("/:familyName", (req, res) => {
     nextVersingFamilyName,
     { familyName } = req.params,
     { weekInfo } = req.query,
-    { currentChallenge } = res.locals,
     today = getToday();
+  if (!currentChallenge) {
+    return res.render("families/no_challenge", { familyName });
+  }
 
-  console.log("CURRENT CHALLENGE", res.locals.currentChallenge);
   dates = calculateDates(weekInfo);
   timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
@@ -49,142 +50,147 @@ router.get("/:familyName", (req, res) => {
   }
 
   // Find the family who's page has been requested
-  Family.findOne({ name: familyName })
-    .then(familyObj => {
-      family = familyObj;
-      versingFamily = determineVersingFamily(
-        requestedWeek,
-        currentWeek,
-        currentChallenge,
-        family.name
-      );
-      // then get all challenge participants in family
-      return Participation.getChallengeParticipantsByFamily(
-        currentChallenge._id,
-        family._id
-      );
-    })
-    .then(familyParticipationsArray => {
-      familyParticipations = familyParticipationsArray;
-      // then, if versingFamily, get all challenge participants in versing family
-      if (versingFamily) {
+  return (
+    Family.findOne({ name: familyName })
+      .then(familyObj => {
+        family = familyObj;
+        versingFamily = determineVersingFamily(
+          requestedWeek,
+          currentWeek,
+          currentChallenge,
+          family.name
+        );
+        // then get all challenge participants in family
         return Participation.getChallengeParticipantsByFamily(
           currentChallenge._id,
-          versingFamily._id
+          family._id
         );
-      }
-    })
-    .then(versingFamilyParticipationsArray => {
-      if (versingFamily) {
-        versingFamilyParticipations = versingFamilyParticipationsArray;
-      }
+      })
+      .then(familyParticipationsArray => {
+        familyParticipations = familyParticipationsArray;
+        // then, if versingFamily, get all challenge participants in versing family
+        if (versingFamily) {
+          return Participation.getChallengeParticipantsByFamily(
+            currentChallenge._id,
+            versingFamily._id
+          );
+        }
+      })
+      .then(versingFamilyParticipationsArray => {
+        if (versingFamily) {
+          versingFamilyParticipations = versingFamilyParticipationsArray;
+        }
 
-      // determine selected calendar date when user accesses family page
-      // or when user chooses to switch weeks using arrow buttons
-      // or when user chooses to select a specific date
-      defaultShowDate = calculateDefaultShowDate(
-        isCurrentWeek,
-        today,
-        weekInfo,
-        dates
-      );
-
-      if (!isFutureWeek) {
-        // determine if the points button should show and if so the date
-        // it should hold for when user's choose to submit points
-        addPointsButtonDate = calculateAddPointsButtonDate(
-          currentWeek,
-          requestedWeek,
+        // determine selected calendar date when user accesses family page
+        // or when user chooses to switch weeks using arrow buttons
+        // or when user chooses to select a specific date
+        defaultShowDate = calculateDefaultShowDate(
+          isCurrentWeek,
           today,
-          defaultShowDate
+          weekInfo,
+          dates
         );
-      }
 
-      // then total the points for each challenge participant
-      // if the user requesting the page is part of the family
-      // then move that user to the top
-      return Point.calculateParticipantPointsByDay(
-        familyParticipations,
-        defaultShowDate,
-        family.name === user.family.name ? user : undefined,
-        isFutureWeek
-      );
-    })
-    .then(() => {
-      // check if user is participating in the challenge
-      user.isParticipating = checkUserParticipation(familyParticipations, user);
+        if (!isFutureWeek) {
+          // determine if the points button should show and if so the date
+          // it should hold for when user's choose to submit points
+          addPointsButtonDate = calculateAddPointsButtonDate(
+            currentWeek,
+            requestedWeek,
+            today,
+            defaultShowDate
+          );
+        }
 
-      if (addPointsButtonDate) {
-        user.participationId = familyParticipations[0]._id;
-      }
+        // then total the points for each challenge participant
+        // if the user requesting the page is part of the family
+        // then move that user to the top
+        return Point.calculateParticipantPointsByDay(
+          familyParticipations,
+          defaultShowDate,
+          family.name === user.family.name ? user : undefined,
+          isFutureWeek
+        );
+      })
+      .then(() => {
+        // check if user is participating in the challenge
+        user.isParticipating = checkUserParticipation(
+          familyParticipations,
+          user
+        );
 
-      // then, calculate points for the family for the entire week
-      // if it is a future week, points will not get calculated
-      return Point.calculatePointsForWeek(
-        familyParticipations,
-        dates[0],
-        dates[6]
-      );
-    })
-    .then(totalFamilyPointsForWeek => {
-      // then calculate the team score based on the total points
-      family.teamScore = calculateTeamScore(
-        totalFamilyPointsForWeek,
-        familyParticipations.length
-      );
-    })
-    .then(() => {
-      // then, calculate points for the versingFamily for the entire week
-      // if it is a future week, points will not get calculated
-      if (versingFamily) {
+        if (addPointsButtonDate) {
+          user.participationId = familyParticipations[0]._id;
+        }
+
+        // then, calculate points for the family for the entire week
+        // if it is a future week, points will not get calculated
         return Point.calculatePointsForWeek(
-          versingFamilyParticipations,
+          familyParticipations,
           dates[0],
           dates[6]
         );
-      }
-    })
-    // then calculate the versing team score based on the total points
-    .then(totalVersingFamilyPointsForWeek => {
-      if (!versingFamily) {
-        versingFamily = {
-          name: "TBD, check rankings for likelihood of making it to playoffs",
-          teamScore: "N/A"
+      })
+      .then(totalFamilyPointsForWeek => {
+        // then calculate the team score based on the total points
+        family.teamScore = calculateTeamScore(
+          totalFamilyPointsForWeek,
+          familyParticipations.length
+        );
+      })
+      .then(() => {
+        // then, calculate points for the versingFamily for the entire week
+        // if it is a future week, points will not get calculated
+        if (versingFamily) {
+          return Point.calculatePointsForWeek(
+            versingFamilyParticipations,
+            dates[0],
+            dates[6]
+          );
+        }
+      })
+      // then calculate the versing team score based on the total points
+      .then(totalVersingFamilyPointsForWeek => {
+        if (!versingFamily) {
+          versingFamily = {
+            name: "TBD, check rankings for likelihood of making it to playoffs",
+            teamScore: "N/A"
+          };
+          family.pointsNeededToWin = { status: "N/A", message: "N/A" };
+        } else {
+          versingFamily.teamScore = calculateTeamScore(
+            totalVersingFamilyPointsForWeek,
+            versingFamilyParticipations.length
+          );
+          family.pointsNeededToWin = calculatePointsNeededToWin(
+            family.teamScore,
+            familyParticipations.length,
+            versingFamily.teamScore,
+            versingFamilyParticipations.length
+          );
+        }
+
+        const options = {
+          isFutureWeek,
+          isCurrentWeek,
+          timeRemaining,
+          dates,
+          requestedWeek,
+          family,
+          versingFamily,
+          familyParticipations,
+          showPrevious,
+          showNext,
+          nextVersingFamilyName,
+          defaultShowDate,
+          addPointsButtonDate
         };
-        family.pointsNeededToWin = { status: "N/A", message: "N/A" };
-      } else {
-        versingFamily.teamScore = calculateTeamScore(
-          totalVersingFamilyPointsForWeek,
-          versingFamilyParticipations.length
-        );
-        family.pointsNeededToWin = calculatePointsNeededToWin(
-          family.teamScore,
-          familyParticipations.length,
-          versingFamily.teamScore,
-          versingFamilyParticipations.length
-        );
-      }
 
-      const options = {
-        isFutureWeek,
-        isCurrentWeek,
-        timeRemaining,
-        dates,
-        requestedWeek,
-        family,
-        versingFamily,
-        familyParticipations,
-        showPrevious,
-        showNext,
-        nextVersingFamilyName,
-        defaultShowDate,
-        addPointsButtonDate
-      };
-
-      const view = req.xhr ? "families/_show_body" : "families/show";
-      return res.render(view, options);
-    })
-    .catch(e => console.log(e));
+        const view = req.xhr ? "families/_show_body" : "families/show";
+        return res.render(view, options);
+      })
+      .catch(e => console.log(e))
+  );
 });
 
 // GET all families

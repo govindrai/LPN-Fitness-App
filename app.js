@@ -53,7 +53,7 @@ app.use(
     store: new RedisStore({ client }),
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 7776000000 },
+    cookie: { maxAge: 7776000000 }, // 90 days
     secret: process.env.COOKIE_SECRET || "secret"
   })
 );
@@ -79,6 +79,7 @@ app.use(
   express.static(path.join(__dirname, "/node_modules/typeahead.js/dist/"))
 );
 
+// these middleware are run before any route is rendered below
 app.use(verifyAuthorization, sendToHome, setLocals);
 app.use("/", index);
 app.use("/users", users);
