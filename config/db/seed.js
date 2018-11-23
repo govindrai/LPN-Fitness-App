@@ -443,31 +443,50 @@ async function dropDb() {
 
 async function createParticipations() {
   const users = await User.find();
-  await Participation.create(
-    users.map(user => {
-      challenge: currentChallenge, user;
-    })
-  );
+  users.map(user => {
+    Participation.create({
+      challenge: currentChallenge,
+      user
+    });
+  });
 }
 
-// NEED TO MAKE THIS WORK
 async function createUsers() {
   const families = await Family.find();
   const users = require("./json/users.json");
-  await User.create(
-    users.map(user => {
+  users.map(user => {
+    User.create({
       family: families[Math.floor(Math.random() * families.length)],
       email: user.email,
-      name {
+      name: {
         first: user.name.first,
         last: user.name.last,
         nickname: user.name.nickname
       },
-      family: user.family,
+      password: user.password,
       lifetimePoints: user.lifetimePoints
     });
-  );
+  });
 }
+
+// UNITS ARE SPECIFIC TO CERTAIN ACTIVITIES, HOW DO WE ASSIGN IT HERE?
+
+// async function createActivities() {
+//   const units = await Unit.find();
+//   activities.map(activity => {
+//     Activity.create({
+//       family: families[Math.floor(Math.random() * families.length)],
+//       email: user.email,
+//       name: {
+//         first: user.name.first,
+//         last: user.name.last,
+//         nickname: user.name.nickname
+//       },
+//       password: user.password,
+//       lifetimePoints: user.lifetimePoints
+//     });
+//   });
+// }
 
 async function seedGlobalData() {
   await Family.create(families);
