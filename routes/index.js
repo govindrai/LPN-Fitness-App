@@ -14,14 +14,21 @@ router.get("/register", (req, res) => {
   Family.find()
     .ne("name", "Bye")
     .then(families => {
-      res.render("users/new", { families, user: new User() });
+      res.render("users/new", {
+        families,
+        user: new User(),
+        title: "Register"
+      });
     })
     .catch(e => console.log(e));
 });
 
+// Redirect to Index
+router.get("/login", (req, res) => res.redirect("/"));
+
 // GET login form
 router.get("/", (req, res) =>
-  res.render("sessions/new", { loggedOut: req.query.loggedOut })
+  res.render("sessions/new", { loggedOut: req.query.loggedOut, title: "Login" })
 );
 
 // POST login form data
@@ -45,7 +52,11 @@ router.post("/login", (req, res) => {
     })
     .catch(e => {
       if (e.name === "AuthError") {
-        return res.render("sessions/new", { error: e.message, email });
+        return res.render("sessions/new", {
+          error: e.message,
+          email,
+          title: "Login"
+        });
       }
       return console.log(e);
     });
@@ -85,7 +96,8 @@ router.post("/register", (req, res) => {
           return res.render("users/new", {
             families,
             user,
-            errors: e.errors
+            errors: e.errors,
+            title: "Register"
           });
         })
         .catch(e => console.log(e));
@@ -110,14 +122,17 @@ router.get("/logout", (req, res) => {
 
 router.get("/schedule", (req, res) => {
   return res.render("challenges/schedule", {
-    standings: res.locals.currentChallenge.getStandings()
+    standings: res.locals.currentChallenge.getStandings(),
+    title: "Standings & Schedule"
   });
 });
 
 // GET rules page
 router.get("/rules", (req, res) => {
   User.find({ admin: true })
-    .then(admins => res.render("sessions/rules", { admins }))
+    .then(admins =>
+      res.render("sessions/rules", { admins, title: "Rubric & Rules" })
+    )
     .catch(e => console.log(e));
 });
 

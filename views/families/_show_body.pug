@@ -13,7 +13,7 @@
     .title(style=`color: ${familyColors[family.name]}`)= family.name
     .title(style=`color: ${familyColors[family.name]}`)= family.teamScore
 
-  #competitorSummary Week #[span.weekNumber= requestedWeek]: vs #[span#versingFamily(style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
+  #competitorSummary Week #[span.weekNumber= requestedWeek]: vs #[a#versingFamily(href=`/families/${versingFamily.name}` style=`color: ${familyColors[versingFamily.name]}`)= versingFamily.name]
 
 
   .border

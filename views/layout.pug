@@ -13,7 +13,7 @@ mixin printLink(href, name)
 doctype html
 html
   head
-    title= title
+    title LPN Fitness - #{title} | Lambda Phi Nu
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     link(rel='stylesheet', href='/stylesheets/style.css')
@@ -34,7 +34,7 @@ html
       if isLoggedIn
         .nav-links
           +printLink(home, "Home")
-          - var familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
+          - let familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
           +printLink("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
           .drop-down-links
             each familyName in familyNames

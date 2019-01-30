@@ -1,0 +1,7 @@
+#abandon-changes-modal
+    .dialog-box
+      .dialog-title.center Unsaved Changes
+      .dialog-message Your changes will not be saved. Are you sure you want to leave?
+      .dialog-buttons
+        button.grey-button(onclick="goToHome") Yes
+        button.grey-button(style=`background-color: ${familyColors[user.family.name]}` onclick="function () {document.querySelector('#abandon-changes-modal').style.display ='none'}") No
