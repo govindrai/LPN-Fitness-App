@@ -1,0 +1,130 @@
+[
+  {
+    "name": "Jump roping",
+    "points": 1,
+    "scale": 150,
+    "unit": "jump"
+  },
+  {
+    "name": "Biking(<5 min pace)",
+    "points": 2,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Biking(>5 min pace)",
+    "points": 1,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Biking(elevation)",
+    "points": 2,
+    "scale": 100,
+    "unit": "feet"
+  },
+  {
+    "name": "Elliptical",
+    "points": 2,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Bowling",
+    "points": 2,
+    "scale": 1,
+    "unit": "game"
+  },
+  {
+    "name": "Hiking",
+    "description": "outdoors on trail",
+    "points": 4,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Run/walk(10-15 min pace)",
+    "points": 3,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Hiking(elevation)",
+    "description": "after initial 1000ft.",
+    "points": 1.5,
+    "scale": "100",
+    "unit": "feet"
+  },
+  {
+    "name": "Rowing",
+    "points": 4,
+    "scale": 1500,
+    "unit:": "meter"
+  },
+  {
+    "name": "Weightlifting",
+    "description": "bodyweight exercises like pushups, pullups etc. included",
+    "points": 4,
+    "scale": 15,
+    "unit": "minute"
+  },
+  {
+    "name": "Swimming",
+    "points": 4,
+    "scale": 15,
+    "unit": "minute"
+  },
+  {
+    "name": "Abs",
+    "description": "not in class",
+    "points": 4,
+    "scale": 15,
+    "unit": "minute"
+  },
+  {
+    "name": "Running(<10 min pace)",
+    "points": 4,
+    "scale": 1,
+    "unit": "mile"
+  },
+  {
+    "name": "Sports game",
+    "description":
+      "basketball, volleyball, badminton, etc. (actual game, not just warming up)",
+    "points": 6,
+    "scale": 30,
+    "unit": "minute"
+  },
+  {
+    "name": "Fitness class",
+    "description": "pilates, yoga, zumba, rock climbing, martial arts etc.",
+    "points": 8,
+    "scale": 1,
+    "unit": "hour"
+  },
+  {
+    "name": "Golf",
+    "points": 12,
+    "scale": 9,
+    "unit": "hole"
+  },
+  {
+    "name": "Intense workout",
+    "description": "p90x, parkour, cycling class, crossfit",
+    "points": 12,
+    "scale": 30,
+    "unit": "minute"
+  },
+  {
+    "name": "Surfing",
+    "points": 12,
+    "scale": 1,
+    "unit": "hour"
+  },
+  {
+    "name": "Snowboarding",
+    "points": 15,
+    "scale": 0.5,
+    "unit": "day"
+  }
+]
