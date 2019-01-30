@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-let unitSchema = new Schema({
+const unitSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -16,6 +15,6 @@ let unitSchema = new Schema({
   },
 });
 
-let Unit = mongoose.model('Unit', unitSchema);
+const Unit = mongoose.model('Unit', unitSchema);
 
 module.exports = Unit;
