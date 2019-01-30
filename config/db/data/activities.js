@@ -1,5 +1,5 @@
 // App Modules
-const utils = require('../../../utils');
+const utils = require('../../../utils/utils');
 
 const { units } = utils.enums;
 
@@ -66,7 +66,7 @@ module.exports = [
     name: 'Rowing',
     points: 4,
     scale: 1500,
-    'unit:': units.METER.name,
+    unitName: units.METER.name,
   },
   {
     name: 'Weightlifting',

@@ -1,5 +1,6 @@
-const utils = require('../../../utils');
+const utils = require('../../../utils/utils');
 
+const { families } = utils.enums;
 module.exports = [
   {
     email: 'edwardchow@gmail.com',
@@ -9,7 +10,7 @@ module.exports = [
       nickname: 'EdwardChow',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 100,
   },
   {
@@ -20,7 +21,7 @@ module.exports = [
       nickname: 'MichaelWen',
     },
     password: '123456',
-    family: utils.gemstones.TOPAZ,
+    familyName: families.TOPAZ,
     lifetimePoints: 50,
   },
   {
@@ -31,7 +32,7 @@ module.exports = [
       nickname: 'AdamWhitescarver',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 3000,
   },
   {
@@ -42,7 +43,7 @@ module.exports = [
       nickname: 'StevenTrinh',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 2500,
   },
   {
@@ -53,7 +54,7 @@ module.exports = [
       nickname: 'CallyDai',
     },
     password: '123456',
-    family: utils.gemstones.TOPAZ,
+    familyName: families.TOPAZ,
     lifetimePoints: 800,
   },
   {
@@ -64,7 +65,7 @@ module.exports = [
       nickname: 'BrittanyYoung',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 20,
   },
   {
@@ -75,7 +76,7 @@ module.exports = [
       nickname: 'PatrickLai',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 45,
   },
   {
@@ -86,7 +87,7 @@ module.exports = [
       nickname: 'AmandaGieg',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 395,
   },
   {
@@ -97,7 +98,7 @@ module.exports = [
       nickname: 'ShannonLee',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 298,
   },
   {
@@ -108,7 +109,7 @@ module.exports = [
       nickname: 'StephenLee',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 400,
   },
   {
@@ -119,7 +120,7 @@ module.exports = [
       nickname: 'KevinAu',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 50,
   },
   {
@@ -130,7 +131,7 @@ module.exports = [
       nickname: 'TBE Govind',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 100,
     admin: true,
   },
@@ -142,7 +143,7 @@ module.exports = [
       nickname: 'Jinese',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 200,
     admin: true,
   },
@@ -154,7 +155,7 @@ module.exports = [
       nickname: 'Duuh',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 500,
   },
   {
@@ -165,7 +166,7 @@ module.exports = [
       nickname: 'Swimmer',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 5000,
   },
   {
@@ -176,7 +177,7 @@ module.exports = [
       nickname: 'President',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 50000,
   },
   {
@@ -187,7 +188,7 @@ module.exports = [
       nickname: 'Woman',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 50,
   },
   {
@@ -198,7 +199,7 @@ module.exports = [
       nickname: 'Car-lover',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 5,
   },
   {
@@ -209,7 +210,7 @@ module.exports = [
       nickname: 'Sad',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 0,
   },
   {
@@ -220,7 +221,7 @@ module.exports = [
       nickname: 'Eat me',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 500,
   },
   {
@@ -231,7 +232,7 @@ module.exports = [
       nickname: 'TracyLam',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 20,
   },
   {
@@ -242,7 +243,7 @@ module.exports = [
       nickname: 'MichaelHo',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 20,
   },
   {
@@ -253,7 +254,7 @@ module.exports = [
       nickname: 'StaceyLi',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 20,
   },
   {
@@ -264,7 +265,7 @@ module.exports = [
       nickname: 'J',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 20,
   },
   {
@@ -275,7 +276,7 @@ module.exports = [
       nickname: 'Jay’Tsu',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 200,
   },
   {
@@ -286,7 +287,7 @@ module.exports = [
       nickname: 'Nico’Pere',
     },
     password: '123456',
-    family: utils.gemstones.IOLITE,
+    familyName: families.IOLITE,
     lifetimePoints: 200,
   },
   {
@@ -297,7 +298,7 @@ module.exports = [
       nickname: 'IreneEar',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 200,
   },
   {
@@ -308,7 +309,7 @@ module.exports = [
       nickname: 'PT',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 200,
   },
   {
@@ -319,7 +320,7 @@ module.exports = [
       nickname: 'TT',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -330,7 +331,7 @@ module.exports = [
       nickname: 'CT',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 200,
   },
   {
@@ -341,7 +342,7 @@ module.exports = [
       nickname: 'rP',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -352,7 +353,7 @@ module.exports = [
       nickname: 'VVVV',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 200,
   },
   {
@@ -363,7 +364,7 @@ module.exports = [
       nickname: 'HH',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 200,
   },
   {
@@ -374,7 +375,7 @@ module.exports = [
       nickname: 'Anna',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -385,7 +386,7 @@ module.exports = [
       nickname: 'Win',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -396,7 +397,7 @@ module.exports = [
       nickname: 'Win',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -407,7 +408,7 @@ module.exports = [
       nickname: 'AJ',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -418,7 +419,7 @@ module.exports = [
       nickname: 'IvanW',
     },
     password: '123456',
-    family: utils.gemstones.EMERALD,
+    familyName: families.EMERALD,
     lifetimePoints: 200,
   },
   {
@@ -429,7 +430,7 @@ module.exports = [
       nickname: 'SD',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -440,7 +441,7 @@ module.exports = [
       nickname: 'HH',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -451,7 +452,7 @@ module.exports = [
       nickname: 'ER',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -462,7 +463,7 @@ module.exports = [
       nickname: 'IC',
     },
     password: '123456',
-    family: utils.gemstones.SUNSTONE,
+    familyName: families.SUNSTONE,
     lifetimePoints: 200,
   },
   {
@@ -473,7 +474,7 @@ module.exports = [
       nickname: 'MLe',
     },
     password: '123456',
-    family: utils.gemstones.RUBY,
+    familyName: families.RUBY,
     lifetimePoints: 200,
   },
   {
@@ -484,7 +485,7 @@ module.exports = [
       nickname: 'JS',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -495,7 +496,7 @@ module.exports = [
       nickname: 'SH',
     },
     password: '123456',
-    family: utils.gemstones.SAPPHIRE,
+    familyName: families.SAPPHIRE,
     lifetimePoints: 200,
   },
   {
@@ -506,7 +507,7 @@ module.exports = [
       nickname: 'AR',
     },
     password: '123456',
-    family: utils.gemstones.ALEXANDRITE,
+    familyName: families.ALEXANDRITE,
     lifetimePoints: 200,
   },
   {
@@ -517,7 +518,7 @@ module.exports = [
       nickname: 'EL',
     },
     password: '123456',
-    family: utils.gemstones.ALEXANDRITE,
+    familyName: families.ALEXANDRITE,
     lifetimePoints: 200,
   },
   {
@@ -528,7 +529,7 @@ module.exports = [
       nickname: 'CC-bro',
     },
     password: '123456',
-    family: utils.gemstones.ALEXANDRITE,
+    familyName: families.ALEXANDRITE,
     lifetimePoints: 200,
   },
   {
@@ -539,7 +540,7 @@ module.exports = [
       nickname: 'KK',
     },
     password: '123456',
-    family: utils.gemstones.ALEXANDRITE,
+    familyName: families.ALEXANDRITE,
     lifetimePoints: 200,
   },
   {
@@ -550,7 +551,7 @@ module.exports = [
       nickname: 'SD',
     },
     password: '123456',
-    family: utils.gemstones.TOPAZ,
+    familyName: families.TOPAZ,
     lifetimePoints: 200,
   },
   {
@@ -561,7 +562,7 @@ module.exports = [
       nickname: 'Ape',
     },
     password: '123456',
-    family: utils.gemstones.TOPAZ,
+    familyName: families.TOPAZ,
     lifetimePoints: 200,
   },
   {
@@ -572,7 +573,7 @@ module.exports = [
       nickname: 'PDhir',
     },
     password: '123456',
-    family: utils.gemstones.ALEXANDRITE,
+    familyName: families.ALEXANDRITE,
     lifetimePoints: 200,
   },
 ];
