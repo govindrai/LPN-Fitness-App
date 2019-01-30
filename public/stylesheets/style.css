@@ -4,12 +4,13 @@
   outline: none; }
 
 .error, .success, .info {
+  font-size: 12px;
   background: #d92b3a;
   color: white;
   font-style: italic;
-  font-weight: 600;
   padding: 15px;
-  margin: 10px auto; }
+  margin-top: -10px;
+  margin-bottom: 16px; }
 
 .success {
   background: #0b8c0b; }
@@ -209,11 +210,14 @@ nav {
 .updatePoints {
   cursor: pointer; }
 
+.points-form-content {
+  display: none; }
+
 #dailyPoints .participant {
   border-bottom: 1px solid #dadde0;
   margin: 16px 0;
   cursor: pointer; }
-  #dailyPoints .participant:not(:first-child) .points-entries-summaries {
+  #dailyPoints .participant:not(:first-child) .point-entries-summaries {
     display: none; }
   #dailyPoints .participant:last-child {
     border: none;
@@ -257,20 +261,20 @@ nav {
       line-height: 1.38;
       color: #6B6D70; }
 
-#dailyPoints .points-entries-summaries {
+#dailyPoints .point-entries-summaries {
   margin-top: -4px; }
-  #dailyPoints .points-entries-summaries .points-entry-summary {
+  #dailyPoints .point-entries-summaries .point-entry-summary {
     color: #353738;
     font-weight: 300; }
-    #dailyPoints .points-entries-summaries .points-entry-summary .calculated-points-label {
+    #dailyPoints .point-entries-summaries .point-entry-summary .calculated-points-label {
       font-weight: 600;
       display: inline-block;
       padding-right: 5px; }
-    #dailyPoints .points-entries-summaries .points-entry-summary:not(:last-child) {
+    #dailyPoints .point-entries-summaries .point-entry-summary:not(:last-child) {
       margin-bottom: 6px; }
-    #dailyPoints .points-entries-summaries .points-entry-summary:last-child {
+    #dailyPoints .point-entries-summaries .point-entry-summary:last-child {
       margin-bottom: 16px; }
-  #dailyPoints .points-entries-summaries #edit-points {
+  #dailyPoints .point-entries-summaries #edit-points {
     text-align: center;
     margin: 12px auto 16px auto;
     font-style: italic;
@@ -408,7 +412,7 @@ hr {
   background: #dadde0;
   margin-bottom: 16px; }
 
-#add-points-container {
+#points-form-modal {
   display: none;
   padding: 10px 15px;
   position: absolute;
@@ -487,20 +491,20 @@ input.participation-status {
   .participation-status.grey {
     background-color: #a0a3a8; }
 
-.points-entry {
+.point-entry {
   padding: 16px;
   border-radius: 5px;
   background-color: #f0f4f8;
   position: relative;
   margin-bottom: 16px; }
-  .points-entry .trash {
+  .point-entry .trash, .point-entry .undo {
     position: absolute;
     top: 15px;
     right: 15px;
-    width: 24px; }
-  .points-entry .activity-name {
+    cursor: pointer; }
+  .point-entry .activity-name {
     margin-bottom: 12px; }
-  .points-entry .entry-points-calculation {
+  .point-entry .entry-points-calculation {
     font-weight: bold;
     line-height: 1.5;
     text-align: right;
@@ -697,5 +701,34 @@ table {
         margin-bottom: 16px; }
     .matchups .matchup .vs {
       margin: 0 30px; }
+
+#abandon-points-form-confirmation-modal {
+  display: none;
+  background: rgba(255, 255, 255, 0.8);
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 400px;
+  padding-top: 190px; }
+
+.dialog-box {
+  padding: 24px;
+  width: 315px;
+  margin: auto;
+  background-color: #ffffff;
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.3), 1px 2px 8px 0 rgba(0, 0, 0, 0.3);
+  font-size: 16px; }
+  .dialog-box .dialog-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 16px; }
+  .dialog-box .dialog-message {
+    margin-bottom: 24px; }
+  .dialog-box .dialog-buttons {
+    display: flex;
+    justify-content: space-between; }
+    .dialog-box .dialog-buttons button {
+      min-width: 123px;
+      margin: 0 auto; }
 
 /*# sourceMappingURL=style.css.map */

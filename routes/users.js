@@ -14,6 +14,44 @@ const isAdmin = require("./../middleware/isAdmin");
 
 const router = express.Router();
 
+router.get("/admin-settings", isAdmin, (req, res, next) => {
+  let adminss, nonAdminss;
+  User.getAdmins()
+    .then(admins => {
+      adminss = admins;
+      return User.getNonAdmins();
+    })
+    .then(nonAdmins => {
+      nonAdminss = nonAdmins;
+      res.render("users/admin_settings", {
+        admins: adminss,
+        nonAdmins: nonAdminss,
+        path: req.path
+      });
+    });
+});
+
+// edit points for a user for certain day
+router.put("/points", (req, res) => {
+  const { participation } = req.body;
+  // res.locals.user.participationId = participation;
+  const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
+  const familyParticipations = [{ _id: participation, user: res.locals.user }];
+  Point.calculateParticipantPointsByDay(
+    familyParticipations,
+    addPointsButtonDate,
+    res.locals.user
+  )
+    .then(() => {
+      return res.render("points/_points_entries", {
+        familyParticipations
+        // addPointsButtonDate,
+        // editRequest: true
+      });
+    })
+    .catch(e => console.log(e));
+});
+
 // GET user profile edit form
 router.get("/:id/edit", (req, res) => res.render("users/edit"));
 
@@ -79,44 +117,6 @@ router.put("/:id", (req, res) => {
       updateUserPromise();
     }
   }
-});
-
-router.get("/admin-settings", isAdmin, (req, res, next) => {
-  let adminss, nonAdminss;
-  User.getAdmins()
-    .then(admins => {
-      adminss = admins;
-      return User.getNonAdmins();
-    })
-    .then(nonAdmins => {
-      nonAdminss = nonAdmins;
-      res.render("users/admin_settings", {
-        admins: adminss,
-        nonAdmins: nonAdminss,
-        path: req.path
-      });
-    });
-});
-
-// edit points for a user for certain day
-router.put("/points", (req, res) => {
-  const { participation } = req.body;
-  res.locals.user.participationId = participation;
-  const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
-  const familyParticipations = [{ _id: participation, user: res.locals.user }];
-  Point.calculateParticipantPointsByDay(
-    familyParticipations,
-    addPointsButtonDate,
-    res.locals.user
-  )
-    .then(() => {
-      res.render("points/newandedit", {
-        familyParticipations,
-        addPointsButtonDate,
-        editRequest: true
-      });
-    })
-    .catch(e => console.log(e));
 });
 
 router.get("/:email", (req, res) => {

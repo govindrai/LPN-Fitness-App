@@ -1,9 +1,5 @@
 // Modules
-const express = require("express"),
-  pug = require("pug"),
-  path = require("path"),
-  _ = require("lodash"),
-  ObjectId = require("mongoose").Types.ObjectId;
+const router = require("express").Router();
 
 // Models
 var Activity = require("./../models/activity"),
@@ -13,8 +9,6 @@ var Activity = require("./../models/activity"),
   Challenge = require("./../models/challenge"),
   Participation = require("./../models/participation"),
   User = require("./../models/user");
-
-var router = express.Router();
 
 router.post("/", (req, res) => {
   console.log(req.body);

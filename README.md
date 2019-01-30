@@ -40,10 +40,7 @@ Having once been a part of this fraternity and having web development experience
 - Currently anyone can register and gain access to the application
 
 ### Todos
-- points/new
-    + ✅ Add a date field, which defaults to today and has a min of Monday and a max of Sunday
-    + ✅ Users can add points for a given week up to the next Monday at 12 pm
-    + ✅ Users cannot prefill points in for future days
+
 - families/:familyName
     + Display all participants (in a table format) from family who are participating, ordered by total contribution on current challenge
         * Table Head needs to be Monday-Sunday with respective dates
