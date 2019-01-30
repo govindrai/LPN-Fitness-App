@@ -1,3 +1,6 @@
+const units = require('./config/db/data/units');
+const families = require('./config/db/data/families');
+
 class Enum {
   constructor(enumObj) {
     const handler = {
@@ -16,26 +19,24 @@ class Enum {
   }
 }
 
+function createUnitsEnum() {
+  const temp = {};
+  units.forEach(unit => {
+    [temp[unit.name.toUpperCase()]] = unit;
+  });
+  return new Enum(temp);
+}
+
+function createFamiliesEnum() {
+  const temp = {};
+  families.forEach(family => {
+    [temp[family.name.toUpperCase]] = family.name;
+  });
+}
+
 const enums = {
-  gemstones: new Enum({
-    ALEXANDRITE: 'Alexandrite',
-    IOLITE: Iolite,
-    EMERALD: 'Emerald',
-    RUBY: 'Ruby',
-    TOPAZ: 'Topaz',
-    SAPPHIRE: 'Saphhire',
-  }),
-  unitAbbreviations: new Enum({
-    Mile: 'mi',
-    Game: 'game',
-    Feet: 'ft',
-    Meter: 'mm',
-    Minute: 'min',
-    Hour: 'hr',
-    Hole: 'hole',
-    Day: 'day',
-    Jump: 'jump',
-  }),
+  families: createFamiliesEnum(),
+  units: createUnitsEnum(),
 };
 
 module.exports = {
