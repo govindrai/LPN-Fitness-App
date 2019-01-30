@@ -4,12 +4,16 @@ const Schema = mongoose.Schema;
 let unitSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   abbreviation: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  plural: {
+    type: String,
+    required: true,
+  },
 });
 
 let Unit = mongoose.model('Unit', unitSchema);
