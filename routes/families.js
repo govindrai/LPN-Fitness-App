@@ -7,37 +7,43 @@ const Family = require('./../models/family'),
   Point = require('./../models/point'),
   User = require('./../models/user');
 
+const logger = require('../utils/logger');
+
 const router = express.Router();
 
 router.get('/:familyName', (req, res) => {
-  let { user, currentChallenge } = res.locals,
-    family,
-    versingFamily,
-    familyParticipations,
-    versingFamilyParticipations,
-    versingTotalPoints,
-    defaultShowDate,
-    addPointsButtonDate,
-    dates,
-    currentWeek,
-    requestedWeek,
-    isCurrentWeek,
-    timeRemaining,
-    showPrevious,
-    showNext,
-    nextVersingFamilyName,
-    { familyName } = req.params,
-    { weekInfo } = req.query,
-    today = getToday();
+  let { user, currentChallenge } = res.locals;
+  let family;
+  let versingFamily;
+  let familyParticipations;
+  let versingFamilyParticipations;
+  let versingTotalPoints;
+  let defaultShowDate;
+  let addPointsButtonDate;
+  let dates;
+  let currentWeek;
+  let requestedWeek;
+  let isCurrentWeek;
+  let isFutureWeek;
+  let timeRemaining;
+  let showPrevious;
+  let showNext;
+  let nextVersingFamilyName;
+  let { familyName } = req.params;
+  let { weekInfo } = req.query;
+  let today = getToday();
+
   if (!currentChallenge) {
     return res.render('families/no_challenge', { familyName });
   }
+  console.log(currentChallenge);
 
   dates = calculateDates(weekInfo);
   timeRemaining = getTimeRemainingInWeek(dates[6]);
   currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
   requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
   isCurrentWeek = requestedWeek === currentWeek;
+  ifFutureWeek = requestedWeek > currentWeek;
   showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
   showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
 
@@ -91,7 +97,7 @@ router.get('/:familyName', (req, res) => {
         // check if user is participating in the challenge
         user.isParticipating = checkUserParticipation(familyParticipations, user);
 
-        if (addPointsButtonDate) {
+        if (familyParticipations.length > 0 && addPointsButtonDate) {
           user.participationId = familyParticipations[0]._id;
         }
 
@@ -215,6 +221,7 @@ function determineVersingFamily(requestedWeek, currentWeek, currentChallenge, fa
 }
 
 function checkUserParticipation(familyParticipations, user) {
+  logger.log('info:checkUserParticipation:familyParticipations', familyParticipations);
   return familyParticipations.find(participation => participation.user._id.toString() === user._id.toString());
 }
 
