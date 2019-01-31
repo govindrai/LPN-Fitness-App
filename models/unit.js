@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-let unitSchema = new Schema({
+const unitSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   abbreviation: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  plural: {
+    type: String,
+    required: true,
+  },
 });
 
-let Unit = mongoose.model('Unit', unitSchema);
+const Unit = mongoose.model('Unit', unitSchema);
 
 module.exports = Unit;

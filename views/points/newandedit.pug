@@ -33,15 +33,20 @@ include _points_entry_mixin
 
       //- this is where all point entries will appear
       .point-entries
-        each point in familyParticipations[0].points
-          +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
-          .clear
+        if familyParticipations.length
+          each point in familyParticipations[0].points
+            +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
+            .clear
 
       - let pointsString = "";
-      if familyParticipations[0].totalDailyPoints
-        - pointsString = `TOTAL = ${familyParticipations[0].totalDailyPoints.toFixed(2)} POINTS`
+      if familyParticipations.length && familyParticipations[0].totalDailyPoints
+        - pointValue = familyParticipations[0].totalDailyPoints.toFixed(2)
+        - pointsString = `TOTAL = ${pointsValue} POINTS`
+      else 
+        - pointString = `TOTAL = 0 POINTS`
+        - pointValue = 0
       .total-calculated-points(style=`color: ${familyColors[user.family.name]}`) #{pointsString}
-      input.total-calculated-points(type="hidden" name="totalDailyPoints" value=familyParticipations[0].totalDailyPoints)
+      input.total-calculated-points(type="hidden" name="totalDailyPoints" value=pointsValue)
 
 
       label#activity-name Add Activity

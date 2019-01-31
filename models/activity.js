@@ -1,32 +1,29 @@
-const mongoose = require("mongoose");
-const Unit = require("./../models/unit");
-var Schema = mongoose.Schema;
-var { ObjectId } = mongoose.Types;
+const mongoose = require('mongoose');
 
-var activitySchema = new Schema({
+const activitySchema = new mongoose.Schema({
   name: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   description: {
-    type: String
+    type: String,
   },
   points: {
     type: Number,
-    required: true
+    required: true,
   },
   scale: {
     type: Number,
-    required: true
+    required: true,
   },
   unit: {
-    type: Schema.Types.ObjectId,
-    ref: "Unit",
-    required: true
-  }
+    type: mongoose.Types.ObjectId,
+    ref: 'Unit',
+    required: true,
+  },
 });
 
-var Activity = mongoose.model("Activity", activitySchema);
+const Activity = mongoose.model('Activity', activitySchema);
 
 module.exports = Activity;

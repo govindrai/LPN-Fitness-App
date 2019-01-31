@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "open http://localhost:3000 && nodemon -L ./bin/www -e .js",
-    "redis": "~/redis-3.2.9/src/redis-server",
+    "dev": "open http://localhost:3000 && nodemon ./bin/www -e .js",
+    "redis": "~/redis-5.0.3/src/redis-server",
     "seed": "node config/db/seed.js"
   },
   "dependencies": {
@@ -33,6 +33,9 @@
     "validator": "^10.11.0"
   },
   "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "nodemon": "^1.18.9",
     "webpack": "^4.29.0",
     "webpack-dev-server": "^3.1.14"
