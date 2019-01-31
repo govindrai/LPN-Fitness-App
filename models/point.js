@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const pointSchema = new monoose.Schema({
+const pointSchema = new mongoose.Schema({
   participation: {
     type: mongoose.Types.ObjectId,
     ref: 'Participation',

@@ -97,13 +97,16 @@ router.get('/:familyName', (req, res) => {
         // check if user is participating in the challenge
         user.isParticipating = checkUserParticipation(familyParticipations, user);
 
-        if (familyParticipations.length > 0 && addPointsButtonDate) {
+        if (user.isParticipating && addPointsButtonDate) {
           user.participationId = familyParticipations[0]._id;
         }
 
         // then, calculate points for the family for the entire week
         // if it is a future week, points will not get calculated
-        return Point.calculatePointsForWeek(familyParticipations, dates[0], dates[6]);
+        if (familyParticipations.length) {
+          return Point.calculatePointsForWeek(familyParticipations, dates[0], dates[6]);
+        }
+        return 0;
       })
       .then(totalFamilyPointsForWeek => {
         // then calculate the team score based on the total points
@@ -112,9 +115,10 @@ router.get('/:familyName', (req, res) => {
       .then(() => {
         // then, calculate points for the versingFamily for the entire week
         // if it is a future week, points will not get calculated
-        if (versingFamily) {
+        if (versingFamily && versingFamilyParticipations.length) {
           return Point.calculatePointsForWeek(versingFamilyParticipations, dates[0], dates[6]);
         }
+        return 0;
       })
       // then calculate the versing team score based on the total points
       .then(totalVersingFamilyPointsForWeek => {
