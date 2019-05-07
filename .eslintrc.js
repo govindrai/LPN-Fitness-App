@@ -14,7 +14,7 @@ module.exports = {
     //   'func-names': 'off', // Good, but off for now
     //   'no-unused-vars': 'off', // GOOD, but has to remain off until fhir hooks are integrated properly
     //   'no-undef': 'off', // GOOD, but has to remain off until fhir hooks are integrated properly (should do this ASAP as no-undef is really important)
-    //   'no-use-before-define': 'off', // GOOD, but has to remain off until we potentially split lambdas into smaller chunks
+    'no-use-before-define': ['error', { functions: false }],
     //   'no-tabs': 'off', // Fix and Remove,
     //   'no-mixed-spaces-and-tabs': 'off', // Fix and Remove
     //   'no-empty': 'off', // Fix and Remove
@@ -35,13 +35,24 @@ module.exports = {
     //   'no-restricted-properties': 'off', // Fix and Remove
     //   'no-loop-func': 'off', // Fix and Remove
     //   'no-unused-expressions': 'off', // Fix and Remove
-      'no-underscore-dangle': 'off', // Fix and Remove
+
+    'no-underscore-dangle': 'off', // Fix and Remove
+    'comma-dangle': [
+      'error',
+      {
+        arrays: 'always-multiline',
+        objects: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
+        functions: 'never',
+      },
+    ],
     //   'no-var': 'off', // Fix and Remove
     //   'prefer-const': 'off', // Fix and Remove
     //   eqeqeq: 'off', // Fix and Remove
     //   camelcase: 'off', // Fix and Remove
     //   'vars-on-top': 'off', // GOOD except no-vars is on so this might be irrelevant
-    //   'max-len': 'off', //what should our max character length be? 100 is recommended GOOD
+    'max-len': 'off', //what should our max character length be? 100 is recommended GOOD
     'arrow-parens': 'off', // GOOD  [2, "as-needed"],
     //   'no-else-return': 'off', // BAD, but should follow
     //   'one-var': 'off',
