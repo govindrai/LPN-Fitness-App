@@ -4,7 +4,7 @@ const User = require('./../models/user');
 const logger = require('../utils/logger');
 
 // check if the user is logged in
-module.exports = function verifyAuthorization(req, res, next) {
+module.exports = async function verifyAuthorization(req, res, next) {
   logger.log('info:middlware:verifyAuthorization');
   // authorization is not necessary if someone is posting their login credentials or registering
   if ((req.method === 'POST' && req.path === '/login') || req.path === '/register') {
@@ -28,15 +28,12 @@ module.exports = function verifyAuthorization(req, res, next) {
   }
 
   res.locals.token = req.session['x-auth'];
-  User.decodeAuthorizationToken(res.locals.token)
-    .then(user => {
-      if (!user) {
-        return res.status(404).send('UNAUTHORIZED.');
-      }
+  const user = await User.decodeAuthorizationToken(res.locals.token);
+  if (!user) {
+    return res.status(404).send('UNAUTHORIZED.');
+  }
 
-      res.locals.user = user;
-      res.locals.isLoggedIn = true;
-      return next();
-    })
-    .catch(e => console.log(e));
+  res.locals.user = user;
+  res.locals.isLoggedIn = true;
+  return next();
 };

@@ -6,10 +6,10 @@ const session = require('express-session');
 const redis = require('redis');
 const connectRedis = require('connect-redis');
 const path = require('path');
-const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
+const { addAsync } = require('@awaitjs/express');
 
 // Local Modules
 const keys = require('./config/keys');
@@ -22,7 +22,7 @@ const units = require('./routes/units');
 const activities = require('./routes/activities');
 const challenges = require('./routes/challenges');
 const points = require('./routes/points');
-const participations = require('./routes/participations');
+const participants = require('./routes/participants');
 
 // Middleware
 const connect = require('./middleware/connect');
@@ -33,14 +33,13 @@ const setLocals = require('./middleware/setLocals');
 const client = redis.createClient(keys.REDIS_URL);
 const RedisStore = connectRedis(session);
 // Create Express App
-const app = express();
+const app = addAsync(express());
 
 // Setup View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
 app.use(methodOverride('_method'));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -54,6 +53,8 @@ app.use(
   })
 );
 
+// TODO: this should not be part of the main codebase
+// This should compile the css and then the app should just have static access to those assets
 app.use(
   sassMiddleware({
     src: path.join(__dirname, 'public/stylesheets'),
@@ -70,7 +71,7 @@ app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/typeahead.js/dist/')));
 
 // these middleware are run before any route is rendered below
-app.use(connect, verifyAuthorization, sendToHome, setLocals);
+app.useAsync(connect, verifyAuthorization, sendToHome, setLocals);
 app.use('/', index);
 app.use('/users', users);
 app.use('/families', families);
@@ -78,13 +79,17 @@ app.use('/units', units);
 app.use('/activities', activities);
 app.use('/challenges', challenges);
 app.use('/points', points);
-app.use('/participations', participations);
+app.use('/participants', participants);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use((err, req, res, next) => {
+  console.log('Error!');
+  console.log(err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status = 500;
+  res.render('Something went wrong on our end. We should probably create a view for this');
 });
 
 // // error handler
@@ -98,12 +103,12 @@ app.use(function(req, res, next) {
 //   res.render('error');
 // });
 
-client.on('connect', function() {
+client.on('connect', () => {
   console.log('connected to redis client');
 });
 
-client.on('error', function() {
-  console.log('error connecting to redis');
+client.on('error', () => {
+  console.error('error connecting to redis');
 });
 
 module.exports = app;

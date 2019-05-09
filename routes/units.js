@@ -14,13 +14,18 @@ router.all('*', isAdmin);
 
 // GET new units form
 router.get('/new', (req, res) => {
-  Unit.find().then(units => res.render('units/new', { units })).catch(e => console.log(e));
+  Unit.find()
+    .then(units => res.render('units/new', { units }))
+    .catch(e => console.log(e));
 });
 
 // POST create a unit
 router.post('/', (req, res) => {
   let unit = new Unit(req.body);
-  unit.save().then(() => res.redirect('/units/new')).catch(e => console.log(e));
+  unit
+    .save()
+    .then(() => res.redirect('/units/new'))
+    .catch(e => console.log(e));
 });
 
 module.exports = router;

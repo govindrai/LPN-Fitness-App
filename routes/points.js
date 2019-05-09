@@ -1,23 +1,23 @@
 // Modules
-const router = require("express").Router();
+const router = require('express').Router();
 
 // Models
-var Activity = require("./../models/activity"),
-  Point = require("./../models/point"),
-  Family = require("./../models/family"),
-  Unit = require("./../models/unit"),
-  Challenge = require("./../models/challenge"),
-  Participation = require("./../models/participation"),
-  User = require("./../models/user");
+// const Activity = require('./../models/activity');
+const Point = require('./../models/point');
+// const Family = require('./../models/family');
+// const Unit = require('./../models/unit');
+// const Challenge = require('./../models/challenge');
+// const Participant = require('./../models/participant');
+// const User = require('./../models/user');
 
-router.post("/", (req, res) => {
+router.post('/', (req, res) => {
   console.log(req.body);
-  let createPoints = [];
-  let deletePointIds = [];
-  let updatePoints = [];
+  const createPoints = [];
+  const deletePointIds = [];
+  const updatePoints = [];
 
   // convert body into array properties if single entry
-  if (typeof req.body.activity !== "object") {
+  if (typeof req.body.activity !== 'object') {
     req.body._id = [req.body._id];
     req.body.activity = [req.body.activity];
     req.body.numOfUnits = [req.body.numOfUnits];
@@ -28,8 +28,8 @@ router.post("/", (req, res) => {
   const countOfActivities = req.body.activity.length;
 
   let calculatedPointsCounter = 0;
-  for (var i = 0; i < countOfActivities; i++) {
-    if (req.body.action[i] === "delete") {
+  for (let i = 0; i < countOfActivities; i += 1) {
+    if (req.body.action[i] === 'delete') {
       deletePointIds.push(req.body.point[i]);
       continue;
     }
@@ -39,41 +39,37 @@ router.post("/", (req, res) => {
 
     const pointsBody = {
       _id: req.body.point[i],
-      participation: req.body.participation,
+      participant: req.body.participant,
       user: res.locals.user._id,
       activity: req.body.activity[i],
       numOfUnits: req.body.numOfUnits[i],
       calculatedPoints: req.body.calculatedPoints[calculatedPointsCounter],
-      date: req.body.date
+      date: req.body.date,
     };
 
-    if (req.body.action[i] === "update") {
+    if (req.body.action[i] === 'update') {
       updatePoints.push(pointsBody);
     } else {
       delete pointsBody._id;
       createPoints.push(pointsBody);
     }
-    calculatedPointsCounter++;
+    calculatedPointsCounter += 1;
   }
 
-  console.log("createPoints", createPoints);
-  console.log("updatePoints", updatePoints);
-  console.log("deletePoints", deletePointIds);
+  console.log('createPoints', createPoints);
+  console.log('updatePoints', updatePoints);
+  console.log('deletePoints', deletePointIds);
 
   let oldTotalPoints = 0;
   Promise.all(
-    updatePoints.map(updatePoint => {
-      return Point.findByIdAndUpdate(updatePoint._id, updatePoint).then(
-        originalPoint => (oldTotalPoints += originalPoint.calculatedPoints)
-      );
-    })
+    updatePoints.map(updatePoint => Point.findByIdAndUpdate(updatePoint._id, updatePoint).then(originalPoint => (oldTotalPoints += originalPoint.calculatedPoints)))
   )
     .then(() => Point.insertMany(createPoints))
     .then(() => Point.remove({ _id: { $in: deletePointIds } }))
     .then(() => {
       const newTotalPoints = req.body.totalDailyPoints - oldTotalPoints;
       return res.locals.user.update({
-        $inc: { lifetimePoints: newTotalPoints }
+        $inc: { lifetimePoints: newTotalPoints },
       });
     })
     .then(() => {
@@ -82,10 +78,10 @@ router.post("/", (req, res) => {
     .catch(e => console.log(e));
 });
 
-router.delete("/", function(req, res) {
+router.delete('/', (req, res) => {
   Point.remove({ _id: req.body.point })
-    .then(doc => {
-      res.status(200).send("Deleted!");
+    .then(() => {
+      res.status(200).send('Deleted!');
     })
     .catch(e => console.log(e));
 });
