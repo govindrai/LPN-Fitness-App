@@ -1,17 +1,15 @@
-const express = require("express");
+const express = require('express');
+const { addAsync } = require('@awaitjs/express');
+const Participant = require('./../models/participant');
 
-const Participation = require("./../models/participation");
+const router = addAsync(express.Router());
 
-const router = express.Router();
-
-router.post("/", (req, res) => {
-  new Participation({
+router.postAsync('/', async (req, res) => {
+  await new Participant({
     user: res.locals.user._id,
-    challenge: req.body._id
-  })
-    .save()
-    .then(participation => res.sendStatus(200))
-    .catch(e => res.status(400).send(e));
+    challenge: req.body._id,
+  }).save();
+  return res.sendStatus(200);
 });
 
 module.exports = router;

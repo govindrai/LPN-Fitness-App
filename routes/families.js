@@ -1,187 +1,164 @@
 const express = require('express');
+const { addAsync } = require('@awaitjs/express');
 
 // Models
-const Family = require('./../models/family'),
-  Challenge = require('./../models/challenge'),
-  Participation = require('./../models/participation'),
-  Point = require('./../models/point'),
-  User = require('./../models/user');
+const Family = require('./../models/family');
+// const Challenge = require('./../models/challenge');
+const Participant = require('./../models/participant');
+const Point = require('./../models/point');
+// const User = require('./../models/user');
 
 const logger = require('../utils/logger');
 
-const router = express.Router();
+const router = addAsync(express.Router());
 
-router.get('/:familyName', (req, res) => {
-  let { user, currentChallenge } = res.locals;
-  let family;
-  let versingFamily;
-  let familyParticipations;
-  let versingFamilyParticipations;
-  let versingTotalPoints;
-  let defaultShowDate;
-  let addPointsButtonDate;
-  let dates;
-  let currentWeek;
-  let requestedWeek;
-  let isCurrentWeek;
-  let isFutureWeek;
-  let timeRemaining;
-  let showPrevious;
-  let showNext;
-  let nextVersingFamilyName;
-  let { familyName } = req.params;
-  let { weekInfo } = req.query;
-  let today = getToday();
+// i.e. /Iolite
+router.getAsync('/:familyName', async (req, res) => {
+  const { currentChallenge } = res.locals;
+  const { familyName } = req.params;
 
+  // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
   if (!currentChallenge) {
     return res.render('families/no_challenge', { familyName });
   }
-  console.log(currentChallenge);
+  const { user } = res.locals;
 
-  dates = calculateDates(weekInfo);
-  timeRemaining = getTimeRemainingInWeek(dates[6]);
-  currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
-  requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
-  isCurrentWeek = requestedWeek === currentWeek;
-  ifFutureWeek = requestedWeek > currentWeek;
-  showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
-  showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
+  const { weekInfo } = req.query;
+  const today = getToday();
+  const dates = calculateDates(weekInfo);
+  const timeRemaining = getTimeRemainingInWeek(dates[6]);
+  const currentWeek = calculateWeekNumber(currentChallenge.date.end, today);
+  const requestedWeek = calculateWeekNumber(currentChallenge.date.end, dates[6]);
+  const isCurrentWeek = requestedWeek === currentWeek;
+  const isFutureWeek = requestedWeek > currentWeek;
+  const showPrevious = showPreviousWeek(currentChallenge.date.start, dates[0]);
+  const showNext = showNextWeek(currentChallenge.date.start, dates[6], isCurrentWeek);
 
+  // Compile a bunch of data to craft view
+
+  // get the name of the next family this family will verse
+  let nextVersingFamilyName;
   if (isCurrentWeek) {
-    nextVersingFamilyName = currentChallenge.schedule['week' + (currentWeek + 1)][familyName].versingFamily.name;
+    nextVersingFamilyName = currentChallenge.schedule[`week${currentWeek + 1}`][familyName].versingFamily.name;
   }
 
+  // TODO: can some of this be done in parallel?
   // Find the family who's page has been requested
-  return (
-    Family.findOne({ name: familyName })
-      .then(familyObj => {
-        family = familyObj;
-        versingFamily = determineVersingFamily(requestedWeek, currentWeek, currentChallenge, family.name);
-        // then get all challenge participants in family
-        return Participation.getChallengeParticipantsByFamily(currentChallenge._id, family._id);
-      })
-      .then(familyParticipationsArray => {
-        familyParticipations = familyParticipationsArray;
-        // then, if versingFamily, get all challenge participants in versing family
-        if (versingFamily) {
-          return Participation.getChallengeParticipantsByFamily(currentChallenge._id, versingFamily._id);
-        }
-      })
-      .then(versingFamilyParticipationsArray => {
-        if (versingFamily) {
-          versingFamilyParticipations = versingFamilyParticipationsArray;
-        }
+  const family = await Family.findOne({ name: familyName });
+  // then get all challenge participants in family
+  const familyParticipants = await Participant.getChallengeParticipantsByFamily(currentChallenge._id, family._id);
 
-        // determine selected calendar date when user accesses family page
-        // or when user chooses to switch weeks using arrow buttons
-        // or when user chooses to select a specific date
-        defaultShowDate = calculateDefaultShowDate(isCurrentWeek, today, weekInfo, dates);
+  let versingFamily = determineVersingFamily(requestedWeek, currentWeek, currentChallenge, family.name);
+  // then, if versingFamily, get all challenge participants in versing family
 
-        if (!isFutureWeek) {
-          // determine if the points button should show and if so the date
-          // it should hold for when user's choose to submit points
-          addPointsButtonDate = calculateAddPointsButtonDate(currentWeek, requestedWeek, today, defaultShowDate);
-        }
+  let versingFamilyParticipants;
+  if (versingFamily) {
+    versingFamilyParticipants = await Participant.getChallengeParticipantsByFamily(currentChallenge._id, versingFamily._id);
+  }
 
-        // then total the points for each challenge participant
-        // if the user requesting the page is part of the family
-        // then move that user to the top
-        return Point.calculateParticipantPointsByDay(
-          familyParticipations,
-          defaultShowDate,
-          family.name === user.family.name ? user : undefined,
-          isFutureWeek
-        );
-      })
-      .then(() => {
-        // check if user is participating in the challenge
-        user.isParticipating = checkUserParticipation(familyParticipations, user);
+  // determine selected calendar date when user accesses family page
+  // or when user chooses to switch weeks using arrow buttons
+  // or when user chooses to select a specific date
+  const defaultShowDate = calculateDefaultShowDate(isCurrentWeek, today, weekInfo, dates);
 
-        if (user.isParticipating && addPointsButtonDate) {
-          user.participationId = familyParticipations[0]._id;
-        }
+  let addPointsButtonDate;
+  if (!isFutureWeek) {
+    // determine if the points button should show and if so the date
+    // it should hold for when user's choose to submit points
+    addPointsButtonDate = calculateAddPointsButtonDate(currentWeek, requestedWeek, today, defaultShowDate);
+  }
 
-        // then, calculate points for the family for the entire week
-        // if it is a future week, points will not get calculated
-        if (familyParticipations.length) {
-          return Point.calculatePointsForWeek(familyParticipations, dates[0], dates[6]);
-        }
-        return 0;
-      })
-      .then(totalFamilyPointsForWeek => {
-        // then calculate the team score based on the total points
-        family.teamScore = calculateTeamScore(totalFamilyPointsForWeek, familyParticipations.length);
-      })
-      .then(() => {
-        // then, calculate points for the versingFamily for the entire week
-        // if it is a future week, points will not get calculated
-        if (versingFamily && versingFamilyParticipations.length) {
-          return Point.calculatePointsForWeek(versingFamilyParticipations, dates[0], dates[6]);
-        }
-        return 0;
-      })
-      // then calculate the versing team score based on the total points
-      .then(totalVersingFamilyPointsForWeek => {
-        if (!versingFamily) {
-          versingFamily = {
-            name: 'TBD, check rankings for likelihood of making it to playoffs',
-            teamScore: 'N/A',
-          };
-          family.pointsNeededToWin = { status: 'N/A', message: 'N/A' };
-        } else {
-          versingFamily.teamScore = calculateTeamScore(totalVersingFamilyPointsForWeek, versingFamilyParticipations.length);
-          family.pointsNeededToWin = calculatePointsNeededToWin(
-            family.teamScore,
-            familyParticipations.length,
-            versingFamily.teamScore,
-            versingFamilyParticipations.length
-          );
-        }
-
-        const options = {
-          isFutureWeek,
-          isCurrentWeek,
-          timeRemaining,
-          dates,
-          requestedWeek,
-          family,
-          versingFamily,
-          familyParticipations,
-          showPrevious,
-          showNext,
-          nextVersingFamilyName,
-          defaultShowDate,
-          addPointsButtonDate,
-        };
-
-        const view = req.xhr ? 'families/_show_body' : 'families/show';
-        return res.render(view, options);
-      })
-      .catch(e => console.log(e))
+  // then total the points for each challenge participant
+  // if the user requesting the page is part of the family
+  // then move that user to the top
+  await Point.calculateParticipantPointsByDay(
+    familyParticipants,
+    defaultShowDate,
+    family.name === user.family.name ? user : undefined,
+    isFutureWeek
   );
+
+  // check if user is participating in the challenge
+  user.isParticipating = checkUserParticipant(familyParticipants, user);
+
+  if (user.isParticipating && addPointsButtonDate) {
+    user.participantId = familyParticipants[0]._id;
+  }
+
+  // then, calculate points for the family for the entire week
+  // if it is a future week, points will not get calculated
+  let totalFamilyPointsForWeek;
+  if (familyParticipants.length) {
+    totalFamilyPointsForWeek = await Point.calculatePointsForWeek(familyParticipants, dates[0], dates[6]);
+  } else {
+    totalFamilyPointsForWeek = 0;
+  }
+  // then calculate the team score based on the total points
+  // TODO: can we do something else if 0 points?
+  family.teamScore = calculateTeamScore(totalFamilyPointsForWeek, familyParticipants.length);
+
+  // then, calculate points for the versingFamily for the entire week
+  // if it is a future week, points will not get calculated
+  let totalVersingFamilyPointsForWeek;
+  if (versingFamily && versingFamilyParticipants.length) {
+    totalVersingFamilyPointsForWeek = await Point.calculatePointsForWeek(versingFamilyParticipants, dates[0], dates[6]);
+  } else {
+    totalVersingFamilyPointsForWeek = 0;
+  }
+
+  // then calculate the versing team score based on the total points
+  if (!versingFamily) {
+    versingFamily = {
+      name: 'TBD, check rankings for likelihood of making it to playoffs',
+      teamScore: 'N/A',
+    };
+    family.pointsNeededToWin = { status: 'N/A', message: 'N/A' };
+  } else {
+    versingFamily.teamScore = calculateTeamScore(totalVersingFamilyPointsForWeek, versingFamilyParticipants.length);
+    family.pointsNeededToWin = calculatePointsNeededToWin(
+      family.teamScore,
+      familyParticipants.length,
+      versingFamily.teamScore,
+      versingFamilyParticipants.length
+    );
+  }
+
+  const options = {
+    isFutureWeek,
+    isCurrentWeek,
+    timeRemaining,
+    dates,
+    requestedWeek,
+    family,
+    versingFamily,
+    familyParticipants,
+    showPrevious,
+    showNext,
+    nextVersingFamilyName,
+    defaultShowDate,
+    addPointsButtonDate,
+  };
+
+  const view = req.xhr ? 'families/_show_body' : 'families/show';
+  return res.render(view, options);
 });
 
 // GET all families
-router.get('/', (req, res) => {
-  Family.find()
-    .then(families =>
-      res.render('families/index', {
-        families,
-        added: req.query.added,
-      })
-    )
-    .catch(e => console.log(e));
+router.getAsync('/', async (req, res) => {
+  const families = await Family.find();
+  return res.render('families/index', {
+    families,
+    added: req.query.added,
+  });
 });
 
 // GET add family form
 router.get('/new', (req, res) => res.render('families/new'));
 
 // POST create family
-router.post('/', (req, res) => {
-  new Family(req.body)
-    .save()
-    .then(() => res.redirect(`/families?added=${req.body.name}`))
-    .catch(e => console.log(e));
+router.post('/', async (req, res) => {
+  await new Family(req.body).save();
+  return res.redirect(`/families?added=${req.body.name}`);
 });
 
 module.exports = router;
@@ -190,7 +167,7 @@ module.exports = router;
 
 // calculates all the dates for a given week
 function calculateDates(weekInfo) {
-  var startDate;
+  let startDate;
   if (weekInfo) {
     if (weekInfo.direction === 'none') {
       startDate = new Date(weekInfo.monday);
@@ -202,14 +179,14 @@ function calculateDates(weekInfo) {
       startDate.setDate(startDate.getDate() + 1);
     }
   } else {
-    var today = new Date();
+    const today = new Date();
     today.setHours(0, 0, 0, 0);
-    var day = today.getDay();
+    let day = today.getDay();
     day = day === 0 ? 7 : day;
     startDate = new Date(today.setDate(today.getDate() - (day - 1)));
   }
-  var dates = [new Date(startDate)];
-  for (var i = 0; i < 6; i++) {
+  const dates = [new Date(startDate)];
+  for (let i = 0; i < 6; i += 1) {
     dates.push(new Date(startDate.setDate(startDate.getDate() + 1)));
   }
   return dates;
@@ -219,14 +196,13 @@ function calculateDates(weekInfo) {
 function determineVersingFamily(requestedWeek, currentWeek, currentChallenge, familyName) {
   if ((requestedWeek === 9 && currentWeek < 9) || (requestedWeek === 8 && currentWeek < 8)) {
     return false;
-  } else {
-    return currentChallenge.schedule['week' + requestedWeek][familyName].versingFamily;
   }
+  return currentChallenge.schedule[`week${requestedWeek}`][familyName].versingFamily;
 }
 
-function checkUserParticipation(familyParticipations, user) {
-  logger.log('info:checkUserParticipation:familyParticipations', familyParticipations);
-  return familyParticipations.find(participation => participation.user._id.toString() === user._id.toString());
+function checkUserParticipant(familyParticipants, user) {
+  logger.log('info:checkUserParticipant:familyParticipants', familyParticipants);
+  return familyParticipants.find(participant => participant.user._id.toString() === user._id.toString());
 }
 
 // if requested week is the current week, default show date equals today,
@@ -254,7 +230,7 @@ function calculateAddPointsButtonDate(isCurrentWeek, isPreviousWeek, today, defa
   // 3) all of last weeks days should be editable
   if (isPreviousWeek) {
     if (today.getDay() === 1) {
-      middayMonday = new Date(today);
+      const middayMonday = new Date(today);
       middayMonday.setHours(12, 0, 0, 0);
       if (new Date() < middayMonday) return defaultShowDate;
     }
@@ -265,31 +241,31 @@ function calculateAddPointsButtonDate(isCurrentWeek, isPreviousWeek, today, defa
 
 // returns true if the start date does not equal Monday of requested week
 function showPreviousWeek(challengeStartDate, monday) {
-  return challengeStartDate.toString() != monday.toString();
+  return challengeStartDate.toString() !== monday.toString();
 }
 
 // returns true if the end date does not equal the Sunday of requested week
 function showNextWeek(challengeEndDate, sunday, isCurrentWeek) {
   if (isCurrentWeek) return false;
-  var dateAfterSunday = new Date(sunday.getTime());
+  const dateAfterSunday = new Date(sunday.getTime());
   dateAfterSunday.setDate(sunday.getDate() + 1);
-  return challengeEndDate.toString() != dateAfterSunday.toString();
+  return challengeEndDate.toString() !== dateAfterSunday.toString();
 }
 
 // have to get day before since challenge ends on
 // Monday at 12:00:00 AM instead of Sunday at 11:59:59 PM
 function calculateWeekNumber(challengeEndDate, sunday) {
-  var dayBeforeEndDate = new Date(challengeEndDate.getTime());
+  const dayBeforeEndDate = new Date(challengeEndDate.getTime());
   dayBeforeEndDate.setDate(dayBeforeEndDate.getDate() - 1);
   return Math.ceil((63 - Math.abs(dateDiffInDays(dayBeforeEndDate, sunday))) / 7);
 }
 
 // a and b are JavaScript Date objects
 function dateDiffInDays(a, b) {
-  var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   // Discard the time and time-zone information.
-  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
@@ -299,19 +275,20 @@ function calculateTeamScore(totalScore, numOfParticipants) {
   return (totalScore / numOfParticipants).toFixed(2);
 }
 
-function calculatePointsNeededToWin(familyTeamScore, numOfFamilyParticipations, versingFamilyTeamScore, numOfVersingFamilyParticipations) {
-  numOfFamilyParticipations = numOfFamilyParticipations >= 5 ? numOfFamilyParticipations : 5;
-  numOfVersingFamilyParticipations = numOfVersingFamilyParticipations >= 5 ? numOfVersingFamilyParticipations : 5;
+function calculatePointsNeededToWin(familyTeamScore, numOfFamilyParticipants, versingFamilyTeamScore, numOfVersingFamilyParticipants) {
+  numOfFamilyParticipants = numOfFamilyParticipants >= 5 ? numOfFamilyParticipants : 5;
+  numOfVersingFamilyParticipants = numOfVersingFamilyParticipants >= 5 ? numOfVersingFamilyParticipants : 5;
 
-  let status, message;
+  let status;
+  let message;
 
   if (familyTeamScore > versingFamilyTeamScore) {
     status = 'Winning';
     message = '🔥🔥🔥   Winning   🔥🔥🔥';
   } else if (familyTeamScore < versingFamilyTeamScore) {
     status = 'Losing';
-    const pointsAcquired = familyTeamScore * numOfFamilyParticipations;
-    const pointsNeededToTie = versingFamilyTeamScore * numOfFamilyParticipations;
+    const pointsAcquired = familyTeamScore * numOfFamilyParticipants;
+    const pointsNeededToTie = versingFamilyTeamScore * numOfFamilyParticipants;
     const pointsNeededToWin = pointsNeededToTie - pointsAcquired;
     message = `😭😭👎   Need ${pointsNeededToWin} points to tie`;
   } else {
@@ -322,18 +299,20 @@ function calculatePointsNeededToWin(familyTeamScore, numOfFamilyParticipations, 
     status,
     message,
   };
-} // gets the beginning of the day
+}
+
+// gets the beginning of the day
 function getToday() {
   const date = new Date();
   date.setHours(0, 0, 0, 0);
   return date;
 } // Subtracts the time between Monday at 12AM and now // and converts it to days/hours/minutes
 function getTimeRemainingInWeek(endOfWeek) {
-  let nextMonday = new Date(endOfWeek);
+  const nextMonday = new Date(endOfWeek);
   nextMonday.setDate(nextMonday.getDate() + 1);
-  const total = Date.parse(nextMonday) - Date.parse(new Date()),
-    days = Math.floor(total / (1000 * 60 * 60 * 24)),
-    hours = Math.floor((total / (1000 * 60 * 60)) % 24),
-    minutes = Math.floor((total / 1000 / 60) % 60);
+  const total = Date.parse(nextMonday) - Date.parse(new Date());
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
   return `${days} DAYS, ${hours} HOURS, ${minutes} MINUTES`;
 }

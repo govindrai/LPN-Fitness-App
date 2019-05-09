@@ -2,10 +2,10 @@
 // Ideally seed job should replace items that already exist and not drop the database
 // as that model would never work in production environments
 
-// TODO: Create Participations for Users
+// TODO: Rethink Participant Seed Data
 // Need to rethink how seeding should work possibly as randomly creating a particpation for a user may not be the best decision
 // Seed Job Data should preferably not be random and should be the same every time (in order to work w/ testing)
-// Probably need another data file called participations.js
+// Probably need another data file called participants.js
 
 // NPM Modules
 const mongoose = require('./mongoose');
@@ -15,8 +15,8 @@ const Activity = require('../../models/activity');
 const User = require('../../models/user');
 const Family = require('../../models/family');
 const Challenge = require('../../models/challenge');
-const Point = require('../../models/point');
-const Participation = require('../../models/participation');
+// const Point = require('../../models/point');
+// const Participant = require('../../models/participant');
 const Unit = require('../../models/unit');
 
 // Data Files
@@ -55,10 +55,10 @@ async function createUsers() {
   return User.create(users);
 }
 
-// async function createParticipations() {
+// async function createParticipants() {
 //   const users = await User.find();
 //   users.map(user => {
-//     return Participation.create({
+//     return Participant.create({
 //       challenge: currentChallenge,
 //       user,
 //     });
@@ -74,7 +74,7 @@ async function seedGlobalData() {
 async function seedSampleData() {
   await Challenge.create(challenges);
   await createUsers();
-  // await createParticipations();
+  // await createParticipants();
 }
 
 async function runner() {
