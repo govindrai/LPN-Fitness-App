@@ -37,3 +37,8 @@ npm-debug.log
 
 # IDEs
 .idea
+
+# CSS assets
+public/stylesheets/style.css
+public/stylesheets/style.css.map
+

@@ -30,7 +30,7 @@ const verifyAuthorization = require('./middleware/verifyAuthorization');
 const sendToHome = require('./middleware/sendToHome');
 const setLocals = require('./middleware/setLocals');
 
-const client = redis.createClient(keys.REDIS_URL);
+const client = redis.createClient(keys.REDIS_URL, { password: keys.REDIS_PASSWORD });
 const RedisStore = connectRedis(session);
 // Create Express App
 const app = addAsync(express());
@@ -49,7 +49,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 7776000000 }, // 90 days
-    secret: process.env.COOKIE_SECRET || 'secret',
+    secret: keys.COOKIE_SECRET,
   })
 );
 
@@ -61,7 +61,7 @@ app.use(
     dest: path.join(__dirname, 'public/stylesheets'),
     debug: true,
     indentedSyntax: true, // true = .sass and false = .scss
-    sourceMap: true,
+    // sourceMap: true,
     prefix: '/stylesheets',
   })
 );
