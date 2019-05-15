@@ -35,30 +35,35 @@ const challenges = [
     date: {
       start: startDates[0],
     },
+    status: 'Current',
   },
   {
     name: 'LAST YEAR CHALLENGE',
     date: {
       start: startDates[1],
     },
+    status: 'Completed',
   },
   {
     name: 'TWO YEARS AGO CHALLENGE',
     date: {
       start: startDates[2],
     },
+    status: 'Completed',
   },
   {
     name: 'NEXT YEAR CHALLENGE',
     date: {
       start: startDates[3],
     },
+    status: 'Upcoming',
   },
   {
     name: 'TWO YEARS LATER CHALLENGE',
     date: {
       start: startDates[4],
     },
+    status: 'Upcoming',
   },
 ];
 

@@ -25,8 +25,8 @@ router.getAsync('/', async (req, res) => {
   });
   await Promise.all(proms);
   res.render('challenges/index', {
-    futureChallenges: challenges.filter(challenge => challenge.status === 'upcoming'),
-    pastChallenges: challenges.filter(challenge => challenge.status === 'completed'),
+    futureChallenges: challenges.filter(challenge => challenge.status === 'Upcoming'),
+    pastChallenges: challenges.filter(challenge => challenge.status === 'Completed'),
   });
 });
 
