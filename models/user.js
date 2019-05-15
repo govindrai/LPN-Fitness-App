@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 
 const Challenge = require('./challenge');
 const Participant = require('./participant');
+// const Point = require('./point');
+
+const logger = require('../utils/logger');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -117,6 +120,44 @@ userSchema.methods.generateAuthorizationToken = function () {
   });
 };
 
+userSchema.methods.getRanks = async function getRank() {
+  const users = await mongoose
+    .model('User')
+    .find()
+    .select('name lifetimePoints family')
+    .sort('-lifetimePoints');
+
+  // calculate the individual's overall rank
+  const overallIndividualRank = calculateRank(users, this);
+
+  // calculate the individual's overall rank in the family
+  const familyMembers = users.filter(user => user.family.equals(this.family._id));
+  const overallIndividualRankInFamily = calculateRank(familyMembers, this);
+
+  return {
+    overallIndividualRank,
+    overallIndividualRankInFamily,
+  };
+};
+
+function calculateRank(users, userNeedingRanking) {
+  let totalRanks = 0;
+  let userRank;
+  let previousScore = Infinity;
+  for (let i = 1; i <= users.length; i += 1) {
+    const user = users[i - 1];
+    if (user.lifetimePoints < previousScore) {
+      totalRanks += 1;
+    }
+
+    if (user.fullName === userNeedingRanking.fullName) {
+      userRank = totalRanks;
+    }
+    previousScore = user.lifetimePoints;
+  }
+  return userRank;
+}
+
 // Verifies authorization token and returns a user
 userSchema.statics.decodeAuthorizationToken = function (token) {
   return new Promise((resolve, reject) => {
@@ -128,12 +169,13 @@ userSchema.statics.decodeAuthorizationToken = function (token) {
       _id: decoded._id,
       'tokens.token': token,
       'tokens.access': decoded.access,
-    }).populate('family'),);
+    }).populate('family'));
 };
 
 userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
 
 userSchema.methods.authenticate = function (password) {
+  logger.log('info:model:User:authenticate');
   return bcrypt.compare(password, this.password);
 };
 
@@ -150,23 +192,24 @@ userSchema.statics.getNonAdmins = function () {
 };
 
 // return the number of challenges a user is eligible to register for
-userSchema.methods.getRegisterableChallengesCount = async function () {
-  let challengesArray;
-  const futureChallenges = await Challenge.getFutureChallenges();
-  await Promise.all(futureChallenges.map(this.setParticipantFlagOnChallenge.bind(this)));
+userSchema.methods.getRegisterableChallengesCount = async function (futureChallenges) {
+  await Promise.all(futureChallenges.map(this.setIsParticipantFlagOnChallenge.bind(this)));
   return futureChallenges.filter(challenge => !challenge.isParticipant).length;
 };
 
 function isExistingEmail(email, cb = null) {
-  return User.findOne({ email }).then(existingUser => {
-    if (cb) {
-      return cb(!existingUser, 'Email address is already in use.');
-    }
-    return !existingUser;
-  });
+  return mongoose
+    .model('User')
+    .findOne({ email })
+    .then(existingUser => {
+      if (cb) {
+        return cb(!existingUser, 'Email address is already in use.');
+      }
+      return !existingUser;
+    });
 }
 
-userSchema.methods.setParticipantFlagOnChallenge = async function (challenge) {
+userSchema.methods.setIsParticipantFlagOnChallenge = async function (challenge) {
   const participant = await Participant.findOne({ challenge: challenge._id, user: this._id });
   challenge.isParticipant = !!participant;
 };

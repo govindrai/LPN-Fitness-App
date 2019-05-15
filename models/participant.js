@@ -32,6 +32,6 @@ participantSchema.statics = {
   },
 };
 
-const Participant = mongoose.model('Participants', participantSchema);
+const Participant = mongoose.model('Participant', participantSchema);
 
 module.exports = Participant;

@@ -2,14 +2,15 @@
 const mongoose = require('mongoose');
 
 // Local Modules
-const Logger = require('../../utils/logger');
+const logger = require('../../utils/logger');
 
 const { MONGO_URL } = require('../keys.js');
 
 async function connect() {
+  logger.log('info:config:mongoose:connect');
   if (process.env.IS_DEPLOYED) {
     mongoose.set('debug', (collectionName, operationName, doc, proj, somethingelse, somethingotherelse) => {
-      Logger.log('info:Mongoose Debug Log', {
+      logger.log('info:Mongoose Debug Log', {
         collectionName,
         operationName,
         doc,
@@ -28,37 +29,34 @@ async function connect() {
   mongoose.set('useCreateIndex', true);
 
   try {
-    await mongoose.connect(
-      MONGO_URL,
-      { autoIndex: false }
-    );
-    Logger.log('info:module:db:connect', `Database connection to ${MONGO_URL} created`);
+    await mongoose.connect(MONGO_URL, { autoIndex: false });
+    logger.log('info:config:mongoose:connect', `Database connection to ${MONGO_URL} created`);
   } catch (e) {
-    Logger.log('error:module:db:connect', 'CRITICAL:Error connecting to database', e);
+    logger.log('error:config:mongoose:connect', 'CRITICAL:Error connecting to database', e);
     throw e;
   }
 }
 
 async function dropDatabase() {
-  Logger.log('info:module:db:dropDatabase');
+  logger.log('info:config:mongoose:dropDatabase');
   try {
     const startTime = new Date();
     await mongoose.connection.dropDatabase();
-    Logger.log('info:module:db', 'Database successfully dropped');
-    Logger.log('info:module:db:dropDatabase', `Drop database operation took ${(new Date() - startTime) / 1000 / 60} minutes`);
+    logger.log('info:module:db', 'Database successfully dropped');
+    logger.log('info:config:mongoose:dropDatabase', `Drop database operation took ${(new Date() - startTime) / 1000 / 60} minutes`);
   } catch (e) {
-    Logger.log('error:module:db:dropDatabase', 'Error dropping database', e);
+    logger.log('error:config:mongoose:dropDatabase', 'Error dropping database', e);
     throw e;
   }
 }
 
 async function disconnect() {
-  Logger.log('info:module:db:disconnect');
+  logger.log('info:config:mongoose:disconnect');
   try {
     await mongoose.connection.close();
-    Logger.log('info:module:db:disconnect', 'Database connection closed');
+    logger.log('info:config:mongoose:disconnect', 'Database connection closed');
   } catch (e) {
-    Logger.log('error:module:db:disconnect', 'Error disconnecting from database', e);
+    logger.log('error:config:mongoose:disconnect', 'Error disconnecting from database', e);
     throw e;
   }
 }
@@ -78,7 +76,7 @@ module.exports = {
  * @param {Object} schema a mongoose schema
  */
 function plugin(schema) {
-  // Logger.log('debug:modules:db.js:plugin');
+  // logger.log('debug:modules:db.js:plugin');
   // plugin can be bypassed for any schema by setting the skipCustomPlugins property to true in the schema constructor's schema options parameter
   if (schema.options.skipCustomPlugins === true) {
     return;
@@ -93,14 +91,14 @@ function plugin(schema) {
   // sets up a transformation that remove paths with hidden property in their schemaTypes
   // when document.prototype.toObject() is invoked on a document
   // transformation can be bypassed by passing { hide: false } to toObject()
-  schema.options.toObject.transform = function(doc, ret, options) {
-    Logger.log('info:module:db.js:plugin:toObjectTransformHook');
+  schema.options.toObject.transform = function (doc, ret, options) {
+    logger.log('info:module:db.js:plugin:toObjectTransformHook');
     if (options.hide === false) {
-      Logger.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding of fields explicity turned off');
+      logger.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding of fields explicity turned off');
       return ret;
     }
 
-    Logger.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding fields');
+    logger.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding fields');
     doc.schema.eachPath((path, schemaType) => {
       if (schemaType.options.hidden) {
         delete ret[path];

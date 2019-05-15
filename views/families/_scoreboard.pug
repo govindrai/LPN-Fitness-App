@@ -16,24 +16,24 @@ mixin printWeekdays(dates)
         div.day= days[x]
         div.date(id=id data-date=dates[x] style=borderStyle)= dates[x].getDate()
 
-mixin printParticipants(familyParticipations)
-  each participation in familyParticipations
+mixin printParticipants(familyParticipants)
+  each participant in familyParticipants
         .participant
           .first-row
             .left-column
-              .nickname= participation.user.name.nickname
-              .realname= participation.user.fullName
+              .nickname= participant.user.name.nickname
+              .realname= participant.user.fullName
             .right-column
-              if addPointsButtonDate && participation.user._id.toString() === user._id.toString() && participation.totalDailyPoints === 0
+              if addPointsButtonDate && participant.user._id.toString() === user._id.toString() && participant.totalDailyPoints === 0
                 #add-points-button(style=`background-color: ${familyColors[family.name]}` data-date=addPointsButtonDate) +
               else
-                if participation.totalDailyPoints === 0
+                if participant.totalDailyPoints === 0
                   .total-points &#8213;
                 else
-                  .total-points= participation.totalDailyPoints
+                  .total-points= participant.totalDailyPoints
           .point-entries-summaries
-            if participation.points.length > 0
-              each point in participation.points
+            if participant.points.length > 0
+              each point in participant.points
                 .point-entry-summary(data-point=point._id) #[span.calculated-points-label #{point.calculatedPoints} POINTS] #{point.activity.name}, #{point.numOfUnits} #{point.activity.unit.abbreviation}
               if addPointsButtonDate
                 #edit-points(style=`color: ${familyColors[family.name]}`) Edit
@@ -54,8 +54,8 @@ mixin printParticipants(familyParticipations)
             .nickname= user.name.nickname
             .realname= user.fullName
           .right-column
-            .participation-status.grey Not Participating
+            .participant-status.grey Not Participating
 
-    +printParticipants(familyParticipations)
+    +printParticipants(familyParticipants)
 
   <div style="clear:both"></div>

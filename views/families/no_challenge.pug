@@ -1,4 +1,13 @@
 extends ../layout
 
 block content
-	| There are no challenges. SORRY. Please complain to your administrator.
+	h1 Welcome #{user.name.nickname}!
+	if futureChallenges.length === 0
+		| There are no challenges to sign up for :( SORRY. Please complain to your administrator.
+	else if registerableChallengesCount === 0
+		| You've signed up for all of the upcoming challenges! Just hold up till the challenge starts. 
+	else
+		| Welcome! You can still sign up for #{registerableChallengesCount} challenges! #[a(href="/challenges") Sign Up]
+		//- include ../challenges/index
+		h1 Overall Individual Rank: #{ranks.overallIndividualRank}
+		h1 Overall Individual Rank in Family: #{ranks.overallIndividualRankInFamily}

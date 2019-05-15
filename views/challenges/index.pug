@@ -7,21 +7,21 @@ mixin printChallenges(challenges, challengeType)
         p= "Winner: " + challenge.winner.name
       - let status, changeable
       if challengeType === "current"
-        - status = challenge.participation ? {message: "Participating", color: "green"} : {message: "Not Participating", color: "grey"}
+        - status = challenge.isParticipant ? {message: "Participating", color: "green"} : {message: "Not Participating", color: "grey"}
       else if challengeType === "future"
-        if challenge.participation
+        if challenge.isParticipant
           - status = { message: "Signed Up", color: "green" }
         else
-          form.participate(action='/participations' method='POST')
+          form.participate(action='/participants' method='POST')
             input(name="_id" type="hidden" value=challenge._id)
-            input.participation-status(style=`background-color: ${familyColors[user.family.name]}` type='submit' value="Sign Up")
+            input.participant-status(style=`background-color: ${familyColors[user.family.name]}` type='submit' value="Sign Up")
       else
         - status = challenge.participating ? { message: "Participated", color: "green" } : {message: "Did not Participate", color: "grey" }
       if status
-        span.participation-status(class=status.color)= status.message
+        span.participant-status(class=status.color)= status.message
       if user.admin
         p= challenge.participantCount + " have signed up"
-        a.participation-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
+        a.participant-status(href=`challenges/${challenge._id}/edit`)= 'Edit'
         button.grey-button(class='deleteButton' type='submit') Delete
         include _delete_confirmation_modal
 
@@ -31,11 +31,11 @@ block content
   .col-12
     .title Challenges
 
-    if challengeCount > 0
-      if challengeCount === 1
+    if registerableChallengesCount > 0
+      if registerableChallengesCount === 1
         .info #[b NOTE:] A new challenge has been created! Sign up below under Future Challenges!
       else
-        .info #[b NOTE:] There are #{challengeCount} new challenges available! Sign up below under Future Challenges!
+        .info #[b NOTE:] There are #{registerableChallengesCount} new challenges available! Sign up below under Future Challenges!
 
     .subtitle Current Challenge
     if currentChallenge
@@ -65,7 +65,7 @@ block content
 append footer-scripts
   script.
     $(document).ready(function() {
-      $('body').on('submit', '.participate', addParticipation);
+      $('body').on('submit', '.participate', addparticipant);
       $('body').on('submit', '.delete-form', deleteChallenge);
       $('body').on('submit', '.deleteButton', displayDeleteModal);
     });
@@ -74,19 +74,19 @@ append footer-scripts
 
     }
 
-    function addParticipation(e) {
+    function addparticipant(e) {
       e.preventDefault();
       var form = $(this);
       var data = form.serialize();
 
       var request = $.ajax({
-        url: "/participations",
+        url: "/participants",
         type: "POST",
         data
       })
 
       request.done(function(res) {
-        form.replaceWith("<span class='participation-status green'>Signed Up</span>");
+        form.replaceWith("<span class='participant-status green'>Signed Up</span>");
         $('div .info').css('display', 'none');
       });
 

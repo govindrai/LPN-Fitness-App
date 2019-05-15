@@ -19,7 +19,9 @@ router.getAsync('/:familyName', async (req, res) => {
 
   // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
   if (!currentChallenge) {
-    return res.render('families/no_challenge', { familyName });
+    // TODO: Should ideally redirect to their home page (i.e. my profile)
+    const ranks = await res.locals.user.getRanks();
+    return res.render('families/no_challenge', { familyName, ranks });
   }
   const { user } = res.locals;
 

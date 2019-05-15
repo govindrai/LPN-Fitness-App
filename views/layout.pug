@@ -39,7 +39,7 @@ html
           .drop-down-links
             each familyName in familyNames
               +printLink(`/families/${familyName}`, familyName)
-          +printLink("/challenges", `Challenges (${challengeCount})`)
+          +printLink("/challenges", `Challenges (${registerableChallengesCount})`)
           +printLink("/activities", "Activities")
           +printLink("/schedule", "Schedule")
           +printLink("/rules", "Rules")

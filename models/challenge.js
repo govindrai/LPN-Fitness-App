@@ -74,7 +74,7 @@ challengeSchema.pre('validate', async function preValidateHook() {
   challenge.date.registrationEnd = this.date.start;
   challenge.date.end = getChallengeEndDate(challenge.date.start);
   challenge.schedule = await challenge.generateSchedule();
-  challenge.scheduleUpdateWeeklyWinsJob();
+  challenge.scheduleUpdateWeeklyWinsJobs();
 });
 
 challengeSchema.statics = {

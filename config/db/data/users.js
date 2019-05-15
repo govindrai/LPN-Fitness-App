@@ -1,6 +1,8 @@
 const utils = require('../../../utils/utils');
 
 const { families } = utils.enums;
+
+// familyName is converted to a family reference during seeding
 module.exports = [
   {
     email: 'edwardchow@gmail.com',

@@ -1,5 +1,5 @@
 include _points_entry_mixin
 
 .point-entries
-  each point in familyParticipations[0].points
+  each point in familyParticipants[0].points
     +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "update")

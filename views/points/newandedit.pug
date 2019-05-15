@@ -28,19 +28,19 @@ include _points_entry_mixin
       img(src="/images/spinner.gif" width="64px" height="64px" alt="loading indicator gif")
 
     .points-form-content
-      input(type="hidden" name="participation" value=user.participationId)
+      input(type="hidden" name="participant" value=user.participantId)
       input(type="hidden", name="date", value=addPointsButtonDate)
 
       //- this is where all point entries will appear
       .point-entries
-        if familyParticipations.length
-          each point in familyParticipations[0].points
+        if familyParticipants.length
+          each point in familyParticipants[0].points
             +pointEntry(point._id, point.activity, point.numOfUnits, point.calculatedPoints, "ignore")
             .clear
 
       - let pointsString = "";
-      if familyParticipations.length && familyParticipations[0].totalDailyPoints
-        - pointValue = familyParticipations[0].totalDailyPoints.toFixed(2)
+      if familyParticipants.length && familyParticipants[0].totalDailyPoints
+        - pointValue = familyParticipants[0].totalDailyPoints.toFixed(2)
         - pointsString = `TOTAL = ${pointsValue} POINTS`
       else 
         - pointString = `TOTAL = 0 POINTS`

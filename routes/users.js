@@ -1,21 +1,22 @@
 // Modules
-const express = require("express"),
-  _ = require("lodash"),
-  pug = require("pug"),
-  path = require("path");
+const express = require('express');
+const _ = require('lodash');
+// const pug = require('pug');
+// const path = require('path');
 
 // Models
-const User = require("./../models/user"),
-  Family = require("./../models/family"),
-  Point = require("./../models/point");
+const User = require('./../models/user');
+// const Family = require('./../models/family');
+const Point = require('./../models/point');
 
 // Middleware
-const isAdmin = require("./../middleware/isAdmin");
+const isAdmin = require('./../middleware/isAdmin');
 
 const router = express.Router();
 
-router.get("/admin-settings", isAdmin, (req, res, next) => {
-  let adminss, nonAdminss;
+router.get('/admin-settings', isAdmin, (req, res, next) => {
+  let adminss;
+  let nonAdminss;
   User.getAdmins()
     .then(admins => {
       adminss = admins;
@@ -23,91 +24,61 @@ router.get("/admin-settings", isAdmin, (req, res, next) => {
     })
     .then(nonAdmins => {
       nonAdminss = nonAdmins;
-      res.render("users/admin_settings", {
+      res.render('users/admin_settings', {
         admins: adminss,
         nonAdmins: nonAdminss,
-        path: req.path
+        path: req.path,
       });
     });
 });
 
 // edit points for a user for certain day
-router.put("/points", (req, res) => {
-  const { participation } = req.body;
-  // res.locals.user.participationId = participation;
+router.put('/points', (req, res) => {
+  const { participant } = req.body;
+  // res.locals.user.participantId = participant;
   const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
-  const familyParticipations = [{ _id: participation, user: res.locals.user }];
-  Point.calculateParticipantPointsByDay(
-    familyParticipations,
-    addPointsButtonDate,
-    res.locals.user
-  )
-    .then(() => {
-      return res.render("points/_points_entries", {
-        familyParticipations
+  const familyParticipants = [{ _id: participant, user: res.locals.user }];
+  Point.calculateParticipantPointsByDay(familyParticipants, addPointsButtonDate, res.locals.user)
+    .then(() => res.render('points/_points_entries', {
+        familyParticipants,
         // addPointsButtonDate,
         // editRequest: true
-      });
-    })
+      }))
     .catch(e => console.log(e));
 });
 
 // GET user profile edit form
-router.get("/:id/edit", (req, res) => res.render("users/edit"));
+router.get('/:id/edit', (req, res) => res.render('users/edit'));
 
 // handles both admin changes as well as profile edits
-router.put("/:id", (req, res) => {
+router.put('/:id', (req, res) => {
   if (req.body.changeAdmin) {
     User.findById(req.body.userId)
-      .then(user => {
-        return user.update({ $set: { admin: !user.admin } });
-      })
-      .then(user =>
-        res.send(
-          `${user.fullName()} ${user.admin
-            ? "is now an admin"
-            : "is no longer an admin"}`
-        )
-      )
+      .then(user => user.update({ $set: { admin: !user.admin } }))
+      .then(user => res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`))
       .catch(e => console.log(e));
   } else {
-    const body = _.pick(req.body, [
-      "name.first",
-      "name.last",
-      "name.nickname",
-      "email",
-      "password"
-    ]);
+    const body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'password']);
 
     const emailNotModified = res.locals.user.email === body.email;
-    const passwordNotModified = body.password === "";
+    const passwordNotModified = body.password === '';
 
     if (emailNotModified) {
       delete body.email;
     }
-    const promisesArray = [];
-
     let hashPasswordPromise;
 
     if (passwordNotModified) {
       delete body.password;
     } else {
-      hashPasswordPromise = function() {
-        return User.hashPassword(body.password).then(
-          hash => (body.password = hash)
-        );
+      hashPasswordPromise = function () {
+        return User.hashPassword(body.password).then(hash => (body.password = hash));
       };
     }
 
-    updateUserPromise = function() {
-      return User.findOneAndUpdate(
-        { _id: res.locals.user._id },
-        { $set: body },
-        { new: true, runValidators: true }
-      )
-        .then(user => {
-          return res.redirect(`/users/${user.email}?updated=true`);
-        })
+    const updateUserPromise = function () {
+      return User.findOneAndUpdate({ _id: res.locals.user._id }, { $set: body }, { new: true, runValidators: true })
+        .then(user => res.redirect(`/users/${user.email}?updated=true`))
         .catch(e => console.log(e));
     };
 
@@ -119,14 +90,14 @@ router.put("/:id", (req, res) => {
   }
 });
 
-router.get("/:email", (req, res) => {
+router.get('/:email', (req, res) => {
   User.findOne({ email: req.params.email })
-    .populate("family")
+    .populate('family')
     .then(user => {
-      res.render("users/show", {
+      res.render('users/show', {
         user,
         currentUser: res.locals.user,
-        successMessage: req.query.updated
+        successMessage: req.query.updated,
       });
     });
 });

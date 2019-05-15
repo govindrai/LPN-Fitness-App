@@ -29,6 +29,7 @@ module.exports = async function verifyAuthorization(req, res, next) {
 
   res.locals.token = req.session['x-auth'];
   const user = await User.decodeAuthorizationToken(res.locals.token);
+
   if (!user) {
     return res.status(404).send('UNAUTHORIZED.');
   }
