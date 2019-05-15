@@ -19,7 +19,6 @@ const challengeSchema = new mongoose.Schema({
       required: true,
       validate: [
         {
-          isAsync: true,
           validator: isOverlappingChallenge,
         },
         {
@@ -67,14 +66,13 @@ const challengeSchema = new mongoose.Schema({
 });
 
 challengeSchema.pre('validate', async function preValidateHook() {
-  const challenge = this;
-  if (challenge.date.registrationEnd) {
+  if (this.date.registrationEnd) {
     return;
   }
-  challenge.date.registrationEnd = this.date.start;
-  challenge.date.end = getChallengeEndDate(challenge.date.start);
-  challenge.schedule = await challenge.generateSchedule();
-  challenge.scheduleUpdateWeeklyWinsJobs();
+  this.date.registrationEnd = this.date.start;
+  this.date.end = getChallengeEndDate(this.date.start);
+  this.schedule = await this.generateSchedule();
+  this.scheduleUpdateWeeklyWinsJobs();
 });
 
 challengeSchema.statics = {
@@ -399,38 +397,29 @@ function calculatePoints(familyTotalPoints, numOfParticipants) {
   return (familyTotalPoints / numOfParticipants).toFixed(2);
 }
 
-function isOverlappingChallenge(inputStartDate, cb) {
+async function isOverlappingChallenge(inputStartDate, cb) {
   const endDate = getChallengeEndDate(inputStartDate);
-  Challenge.findOne()
+  let existingChallenge = await Challenge.findOne()
     .where('date.start')
     .lte(inputStartDate)
     .where('date.end')
-    .gte(inputStartDate)
-    .then(existingChallenge => {
-      if (existingChallenge) {
-        return cb(
-          !existingChallenge,
-          `Challenge ${
-            existingChallenge.name
-          } is already scheduled from ${existingChallenge.date.start.toLocaleDateString()} - ${existingChallenge.date.end.toLocaleDateString()}. Only one challenge can occur at any given time. Please select different dates.`
-        );
-      }
-      return Challenge.findOne()
-        .where('date.start')
-        .lte(endDate)
-        .where('date.end')
-        .gte(endDate);
-    })
-    .then(existingChallenge => {
-      if (existingChallenge) {
-        return cb(
-          !existingChallenge,
-          `Challenge ${
-            existingChallenge.name
-          } is already scheduled from ${existingChallenge.date.start.toLocaleDateString()} - ${existingChallenge.date.end.toLocaleDateString()}. Only one challenge can occur at any given time. Please select different dates.`
-        );
-      }
-      return cb(!existingChallenge);
-    })
-    .catch(e => console.log(e));
+    .gte(inputStartDate);
+
+  if (existingChallenge) {
+    throw `Challenge ${
+      existingChallenge.name
+    } is already scheduled from ${existingChallenge.date.start.toLocaleDateString()} - ${existingChallenge.date.end.toLocaleDateString()}. Only one challenge can occur at any given time. Please select different dates.`;
+  }
+
+  existingChallenge = await Challenge.findOne()
+    .where('date.start')
+    .lte(endDate)
+    .where('date.end')
+    .gte(endDate);
+
+  if (existingChallenge) {
+    throw `Challenge ${
+      existingChallenge.name
+    } is already scheduled from ${existingChallenge.date.start.toLocaleDateString()} - ${existingChallenge.date.end.toLocaleDateString()}. Only one challenge can occur at any given time. Please select different dates.`;
+  }
 }

@@ -3,7 +3,8 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const Challenge = require('./challenge');
+const keys = require('../config/keys');
+// const Challenge = require('./challenge');
 const Participant = require('./participant');
 // const Point = require('./point');
 
@@ -33,12 +34,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: [
       {
-        isAsync: true,
         validator: validator.isEmail,
         message: 'Please provide a valid email address.',
       },
       {
-        isAsync: true,
         validator: isExistingEmail,
       },
     ],
@@ -76,28 +75,16 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-userSchema.post('validate', function (doc) {
-  const user = this;
-  if (user.isModified('password')) {
-    User.hashPassword(user.password)
-      .then(hash => {
-        user.password = hash;
-      })
-      .catch(e => console.log(e));
+userSchema.post('validate', async function postValidateHook() {
+  if (this.isModified('password')) {
+    const hash = await mongoose.model('User').hashPassword(this.password);
+    this.password = hash;
   }
 });
 
-userSchema.pre('save', function (done) {
-  const user = this;
-  User.hashPassword(user.password)
-    .then(hash => {
-      user.password = hash;
-      done();
-    })
-    .catch(e => {
-      console.log(e);
-      done(e);
-    });
+userSchema.pre('save', async function preSaveHook() {
+  const hash = await mongoose.model('User').hashPassword(this.password);
+  this.password = hash;
 });
 
 userSchema.statics = {
@@ -159,17 +146,17 @@ function calculateRank(users, userNeedingRanking) {
 }
 
 // Verifies authorization token and returns a user
-userSchema.statics.decodeAuthorizationToken = function (token) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET || 'secret', (err, decoded) => {
+userSchema.statics.decodeAuthorizationToken = async function (token) {
+  const decoded = await new Promise((resolve, reject) => {
+    jwt.verify(token, keys.JWT_SECRET, (err, decoded) => {
       if (err) reject(err);
       resolve(decoded);
     });
-  }).then(decoded => User.findOne({
-      _id: decoded._id,
-      'tokens.token': token,
-      'tokens.access': decoded.access,
-    }).populate('family'));
+  }).then(decoded => mongoose.model('User').findOne({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': decoded.access,
+  }).populate('family'));
 };
 
 userSchema.statics.destroyAuthorizationToken = token => userSchema.statics.decodeAuthorizationToken(token);
@@ -180,13 +167,13 @@ userSchema.methods.authenticate = function (password) {
 };
 
 userSchema.statics.getAdmins = function () {
-  return User.find({ admin: true })
+  return mongoose.model('User').find({ admin: true })
     .populate('family')
     .then(admins => admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
 };
 
 userSchema.statics.getNonAdmins = function () {
-  return User.find({ admin: false })
+  return mongoose.model('User').find({ admin: false })
     .populate('family')
     .then(nonAdmins => nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
 };
