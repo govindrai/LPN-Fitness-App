@@ -2,14 +2,13 @@
 const express = require('express');
 const favicon = require('serve-favicon');
 const methodOverride = require('method-override');
-const session = require('express-session');
 const redis = require('redis');
-const connectRedis = require('connect-redis');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const { addAsync } = require('@awaitjs/express');
+const cookieSession = require('cookie-session');
 
 // Local Modules
 const keys = require('./config/keys');
@@ -27,11 +26,9 @@ const participants = require('./routes/participants');
 // Middleware
 const connect = require('./middleware/connect');
 const verifyAuthorization = require('./middleware/verifyAuthorization');
-const sendToHome = require('./middleware/sendToHome');
 const setLocals = require('./middleware/setLocals');
 
 const client = redis.createClient(keys.REDIS_URL, { password: keys.REDIS_PASSWORD });
-const RedisStore = connectRedis(session);
 // Create Express App
 const app = addAsync(express());
 
@@ -43,13 +40,20 @@ app.use(methodOverride('_method'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// TODO: we don't really need to use cookies, we can just use headers?
+// We can use both access and refresh token and try the refresh token if it doesn't WERK
+// refresh token needs to be checked in the database too see that it is still valid but main token doesnt need that
 app.use(
-  session({
-    store: new RedisStore({ client }),
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 7776000000 }, // 90 days
+  cookieSession({
+    name: 'LPNSessionCookie',
+    // keys: [
+    //   /* secret keys */ // TODO: FIGURE OUT THIS OPTION
+    // ],
     secret: keys.COOKIE_SECRET,
+    httpOnly: true,
+    // secure: ? TODO: FIGURE OUT THIS OPTION
+    maxAge: 7776000000, // 90 days
   })
 );
 
@@ -71,7 +75,9 @@ app.use('/libs', express.static(path.join(__dirname, '/node_modules/jquery/dist/
 app.use('/libs', express.static(path.join(__dirname, '/node_modules/typeahead.js/dist/')));
 
 // these middleware are run before any route is rendered below
-app.useAsync(connect, verifyAuthorization, sendToHome, setLocals);
+// TODO: right now we connect to mongodb before serving any request. Maybe there are some routes where DB connection is not necessary?
+app.useAsync(connect, verifyAuthorization, setLocals);
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/families', families);

@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-	h1 Welcome #{user.name.nickname}!
+	h1 Welcome #{user.name.nickname} of #{user.family.name}!
 	if futureChallenges.length === 0
 		| There are no challenges to sign up for :( SORRY. Please complain to your administrator.
 	else if registerableChallengesCount === 0

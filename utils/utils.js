@@ -1,6 +1,14 @@
 const units = require('../config/db/data/units');
 const families = require('../config/db/data/families');
 
+// Wraps an express request handler to enable async/await syntax inside request handlers
+// without the need to add a try/catch block for every request handler
+function wrap(fn) {
+  return function wrappedFunction(...args) {
+    return fn(...args).catch(args[2]);
+  };
+}
+
 class Enum {
   constructor(enumObj) {
     const handler = {
@@ -43,4 +51,5 @@ const enums = {
 module.exports = {
   Enum,
   enums,
+  wrap,
 };

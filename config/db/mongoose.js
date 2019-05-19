@@ -6,6 +6,12 @@ const logger = require('../../utils/logger');
 
 const { MONGO_URL } = require('../keys.js');
 
+mongoose.connection.on('error', () => {
+  logger.log('error:config:mongoose:connection error listener', 'MongoDB connection error');
+  process.env.IS_CONNECTED = false;
+  throw new Error('MongoDB connection error');
+});
+
 async function connect() {
   logger.log('info:config:mongoose:connect');
   if (process.env.IS_DEPLOYED) {
@@ -24,12 +30,15 @@ async function connect() {
     mongoose.set('debug', true);
   }
 
-  mongoose.set('useNewUrlParser', true);
-  mongoose.set('useFindAndModify', false);
-  mongoose.set('useCreateIndex', true);
-
   try {
-    await mongoose.connect(MONGO_URL, { autoIndex: false });
+    await mongoose.connect(MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useCreateIndex: true,
+      autoIndex: false,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+    });
     logger.log('info:config:mongoose:connect', `Database connection to ${MONGO_URL} created`);
   } catch (e) {
     logger.log('error:config:mongoose:connect', 'CRITICAL:Error connecting to database', e);
@@ -91,7 +100,7 @@ function plugin(schema) {
   // sets up a transformation that remove paths with hidden property in their schemaTypes
   // when document.prototype.toObject() is invoked on a document
   // transformation can be bypassed by passing { hide: false } to toObject()
-  schema.options.toObject.transform = function (doc, ret, options) {
+  schema.options.toObject.transform = (doc, ret, options) => {
     logger.log('info:module:db.js:plugin:toObjectTransformHook');
     if (options.hide === false) {
       logger.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding of fields explicity turned off');

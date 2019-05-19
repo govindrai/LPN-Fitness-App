@@ -12,6 +12,8 @@ const Point = require('./../models/point');
 // Middleware
 const isAdmin = require('./../middleware/isAdmin');
 
+const { wrap } = require('../utils/utils');
+
 const router = express.Router();
 
 router.get('/admin-settings', isAdmin, (req, res, next) => {
@@ -90,16 +92,35 @@ router.put('/:id', (req, res) => {
   }
 });
 
-router.get('/:email', (req, res) => {
-  User.findOne({ email: req.params.email })
-    .populate('family')
-    .then(user => {
-      res.render('users/show', {
-        user,
-        currentUser: res.locals.user,
-        successMessage: req.query.updated,
-      });
+// GET a user's landing page
+router.get(
+  '/:id',
+  wrap(async (req, res, next) => {
+    // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
+    const ranks = await res.locals.user.getRanks();
+    return res.render('families/no_challenge', { ranks });
+  })
+);
+
+// TODO: add private route middleware
+router.get(
+  '/:id/edit',
+  wrap(async (req, res, next) => {
+    // TODO: don't do a lookup if the user is looking at their own profile
+    // Better yet build a caching on top of all mongodb actions and save yourself from this logic
+    let user;
+    if (res.locals.user._id.equals(req.params.id)) {
+      ({ user } = res.locals);
+    } else {
+      user = await User.findById(req.params.id).populate('family');
+    }
+
+    res.render('users/show', {
+      user,
+      currentUser: res.locals.user,
+      successMessage: req.query.updated,
     });
-});
+  })
+);
 
 module.exports = router;
