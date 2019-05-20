@@ -2,7 +2,6 @@
 const express = require('express');
 const favicon = require('serve-favicon');
 const methodOverride = require('method-override');
-const redis = require('redis');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -28,7 +27,6 @@ const connect = require('./middleware/connect');
 const verifyAuthorization = require('./middleware/verifyAuthorization');
 const setLocals = require('./middleware/setLocals');
 
-const client = redis.createClient(keys.REDIS_URL, { password: keys.REDIS_PASSWORD });
 // Create Express App
 const app = addAsync(express());
 
@@ -110,13 +108,5 @@ app.use((err, req, res, next) => {
 //   res.status(err.status || 500);
 //   res.render('error');
 // });
-
-client.on('connect', () => {
-  console.log('connected to redis client');
-});
-
-client.on('error', () => {
-  console.error('error connecting to redis');
-});
 
 module.exports = app;

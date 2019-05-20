@@ -6,49 +6,65 @@ const _ = require('lodash');
 const User = require('./../models/user');
 const Family = require('./../models/family');
 
+const logger = require('../utils/logger');
+const { wrap } = require('../utils/utils');
+
+const sendToHome = require('../middleware/sendToHome');
+
 const router = express.Router();
 
-// GET Root (registration form)
-router.get('/register', (req, res) => {
-  // Need families for registration form (not equal to by (ne));
-  Family.find()
-    .ne('name', 'Bye')
-    .then(families => {
-      res.render('users/new', {
-        families,
-        user: new User(),
-        title: 'Register',
-      });
-    })
-    .catch(e => console.log(e));
+router.get(
+  '/register',
+  wrap(async (req, res, next) => {
+    // if a registered user is trying to hit this route, send them to their home page
+    if (res.locals.user) {
+      return sendToHome(req, res, next);
+    }
+    // Need families for registration form (not equal to by (ne));
+    const families = await Family.find().ne('name', 'Bye');
+    res.render('users/new', {
+      families,
+      user: new User(),
+      title: 'Register',
+    });
+  })
+);
+
+router.get('/login', (req, res, next) => {
+  if (res.locals.user) {
+    return sendToHome(req, res, next);
+  }
+  res.render('sessions/new');
 });
 
-// Redirect to Index
-router.get('/login', (req, res) => res.redirect('/'));
+router.get(
+  '/',
+  wrap(async (req, res, next) => {
+    if (res.locals.isLoggedIn) {
+      // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
+      const ranks = await res.locals.user.getRanks();
+      return res.render('families/no_challenge', { ranks });
+    }
 
-// GET login form
-router.get('/', (req, res) => res.render('sessions/new', { loggedOut: req.query.loggedOut, title: 'Login' }));
+    res.render('sessions/new', { loggedOut: req.query.loggedOut, title: 'Login' });
+  })
+);
 
 // POST login form data
-router.post('/login', (req, res) => {
-  let user;
-  const { email } = req.body;
-
-  User.findOne({ email })
-    .then(userObj => {
-      if (!userObj) throw new AuthError();
-      user = userObj;
-      return user.authenticate(req.body.password);
-    })
-    .then(isAuthenticated => {
+router.post(
+  '/login',
+  wrap(async (req, res, next) => {
+    const { email } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) throw new AuthError();
+      const isAuthenticated = await user.authenticate(req.body.password);
       if (!isAuthenticated) throw new AuthError();
-      return user.generateAuthorizationToken();
-    })
-    .then(() => {
-      req.session['x-auth'] = user.tokens[user.tokens.length - 1].token;
-      return res.redirect('/');
-    })
-    .catch(e => {
+      const tokens = await user.generateAccessTokens();
+      [req.session.accessToken, req.session.refreshToken] = tokens;
+      res.locals.user = user;
+      return sendToHome(req, res, next);
+    } catch (e) {
       if (e.name === 'AuthError') {
         return res.render('sessions/new', {
           error: e.message,
@@ -56,55 +72,63 @@ router.post('/login', (req, res) => {
           title: 'Login',
         });
       }
-      return console.log(e);
-    });
-});
+      throw e;
+    }
+  })
+);
 
 // Register
-router.post('/register', (req, res) => {
-  const body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'family', 'password']);
-
-  const user = new User(body);
-  user
-    .save()
-    .then(() => user.generateAuthorizationToken())
-    .then(() => {
-      req.session['x-auth'] = user.tokens[0].token;
-      res.redirect('/');
-    })
-    .catch(e => {
-      console.log(e);
-      const errors = e.errors;
-      if (errors.family && errors.family.name === 'CastError') {
-        errors.family.message = 'Please select your family from the list above.';
-      }
-      Family.find()
-        .ne('name', 'Bye')
-        .then(families => res.render('users/new', {
+router.post(
+  '/register',
+  wrap(async (req, res, next) => {
+    let user;
+    try {
+      // TODO: remove underscore/lodash
+      const body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'family', 'password']);
+      user = new User(body);
+      user = await user.save();
+      req.session.accessToken = user.accessToken;
+      req.session.refreshToken = user.refreshToken;
+      res.locals.user = user;
+      return sendToHome(req, res, next);
+    } catch (e) {
+      if (e.errors) {
+        if (e.name === 'ValidationError') {
+          if (e.errors.family && e.errors.family.name === 'CastError') {
+            e.errors.family.message = 'Please select your family from the list above.';
+          }
+          const families = await Family.find().ne('name', 'Bye');
+          logger.log('info:new user', user);
+          res.render('users/new', {
             families,
             user,
             errors: e.errors,
             title: 'Register',
-          }))
-        .catch(e => console.log(e));
-      // Easy way to test errors output using postman
-      // return res.json(e.errors);
-    });
-});
+          });
+        }
+      } else {
+        throw e;
+      }
+    }
+  })
+);
 
 // Logout (Remove JWT from user, then redirect to Home)
-router.get('/logout', (req, res) => {
-  res.locals.user.tokens.pull({ access: 'auth', token: res.locals.token });
-  res.locals.user
-    .update({ $set: { tokens: res.locals.user.tokens } })
-    .then(() => {
-      req.session.destroy(err => {
-        if (err) console.log(err, 'Session could not be destroyed');
-        res.redirect('/?loggedOut=true');
-      });
-    })
-    .catch(e => console.log(e));
-});
+router.get(
+  '/logout',
+  wrap(async (req, res, next) => {
+    if (!res.locals.user) {
+      // TODO: figure out route level logging
+      logger.log('info:route:/logout', 'non-logged in user logging out -- redirecting to index');
+      return res.redirect('/');
+    }
+    await res.locals.user.update({ accessToken: null, refreshToken: null });
+    req.session = null;
+    res.render('sessions/new', {
+      loggedOut: true,
+    });
+  })
+);
 
 router.get('/schedule', (req, res) => res.render('challenges/schedule', {
     standings: res.locals.currentChallenge.getStandings(),

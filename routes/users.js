@@ -12,6 +12,7 @@ const Point = require('./../models/point');
 // Middleware
 const isAdmin = require('./../middleware/isAdmin');
 
+const logger = require('../utils/logger');
 const { wrap } = require('../utils/utils');
 
 const router = express.Router();

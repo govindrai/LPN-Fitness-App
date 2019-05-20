@@ -35,10 +35,11 @@ const userSchema = new mongoose.Schema({
     validate: [
       {
         validator: validator.isEmail,
-        message: 'Please provide a valid email address.',
+        msg: 'Please provide a valid email address.',
       },
       {
         validator: isExistingEmail,
+        msg: 'Email address is already in use, please try with a different email address.',
       },
     ],
   },
@@ -74,6 +75,7 @@ userSchema.post('validate', async function postValidateHook() {
 userSchema.pre('save', async function preSaveHook() {
   const hash = await mongoose.model('User').hashPassword(this.password);
   this.password = hash;
+  return this.generateAccessTokens();
 });
 
 userSchema.statics = {
@@ -138,7 +140,11 @@ userSchema.methods = {
     };
 
     const tokens = await Promise.all([signPayload(accessTokenPayload), signPayload(refreshTokenPayload)]);
-    await this.updateOne({ accessToken: tokens[0], refreshToken: tokens[1] });
+    if (!this.isNew) {
+      await this.updateOne({ accessToken: tokens[0], refreshToken: tokens[1] });
+    } else {
+      [this.accessToken, this.refreshToken] = tokens;
+    }
     return tokens;
   },
 
@@ -202,17 +208,10 @@ function signPayload(payload) {
   });
 }
 
-function isExistingEmail(email, cb = null) {
-  logger.log('info:model:User:isExistingEmail');
-  return mongoose
-    .model('User')
-    .findOne({ email })
-    .then(existingUser => {
-      if (cb) {
-        return cb(!existingUser, 'Email address is already in use.');
-      }
-      return !existingUser;
-    });
+async function isExistingEmail(email) {
+  logger.log('info:model:User:validator:isExistingEmail');
+  const existingUser = await mongoose.model('User').findOne({ email });
+  return !existingUser;
 }
 
 function calculateRank(users, userNeedingRanking) {
