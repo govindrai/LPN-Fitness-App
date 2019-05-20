@@ -15,14 +15,13 @@ const router = addAsync(express.Router());
 // i.e. /Iolite
 router.getAsync('/:familyName', async (req, res) => {
   const { currentChallenge } = res.locals;
-  const { familyName } = req.params;
 
-  // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
   if (!currentChallenge) {
-    // TODO: Should ideally redirect to their home page (i.e. my profile)
-    const ranks = await res.locals.user.getRanks();
-    return res.render('families/no_challenge', { familyName, ranks });
+    // render family stats
+    return res.send('Since there is no current challenge we will render family stats here. Coming soon');
   }
+
+  const { familyName } = req.params;
   const { user } = res.locals;
 
   const { weekInfo } = req.query;
@@ -277,6 +276,8 @@ function calculateTeamScore(totalScore, numOfParticipants) {
   return (totalScore / numOfParticipants).toFixed(2);
 }
 
+// TODO: There is something wrong with this function
+// needs test :D
 function calculatePointsNeededToWin(familyTeamScore, numOfFamilyParticipants, versingFamilyTeamScore, numOfVersingFamilyParticipants) {
   numOfFamilyParticipants = numOfFamilyParticipants >= 5 ? numOfFamilyParticipants : 5;
   numOfVersingFamilyParticipants = numOfVersingFamilyParticipants >= 5 ? numOfVersingFamilyParticipants : 5;
