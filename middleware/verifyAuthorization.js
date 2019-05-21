@@ -23,7 +23,7 @@ async function verifyAuthorization(req, res, next) {
     const accessTokenRes = await verifyToken(req.session.accessToken);
     if (accessTokenRes === 'TokenExpired') {
       logger.log('info:middleware:verifyAuthorization', 'Access token is expired. Verifying refresh token');
-      const refreshTokenRes = await verifyToken(req.session.accessToken);
+      const refreshTokenRes = await verifyToken(req.session.refreshToken);
       if (refreshTokenRes === 'TokenExpired') {
         logger.log('info:middleware:verifyAuthorization', 'Refresh token is also expired. Invalidating tokens and redirecting to /login');
         req.session.accessToken = null;
