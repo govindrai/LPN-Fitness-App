@@ -41,9 +41,8 @@ router.get(
   '/',
   wrap(async (req, res, next) => {
     if (res.locals.isLoggedIn) {
-      // TODO: this should redirect to a user's personal landing page when there are no challenges. :)
-      const ranks = await res.locals.user.getRanks();
-      return res.render('families/no_challenge', { ranks });
+      // TODO: this link in the header view should be changed to this redirect when user is signed in and there is no current challenge
+      return res.redirect(`/users/${res.locals.user._id}`);
     }
 
     res.render('sessions/new', { loggedOut: req.query.loggedOut, title: 'Login' });
@@ -122,6 +121,7 @@ router.get(
       logger.log('info:route:/logout', 'non-logged in user logging out -- redirecting to index');
       return res.redirect('/');
     }
+    // TODO: turn this into "invalidate tokens" function
     await res.locals.user.update({ accessToken: null, refreshToken: null });
     req.session = null;
     res.render('sessions/new', {
