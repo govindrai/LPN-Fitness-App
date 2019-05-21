@@ -20,6 +20,7 @@ const units = require('./routes/units');
 const activities = require('./routes/activities');
 const challenges = require('./routes/challenges');
 const points = require('./routes/points');
+const stats = require('./routes/stats');
 const participants = require('./routes/participants');
 
 // Middleware
@@ -83,6 +84,7 @@ app.use('/units', units);
 app.use('/activities', activities);
 app.use('/challenges', challenges);
 app.use('/points', points);
+app.use('/stats', stats);
 app.use('/participants', participants);
 
 // catch 404 and forward to error handler

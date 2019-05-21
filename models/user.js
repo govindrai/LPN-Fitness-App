@@ -3,10 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const keys = require('../config/keys');
-// const Challenge = require('./challenge');
 const Participant = require('./participant');
-// const Point = require('./point');
 
 const logger = require('../utils/logger');
 
@@ -98,6 +95,27 @@ userSchema.statics = {
       .populate('family')
       .then(nonAdmins => nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
   },
+
+  // TODO: this should be a server side aggregation
+  async getRankedUsers() {
+    logger.log('info:model:User:getRankedUsers');
+    const users = await mongoose
+      .model('User')
+      .find()
+      .select('name lifetimePoints family')
+      .sort('-lifetimePoints');
+
+    // calculate the individual's overall rank
+    rankUsers(users, this, 'overallIndividualRank');
+
+    // calculate the individual's overall rank in the family
+    const familyMembers = users.filter(user => user.family.equals(this.family));
+    rankUsers(familyMembers, this, 'overallIndividualRankInFamily');
+
+    return users;
+  },
+
+  getAllTimeIndividualRankings,
 };
 
 userSchema.methods = {
@@ -128,25 +146,12 @@ userSchema.methods = {
     return tokens;
   },
 
-  async getRanks() {
-    logger.log('info:model:User:getRanks');
-    const users = await mongoose
-      .model('User')
-      .find()
-      .select('name lifetimePoints family')
-      .sort('-lifetimePoints');
-
-    // calculate the individual's overall rank
-    const overallIndividualRank = calculateRank(users, this);
-
-    // calculate the individual's overall rank in the family
-    const familyMembers = users.filter(user => user.family.equals(this.family._id));
-    const overallIndividualRankInFamily = calculateRank(familyMembers, this);
-
-    return {
-      overallIndividualRank,
-      overallIndividualRankInFamily,
-    };
+  async getRankedUser() {
+    logger.log('info:model:User:getRankedUser');
+    const rankedUsers = await mongoose.model('User').getRankedUsers();
+    const { overallIndividualRank, overallIndividualRankInFamily } = rankedUsers.find(user => user._id.equals(this._id));
+    this.overallIndividualRank = overallIndividualRank;
+    this.overallIndividualRankInFamily = overallIndividualRankInFamily;
   },
 
   authenticate(password) {
@@ -166,6 +171,8 @@ userSchema.methods = {
     const participant = await Participant.findOne({ challenge: challenge._id, user: this._id });
     challenge.isParticipant = !!participant;
   },
+
+  getNumOfChallengesCompleted,
 };
 
 userSchema.virtual('fullName').get(function getFullName() {
@@ -177,9 +184,18 @@ const User = mongoose.model('User', userSchema);
 
 module.exports = User;
 
+// Mongoose Validators
+
+async function isExistingEmail(email) {
+  logger.log('info:model:User:validator:isExistingEmail');
+  const existingUser = await mongoose.model('User').findOne({ email });
+  return !existingUser;
+}
+
 // Helpers
 
 function signPayload(payload) {
+  logger.log('info:model:User:helper:signPayload');
   return new Promise((resolve, reject) => {
     jwt.sign(payload, process.env.JWT_SECRET || 'secret', (err, token) => {
       if (err) reject(err);
@@ -188,13 +204,8 @@ function signPayload(payload) {
   });
 }
 
-async function isExistingEmail(email) {
-  logger.log('info:model:User:validator:isExistingEmail');
-  const existingUser = await mongoose.model('User').findOne({ email });
-  return !existingUser;
-}
-
-function calculateRank(users, userNeedingRanking) {
+function rankUsers(users, userNeedingRanking, rankLabel) {
+  logger.log('info:model:User:helper:rankUsers');
   let totalRanks = 0;
   let userRank;
   let previousScore = Infinity;
@@ -207,7 +218,37 @@ function calculateRank(users, userNeedingRanking) {
     if (user.fullName === userNeedingRanking.fullName) {
       userRank = totalRanks;
     }
+    user[rankLabel] = totalRanks;
     previousScore = user.lifetimePoints;
   }
   return userRank;
+}
+
+// Statistics Methods
+
+// gets the entire fraternity's individual rankings for all time
+function getAllTimeIndividualRankings() {
+  logger.log('info:model:User:getAllTimeIndividualRankings');
+  return mongoose
+    .model('User')
+    .find()
+    .select('name lifeTimePoints')
+    .sort('-lifetimePoints');
+}
+
+// returns the total amount of times a user participated in a challenge
+// TODO: write unit test for this
+async function getNumOfChallengesCompleted(currentChallenge) {
+  logger.log('info:model:User:getNumOfChallengesCompleted');
+  const participants = await Participant.find({ user: this._id });
+  if (currentChallenge) {
+    const filteredParticipants = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
+    return filteredParticipants.length;
+  }
+  return participants.length;
+}
+
+// TODO: Put in points in the app. then run aggregations in mongodb compass
+function getFavoriteActivity() {
+  logger.log('info:model:User:getFavoriteActivity');
 }
