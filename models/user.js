@@ -83,26 +83,6 @@ userSchema.statics = {
     return bcrypt.hash(password, 10);
   },
 
-  // Verifies authorization token and returns a user
-  async decodeAuthorizationToken(accessToken, refreshToken) {
-    logger.log('info:model:User:decodeAuthorizationToken');
-    const decodedJwt = await new Promise((resolve, reject) => {
-      jwt.verify(accessToken, keys.JWT_SECRET, (err, decodedToken) => {
-        // TODO: Need to check database for valid refreshtoken or not
-        if (err) reject(err);
-        resolve(decodedToken);
-      });
-    });
-    return mongoose
-      .model('User')
-      .findById(decodedJwt.data.userId)
-      .populate('family');
-  },
-
-  destroyAuthorizationToken(token) {
-    return userSchema.statics.decodeAuthorizationToken(token);
-  },
-
   getAdmins() {
     return mongoose
       .model('User')
