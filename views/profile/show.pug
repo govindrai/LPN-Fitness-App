@@ -3,10 +3,10 @@ include ../layout.pug
 block content
   .col-12
 
-    .subtitle #{user.name.first}'s Profile
+    .subtitle Profile
     .border
 
-    if successMessage
+    if isUpdated
       .success Your profile was updated!
 
     .activity
@@ -34,5 +34,4 @@ block content
       .activity-name Lifetime Points
       .activity-description= user.lifetimePoints
 
-    if user._id.toString() === currentUser._id.toString()
-      a.grey-button(href=`/users/${user._id}/edit`) Edit Profile
+    a.grey-button(href=`/profiles/${user._id}/edit`) Edit Profile
