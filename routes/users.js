@@ -43,10 +43,10 @@ router.put('/points', (req, res) => {
   const familyParticipants = [{ _id: participant, user: res.locals.user }];
   Point.calculateParticipantPointsByDay(familyParticipants, addPointsButtonDate, res.locals.user)
     .then(() => res.render('points/_points_entries', {
-        familyParticipants,
-        // addPointsButtonDate,
-        // editRequest: true
-      }))
+      familyParticipants,
+      // addPointsButtonDate,
+      // editRequest: true
+    }))
     .catch(e => console.log(e));
 });
 
@@ -54,44 +54,41 @@ router.put('/points', (req, res) => {
 router.get('/:id/edit', (req, res) => res.render('users/edit'));
 
 // handles both admin changes as well as profile edits
-router.put('/:id', (req, res) => {
-  if (req.body.changeAdmin) {
-    User.findById(req.body.userId)
-      .then(user => user.update({ $set: { admin: !user.admin } }))
-      .then(user => res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`))
-      .catch(e => console.log(e));
-  } else {
+// confusing because you should only be able to change your profile but you can make someone else an admin if you are an admin
+router.put(
+  '/:id',
+  wrap(async (req, res, next) => {
+    if (req.body.changeAdmin) {
+      if (!res.locals.user.admin) {
+        // TODO: send the rigth error message back to view
+        return res.send('ONLY ADMINS BE ALLOWED TO ACCESS THIS BRO');
+      }
+      // TODO: Make this a server side operation, no need to retrieve user
+      const user = await User.findById(req.body.userId);
+      await user.update({ $set: { admin: !user.admin } });
+      return res.send(`${user.fullName} ${user.admin ? 'is now an admin' : 'is no longer an admin'}`);
+    }
+
     const body = _.pick(req.body, ['name.first', 'name.last', 'name.nickname', 'email', 'password']);
+    const isEmailUnmodified = res.locals.user.email === body.email;
+    const isPasswordUnmodified = body.password === '';
 
-    const emailNotModified = res.locals.user.email === body.email;
-    const passwordNotModified = body.password === '';
-
-    if (emailNotModified) {
+    if (isEmailUnmodified) {
       delete body.email;
     }
-    let hashPasswordPromise;
 
-    if (passwordNotModified) {
+    if (isPasswordUnmodified) {
       delete body.password;
     } else {
-      hashPasswordPromise = function () {
-        return User.hashPassword(body.password).then(hash => (body.password = hash));
-      };
+      res.locals.user.password = body.password;
+      await res.locals.user.hashPassword();
+      body.password = res.locals.user.password;
     }
 
-    const updateUserPromise = function () {
-      return User.findOneAndUpdate({ _id: res.locals.user._id }, { $set: body }, { new: true, runValidators: true })
-        .then(user => res.redirect(`/users/${user.email}?updated=true`))
-        .catch(e => console.log(e));
-    };
-
-    if (hashPasswordPromise) {
-      hashPasswordPromise().then(() => updateUserPromise());
-    } else {
-      updateUserPromise();
-    }
-  }
-});
+    await res.locals.user.update({ $set: body }, { new: true, runValidators: true });
+    res.redirect(`/users/${res.locals.user._id}?updated=true`);
+  })
+);
 
 // GET a user's landing page
 router.get(
@@ -106,24 +103,24 @@ router.get(
 );
 
 // TODO: add private route middleware
-router.get(
-  '/:id/edit',
-  wrap(async (req, res, next) => {
-    // TODO: don't do a lookup if the user is looking at their own profile
-    // Better yet build a caching on top of all mongodb actions and save yourself from this logic
-    let user;
-    if (res.locals.user._id.equals(req.params.id)) {
-      ({ user } = res.locals);
-    } else {
-      user = await User.findById(req.params.id).populate('family');
-    }
+// router.get(
+//   '/:id/edit',
+//   wrap(async (req, res, next) => {
+//     // TODO: don't do a lookup if the user is looking at their own profile
+//     // Better yet build a caching on top of all mongodb actions and save yourself from this logic
+//     let user;
+//     if (res.locals.user._id.equals(req.params.id)) {
+//       ({ user } = res.locals);
+//     } else {
+//       user = await User.findById(req.params.id).populate('family');
+//     }
 
-    res.render('users/show', {
-      user,
-      currentUser: res.locals.user,
-      successMessage: req.query.updated,
-    });
-  })
-);
+//     res.render('users/show', {
+//       user,
+//       currentUser: res.locals.user,
+//       successMessage: req.query.updated,
+//     });
+//   })
+// );
 
 module.exports = router;
