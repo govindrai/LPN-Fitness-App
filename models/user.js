@@ -62,24 +62,13 @@ const userSchema = new mongoose.Schema({
   refreshToken: String,
 });
 
-userSchema.post('validate', async function postValidateHook() {
-  if (this.isModified('password')) {
-    const hash = await mongoose.model('User').hashPassword(this.password);
-    this.password = hash;
-  }
-});
-
 userSchema.pre('save', async function preSaveHook() {
-  const hash = await mongoose.model('User').hashPassword(this.password);
-  this.password = hash;
+  logger.log('info:model:User:presaveHook');
+  await this.hashPassword();
   return this.generateAccessTokens();
 });
 
 userSchema.statics = {
-  hashPassword(password) {
-    return bcrypt.hash(password, 10);
-  },
-
   getAdmins() {
     return mongoose
       .model('User')
@@ -119,6 +108,12 @@ userSchema.statics = {
 };
 
 userSchema.methods = {
+  // returns a promise
+  async hashPassword() {
+    logger.log('info:model:User:hashPassword');
+    this.password = await bcrypt.hash(this.password, 10);
+  },
+
   async generateAccessTokens() {
     logger.log('info:model:User:generateAccessTokens');
     const accessTokenPayload = {
@@ -154,6 +149,7 @@ userSchema.methods = {
     this.overallIndividualRankInFamily = overallIndividualRankInFamily;
   },
 
+  // returns a promise
   authenticate(password) {
     logger.log('info:model:User:authenticate');
     return bcrypt.compare(password, this.password);
@@ -242,8 +238,8 @@ async function getNumOfChallengesCompleted(currentChallenge) {
   logger.log('info:model:User:getNumOfChallengesCompleted');
   const participants = await Participant.find({ user: this._id });
   if (currentChallenge) {
-    const filteredParticipants = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
-    return filteredParticipants.length;
+    const isParticipantInCurrentChallenge = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
+    return isParticipantInCurrentChallenge ? participants.length - 1 : participants.length;
   }
   return participants.length;
 }
