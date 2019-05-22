@@ -32,10 +32,12 @@ router.getAsync('/', async (req, res) => {
 
 // Create Challenge Form
 router.getAsync('/new', isAdmin, async (req, res) => {
-  const challenge = Challenge.findOne()
+  const challenge = await Challenge.findOne()
     .sort('-date.end')
     .select('date.end')
     .limit(1);
+  // TODO: What if there's no challenge? the mindate has to be tomorrow
+  // console.log(challenge);
   const minDate = new Date(challenge.date.end);
   minDate.setDate(minDate.getDate() + 1);
   res.render('challenges/new', {

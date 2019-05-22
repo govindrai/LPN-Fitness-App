@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-const app = require('..');
 const debug = require('debug')('lpn-fitness-challenge-app:server');
 const http = require('http');
+const app = require('../server');
 
 /**
  * Get port from environment and store in Express.

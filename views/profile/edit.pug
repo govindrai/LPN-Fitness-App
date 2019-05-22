@@ -5,7 +5,7 @@ block content
 
     .title Update Profile
 
-    form#editProfile(action=`/users/${user._id}?_method=PUT` method='POST')
+    form#editProfile(action=`/profiles/${user._id}?_method=PUT` method='POST')
       label First Name
       input(value=user.name.first name='name.first' type='text' required)
       label Last Name

@@ -48,7 +48,7 @@ html
             +printLink("#", "Settings <span class='down-arrow'>&#9660;</span>")(class="drop-down")
             .drop-down-links
               +printLink(`/users/admin-settings`, "Admin")
-              +printLink(`/users/${user.email}`, "Profile")
+              +printLink(`/profiles/${user._id}`, "Profile")
           else
             +printLink(`/users/${user.email}`, "Profile")
           +printLink("/logout", "Logout")

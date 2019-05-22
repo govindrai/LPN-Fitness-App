@@ -130,10 +130,12 @@ router.get(
   })
 );
 
-router.get('/schedule', (req, res) => res.render('challenges/schedule', {
+router.get('/schedule', (req, res) => {
+  res.render('challenges/schedule', {
     standings: res.locals.currentChallenge.getStandings(),
     title: 'Standings & Schedule',
-  }));
+  });
+});
 
 // GET rules page
 router.get('/rules', (req, res) => {
