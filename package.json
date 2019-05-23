@@ -5,10 +5,10 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon -e js,pug ./bin/www; open http://localhost:3000",
-    "redis": "~/redis-5.0.3/src/redis-server",
     "seed": "node config/db/seed.js",
-    "serve": "webpack-dev-server --open",
-    "build": "webpack"
+    "build": "webpack",
+    "test": "npm run unittest",
+    "unittest": "mocha tests/unit/models"
   },
   "dependencies": {
     "@awaitjs/express": "^0.3.0",
@@ -38,6 +38,7 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.2",
+    "mocha": "^6.1.4",
     "nodemon": "^1.19.0",
     "reload": "^3.0.1",
     "webpack": "^4.31.0",
