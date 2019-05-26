@@ -1,34 +1,56 @@
+const colors = require('colors'); /* eslint-disable-line no-unused-vars */
+
 class Logger {
-  static init(event) {
-    Logger.userId = event.requestContext && event.requestContext.authorizer ? event.requestContext.authorizer.userId : 'guest';
+  constructor(logContext) {
+    this.infoLogContext = `${'info'.green}:${logContext}`;
+    this.errorLogContext = `${'error'}:${logContext}`;
+    this.debugLogContext = `${'debug'}:${logContext}`;
+    this.enteredFunctionName = logContext.split(':').pop();
+  }
+
+  debug(description, message) {
+    description = `${this.debugLogContext}:${description}`;
+    const log = Logger.log(description, message);
+    console.log(log.bgWhite.black);
+  }
+
+  info(description, message) {
+    description = `${this.infoLogContext}:${description}`;
+    const log = Logger.log(description, message);
+    console.log(log);
+    // console.log(`\x1b[48;5;2m\x1b[38;5;15m${log}`);
+  }
+
+  error(description, error) {
+    description = `${this.errorLogContext}:${description}`;
+    const log = Logger.log(description, error);
+    console.log(log.bgRed.white);
+  }
+
+  entered() {
+    const message = `Entered ${this.enteredFunctionName}`;
+    const log = Logger.log(this.infoLogContext, message);
+    console.log(log);
   }
 
   // TODO: either change the name of this static function or change the variable name log in the function below
-  static log(description, message, error) {
+  static log(description, message) {
     const [logLevel, ...logName] = description.split(':');
-    const log = {
-      userId: Logger.userId,
-      logLevel,
-      logName: logName.join(':'),
-      message,
-    };
+    let log = `${logLevel} ${logName.join(':')}`;
 
-    if (message instanceof Error) {
-      console.log(message);
-      message = message.name;
-      log.level = 'error';
+    if (message) {
+      if (message instanceof Error) {
+        const error = message;
+        console.log(error);
+        log += ` - ${error.name}`;
+        log += ` - ${error.stack}`;
+      } else {
+        log += ` - ${message}`;
+      }
     }
 
-    if (error) {
-      console.log(error);
-      log.error = error.stack;
-    }
-
-    console.log(JSON.stringify(log, null, 4));
+    return log;
   }
 }
 
 module.exports = Logger;
-
-// TODO: REDO Logger to provide log.info, log.warn, and log.error properties
-// error should be calculated based on loglevel (probably should be called log type which should be error)
