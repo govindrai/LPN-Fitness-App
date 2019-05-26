@@ -1,17 +1,19 @@
 // Modules
 const express = require('express');
 
-
 // Models
 const User = require('./../models/user');
 const Point = require('./../models/point');
 
 // Middleware
 const isAdmin = require('./../middleware/isAdmin');
+const privateRoute = require('./../middleware/privateRoute');
 
 const { wrap } = require('../utils/utils');
 
 const router = express.Router();
+
+router.use(privateRoute);
 
 router.get('/admin-settings', isAdmin, (req, res, next) => {
   let adminss;
@@ -39,13 +41,12 @@ router.put('/points', (req, res) => {
   const familyParticipants = [{ _id: participant, user: res.locals.user }];
   Point.calculateParticipantPointsByDay(familyParticipants, addPointsButtonDate, res.locals.user)
     .then(() => res.render('points/_points_entries', {
-      familyParticipants,
-      // addPointsButtonDate,
-      // editRequest: true
-    }))
+        familyParticipants,
+        // addPointsButtonDate,
+        // editRequest: true
+      }))
     .catch(e => console.log(e));
 });
-
 
 // GET a user's landing page
 router.get(

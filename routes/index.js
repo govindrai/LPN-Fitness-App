@@ -40,7 +40,7 @@ router.get('/login', (req, res, next) => {
 router.get(
   '/',
   wrap(async (req, res, next) => {
-    if (res.locals.isLoggedIn) {
+    if (res.locals.isAuthenticated) {
       // TODO: this link in the header view should be changed to this redirect when user is signed in and there is no current challenge
       return res.redirect(`/users/${res.locals.user._id}`);
     }

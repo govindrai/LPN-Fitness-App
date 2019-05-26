@@ -7,7 +7,7 @@
 // Seed Job Data should preferably not be random and should be the same every time (in order to work w/ testing)
 // Probably need another data file called participants.js
 
-// NPM Modules
+// Local DB connector module
 const mongoose = require('./mongoose');
 
 // Mongoose Models
@@ -16,15 +16,15 @@ const User = require('../../models/user');
 const Family = require('../../models/family');
 const Challenge = require('../../models/challenge');
 // const Point = require('../../models/point');
-// const Participant = require('../../models/participant');
+const Participant = require('../../models/participant');
 const Unit = require('../../models/unit');
 
 // Data Files
-const families = require('./data/families');
-const units = require('./data/units');
-const activities = require('./data/activities');
-const users = require('./data/users');
-const challenges = require('./data/challenges');
+const familiesData = require('./data/families');
+const unitsData = require('./data/units');
+const activitiesData = require('./data/activities');
+const usersData = require('./data/users');
+const challengesData = require('./data/challenges');
 
 // Utilities
 const logger = require('../../utils/logger');
@@ -35,11 +35,10 @@ async function createActivities() {
   units.forEach(unit => {
     unitIdsByName[unit.name] = unit._id;
   });
-  activities.forEach(activity => {
+  activitiesData.forEach(activity => {
     activity.unit = unitIdsByName[activity.unitName];
   });
-  // logger.log('info:seed:createActivites:activities', activities);
-  return Activity.create(activities);
+  return Activity.create(activitiesData);
 }
 
 async function createUsers() {
@@ -48,33 +47,33 @@ async function createUsers() {
   families.forEach(family => {
     familyNamesById[family.name] = family._id;
   });
-  users.forEach(user => {
+  usersData.forEach(user => {
     user.family = familyNamesById[user.familyName];
   });
-  logger.log('info:seed:createUsers:users', users);
-  return User.create(users);
+  return User.create(usersData);
 }
 
-// async function createParticipants() {
-//   const users = await User.find();
-//   users.map(user => {
-//     return Participant.create({
-//       challenge: currentChallenge,
-//       user,
-//     });
-//   });
-// }
+async function createParticipants() {
+  const users = await User.find();
+  const currentChallenge = await Challenge.getCurrentChallenge();
+  console.log('*****************', currentChallenge);
+  const participantsData = users.map(user => ({
+    challenge: currentChallenge,
+    user,
+  }));
+  return Participant.create(participantsData);
+}
 
 async function seedGlobalData() {
-  await Family.create(families);
-  await Unit.create(units);
+  await Family.create(familiesData);
+  await Unit.create(unitsData);
   await createActivities();
 }
 
 async function seedSampleData() {
-  await Challenge.create(challenges);
+  await Challenge.create(challengesData);
   await createUsers();
-  // await createParticipants();
+  await createParticipants();
 }
 
 async function runner() {

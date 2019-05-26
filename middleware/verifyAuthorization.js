@@ -24,13 +24,16 @@ async function verifyAuthorization(req, res, next) {
     if (accessTokenRes === 'TokenExpired') {
       logger.log('info:middleware:verifyAuthorization', 'Access token is expired. Verifying refresh token');
       const refreshTokenRes = await verifyToken(req.session.refreshToken);
+
       if (refreshTokenRes === 'TokenExpired') {
         logger.log('info:middleware:verifyAuthorization', 'Refresh token is also expired. Invalidating tokens and redirecting to /login');
         req.session.accessToken = null;
         req.session.refreshToken = null;
-        return res.redirect('/login?expiredSession=true');
+        return res.render('session/new', { error: 'Your session has expired. Please log in' });
       }
+
       user = await User.findOne({ _id: refreshTokenRes.data.userId, refreshToken: req.session.refreshToken });
+
       if (!user) {
         logger.log(
           'info:middleware:verifyAuthorization',
@@ -38,13 +41,15 @@ async function verifyAuthorization(req, res, next) {
         );
         req.session.accessToken = null;
         req.session.refreshToken = null;
-        return res.redirect('/login?expiredSession=true');
+        return res.render('session/new', { error: 'Your session has expired. Please log in' });
       }
+
       logger.log('info:middleware:verifyAuthorization', 'Valid refresh token. Generating new tokens');
       const tokens = await user.generateAccessTokens();
       [req.session.accessToken, req.session.refreshToken] = tokens;
     } else {
       user = await User.findOne({ _id: accessTokenRes.data.userId, accessToken: req.session.accessToken }).populate('family');
+
       if (!user) {
         logger.log(
           'info:middleware:verifyAuthorization:',
@@ -52,14 +57,18 @@ async function verifyAuthorization(req, res, next) {
         );
         req.session.accessToken = null;
         req.session.refreshToken = null;
-        return res.redirect('/login?expiredSession=true');
+        return res.render('sessions/new', { error: 'Your session has expired. Please log in' });
       }
+
       logger.log('info:middleware:verifyAuthorization:', 'Access token valid. User authenticated');
     }
 
     res.locals.user = user;
-    res.locals.isLoggedIn = true;
+    res.locals.isAuthenticated = true;
+    return next();
   }
+
+  logger.log('info:middleware:verifyAuthorization', 'User is a guest');
   return next();
 }
 

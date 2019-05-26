@@ -3,7 +3,7 @@ mixin printLink(href, name)
   - let textDecoration = "none"
   if path === href
     - textDecoration = "underline"
-    if isLoggedIn
+    if isAuthenticated
       if familyColors[name]
         - color = familyColors[name];
       else
@@ -26,12 +26,12 @@ html
       .top
         .subtitle.logo
           a(href="/") LPN Fitness
-        if isLoggedIn
+        if isAuthenticated
           .hamburger-button
             .line
             .line
             .line
-      if isLoggedIn
+      if isAuthenticated
         .nav-links
           +printLink(home, "Home")
           - let familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
