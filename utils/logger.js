@@ -9,20 +9,32 @@ class Logger {
   }
 
   debug(description, message) {
-    description = `${this.debugLogContext}:${description}`;
+    if (description) {
+      description = `${this.debugLogContext}:${description}`;
+    } else {
+      description = this.debugLogContext;
+    }
     const log = Logger.log(description, message);
     console.log(log.bgWhite.black);
   }
 
   info(description, message) {
-    description = `${this.infoLogContext}:${description}`;
+    if (description) {
+      description = `${this.infoLogContext}:${description}`;
+    } else {
+      description = this.infoLogContext;
+    }
     const log = Logger.log(description, message);
     console.log(log);
     // console.log(`\x1b[48;5;2m\x1b[38;5;15m${log}`);
   }
 
   error(description, error) {
-    description = `${this.errorLogContext}:${description}`;
+    if (description) {
+      description = `${this.errorLogContext}:${description}`;
+    } else {
+      description = this.errorLogContext;
+    }
     const log = Logger.log(description, error);
     console.log(log.bgRed.white);
   }

@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 
 const Participant = require('./participant');
 
-const logger = require('../utils/logger');
+const Logger = require('../utils/logger');
+
+const logger = new Logger('model:User');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -63,9 +65,19 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function preSaveHook() {
-  logger.log('info:model:User:presaveHook');
+  logger.info('presaveHook', 'Entered presaveHook');
   await this.hashPassword();
   return this.generateAccessTokens();
+});
+
+userSchema.post('save', async function postSaveHook() {
+  logger.info('postsaveHook', 'Entered postSaveHook');
+  await this.populate('family');
+});
+
+userSchema.post('findOne', async doc => {
+  logger.info('postFindOne', 'entered postFindOneHook');
+  await doc.populate('family');
 });
 
 userSchema.statics = {
@@ -87,7 +99,7 @@ userSchema.statics = {
 
   // TODO: this should be a server side aggregation
   async getRankedUsers() {
-    logger.log('info:model:User:getRankedUsers');
+    logger.info('getRankedUsers', 'Entered getRankedUsers');
     const users = await mongoose
       .model('User')
       .find()
@@ -110,12 +122,12 @@ userSchema.statics = {
 userSchema.methods = {
   // returns a promise
   async hashPassword() {
-    logger.log('info:model:User:hashPassword');
+    logger.info('hashPassword', 'Entered hashPassword');
     this.password = await bcrypt.hash(this.password, 10);
   },
 
   async generateAccessTokens() {
-    logger.log('info:model:User:generateAccessTokens');
+    logger.info('generateAccessTokens', 'Entered generateAccessTokens');
     const accessTokenPayload = {
       type: 'access',
       data: {
@@ -142,7 +154,7 @@ userSchema.methods = {
   },
 
   async getRankedUser() {
-    logger.log('info:model:User:getRankedUser');
+    logger.info('getRankedUser', 'Entered getRankedUser');
     const rankedUsers = await mongoose.model('User').getRankedUsers();
     const { overallIndividualRank, overallIndividualRankInFamily } = rankedUsers.find(user => user._id.equals(this._id));
     this.overallIndividualRank = overallIndividualRank;
@@ -151,19 +163,19 @@ userSchema.methods = {
 
   // returns a promise
   authenticate(password) {
-    logger.log('info:model:User:authenticate');
+    logger.info('authenticate', 'Entered authenticate');
     return bcrypt.compare(password, this.password);
   },
 
   // return the number of challenges a user is eligible to register for
   async getRegisterableChallengesCount(futureChallenges) {
-    logger.log('info:model:User:getRegisterableChallengesCount');
+    logger.info('getRegisterableChallengesCount', 'Entered getRegisterableChallengesCount');
     await Promise.all(futureChallenges.map(this.setIsParticipantFlagOnChallenge.bind(this)));
     return futureChallenges.filter(challenge => !challenge.isParticipant).length;
   },
 
   async setIsParticipantFlagOnChallenge(challenge) {
-    logger.log('info:model:User:setIsParticipantFlagOnChallenge');
+    logger.info('setIsParticipantFlagOnChallenge', 'Entered setIsParticipantFlagOnChallenge');
     const participant = await Participant.findOne({ challenge: challenge._id, user: this._id });
     challenge.isParticipant = !!participant;
   },
@@ -172,7 +184,7 @@ userSchema.methods = {
 };
 
 userSchema.virtual('fullName').get(function getFullName() {
-  logger.log('info:model:User:virtual:getFullName');
+  logger.info('virtual:getFullName', 'Entered virual getFullName');
   return `${this.name.first} ${this.name.last}`;
 });
 
@@ -183,7 +195,7 @@ module.exports = User;
 // Mongoose Validators
 
 async function isExistingEmail(email) {
-  logger.log('info:model:User:validator:isExistingEmail');
+  logger.info('validator:isExistingEmail', 'Entered isExistingEmail');
   const existingUser = await mongoose.model('User').findOne({ email });
   return !existingUser;
 }
@@ -191,7 +203,7 @@ async function isExistingEmail(email) {
 // Helpers
 
 function signPayload(payload) {
-  logger.log('info:model:User:helper:signPayload');
+  logger.info('helper:signPayload');
   return new Promise((resolve, reject) => {
     jwt.sign(payload, process.env.JWT_SECRET || 'secret', (err, token) => {
       if (err) reject(err);
@@ -201,7 +213,7 @@ function signPayload(payload) {
 }
 
 function rankUsers(users, userNeedingRanking, rankLabel) {
-  logger.log('info:model:User:helper:rankUsers');
+  logger.info('helper:rankUsers');
   let totalRanks = 0;
   let userRank;
   let previousScore = Infinity;
@@ -224,7 +236,7 @@ function rankUsers(users, userNeedingRanking, rankLabel) {
 
 // gets the entire fraternity's individual rankings for all time
 function getAllTimeIndividualRankings() {
-  logger.log('info:model:User:getAllTimeIndividualRankings');
+  logger.info('getAllTimeIndividualRankings');
   return mongoose
     .model('User')
     .find()
@@ -235,7 +247,7 @@ function getAllTimeIndividualRankings() {
 // returns the total amount of times a user participated in a challenge
 // TODO: write unit test for this
 async function getNumOfChallengesCompleted(currentChallenge) {
-  logger.log('info:model:User:getNumOfChallengesCompleted');
+  logger.info('getNumOfChallengesCompleted');
   const participants = await Participant.find({ user: this._id });
   if (currentChallenge) {
     const isParticipantInCurrentChallenge = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
@@ -246,5 +258,5 @@ async function getNumOfChallengesCompleted(currentChallenge) {
 
 // TODO: Put in points in the app. then run aggregations in mongodb compass
 function getFavoriteActivity() {
-  logger.log('info:model:User:getFavoriteActivity');
+  logger.info('getFavoriteActivity');
 }

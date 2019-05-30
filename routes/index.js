@@ -5,19 +5,21 @@ const _ = require('lodash');
 // Models
 const User = require('./../models/user');
 const Family = require('./../models/family');
+const Challenge = require('./../models/challenge');
 
-const logger = require('../utils/logger');
+const Logger = require('../utils/logger');
 const { wrap } = require('../utils/utils');
 
 const sendToHome = require('../middleware/sendToHome');
 
+const logger = new Logger('route:index');
 const router = express.Router();
 
 router.get(
   '/register',
   wrap(async (req, res, next) => {
     // if a registered user is trying to hit this route, send them to their home page
-    if (res.locals.user) {
+    if (res.locals.isAuthenticated) {
       return sendToHome(req, res, next);
     }
     // Need families for registration form (not equal to by (ne));
@@ -31,7 +33,7 @@ router.get(
 );
 
 router.get('/login', (req, res, next) => {
-  if (res.locals.user) {
+  if (res.locals.isAuthenticated) {
     return sendToHome(req, res, next);
   }
   res.render('sessions/new');
@@ -42,7 +44,7 @@ router.get(
   wrap(async (req, res, next) => {
     if (res.locals.isAuthenticated) {
       // TODO: this link in the header view should be changed to this redirect when user is signed in and there is no current challenge
-      return res.redirect(`/users/${res.locals.user._id}`);
+      return sendToHome(req, res, next);
     }
 
     res.render('sessions/new', { loggedOut: req.query.loggedOut, title: 'Login' });
@@ -62,6 +64,7 @@ router.post(
       const tokens = await user.generateAccessTokens();
       [req.session.accessToken, req.session.refreshToken] = tokens;
       res.locals.user = user;
+      res.locals.currentChallenge = await Challenge.getCurrentChallenge();
       return sendToHome(req, res, next);
     } catch (e) {
       if (e.name === 'AuthError') {
@@ -89,6 +92,7 @@ router.post(
       req.session.accessToken = user.accessToken;
       req.session.refreshToken = user.refreshToken;
       res.locals.user = user;
+      res.locals.getCurrentChallenge = await Challenge.getCurrentChallenge();
       return sendToHome(req, res, next);
     } catch (e) {
       if (e.errors) {
