@@ -37,13 +37,10 @@ async function verifyAuthorization(req, res, next) {
       user = await User.findOne({ _id: refreshTokenRes.data.userId, refreshToken: req.session.refreshToken });
 
       if (!user) {
-        logger.log(
-          'info:middleware:verifyAuthorization',
-          'Could not find user with _id and refreshtoken. Invalidating tokens and redirecting to login'
-        );
+        logger.info('Could not find user with _id and refreshtoken. Invalidating tokens and redirecting to login');
         req.session.accessToken = null;
         req.session.refreshToken = null;
-        return res.render('session/new', { error: 'Your session has expired. Please log in' });
+        return res.render('sessions/new', { error: 'Your session has expired. Please log in' });
       }
 
       logger.info(null, 'Valid refresh token. Generating new tokens');

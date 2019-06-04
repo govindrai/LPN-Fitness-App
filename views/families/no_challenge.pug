@@ -15,9 +15,9 @@ block content
 	h2 Nickname #{user.name.nickname}
 
 	h2 Overall Stats
-	h3 Overall Rank: #{user.overallIndividualRank}
-	h3 Overall Rank in Family: #{user.overallIndividualRankInFamily}
-	h3 Number of Challenges Completed: #{numOfChallengesCompleted}
+	h3 Overall Rank: #{user.$locals.overallIndividualRank}
+	h3 Overall Rank in Family: #{user.$locals.overallIndividualRankInFamily}
+	h3 Number of Challenges Completed: #{user.$locals.numOfChallengesCompleted}
 	h3 Lifetime Points: #{user.lifetimePoints}
 	h3 Favorite Activity: #{favoriteActivity}
 

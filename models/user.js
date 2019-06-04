@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const Participant = require('./participant');
+const Point = require('./point');
 
 const Logger = require('../utils/logger');
 
@@ -75,9 +76,9 @@ userSchema.post('save', async function postSaveHook() {
   await this.populate('family');
 });
 
-userSchema.post('findOne', async doc => {
-  logger.info('postFindOne', 'entered postFindOneHook');
-  await doc.populate('family');
+userSchema.pre('findOne', function preFindOneHook() {
+  logger.info('preFindOne', 'entered preFindOneHook');
+  this.populate('family');
 });
 
 userSchema.statics = {
@@ -98,8 +99,8 @@ userSchema.statics = {
   },
 
   // TODO: this should be a server side aggregation
-  async getRankedUsers() {
-    logger.info('getRankedUsers', 'Entered getRankedUsers');
+  async getUsersByRank(familyId) {
+    logger.info('getUsersByRank', 'Entered getUsersByRank');
     const users = await mongoose
       .model('User')
       .find()
@@ -107,11 +108,11 @@ userSchema.statics = {
       .sort('-lifetimePoints');
 
     // calculate the individual's overall rank
-    rankUsers(users, this, 'overallIndividualRank');
+    rankUsers(users, 'overallIndividualRank');
 
     // calculate the individual's overall rank in the family
-    const familyMembers = users.filter(user => user.family.equals(this.family));
-    rankUsers(familyMembers, this, 'overallIndividualRankInFamily');
+    const familyMembers = users.filter(user => user.family.equals(familyId));
+    rankUsers(familyMembers, 'overallIndividualRankInFamily');
 
     return users;
   },
@@ -155,10 +156,8 @@ userSchema.methods = {
 
   async getRankedUser() {
     logger.info('getRankedUser', 'Entered getRankedUser');
-    const rankedUsers = await mongoose.model('User').getRankedUsers();
-    const { overallIndividualRank, overallIndividualRankInFamily } = rankedUsers.find(user => user._id.equals(this._id));
-    this.overallIndividualRank = overallIndividualRank;
-    this.overallIndividualRankInFamily = overallIndividualRankInFamily;
+    const rankedUsers = await mongoose.model('User').getUsersByRank(this.family._id);
+    return rankedUsers.find(user => user._id.equals(this._id));
   },
 
   // returns a promise
@@ -180,7 +179,25 @@ userSchema.methods = {
     challenge.isParticipant = !!participant;
   },
 
-  getNumOfChallengesCompleted,
+  // returns the total amount of times a user participated in a challenge
+  // TODO: write unit test for this
+  async getNumOfChallengesCompleted(currentChallenge) {
+    logger.info('getNumOfChallengesCompleted');
+    const participants = await Participant.find({ user: this._id });
+    if (currentChallenge) {
+      const isParticipantInCurrentChallenge = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
+      this.$locals.numOfChallengesCompleted = isParticipantInCurrentChallenge ? participants.length - 1 : participants.length;
+    }
+    this.$locals.numOfChallengesCompleted = participants.length;
+  },
+
+  // TODO: Put in points in the app. then run aggregations in mongodb compass
+  async getFavoriteActivity() {
+    logger.info('getFavoriteActivity');
+    const res = await Point.aggregate([{ $match: { user: this } }]);
+    console.log(res);
+    return res;
+  },
 };
 
 userSchema.virtual('fullName').get(function getFullName() {
@@ -212,24 +229,19 @@ function signPayload(payload) {
   });
 }
 
-function rankUsers(users, userNeedingRanking, rankLabel) {
+function rankUsers(users, rankLabel) {
   logger.info('helper:rankUsers');
-  let totalRanks = 0;
-  let userRank;
+  let currentRank = 0;
   let previousScore = Infinity;
+
   for (let i = 1; i <= users.length; i += 1) {
     const user = users[i - 1];
     if (user.lifetimePoints < previousScore) {
-      totalRanks += 1;
+      currentRank += 1;
+      previousScore = user.lifetimePoints;
     }
-
-    if (user.fullName === userNeedingRanking.fullName) {
-      userRank = totalRanks;
-    }
-    user[rankLabel] = totalRanks;
-    previousScore = user.lifetimePoints;
+    user.$locals[rankLabel] = currentRank;
   }
-  return userRank;
 }
 
 // Statistics Methods
@@ -242,21 +254,4 @@ function getAllTimeIndividualRankings() {
     .find()
     .select('name lifeTimePoints')
     .sort('-lifetimePoints');
-}
-
-// returns the total amount of times a user participated in a challenge
-// TODO: write unit test for this
-async function getNumOfChallengesCompleted(currentChallenge) {
-  logger.info('getNumOfChallengesCompleted');
-  const participants = await Participant.find({ user: this._id });
-  if (currentChallenge) {
-    const isParticipantInCurrentChallenge = participants.find(partipant => !partipant.challenge.equals(currentChallenge._id));
-    return isParticipantInCurrentChallenge ? participants.length - 1 : participants.length;
-  }
-  return participants.length;
-}
-
-// TODO: Put in points in the app. then run aggregations in mongodb compass
-function getFavoriteActivity() {
-  logger.info('getFavoriteActivity');
 }

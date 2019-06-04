@@ -52,11 +52,12 @@ router.put('/points', (req, res) => {
 router.get(
   '/:id',
   wrap(async (req, res, next) => {
-    const ranksProm = res.locals.user.getRankedUser();
-    const numOfChallengesCompletedProm = res.locals.user.getNumOfChallengesCompleted(res.locals.currentChallenge);
-    const [numOfChallengesCompleted] = await Promise.all([numOfChallengesCompletedProm, ranksProm]);
+    const req1 = res.locals.user.getRankedUser();
+    const req2 = res.locals.user.getNumOfChallengesCompleted(res.locals.currentChallenge);
+    const [rankedUser] = await Promise.all([req1, req2]);
+
     // TODO: the view name should be different and should redirect to a user's personal landing page when there are no challenges. :)
-    return res.render('families/no_challenge', { numOfChallengesCompleted });
+    return res.render('families/no_challenge', { user: rankedUser });
   })
 );
 

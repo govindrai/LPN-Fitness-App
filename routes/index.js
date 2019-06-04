@@ -51,6 +51,8 @@ router.get(
   })
 );
 
+// TODO: reetry on connection errors
+
 // POST login form data
 router.post(
   '/login',

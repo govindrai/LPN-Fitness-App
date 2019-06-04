@@ -16,7 +16,7 @@ router.get(
   '/',
   wrap(async (req, res, next) => {
     logger.log('info:rquest', req.path);
-    const users = await User.getRankedUsers();
+    const users = await User.getUsersByRank();
     res.render('stats/index', { users });
   })
 );

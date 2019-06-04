@@ -5,4 +5,4 @@ block content
     .title Fitness Challenge Stats
 
     each user in users
-      h2 #{user.overallIndividualRank} | #{user.fullName} - #{user.lifeTimePoints} | #[a(href=`/users/${user._id}`) View Stats]
+      h2 #{user.$locals.overallIndividualRank} | #{user.fullName} - #{user.lifeTimePoints} | #[a(href=`/users/${user._id}`) View Stats]

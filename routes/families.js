@@ -40,7 +40,8 @@ router.getAsync('/:familyName', async (req, res) => {
   // get the name of the next family this family will verse
   let nextVersingFamilyName;
   if (isCurrentWeek) {
-    nextVersingFamilyName = currentChallenge.schedule[`week${currentWeek + 1}`][familyName].versingFamily.name;
+    const nextWeek = `week${currentWeek + 1}`;
+    nextVersingFamilyName = currentChallenge.schedule[nextWeek][familyName].versingFamily.name;
   }
 
   // TODO: can some of this be done in parallel?
