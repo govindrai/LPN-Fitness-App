@@ -84,7 +84,7 @@ async function runner() {
     await seedSampleData();
     process.exit(0);
   } catch (e) {
-    logger.log('error:seed:runner', 'Seed Job Failed', e);
+    logger.error('seed:runner', 'Seed Job Failed', e);
     process.exit(0);
   }
 }

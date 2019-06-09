@@ -56,6 +56,7 @@ router.get(
     const req2 = res.locals.user.getNumOfChallengesCompleted(res.locals.currentChallenge);
     const [rankedUser] = await Promise.all([req1, req2]);
 
+    const favoriteActivity = await res.locals.user.getFavoriteActivity();
     // TODO: the view name should be different and should redirect to a user's personal landing page when there are no challenges. :)
     return res.render('families/no_challenge', { user: rankedUser });
   })
