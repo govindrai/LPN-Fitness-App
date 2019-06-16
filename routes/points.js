@@ -1,6 +1,9 @@
 // Modules
 const router = require('express').Router();
 
+const logger = require('../utils/logger');
+const { wrap } = require('../utils/utils');
+
 // Models
 // const Activity = require('./../models/activity');
 const Point = require('./../models/point');
@@ -10,7 +13,7 @@ const Point = require('./../models/point');
 // const Participant = require('./../models/participant');
 // const User = require('./../models/user');
 
-router.post('/', (req, res) => {
+router.post('/', wrap(async (req, res, next) => {
   console.log(req.body);
   const createPoints = [];
   const deletePointIds = [];
@@ -25,17 +28,18 @@ router.post('/', (req, res) => {
     req.body.date = [req.body.date];
   }
 
+  logger.debug(req.body);
+
   const countOfActivities = req.body.activity.length;
 
   let calculatedPointsCounter = 0;
   for (let i = 0; i < countOfActivities; i += 1) {
     if (req.body.action[i] === 'delete') {
       deletePointIds.push(req.body.point[i]);
-      continue;
     }
 
-    // need to add a post remove hook to decrease lifetime points
-    // need to add a pre update hook when updating a point
+    // TODO: need to add a post remove hook to decrease lifetime points
+    // TODO: need to add a pre update hook when updating a point
 
     const pointsBody = {
       _id: req.body.point[i],
@@ -47,11 +51,14 @@ router.post('/', (req, res) => {
       date: req.body.date,
     };
 
-    if (req.body.action[i] === 'update') {
-      updatePoints.push(pointsBody);
-    } else {
-      delete pointsBody._id;
-      createPoints.push(pointsBody);
+    const action = req.body.action[i];
+    if (action !== 'ignore') {
+      if (action === 'update') {
+        updatePoints.push(pointsBody);
+      } else {
+        delete pointsBody._id;
+        createPoints.push(pointsBody);
+      }
     }
     calculatedPointsCounter += 1;
   }
@@ -61,29 +68,22 @@ router.post('/', (req, res) => {
   console.log('deletePoints', deletePointIds);
 
   let oldTotalPoints = 0;
-  Promise.all(
-    updatePoints.map(updatePoint => Point.findByIdAndUpdate(updatePoint._id, updatePoint).then(originalPoint => (oldTotalPoints += originalPoint.calculatedPoints)))
-  )
-    .then(() => Point.insertMany(createPoints))
-    .then(() => Point.remove({ _id: { $in: deletePointIds } }))
-    .then(() => {
-      const newTotalPoints = req.body.totalDailyPoints - oldTotalPoints;
-      return res.locals.user.update({
-        $inc: { lifetimePoints: newTotalPoints },
-      });
-    })
-    .then(() => {
-      res.redirect(res.locals.home);
-    })
-    .catch(e => console.log(e));
-});
+  const updateProms = updatePoints.map(async updatePoint => {
+    const originalPoint = await Point.findByIdAndUpdate(updatePoint._id, updatePoint);
+    oldTotalPoints += originalPoint.calculatedPoints;
+  });
 
-router.delete('/', (req, res) => {
-  Point.remove({ _id: req.body.point })
-    .then(() => {
-      res.status(200).send('Deleted!');
-    })
-    .catch(e => console.log(e));
-});
+  await Promise.all(updateProms);
+  await Point.insertMany(createPoints);
+  await Point.remove({ _id: { $in: deletePointIds } });
+  const newTotalPoints = req.body.totalDailyPoints - oldTotalPoints;
+  await res.locals.user.update({ $inc: { lifetimePoints: newTotalPoints } });
+  res.redirect(res.locals.homePath);
+}));
+
+router.delete('/', wrap(async (req, res, next) => {
+  await Point.remove({ _id: req.body.point });
+  res.send('Deleted!');
+}));
 
 module.exports = router;
