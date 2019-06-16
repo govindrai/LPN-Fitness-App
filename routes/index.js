@@ -5,12 +5,9 @@ const _ = require('lodash');
 // Models
 const User = require('./../models/user');
 const Family = require('./../models/family');
-const Challenge = require('./../models/challenge');
 
 const logger = require('../utils/logger');
 const { wrap } = require('../utils/utils');
-
-const sendToHome = require('../middleware/sendToHome');
 
 const router = express.Router();
 
@@ -21,7 +18,7 @@ router.get(
     if (res.locals.isAuthenticated) {
       res.redirect(res.locals.homePath);
     }
-    // Need families for registration form (not equal to by (ne));
+    // Need families for registration form (not equal to bye (ne));
     const families = await Family.find().ne('name', 'Bye');
     res.render('users/new', {
       families,

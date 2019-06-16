@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h2 Uh oh, something's wrong and it's not your fault.
+  sub Would you be kind enough to send this error to the current maintainer of the project, or better yet, open an issue on the project's <a href="https://github.com/govindrai/LPN-Fitness-App">github repository</a> so it can be tracked, managed and fixed. We apologize in advance! :)
+
+  h2= error.status
+  pre #{error.stack}
