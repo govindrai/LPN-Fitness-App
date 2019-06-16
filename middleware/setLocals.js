@@ -42,5 +42,13 @@ module.exports = async function setLocals(req, res, next) {
   res.locals.futureChallenges = await Challenge.getFutureChallenges();
   res.locals.registerableChallengesCount = await res.locals.user.getRegisterableChallengesCount(res.locals.futureChallenges);
   res.locals.currentChallenge = await Challenge.getCurrentChallenge();
+
+  // set the root path that will be used throughout the app
+  if (!res.locals.currentChallenge) {
+    res.locals.homePath = `/users/${res.locals.user._id}`;
+  } else {
+    res.locals.homePath = `/families/${res.locals.user.family.name}`;
+  }
+
   return next();
 };

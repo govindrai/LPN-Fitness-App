@@ -33,7 +33,7 @@ html
             .line
       if isAuthenticated
         .nav-links
-          +printLink(home, "Home")
+          +printLink(homePath || '/', "Home")
           - let familyNames = ["Alexandrite", "Emerald", "Iolite", "Ruby", "Sapphire", "Sunstone", "Topaz"]
           +printLink("#", "Families <span class='down-arrow'>&#9660;</span>")(class="drop-down")
           .drop-down-links

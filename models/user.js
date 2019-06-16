@@ -245,7 +245,7 @@ userSchema.methods = {
 
 userSchema.virtual('fullName')
 .get(function getFullName() {
-  logger.entered('model:User:virtual:getFullName');
+  // logger.entered('model:User:virtual:getFullName'); // logs too many times, uncomment to debug
   return `${this.name.first} ${this.name.last}`;
 });
 

@@ -203,7 +203,7 @@ function determineVersingFamily(requestedWeek, currentWeek, currentChallenge, fa
 }
 
 function checkUserParticipant(familyParticipants, user) {
-  logger.info('route:family:helper:checkUserParticipant:familyParticipants', familyParticipants);
+  logger.entered('route:family:checkUserParticipant');
   return familyParticipants.find(participant => participant.user._id.toString() === user._id.toString());
 }
 

@@ -19,7 +19,7 @@ router.get(
   wrap(async (req, res, next) => {
     // if a registered user is trying to hit this route, send them to their home page
     if (res.locals.isAuthenticated) {
-      return sendToHome(req, res, next);
+      res.redirect(res.locals.homePath);
     }
     // Need families for registration form (not equal to by (ne));
     const families = await Family.find().ne('name', 'Bye');
@@ -33,7 +33,7 @@ router.get(
 
 router.get('/login', (req, res, next) => {
   if (res.locals.isAuthenticated) {
-    return sendToHome(req, res, next);
+    return res.redirect(res.locals.homePath);
   }
   res.render('sessions/new');
 });
@@ -43,7 +43,7 @@ router.get(
   wrap(async (req, res, next) => {
     if (res.locals.isAuthenticated) {
       // TODO: this link in the header view should be changed to this redirect when user is signed in and there is no current challenge
-      return sendToHome(req, res, next);
+      return res.redirect(res.locals.homePath);
     }
 
     res.render('sessions/new', { loggedOut: req.query.loggedOut, title: 'Login' });
@@ -64,9 +64,7 @@ router.post(
       if (!isAuthenticated) throw new AuthError();
       const tokens = await user.generateAccessTokens();
       [req.session.accessToken, req.session.refreshToken] = tokens;
-      res.locals.user = user;
-      res.locals.currentChallenge = await Challenge.getCurrentChallenge();
-      return sendToHome(req, res, next);
+      res.redirect('/');
     } catch (e) {
       if (e.name === 'AuthError') {
         return res.render('sessions/new', {
@@ -92,9 +90,7 @@ router.post(
       user = await user.save();
       req.session.accessToken = user.accessToken;
       req.session.refreshToken = user.refreshToken;
-      res.locals.user = user;
-      res.locals.getCurrentChallenge = await Challenge.getCurrentChallenge();
-      return sendToHome(req, res, next);
+      res.redirect('/');
     } catch (e) {
       if (e.errors) {
         if (e.name === 'ValidationError') {
