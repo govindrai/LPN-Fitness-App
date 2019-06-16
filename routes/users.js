@@ -10,6 +10,7 @@ const isAdmin = require('./../middleware/isAdmin');
 const privateRoute = require('./../middleware/privateRoute');
 
 const { wrap } = require('../utils/utils');
+const logger = require('../utils/logger');
 
 const router = express.Router();
 
@@ -19,18 +20,18 @@ router.get('/admin-settings', isAdmin, (req, res, next) => {
   let adminss;
   let nonAdminss;
   User.getAdmins()
-    .then(admins => {
-      adminss = admins;
-      return User.getNonAdmins();
-    })
-    .then(nonAdmins => {
-      nonAdminss = nonAdmins;
-      res.render('users/admin_settings', {
-        admins: adminss,
-        nonAdmins: nonAdminss,
-        path: req.path,
-      });
+  .then(admins => {
+    adminss = admins;
+    return User.getNonAdmins();
+  })
+  .then(nonAdmins => {
+    nonAdminss = nonAdmins;
+    res.render('users/admin_settings', {
+      admins: adminss,
+      nonAdmins: nonAdminss,
+      path: req.path,
     });
+  });
 });
 
 // edit points for a user for certain day
@@ -38,27 +39,47 @@ router.put('/points', (req, res) => {
   const { participant } = req.body;
   // res.locals.user.participantId = participant;
   const addPointsButtonDate = new Date(req.body.addPointsButtonDate);
-  const familyParticipants = [{ _id: participant, user: res.locals.user }];
+  const familyParticipants = [{
+    _id: participant,
+    user: res.locals.user
+  }];
   Point.calculateParticipantPointsByDay(familyParticipants, addPointsButtonDate, res.locals.user)
-    .then(() => res.render('points/_points_entries', {
-        familyParticipants,
-        // addPointsButtonDate,
-        // editRequest: true
-      }))
-    .catch(e => console.log(e));
+  .then(() => res.render('points/_points_entries', {
+    familyParticipants,
+    // addPointsButtonDate,
+    // editRequest: true
+  }))
+  .catch(e => console.log(e));
 });
 
-// GET a user's landing page
+// GET a user's dashboard page
 router.get(
   '/:id',
   wrap(async (req, res, next) => {
+    try {
+      if (!res.locals.user._id.equals(req.params.id)) {
+        res.locals.user = await User.findById(req.params.id);
+        if (!res.locals.user) {
+          return res.render('400', { message: `Bruh aint no user with id ${req.params.id}` });
+        }
+      }
+    } catch (e) {
+      const message = `'${req.params.id}' is an invalid user id.`
+      logger.error(`route:users:${message}`, e);
+      return res.render('400', { message });
+    }
+
     const req1 = res.locals.user.getRankedUser();
     const req2 = res.locals.user.getNumOfChallengesCompleted(res.locals.currentChallenge);
     const [rankedUser] = await Promise.all([req1, req2]);
 
+    // TODO: User may not have any points
     const favoriteActivity = await res.locals.user.getFavoriteActivity();
     // TODO: the view name should be different and should redirect to a user's personal landing page when there are no challenges. :)
-    return res.render('families/no_challenge', { user: rankedUser });
+    return res.render('families/no_challenge', {
+      user: rankedUser,
+      favoriteActivity
+    });
   })
 );
 
