@@ -7,12 +7,11 @@ const User = require('./../models/user');
 const Family = require('./../models/family');
 const Challenge = require('./../models/challenge');
 
-const Logger = require('../utils/logger');
+const logger = require('../utils/logger');
 const { wrap } = require('../utils/utils');
 
 const sendToHome = require('../middleware/sendToHome');
 
-const logger = new Logger('route:index');
 const router = express.Router();
 
 router.get(
@@ -103,7 +102,6 @@ router.post(
             e.errors.family.message = 'Please select your family from the list above.';
           }
           const families = await Family.find().ne('name', 'Bye');
-          logger.log('info:new user', user);
           res.render('users/new', {
             families,
             user,
@@ -123,8 +121,7 @@ router.get(
   '/logout',
   wrap(async (req, res, next) => {
     if (!res.locals.user) {
-      // TODO: figure out route level logging
-      logger.log('info:route:/logout', 'non-logged in user logging out -- redirecting to index');
+      logger.info('route:index:/logout', 'non-logged in user logging out -- redirecting to index');
       return res.redirect('/');
     }
     // TODO: turn this into "invalidate tokens" function

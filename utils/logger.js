@@ -1,9 +1,9 @@
-const colors = require('colors'); /* eslint-disable-line no-unused-vars */
+require('colors');
 
 class Logger {
-  debug(description = '', message = 'Made it here!') {
-    const log = Logger.getLog('debug', description, message);
-    console.log(log.bgBlue.white);
+  debug(message = 'Made it here!') {
+    const log = Logger.getLog('debug', '', message);
+    console.log(log.bgBlue.black);
   }
 
   info(description = '', message = 'Made it here!') {
@@ -23,7 +23,8 @@ class Logger {
     console.log(log.bgMagenta.red);
   }
 
-  entered(description = '', enteredFunctionName) {
+  entered(description = '') {
+    const enteredFunctionName = description.split(':').pop();
     const log = Logger.getLog('info'.green, description, `Entered ${enteredFunctionName}`);
     console.log(log);
   }

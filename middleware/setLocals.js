@@ -1,16 +1,14 @@
 // Models
 const Challenge = require('./../models/challenge');
-const Logger = require('../utils/logger');
-
-const logger = new Logger('middleware:setLocals');
+const logger = require('../utils/logger');
 
 module.exports = async function setLocals(req, res, next) {
-  logger.entered();
+  logger.entered('middleware:setLocals');
 
   // needed in layout view for building link hrefs
   res.locals.path = req.path;
   if (!res.locals.user) {
-    logger.info(null, 'Skipping -- guest user');
+    logger.info('middleware:setLocals', 'Skipping -- guest user');
     return next();
   }
 

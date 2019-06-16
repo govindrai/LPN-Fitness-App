@@ -1,10 +1,8 @@
 // if a logged in user is trying to go to the home page, take them to their family page
-const Logger = require('../utils/logger');
-
-const logger = new Logger('middleware:sendToHome');
+const logger = require('../utils/logger');
 
 module.exports = async function sendToHome(req, res, next) {
-  logger.entered();
+  logger.entered('middleware:sendToHome');
 
   // if there is no active challenge redirect to the user's profile page
   // otherwise redirect them to their family's challenge page

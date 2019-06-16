@@ -63,7 +63,7 @@ app.use(
   sassMiddleware({
     src: path.join(__dirname, 'public/stylesheets'),
     dest: path.join(__dirname, 'public/stylesheets'),
-    debug: true,
+    // debug: true,
     indentedSyntax: true, // true = .sass and false = .scss
     // sourceMap: true,
     prefix: '/stylesheets',

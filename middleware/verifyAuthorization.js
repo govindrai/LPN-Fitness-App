@@ -2,18 +2,16 @@ const jwt = require('jsonwebtoken');
 
 // Models
 const User = require('../models/user');
-const Logger = require('../utils/logger');
+const logger = require('../utils/logger');
 const { wrap } = require('../utils/utils');
 
 const keys = require('../config/keys');
-
-const logger = new Logger('middleware:verifyAuthorization');
 
 // check if the user is logged in
 module.exports = wrap(verifyAuthorization);
 
 async function verifyAuthorization(req, res, next) {
-  logger.entered();
+  logger.entered('middleware:verifyAuthorization');
 
   if (!req.session) {
     next(new Error('Sessions are not working...'));
@@ -24,11 +22,11 @@ async function verifyAuthorization(req, res, next) {
   if (req.session.accessToken) {
     const accessTokenRes = await verifyToken(req.session.accessToken);
     if (accessTokenRes === 'TokenExpired') {
-      logger.info(null, 'Access token is expired. Verifying refresh token');
+      logger.info('middleware:verifyAuthorization', 'Access token is expired. Verifying refresh token');
       const refreshTokenRes = await verifyToken(req.session.refreshToken);
 
       if (refreshTokenRes === 'TokenExpired') {
-        logger.info('Refresh token is also expired. Invalidating tokens and redirecting to /login');
+        logger.info('middleware:verifyAuthorization', 'Refresh token is also expired. Invalidating tokens and redirecting to /login');
         req.session.accessToken = null;
         req.session.refreshToken = null;
         return res.render('session/new', { error: 'Your session has expired. Please log in' });
@@ -37,21 +35,21 @@ async function verifyAuthorization(req, res, next) {
       user = await User.findOne({ _id: refreshTokenRes.data.userId, refreshToken: req.session.refreshToken });
 
       if (!user) {
-        logger.info('Could not find user with _id and refreshtoken. Invalidating tokens and redirecting to login');
+        logger.info('middleware:verifyAuthorization','Could not find user with _id and refreshtoken. Invalidating tokens and redirecting to login');
         req.session.accessToken = null;
         req.session.refreshToken = null;
         return res.render('sessions/new', { error: 'Your session has expired. Please log in' });
       }
 
-      logger.info(null, 'Valid refresh token. Generating new tokens');
+      logger.info('middleware:verifyAuthorization', 'Valid refresh token. Generating new tokens');
       const tokens = await user.generateAccessTokens();
       [req.session.accessToken, req.session.refreshToken] = tokens;
     } else {
       user = await User.findOne({ _id: accessTokenRes.data.userId, accessToken: req.session.accessToken }).populate('family');
 
       if (!user) {
-        logger.log(
-          'info:middleware:verifyAuthorization:',
+        logger.info(
+          'middleware:verifyAuthorization:',
           'Could not find user with _id and access token. Invalidating tokens and redirecting to login'
         );
         req.session.accessToken = null;
@@ -59,7 +57,7 @@ async function verifyAuthorization(req, res, next) {
         return res.render('sessions/new', { error: 'Your session has expired. Please log in' });
       }
 
-      logger.info(null, 'Access token valid. User authenticated');
+      logger.info('middleware:verifyAuthorization', 'Access token valid. User authenticated');
     }
 
     res.locals.user = user;
@@ -67,12 +65,12 @@ async function verifyAuthorization(req, res, next) {
     return next();
   }
 
-  logger.info(null, 'User is a guest');
+  logger.info('middleware:verifyAuthorization', 'User is a guest');
   return next();
 }
 
 function verifyToken(token) {
-  logger.info('helper:verifyToken', 'Entered verifyToken');
+  logger.info('middleware:verifyAuthorization:verifyToken', 'Entered verifyToken');
   return new Promise((resolve, reject) => {
     jwt.verify(token, keys.JWT_SECRET, (err, decodedToken) => {
       if (err) {

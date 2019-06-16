@@ -2,19 +2,17 @@
 const mongoose = require('mongoose');
 
 // Local Modules
-const Logger = require('../../utils/logger');
+const logger = require('../../utils/logger');
 const { MONGO_URL } = require('../keys.js');
 
-const logger = new Logger('config:mongoose');
-
 mongoose.connection.on('error', () => {
-  logger.error('connection error listener', 'MongoDB connection error');
+  logger.error('config:mongoose:connection error listener', 'MongoDB connection error');
   process.env.IS_CONNECTED = false;
   throw new Error('MongoDB connection error');
 });
 
 async function connect() {
-  logger.entered('connect');
+  logger.entered('config:mongoose:connect');
   if (process.env.IS_DEPLOYED) {
     mongoose.set('debug', (collectionName, operationName, doc, proj, somethingelse, somethingotherelse) => {
       logger.info('Mongoose Debug Log', {
@@ -40,33 +38,32 @@ async function connect() {
       connectTimeoutMS: 30000,
       socketTimeoutMS: 30000,
     });
-    logger.info('connect', `Database connection to ${MONGO_URL} created`);
+    logger.info('config:mongoose:connect', `Database connection to ${MONGO_URL} created`);
   } catch (e) {
-    logger.error('connect', 'CRITICAL:Error connecting to database', e);
+    logger.error('config:mongoose:connect', 'CRITICAL:Error connecting to database', e);
     throw e;
   }
 }
 
 async function dropDatabase() {
-  logger.entered('dropDatabase');
+  logger.entered('config:mongoose:dropDatabase');
   try {
     const startTime = new Date();
     await mongoose.connection.dropDatabase();
-    logger.info('dropDatabase', 'Database successfully dropped');
-    logger.info('dropDatabase', `Drop database operation took ${(new Date() - startTime) / 1000 / 60} minutes`);
+    logger.info('config:mongoose:dropDatabase', `Database successfully dropped. Operation took ${(new Date() - startTime) / 1000 / 60} minutes`);
   } catch (e) {
-    logger.error('dropDatabase:Error dropping database', e);
+    logger.error('config:mongoose:dropDatabase:Error dropping database', e);
     throw e;
   }
 }
 
 async function disconnect() {
-  logger.entered('disconnect');
+  logger.entered('config:mongoose:disconnect');
   try {
     await mongoose.connection.close();
-    logger.info('disconnect', 'Database connection closed');
+    logger.info('config:mongoose:disconnect', 'Database connection closed');
   } catch (e) {
-    logger.error('disconnect:Error disconnecting from database', e);
+    logger.error('config:mongoose:disconnect:Error disconnecting from database', e);
     throw e;
   }
 }
@@ -104,11 +101,11 @@ function plugin(schema) {
   schema.options.toObject.transform = (doc, ret, options) => {
     console.log('info:module:db.js:plugin:toObjectTransformHook');
     if (options.hide === false) {
-      console.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding of fields explicity turned off');
+      logger.info('config:mongoose:plugin:toObjectTransformHook', 'Hiding of fields explicity turned off');
       return ret;
     }
 
-    console.log('info:module:db.js:plugin:toObjectTransformHook', 'Hiding fields');
+    logger.info('config:mongoose:plugin:toObjectTransformHook', 'Hiding fields');
     doc.schema.eachPath((path, schemaType) => {
       if (schemaType.options.hidden) {
         delete ret[path];

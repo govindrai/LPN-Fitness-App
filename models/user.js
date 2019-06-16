@@ -145,7 +145,10 @@ userSchema.methods = {
 
     const tokens = await Promise.all([signPayload(accessTokenPayload), signPayload(refreshTokenPayload)]);
     if (!this.isNew) {
-      await this.updateOne({ accessToken: tokens[0], refreshToken: tokens[1] });
+      await this.updateOne({
+        accessToken: tokens[0],
+        refreshToken: tokens[1],
+      });
     } else {
       [this.accessToken, this.refreshToken] = tokens;
     }
@@ -154,7 +157,8 @@ userSchema.methods = {
 
   async getRankedUser() {
     logger.info('model:User:getRankedUser', 'Entered getRankedUser');
-    const rankedUsers = await mongoose.model('User').getUsersByRank(this.family._id);
+    const rankedUsers = await mongoose.model('User')
+    .getUsersByRank(this.family._id);
     return rankedUsers.find(user => user._id.equals(this._id));
   },
 
@@ -173,7 +177,10 @@ userSchema.methods = {
 
   async setIsParticipantFlagOnChallenge(challenge) {
     logger.info('model:User:setIsParticipantFlagOnChallenge', 'Entered setIsParticipantFlagOnChallenge');
-    const participant = await Participant.findOne({ challenge: challenge._id, user: this._id });
+    const participant = await Participant.findOne({
+      challenge: challenge._id,
+      user: this._id,
+    });
     challenge.isParticipant = !!participant;
   },
 
@@ -198,8 +205,9 @@ userSchema.methods = {
   },
 };
 
-userSchema.virtual('fullName').get(function getFullName() {
-  logger.info('model:User:virtual:getFullName', 'Entered virual getFullName');
+userSchema.virtual('fullName')
+.get(function getFullName() {
+  logger.entered('model:User:virtual:getFullName');
   return `${this.name.first} ${this.name.last}`;
 });
 
@@ -210,15 +218,16 @@ module.exports = User;
 // Mongoose Validators
 
 async function isExistingEmail(email) {
-  logger.info('model:User:validator:isExistingEmail', 'Entered isExistingEmail');
-  const existingUser = await mongoose.model('User').findOne({ email });
+  logger.entered('model:User:validator:isExistingEmail');
+  const existingUser = await mongoose.model('User')
+  .findOne({ email });
   return !existingUser;
 }
 
 // Helpers
 
 function signPayload(payload) {
-  logger.info('model:User:helper:signPayload');
+  logger.entered('model:User:helper:signPayload');
   return new Promise((resolve, reject) => {
     jwt.sign(payload, process.env.JWT_SECRET || 'secret', (err, token) => {
       if (err) reject(err);
@@ -228,7 +237,7 @@ function signPayload(payload) {
 }
 
 function rankUsers(users, rankLabel) {
-  logger.info('model:User:helper:rankUsers');
+  logger.entered('model:User:helper:rankUsers');
   let currentRank = 0;
   let previousScore = Infinity;
 
@@ -246,7 +255,7 @@ function rankUsers(users, rankLabel) {
 
 // gets the entire fraternity's individual rankings for all time
 function getAllTimeIndividualRankings() {
-  logger.info('model:User:getAllTimeIndividualRankings');
+  logger.entered('model:User:helper:getAllTimeIndividualRankings');
   return mongoose
     .model('User')
     .find()
