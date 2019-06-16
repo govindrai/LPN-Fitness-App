@@ -5,6 +5,11 @@ const pointSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Participant',
   },
+  // need user's id to be able to perform aggregations witout needing to populate particpant records
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: 'User',
+  },
   activity: {
     type: mongoose.Types.ObjectId,
     ref: 'Activity',
