@@ -50,6 +50,7 @@ pointSchema.statics.calculateParticipantPointsByDay = function (participants, da
     participants.forEach((participant, index) => {
       participant.points = pointsArraysArray[index];
       participant.totalDailyPoints = participant.points.reduce((total, point) => total + point.calculatedPoints, 0);
+      participant.totalDailyPoints = Number(participant.totalDailyPoints).toFixed(2);
     });
 
     participants.sort((a, b) => b.totalDailyPoints - a.totalDailyPoints);
