@@ -1,9 +1,12 @@
 const express = require('express');
 const _ = require('lodash');
 const User = require('../models/user');
+const privateRoute = require('./../middleware/privateRoute');
 const { wrap } = require('../utils/utils');
 
 const router = express.Router();
+
+router.use(privateRoute);
 
 // TODO: don't do a lookup if the user is looking at their own profile
 // Better yet build a caching on top of all mongodb actions and save yourself from this logic
