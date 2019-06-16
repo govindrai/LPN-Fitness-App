@@ -35,7 +35,7 @@ router.get('/login', (req, res, next) => {
   if (res.locals.isAuthenticated) {
     return res.redirect(res.locals.homePath);
   }
-  res.render('sessions/new');
+  res.render('sessions/new', { loggedOut: req.query.loggedOut === 'true' });
 });
 
 router.get(
@@ -120,12 +120,11 @@ router.get(
       logger.info('route:index:/logout', 'non-logged in user logging out -- redirecting to index');
       return res.redirect('/');
     }
+
     // TODO: turn this into "invalidate tokens" function
     await res.locals.user.update({ accessToken: null, refreshToken: null });
     req.session = null;
-    res.render('sessions/new', {
-      loggedOut: true,
-    });
+    res.redirect('/login?loggedOut=true');
   })
 );
 
