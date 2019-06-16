@@ -4,10 +4,10 @@ block content
 	if futureChallenges.length === 0
 		| There are no challenges to sign up for :( SORRY. Please complain to your administrator.
 	else if registerableChallengesCount === 0
-		| You've signed up for all of the upcoming challenges! Just hold up till the challenge starts. 
+		| You've signed up for all of the upcoming challenges! Just hold up till the challenge starts.
 	else
 		| Welcome! You can still sign up for #{registerableChallengesCount} challenges! #[a(href="/challenges") Sign Up]
-	
+
 	h1 Checkout #{user.name.first}'s Stats
 
 	//- include ../challenges/index
@@ -19,7 +19,7 @@ block content
 	h3 Overall Rank in Family: #{user.$locals.overallIndividualRankInFamily}
 	h3 Number of Challenges Completed: #{user.$locals.numOfChallengesCompleted}
 	h3 Lifetime Points: #{user.lifetimePoints}
-	h3 Favorite Activity: #{favoriteActivity}
+	h3 Favorite Activity: #{favoriteActivity._id} (totaling #{favoriteActivity.totalPointsForActivity} point(s))
 
 	h2 Active Challenge Stats
 

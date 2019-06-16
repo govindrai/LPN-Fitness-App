@@ -82,28 +82,28 @@ userSchema.pre('findOne', function preFindOneHook() {
 userSchema.statics = {
   getAdmins() {
     return mongoose
-      .model('User')
-      .find({ admin: true })
-      .populate('family')
-      .then(admins => admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
+    .model('User')
+    .find({ admin: true })
+    .populate('family')
+    .then(admins => admins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
   },
 
   getNonAdmins() {
     return mongoose
-      .model('User')
-      .find({ admin: false })
-      .populate('family')
-      .then(nonAdmins => nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
+    .model('User')
+    .find({ admin: false })
+    .populate('family')
+    .then(nonAdmins => nonAdmins.sort((a, b) => (a.name.last < b.name.last ? -1 : 1)));
   },
 
   // TODO: this should be a server side aggregation
   async getUsersByRank(familyId) {
     logger.info('model:User:getUsersByRank', 'Entered getUsersByRank');
     const users = await mongoose
-      .model('User')
-      .find()
-      .select('name lifetimePoints family')
-      .sort('-lifetimePoints');
+    .model('User')
+    .find()
+    .select('name lifetimePoints family')
+    .sort('-lifetimePoints');
 
     // calculate the individual's overall rank
     rankUsers(users, 'overallIndividualRank');
@@ -198,10 +198,48 @@ userSchema.methods = {
 
   // TODO: Put in points in the app. then run aggregations in mongodb compass
   async getFavoriteActivity() {
-    logger.info('model:User:getFavoriteActivity');
-    const res = await Point.aggregate([{ $match: { user: this } }]);
-    logger.debug(res);
-    return res;
+    logger.entered('model:User:getFavoriteActivity');
+    const res = await Point.aggregate([
+      {
+        $match: {
+          user: this._id,
+        },
+      }, {
+        $lookup: {
+          from: 'activities',
+          localField: 'activity',
+          foreignField: '_id',
+          as: 'activity',
+        },
+      }, {
+        $unwind: {
+          path: '$activity',
+        },
+      }, {
+        $project: {
+          _id: 0,
+          calculatedPoints: 1,
+          activity: '$activity.name',
+        },
+      }, {
+        $group: {
+          _id: '$activity',
+          count: {
+            $sum: 1,
+          },
+          totalPointsForActivity: {
+            $sum: '$calculatedPoints',
+          },
+        },
+      },
+      {
+        $sort: {
+          totalPointsForActivity: -1,
+        },
+      }, {
+        $limit: 1,
+      }]);
+    return res[0];
   },
 };
 
@@ -257,8 +295,8 @@ function rankUsers(users, rankLabel) {
 function getAllTimeIndividualRankings() {
   logger.entered('model:User:helper:getAllTimeIndividualRankings');
   return mongoose
-    .model('User')
-    .find()
-    .select('name lifeTimePoints')
-    .sort('-lifetimePoints');
+  .model('User')
+  .find()
+  .select('name lifeTimePoints')
+  .sort('-lifetimePoints');
 }
