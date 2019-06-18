@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const logger = require('../utils/logger');
+
 const pointSchema = new mongoose.Schema({
   participant: {
     type: mongoose.Types.ObjectId,
@@ -24,7 +26,7 @@ const pointSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: value => value !== 0,
-      message: "Can't create points with no units.",
+      message: 'Can\'t create points with no units.',
     },
   },
   calculatedPoints: {
@@ -37,47 +39,94 @@ const pointSchema = new mongoose.Schema({
 // total those points, sort the participants by most points entered
 // then if the user who requested this page is in the family, move that
 // user to the top of the participants
-pointSchema.statics.calculateParticipantPointsByDay = function (participants, date, user) {
+pointSchema.statics.calculateParticipantPointsByDay = async function (participants, date, user) {
+  logger.entered('model:Point:calculateParticpantPointsByDay');
   if (participants.length === 0) {
     return;
   }
-  return Promise.all(
-    participants.map(participant => Point.find({ participant: participant._id, date }).populate({
-        path: 'activity',
-        populate: { path: 'unit' },
-      }))
-  ).then(pointsArraysArray => {
-    participants.forEach((participant, index) => {
-      participant.points = pointsArraysArray[index];
-      participant.totalDailyPoints = participant.points.reduce((total, point) => total + point.calculatedPoints, 0);
-      participant.totalDailyPoints = Number(participant.totalDailyPoints).toFixed(2);
-    });
 
-    participants.sort((a, b) => b.totalDailyPoints - a.totalDailyPoints);
+  // TODO: this should be done using aggregation
+  const participantsPointsProms = participants.map(participant => mongoose.model('Point')
+    .aggregate([
+      {
+        $match: {
+          participant: participant._id,
+          date,
+        },
+      }, {
+        $lookup: {
+          from: 'activities',
+          localField: 'activity',
+          foreignField: '_id',
+          as: 'activity',
+        },
+      }, {
+        $unwind: {
+          path: '$activity',
+        },
+      }, {
+        $lookup: {
+          from: 'units',
+          localField: 'activity.unit',
+          foreignField: '_id',
+          as: 'activity.unit',
+        },
+      }, {
+        $unwind: {
+          path: '$activity.unit',
+        },
+      },
+    ]));
 
-    moveUserToTop(participants, user);
+  const pointsArraysArray = await Promise.all(participantsPointsProms);
+  participants.forEach((participant, index) => {
+    participant.points = pointsArraysArray[index];
+    participant.totalDailyPoints = pointsArraysArray[index].reduce((total, point) => total + point.calculatedPoints, 0);
+    if (participant.totalDailyPoints % 1 === 0) {
+      participant.totalDailyPointsDisplay = participant.totalDailyPoints;
+    } else {
+      participant.totalDailyPointsDisplay = (participant.totalDailyPoints).toFixed(2);
+    }
   });
+
+  participants.sort((a, b) => b.totalDailyPoints - a.totalDailyPoints);
+
+  // always have the signed in user at the top no matter how many points they have
+  moveUserToTop(participants, user);
 };
 
+// TODO: Fix aggregate here
 pointSchema.statics.calculatePointsForWeek = function (participants, weekStart, weekEnd) {
   if (participants.length === 0) {
     return;
   }
   return Promise.all(
-    participants.map(participant => Point.aggregate([
+    participants.map(participant => mongoose.model('Point')
+      .aggregate([
         {
           $match: {
-            $and: [{ participant: participant._id }, { date: { $gte: weekStart, $lte: weekEnd } }],
+            $and: [{ participant: participant._id }, {
+              date: {
+                $gte: weekStart,
+                $lte: weekEnd,
+              },
+            }],
           },
         },
-        { $group: { _id: null, total: { $sum: '$calculatedPoints' } } },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$calculatedPoints' },
+          },
+        },
       ]))
-  ).then(totalPointObjs => {
-    totalPointObjs.forEach((totalPointObj, index) => {
-      participants[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+  )
+    .then(totalPointObjs => {
+      totalPointObjs.forEach((totalPointObj, index) => {
+        participants[index].totalPoints = totalPointObj[0] ? totalPointObj[0].total : 0;
+      });
+      return participants.reduce((total, participant) => total + participant.totalPoints, 0);
     });
-    return participants.reduce((total, participant) => total + participant.totalPoints, 0);
-  });
 };
 
 const Point = mongoose.model('Point', pointSchema);

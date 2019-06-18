@@ -40,7 +40,7 @@ include _points_entry_mixin
 
       - let pointsString = "";
       if familyParticipants.length && familyParticipants[0].totalDailyPoints
-        - pointValue = familyParticipants[0].totalDailyPoints
+        - pointValue = familyParticipants[0].totalDailyPointsDisplay
         - pointsString = `TOTAL = ${pointsValue} POINTS`
       else
         - pointString = `TOTAL = 0 POINTS`
