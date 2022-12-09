@@ -18,7 +18,7 @@
     "cookie-parser": "^1.4.4",
     "cookie-session": "^1.3.3",
     "debug": "^4.1.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-compile-sass": "^4.0.0",
     "graceful-fs": "^4.1.11",
     "jquery": "^3.4.1",
